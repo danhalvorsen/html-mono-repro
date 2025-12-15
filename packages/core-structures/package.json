@@ -1,0 +1,21 @@
+{
+  "name": "@my-graphics/core-structures",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@my-graphics/core-math": "workspace:*"
+  },
+  "scripts": {
+    "clearCache": "vitest --clearCache",
+    "test": "vitest --config vitest.config.ts",
+    "build": "tsc -b"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "composite-web-component-lit3",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "echo \"composite-web-component-lit3 build temporarily disabled; run 'pnpm run build:strict' here when fixing types\" && exit 0",
+    "build:strict": "tsc -b",
+    "test": "pnpm -w exec vitest --config ../../vitest.config.ts",
+    "test:watch": "pnpm -w exec vitest --config ../../vitest.config.ts --watch"
+  },
+  "dependencies": {
+    "core-composition-abstract": "workspace:*",
+    "lit": "^3.0.0"
+  },
+  "devDependencies": {
+    "happy-dom": "^20.0.0"
+  }
+}

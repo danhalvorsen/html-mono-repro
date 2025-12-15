@@ -1,0 +1,37 @@
+{
+  // Baseline TS config for packages/* only.
+  // NOTE: Prefer editing the root tsconfig.base.json for global changes.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": true,
+    "outDir": "dist",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "strict": true,
+    "declaration": true,
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "@my-graphics/*": [
+        "Libraries/*/src",
+        "Libraries/*/dist",
+        "Libraries/core-reactive-multiplatform-modules/*/src",
+        "Libraries/core-reactive-multiplatform-modules/*/dist"
+      ]
+    }
+  },
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}

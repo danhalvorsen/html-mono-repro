@@ -1,0 +1,1 @@
+{"version":3,"file":"IRenderEngine.d.ts","sourceRoot":"","sources":["../packages/core-abstract-shape-system/src/IRenderEngine.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,UAAU,CAAC;AAAC,MAAM,WAAW,aAAa;IAAG,GAAG,CAAC,KAAK,EAAC,MAAM,GAAE,IAAI,CAAC;IAAC,MAAM,CAAC,KAAK,EAAC,MAAM,GAAE,IAAI,CAAC;CAAE"}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SVG Test</title>
+</head>
+<body>
+    <h4>Test</h4>
+
+    <img src="./assets/select.svg" width="200" height="200" alt="Select SVG" />
+    <img src="./assets/rectange.svg" width="200" height="200" alt="Rectangle SVG" />
+    <img src="./assets/circle.svg" width="200" height="200" alt="Circle SVG" />
+
+    <div id="shape-palette" aria-label="Shape palette" role="region">
+        <!-- The path you will drag (styled as a draggable item) -->
+        <svg width="50" height="50" aria-hidden="true" focusable="false">
+            <path id="newPathShape" class="draggable-source" d="M 10 10 L 40 10 L 40 40 L 10 40 Z" fill="orange" stroke="black" style="cursor: grab;" />
+        </svg>
+    </div>
+
+    <svg id="svgCanvas" width="200" height="200" style="border: 1px solid black;" aria-label="Canvas">
+        <!-- Group containing the rectangle built from Vertices-Edges-Vertices (V-E-V x4)
+             Translate and rotate the whole group so the rectangle is positioned and rotated. -->
+        <g id="rectGroup" transform="translate(40 30) rotate(25)">
+            <!-- Rectangle size: 80 x 80 (coordinates relative to group) -->
+            <!-- Edges -->
+            <line id="e_top"    class="edge" x1="0"  y1="0"  x2="80" y2="0"  stroke="#0b66ff" stroke-width="6" stroke-linecap="round"/>
+            <line id="e_right"  class="edge" x1="80" y1="0"  x2="80" y2="80" stroke="#0b66ff" stroke-width="6" stroke-linecap="round"/>
+            <line id="e_bottom" class="edge" x1="80" y1="80" x2="0"  y2="80" stroke="#0b66ff" stroke-width="6" stroke-linecap="round"/>
+            <line id="e_left"   class="edge" x1="0"  y1="80" x2="0"  y2="0"  stroke="#0b66ff" stroke-width="6" stroke-linecap="round"/>
+
+            <!-- Vertices (circles matching size, semantic IDs) -->
+            <circle id="v_tl" class="vertex" cx="0"  cy="0"  r="8" fill="#0b66ff" stroke="#003f9e" stroke-width="1"/>
+            <circle id="v_tr" class="vertex" cx="80" cy="0"  r="8" fill="#0b66ff" stroke="#003f9e" stroke-width="1"/>
+            <circle id="v_br" class="vertex" cx="80" cy="80" r="8" fill="#0b66ff" stroke="#003f9e" stroke-width="1"/>
+            <circle id="v_bl" class="vertex" cx="0"  cy="80" r="8" fill="#0b66ff" stroke="#003f9e" stroke-width="1"/>
+
+            <!-- Filled polygon using same vertex coordinates for visual body -->
+            <polygon id="s_rectangle" points="0,0 80,0 80,80 0,80" fill="#D8E9FF" opacity="0.85"/>
+        </g>
+    </svg>
+</body>
+</html>
+

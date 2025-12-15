@@ -1,0 +1,28 @@
+{
+  "name": "@my-graphics/core-ioc",
+  "version": "1.0.0",
+  "type": "module",
+  "moduleResolution": "bundler",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "clearCache": "pnpm -C .. vitest --clearCache"
+  },
+ "dependencies": {
+  "inversify": "^6.x",
+  "reflect-metadata": "^0.2.x"
+},
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.14",
+    "@vitest/ui": "^4.0.14",
+    "vitest": "^4.0.14"
+  }
+}

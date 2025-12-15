@@ -1,0 +1,30 @@
+{"activationEvents": [],
+	"dependencies": {
+		"reflect-metadata": "^0.2.2",
+		"inversify": "^6.x"
+	},
+	"devDependencies": {
+		"@vitest/coverage-v8": "^4.0.14",
+		"@vitest/ui": "^4.0.14",
+		"typescript": "^5.9.3",
+		"vitest": "^4.0.14",
+		"pnpm": "^10.24.0",
+		"@types/node": "^20.19.25"
+	},
+	"scripts": {
+		"build": "pnpm -r run build",
+		"test": "pnpm --workspace-root vitest",
+		"fix:tsc-scripts": "node ./scripts/fix-tsc-in-scripts.js",
+		"fix:workspace-deps": "node ./scripts/fix-workspace-deps.js",
+		"fix:all": "node ./scripts/fix-workspace-deps.js && node ./scripts/fix-tsc-in-scripts.js",
+		"scan:packages": "node ./scripts/scan-package-names.js",
+		"agent:run": "powershell -ExecutionPolicy Bypass -File ./scripts/agent-run.ps1",
+		"workspace:build": "pnpm -r run build",
+		"bootstrap": "pnpm install --recursive",
+		"ci-install": "pnpm install --shamefully-hoist --reporter=silent",
+		"prebuild": "node -e \"const fs=require('fs'); if(!fs.existsSync('./node_modules/pnpm')){console.error('ERROR: pnpm is not installed in this repo. Run `pnpm install` at the repo root (or `pnpm bootstrap`).'); process.exit(1)}\"",
+		"postinstall": "node ./scripts/ensure-pnpm.js || true",
+		"prebuild:win": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if(-not (Test-Path './node_modules/pnpm')) { Write-Error 'ERROR: pnpm binary not found in workspace node_modules. Run `pnpm install` at the repo root.'; exit 1 }\""
+	},
+	"packageManager": "pnpm@10.24.0"
+}

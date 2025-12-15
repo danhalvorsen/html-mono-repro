@@ -1,0 +1,219 @@
+[
+  {
+    "name": "@my-graphics/core-code-tools",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-code-tools",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-console-cli",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-console-cli",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-design-patterns",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-design-patterns",
+    "hasWebApis": true,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-example",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-example",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": "^1.5.0",
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-filesystem",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-filesystem",
+    "hasWebApis": false,
+    "hasNodeApis": true,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-formatter",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-formatter",
+    "hasWebApis": false,
+    "hasNodeApis": true,
+    "fileTypes": {},
+    "usesVitestVersion": "^3.0.8",
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-generators",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-generators",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": "^1.5.0",
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-ioc",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-ioc",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-logger",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-logger",
+    "hasWebApis": false,
+    "hasNodeApis": true,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-math",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-math",
+    "hasWebApis": true,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": "^1.6.0",
+    "usesVite": false
+  },
+  {
+    "name": "core-reactive",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-reactive",
+    "hasWebApis": false,
+    "hasNodeApis": true,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@core-reactive/multiplatform-modules",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-reactive-multiplatform-modules",
+    "hasWebApis": true,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": "^0.34.6",
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-specifications",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-specifications",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-structures",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-structures",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-template",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-template",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": "^0.34.6",
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-template-handlebar",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-template-handlebar",
+    "hasWebApis": false,
+    "hasNodeApis": true,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-trace",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-trace",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-validaton",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-validaton",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/math-types-mapping",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\math-types-mapping",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/rendering-system-abstract",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\rendering-system-abstract",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": "^3.0.8",
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/rendering-system-html5",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\rendering-system-html5",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": "^3.0.8",
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/rendering-system-webgl",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\rendering-system-webgl",
+    "hasWebApis": true,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/types-abstract",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\types-abstract",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false
+  },
+  {
+    "name": "@my-graphics/core-composition-abstract",
+    "folder": "C:\\Users\\danha\\source\\repos\\Frontend\\Libraries\\core-composition-abstract",
+    "hasWebApis": false,
+    "hasNodeApis": false,
+    "fileTypes": {},
+    "usesVitestVersion": null,
+    "usesVite": false,
+    "migratedTo": "C:\\Users\\danha\\source\\repos\\HTML\\MonoRepro\\packages\\core-composition-abstract"
+  }
+]

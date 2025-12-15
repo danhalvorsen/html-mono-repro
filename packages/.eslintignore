@@ -1,0 +1,11 @@
+node_modules
+dist
+build
+coverage
+.pnp.js
+.pnp.cjs
+.vscode
+*.d.ts
+**/node_modules/**
+**/dist/**
+**/build/**

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thin Box with Mirrored Texture</title>
+  <style>
+    body { margin: 0; background: #000; }
+    canvas { display: block; }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.179.0/build/three.module.js",
+      "three/controls": "https://unpkg.com/three@0.179.0/examples/jsm/controls/OrbitControls.js"
+    }
+  }
+  </script>
+</head>
+<body>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/controls";
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10);
+camera.position.z = 2;
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+
+// Create ultra-thin box with 16:9 aspect
+const width = 1;
+const height = 9 / 16;
+const depth = 0.00001;
+const geometry = new THREE.BoxGeometry(width, height, depth);
+
+// Load a 16:9 texture
+const loader = new THREE.TextureLoader();
+loader.load("https://picsum.photos/1600/900", texture => {
+  // Clone and mirror for back face
+  const mirrored = texture.clone();
+  mirrored.center.set(0.5, 0.5);
+  mirrored.repeat.x = -1;
+
+  // Material for each face
+  const blank = new THREE.MeshBasicMaterial({ color: 0x111111 });
+  const front = new THREE.MeshBasicMaterial({ map: texture });
+  const back = new THREE.MeshBasicMaterial({ map: mirrored });
+
+  const materials = [
+    blank, // +X
+    blank, // -X
+    blank, // +Y
+    blank, // -Y
+    front, // +Z (front)
+    back   // -Z (mirrored back)
+  ];
+
+  const box = new THREE.Mesh(geometry, materials);
+  scene.add(box);
+});
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+</script>
+</body>
+</html>

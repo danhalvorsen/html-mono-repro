@@ -1,0 +1,32 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": false,
+    "composite": true,
+    "incremental": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "noEmitOnError": true,
+    "noEmit": false,
+    "outDir": "dist",
+    "allowArbitraryExtensions": true,
+    "rootDir": ".",
+    "types": [
+      "vitest/globals"
+    ]
+  },
+  "include": [
+    "src",
+    "tests"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "references": [
+    {
+      "path": "../core-template"
+    }
+  ]
+}

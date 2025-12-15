@@ -1,0 +1,20 @@
+{
+  "name": "@my-graphics/types-abstract",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@my-graphics/core-math": "workspace:*"
+  }
+}

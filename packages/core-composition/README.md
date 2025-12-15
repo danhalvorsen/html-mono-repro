@@ -1,0 +1,1 @@
+Jeg startet siden, Composite and Visitor Pattern in TypeScript. Du kan redigere den nå, eller kom tilbake til den senere.

@@ -1,0 +1,27 @@
+{
+  "name": "@my-graphics/core-formatter",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@my-graphics/core-template": "workspace:*",
+    "reflect-metadata": "^0.2.2",
+    "tsyringe": "^4.8.0"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.14"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "test": "vitest --config ../../vitest.config.ts",
+    "clearCache": "vitest --clearCache"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}
+

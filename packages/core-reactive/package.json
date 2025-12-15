@@ -1,0 +1,33 @@
+{
+  "name": "core-reactive",
+  "version": "0.1.0",
+  "description": "Reactive primitives, observers, filesystem observables, and event streams for the Possibilities platform.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "pnpm exec tsc -p tsconfig.json",
+    "dev": "pnpm exec tsc -p tsconfig.json --watch",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "rimraf": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

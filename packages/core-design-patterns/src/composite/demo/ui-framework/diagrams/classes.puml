@@ -1,0 +1,49 @@
+@startuml
+title UI Framework – Architecture Overview
+
+package Core {
+    interface Component
+    abstract class Composite
+    class Leaf
+    abstract class UIElement
+}
+
+Component <|-down- Composite
+Component <|-down- Leaf
+UIElement <|-down- UIBoxElement
+
+package Layout {
+    class BoxUI
+    class RowUI
+    class ColumnUI
+    class StackUI
+    class SurfaceUI
+    class SpacerUI
+    class DividerUI
+}
+
+Composite <|-down- BoxUI
+Composite <|-down- RowUI
+Composite <|-down- ColumnUI
+Composite <|-down- StackUI
+Composite <|-down- SurfaceUI
+Leaf <|-down- SpacerUI
+Leaf <|-down- DividerUI
+
+package Input {
+    class LabelUI
+    class InputTextUI
+    class InputNumberUI
+    class InputCheckboxUI
+    class InputSelectUI
+    class ErrorMessageUI
+}
+
+Leaf <|-down- LabelUI
+Composite <|-down- InputTextUI
+Composite <|-down- InputNumberUI
+Leaf <|-down- InputCheckboxUI
+Composite <|-down- InputSelectUI
+Leaf <|-down- ErrorMessageUI
+
+@enduml

@@ -1,0 +1,20 @@
+{
+  "name": "core-reactive-dom",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest watch"
+  },
+  "dependencies": {
+    "core-reactive-input": "workspace:*",
+    "core-reactive-controller": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.14",
+    "jsdom": "^24.1.0"
+  }
+}

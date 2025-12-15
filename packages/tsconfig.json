@@ -1,0 +1,16 @@
+{
+  // Shared tsconfig for tools that scan packages/*.
+  // NOTE: Do not include old trees (Master, Frontend, etc.) to keep diffs small.
+  "extends": "./tsconfig.base.json",
+  
+  "include": [
+    "./**/*.ts",
+    "./**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/dist/**",
+    "**/node_modules/**"
+  ]
+}

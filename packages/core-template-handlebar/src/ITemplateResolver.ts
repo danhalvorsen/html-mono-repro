@@ -1,0 +1,1 @@
+export interface ITemplateResolver { resolve(name: string): string; }

@@ -1,0 +1,14 @@
+{
+  "name": "core-reactive-input",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+ 
+  }
+}

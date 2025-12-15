@@ -1,0 +1,1 @@
+export interface ITemplateEngine { compile(templateName: string): (ctx: object) => string; }

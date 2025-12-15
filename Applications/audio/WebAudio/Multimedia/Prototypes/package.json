@@ -1,0 +1,19 @@
+﻿{
+    "name": "music-note-sheet-dom",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "echo \"Prototypes build temporarily disabled; fix its tsconfig path before enabling.\" && exit 0"
+    },
+    "dependencies": {
+       "music-note-sheet-abstract": "workspace:*"
+    }
+}

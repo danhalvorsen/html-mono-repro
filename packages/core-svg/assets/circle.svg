@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-labelledby="circleTitle circleDesc">
+  <title id="circleTitle">Semantic circle (octagon approximation)</title>
+  <desc id="circleDesc">A circle approximated by named vertices and edges (N, NE, E, SE, S, SW, W, NW).</desc>
+
+  <!-- Vertices (semantic IDs) - increased radius for visible handles -->
+  <!-- center at (100,100), radius ~80 -->
+  <circle id="v_n"  cx="100" cy="20"  r="6" fill="#222" stroke="#000" stroke-width="1" />
+  <circle id="v_ne" cx="156.5685" cy="43.4315" r="6" fill="#222" stroke="#000" stroke-width="1" />
+  <circle id="v_e"  cx="180" cy="100" r="6" fill="#222" stroke="#000" stroke-width="1" />
+  <circle id="v_se" cx="156.5685" cy="156.5685" r="6" fill="#222" stroke="#000" stroke-width="1" />
+  <circle id="v_s"  cx="100" cy="180" r="6" fill="#222" stroke="#000" stroke-width="1" />
+  <circle id="v_sw" cx="43.4315" cy="156.5685" r="6" fill="#222" stroke="#000" stroke-width="1" />
+  <circle id="v_w"  cx="20" cy="100" r="6" fill="#222" stroke="#000" stroke-width="1" />
+  <circle id="v_nw" cx="43.4315" cy="43.4315" r="6" fill="#222" stroke="#000" stroke-width="1" />
+
+  <!-- Edges (semantic IDs connect named vertices) -->
+  <line id="e_n_ne" x1="100" y1="20" x2="156.5685" y2="43.4315" stroke="#000" stroke-width="1" />
+  <line id="e_ne_e" x1="156.5685" y1="43.4315" x2="180" y2="100" stroke="#000" stroke-width="1" />
+  <line id="e_e_se" x1="180" y1="100" x2="156.5685" y2="156.5685" stroke="#000" stroke-width="1" />
+  <line id="e_se_s" x1="156.5685" y1="156.5685" x2="100" y2="180" stroke="#000" stroke-width="1" />
+  <line id="e_s_sw" x1="100" y1="180" x2="43.4315" y2="156.5685" stroke="#000" stroke-width="1" />
+  <line id="e_sw_w" x1="43.4315" y1="156.5685" x2="20" y2="100" stroke="#000" stroke-width="1" />
+  <line id="e_w_nw" x1="20" y1="100" x2="43.4315" y2="43.4315" stroke="#000" stroke-width="1" />
+  <line id="e_nw_n" x1="43.4315" y1="43.4315" x2="100" y2="20" stroke="#000" stroke-width="1" />
+
+  <!-- Filled shape that uses the same vertex coordinates for a smooth visual -->
+  <polygon id="s_circle_octagon" points="
+    100,20
+    156.5685,43.4315
+    180,100
+    156.5685,156.5685
+    100,180
+    43.4315,156.5685
+    20,100
+    43.4315,43.4315
+  " fill="#D8D8D8" stroke="#000" stroke-width="2" opacity="0.95"/>
+
+  <!-- Optional: visually hide vertex markers by setting fill to none if not wanted -->
+</svg>

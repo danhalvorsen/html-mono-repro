@@ -1,0 +1,27 @@
+{
+  "name": "@my-graphics/rendering-system-html5",
+  "version": "1.0.0",
+  "type": "module",
+  "composite": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "test": "vitest --config ../vitest.config.ts",
+    "clearCache": "vitest --clearCache"
+  },
+  "dependencies": {
+    "@my-graphics/rendering-system-abstract": "workspace:*",
+    "@my-graphics/types-abstract": "workspace:*"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.14"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}
+

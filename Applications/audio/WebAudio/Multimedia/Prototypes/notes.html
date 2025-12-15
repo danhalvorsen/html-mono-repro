@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+
+	<!-- ABCJS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/abcjs/6.2.2/abcjs-basic-min.js"></script>
+
+	<script type="module">
+		import * as THREE from "https://esm.run/three@0.160.0";
+		import { SVGLoader } from "https://esm.run/three@0.160.0/examples/jsm/loaders/SVGLoader.js";
+
+		// Small NoteLine: creates a Three.Group from ABC SVG paths
+		class NoteLine {
+			constructor({ scene, abcContainer, loader, camera, extraTop = 0, color = 0x222222 }) {
+				this.scene = scene;
+				this.abcContainer = abcContainer;
+				this.loader = loader;
+				this.camera = camera;
+				this.extraTop = extraTop;
+				this.color = color;
+				this.group = null;
+			}
+
+			_recolorSvg(svg) {
+				svg.querySelectorAll("[stroke='currentColor']").forEach(el => el.setAttribute("stroke", "#222"));
+				svg.querySelectorAll("[fill='currentColor']").forEach(el => el.setAttribute("fill", "#222"));
+			}
+
+			disposeGroup() {
+				if (!this.group) return;
+				this.scene.remove(this.group);
+				this.group.traverse(o => {
+					if (o.geometry) o.geometry.dispose();
+					if (o.material && o.material.dispose) o.material.dispose();
+				});
+				this.group = null;
+			}
+
+			// options: { extraTop, color, coordHalfLeft }
+			setNotes(abcText, options = {}) {
+				if (!abcText) return;
+				ABCJS.renderAbc(this.abcContainer, abcText);
+				const svg = this.abcContainer.querySelector("svg");
+				if (!svg) return;
+				this._recolorSvg(svg);
+
+				const svgData = this.loader.parse(svg.outerHTML);
+				const newGroup = new THREE.Group();
+				const noteColor = options.color ?? this.color;
+
+				svgData.paths.forEach(path => {
+					const shapes = SVGLoader.createShapes(path);
+					shapes.forEach(shape => {
+						const geometry = new THREE.ShapeGeometry(shape);
+						const material = new THREE.MeshStandardMaterial({ color: noteColor, side: THREE.DoubleSide });
+						const mesh = new THREE.Mesh(geometry, material);
+						mesh.scale.set(1, -1, 1); // flip Y
+						newGroup.add(mesh);
+					});
+				});
+
+				// scale to fit camera frustum (conservative)
+				let bounds = new THREE.Box3().setFromObject(newGroup);
+				const size = bounds.getSize(new THREE.Vector3());
+				const availW = this.camera.right - this.camera.left;
+				const availH = this.camera.top - this.camera.bottom;
+				const margin = 0.9;
+				const scale = Math.min((availW / Math.max(1, size.x)) * margin, (availH / Math.max(1, size.y)) * margin);
+				newGroup.scale.multiplyScalar(scale);
+
+				// recompute bounds after scaling (before optional geometry translation)
+				bounds = new THREE.Box3().setFromObject(newGroup);
+
+				// compute group width in world units
+				const groupSize = bounds.getSize(new THREE.Vector3());
+				const groupWidth = groupSize.x;
+
+				// If coordHalfLeft requested, translate vertex data so world vertices shift left by half width.
+				// To produce a world-space shift of -groupWidth/2 we must translate geometry by (-groupWidth/2) / scale
+				if (options.coordHalfLeft) {
+					newGroup.traverse(child => {
+						if (child.isMesh && child.geometry && typeof child.geometry.translate === "function") {
+							const delta = - (groupWidth / 2) / scale;
+							child.geometry.translate(delta, 0, 0);
+						}
+					});
+					// recompute bounds after geometry translation
+					bounds = new THREE.Box3().setFromObject(newGroup);
+				}
+
+				// align left/top
+				const baseX = -bounds.min.x;
+				const baseYAnchor = -bounds.max.y;
+				newGroup.position.x = baseX;
+				newGroup.position.y = baseYAnchor + (options.extraTop ?? this.extraTop);
+
+				// set per-mesh minX (relative to group's left) and hide meshes initially for reveal
+				const worldBounds = new THREE.Box3().setFromObject(newGroup);
+				const groupLeft = worldBounds.min.x;
+				newGroup.traverse(child => {
+					if (child.isMesh) {
+						const meshBox = new THREE.Box3().setFromObject(child);
+						child.userData.minX = meshBox.min.x - groupLeft;
+						child.userData.maxX = meshBox.max.x - groupLeft;
+						child.visible = false;
+					}
+				});
+
+				// replace
+				this.disposeGroup();
+				this.group = newGroup;
+				this.group.userData = { baseX, baseYAnchor, width: bounds.getSize(new THREE.Vector3()).x };
+				this.scene.add(this.group);
+			}
+		}
+
+		// Demo: create a cube to show BufferGeometry.translate vs mesh.position
+		function createCube(scene) {
+			// BoxGeometry is the canonical constructor that produces a BufferGeometry under the hood
+			const geometry = new THREE.BoxGeometry(2, 2, 2);
+
+			// translate vertex data (geometry) left by 1 unit
+			geometry.translate(-1, 0, 0);
+
+			const material = new THREE.MeshStandardMaterial({ color: 'purple' });
+			const cube = new THREE.Mesh(geometry, material);
+
+			// mesh position (separate from geometry vertices)
+			cube.position.set(-0.5, -0.1, 1);
+
+			// scale
+			cube.scale.set(1.25, 0.25, 0.5);
+
+			scene.add(cube);
+			return cube;
+		}
+
+		// SceneManager: manages renderer/camera and a single NoteLine
+		class SceneManager {
+			constructor({ mount, abc = "", width = 1200, height = 350 }) {
+				this.mount = mount;
+				this.abcContainer = document.createElement("div"); // used for ABCJS -> SVG
+				this.mount.appendChild(this.abcContainer);
+
+				this.scene = new THREE.Scene();
+				this.camera = new THREE.OrthographicCamera(-600, 600, 200, -200, 1, 2000);
+				this.camera.position.z = 500;
+
+				this.renderer = new THREE.WebGLRenderer({ antialias: true });
+				this.renderer.setSize(width, height);
+				this.renderer.setClearColor(0xdedede, 1);
+				this.mount.appendChild(this.renderer.domElement);
+
+				this.scene.add(new THREE.AmbientLight(0xffffff, 1.6));
+				const dir = new THREE.DirectionalLight(0xffffff, 0.6);
+				dir.position.set(0, 0, 1);
+				this.scene.add(dir);
+
+				// demo cube (uncomment / remove if undesired)
+				createCube(this.scene);
+
+				this.loader = new SVGLoader();
+				this.noteLine = new NoteLine({ scene: this.scene, abcContainer: this.abcContainer, loader: this.loader, camera: this.camera });
+
+				this.clock = new THREE.Clock();
+				// coordHalfLeft: when true, shift the group's x by -(cameraWidth/2)
+				this.moveOpts = { revealSpeed: 200, paused: false, extraTop: 0, translateX: 0, center: false, coordHalfLeft: false };
+				this.revealX = 0;
+
+				// remember last ABC so we can rebuild when coordHalfLeft toggles
+				this.lastABC = abc || "";
+				if (abc) this.setNotes(abc);
+
+				this._animate = this._animate.bind(this);
+				requestAnimationFrame(this._animate);
+			}
+
+			setNotes(abcText) {
+				// store lastABC
+				this.lastABC = abcText || this.lastABC;
+				// pass coordHalfLeft through to NoteLine so it can translate geometries
+				this.noteLine.setNotes(abcText, { extraTop: this.moveOpts.extraTop, coordHalfLeft: this.moveOpts.coordHalfLeft });
+				this.revealX = 0;
+				this._applyTranslate();
+			}
+
+			setControls(opts = {}) {
+				// detect coordHalfLeft change to trigger rebuild
+				const prev = this.moveOpts.coordHalfLeft;
+				Object.assign(this.moveOpts, opts);
+				if (opts.extraTop !== undefined && this.noteLine.group) {
+					this.noteLine.group.position.y = this.noteLine.group.userData.baseYAnchor + this.moveOpts.extraTop;
+				}
+				if ((opts.translateX !== undefined || opts.center !== undefined) && this.noteLine.group) {
+					this._applyTranslate();
+				}
+				// if coordHalfLeft toggled, rebuild the NoteLine so geometries get translated
+				if (opts.coordHalfLeft !== undefined && prev !== Boolean(opts.coordHalfLeft)) {
+					this.moveOpts.coordHalfLeft = Boolean(opts.coordHalfLeft);
+					// rebuild using lastABC so geometry.translate can be applied
+					if (this.lastABC) this.setNotes(this.lastABC);
+				}
+			}
+
+			_applyTranslate() {
+				if (!this.noteLine.group) return;
+				const tx = Number(this.moveOpts.translateX || 0);
+				const centerAdj = this.moveOpts.center ? - (this.noteLine.group.userData.width || 0) / 2 : 0;
+				const camHalf = this.moveOpts.coordHalfLeft ? - ( (this.camera.right - this.camera.left) / 2 ) : 0;
+				this.noteLine.group.position.x = this.noteLine.group.userData.baseX + tx + centerAdj + camHalf;
+			}
+
+			_animate() {
+				requestAnimationFrame(this._animate);
+				// simple reveal left-to-right (optional)
+				if (this.noteLine && this.noteLine.group && !this.moveOpts.paused) {
+					const dt = this.clock.getDelta();
+					this.revealX = Math.min(this.noteLine.group.userData.width, this.revealX + (this.moveOpts.revealSpeed * dt));
+					this.noteLine.group.traverse(child => {
+						if (child.isMesh && child.userData && child.userData.minX !== undefined) {
+							child.visible = child.userData.minX <= (this.revealX + 1);
+						}
+					});
+					// ensure top alignment
+					this.noteLine.group.position.y = this.noteLine.group.userData.baseYAnchor + this.moveOpts.extraTop;
+				}
+				this.renderer.render(this.scene, this.camera);
+			}
+		}
+
+		// New component: <three-renderer> wraps SceneManager and exposes setNotes/setControls
+		class ThreeRendererElement extends HTMLElement {
+			connectedCallback() {
+				if (this._inited) return;
+				this._inited = true;
+				const mount = document.createElement("div");
+				this.appendChild(mount);
+				// attach manager instance so external components (controllers) can call it
+				this.manager = new SceneManager({ mount, abc: this.getAttribute("abc") || "" });
+			}
+			setNotes(abc) { if (this.manager) this.manager.setNotes(abc); }
+			setControls(opts) { if (this.manager) this.manager.setControls(opts); }
+		}
+		customElements.define("three-renderer", ThreeRendererElement);
+
+		// New controller component: small UI that targets a three-renderer by id
+		class ThreeController extends HTMLElement {
+			connectedCallback() {
+				if (this._inited) return;
+				this._inited = true;
+				const btn = document.createElement("button");
+				btn.textContent = this.getAttribute("label") || "Toggle half-left";
+				btn.addEventListener("click", () => {
+					const targetId = this.getAttribute("target");
+					if (!targetId) return;
+					const rend = document.getElementById(targetId);
+					if (!rend || !rend.manager) return;
+					const cur = !!rend.manager.moveOpts.coordHalfLeft;
+					rend.manager.setControls({ coordHalfLeft: !cur });
+				});
+				this.appendChild(btn);
+			}
+		}
+		customElements.define("three-controller", ThreeController);
+
+		// Small labelled range web component
+		class LabelRange extends HTMLElement {
+			connectedCallback() {
+				if (this._inited) return;
+				this._inited = true;
+				const labelText = this.getAttribute("label") || "";
+				const min = this.getAttribute("min") || "0";
+				const max = this.getAttribute("max") || "100";
+				const step = this.getAttribute("step") || "1";
+				const value = this.getAttribute("value") || "0";
+
+				const wrapper = document.createElement("label");
+				wrapper.style.display = "flex";
+				wrapper.style.flexDirection = "column";
+				wrapper.style.fontSize = "12px";
+				const span = document.createElement("span");
+				span.textContent = labelText;
+				const input = document.createElement("input");
+				input.type = "range";
+				input.min = min; input.max = max; input.step = step; input.value = value;
+				input.style.width = this.getAttribute("width") || "120px";
+
+				input.addEventListener("input", () => {
+					this.dispatchEvent(new CustomEvent("input", { detail: { value: input.value } }));
+				});
+
+				wrapper.appendChild(span);
+				wrapper.appendChild(input);
+				this.appendChild(wrapper);
+				this._input = input;
+			}
+			get value() { return this._input ? this._input.value : null; }
+			set value(v) { if (this._input) this._input.value = v; }
+		}
+		customElements.define("label-range", LabelRange);
+
+		// Small labelled checkbox web component
+		class LabelCheckbox extends HTMLElement {
+			connectedCallback() {
+				if (this._inited) return;
+				this._inited = true;
+				const labelText = this.getAttribute("label") || "";
+				const checked = this.hasAttribute("checked");
+				const wrapper = document.createElement("label");
+				wrapper.style.fontSize = "12px";
+				const input = document.createElement("input");
+				input.type = "checkbox";
+				input.checked = checked;
+				const span = document.createElement("span");
+				span.textContent = " " + labelText;
+				input.addEventListener("change", () => {
+					this.dispatchEvent(new CustomEvent("change", { detail: { checked: input.checked } }));
+				});
+				wrapper.appendChild(input);
+				wrapper.appendChild(span);
+				this.appendChild(wrapper);
+				this._input = input;
+			}
+			get checked() { return this._input ? this._input.checked : false; }
+			set checked(v) { if (this._input) this._input.checked = Boolean(v); }
+		}
+		customElements.define("label-checkbox", LabelCheckbox);
+
+		// ABC textarea web component
+		class AbcTextarea extends HTMLElement {
+			connectedCallback() {
+				if (this._inited) return;
+				this._inited = true;
+				const value = this.getAttribute("abc") || "";
+				const ta = document.createElement("textarea");
+				ta.rows = Number(this.getAttribute("rows") || 3);
+				ta.style.width = this.getAttribute("width") || "420px";
+				ta.value = value;
+				ta.addEventListener("input", () => {
+					this.dispatchEvent(new CustomEvent("input", { detail: { value: ta.value } }));
+				});
+				this.appendChild(ta);
+				this._ta = ta;
+			}
+			get value() { return this._ta ? this._ta.value : ""; }
+			set value(v) { if (this._ta) this._ta.value = v; }
+		}
+		customElements.define("abc-textarea", AbcTextarea);
+
+		// New composite controls component: renders textarea + translate/center/coordHalf/reveal/pause
+		class ThreeControls extends HTMLElement {
+			connectedCallback() {
+				if (this._inited) return;
+				this._inited = true;
+
+				const targetId = this.getAttribute("target");
+				const getTarget = () => document.getElementById(targetId);
+
+				const wrapper = document.createElement("div");
+				wrapper.style.display = "flex";
+				wrapper.style.flexDirection = "column";
+				wrapper.style.gap = "8px";
+
+				const row = document.createElement("div");
+				row.style.display = "flex";
+				row.style.gap = "8px";
+				row.style.alignItems = "center";
+
+				// use custom components
+				const textarea = document.createElement("abc-textarea");
+				textarea.setAttribute("abc", this.getAttribute("abc") || "");
+				textarea.setAttribute("rows", "3");
+				textarea.setAttribute("width", "420px");
+				row.appendChild(textarea);
+
+				const translate = document.createElement("label-range");
+				translate.setAttribute("label", "Translate X");
+				translate.setAttribute("min", "-600");
+				translate.setAttribute("max", "600");
+				translate.setAttribute("value", "0");
+				translate.style.display = "inline-block";
+				row.appendChild(translate);
+
+				const centerCb = document.createElement("label-checkbox");
+				centerCb.setAttribute("label", "Center");
+				row.appendChild(centerCb);
+
+				const coordHalfCb = document.createElement("label-checkbox");
+				coordHalfCb.setAttribute("label", "Half-left");
+				row.appendChild(coordHalfCb);
+
+				const reveal = document.createElement("label-range");
+				reveal.setAttribute("label", "Reveal");
+				reveal.setAttribute("min", "0");
+				reveal.setAttribute("max", "1000");
+				reveal.setAttribute("value", "200");
+				row.appendChild(reveal);
+
+				const pause = document.createElement("label-checkbox");
+				pause.setAttribute("label", "Pause");
+				row.appendChild(pause);
+
+				wrapper.appendChild(row);
+				this.appendChild(wrapper);
+
+				const applyToTarget = (fn) => {
+					const t = getTarget();
+					if (t && t.manager) fn(t.manager);
+				};
+
+				// events (map custom events to manager API)
+				translate.addEventListener("input", (e) => applyToTarget(m => m.setControls({ translateX: Number(e.detail.value) })));
+				centerCb.addEventListener("change", (e) => applyToTarget(m => m.setControls({ center: e.detail.checked })));
+				coordHalfCb.addEventListener("change", (e) => applyToTarget(m => m.setControls({ coordHalfLeft: e.detail.checked })));
+				reveal.addEventListener("input", (e) => applyToTarget(m => m.setControls({ revealSpeed: Number(e.detail.value) })));
+				pause.addEventListener("change", (e) => applyToTarget(m => m.setControls({ paused: e.detail.checked })));
+
+				// textarea -> setNotes (debounced)
+				let tmr = null;
+				textarea.addEventListener("input", (e) => {
+					clearTimeout(tmr);
+					tmr = setTimeout(() => applyToTarget(m => m.setNotes(e.detail.value)), 300);
+				});
+
+				// initial apply if target already exists
+				setTimeout(() => {
+					const t = getTarget();
+					if (t && t.manager) {
+						t.manager.setNotes(textarea.value);
+						t.manager.setControls({
+							translateX: Number(translate.value),
+							center: centerCb.checked,
+							coordHalfLeft: coordHalfCb.checked,
+							revealSpeed: Number(reveal.value),
+							paused: pause.checked
+						});
+					}
+				}, 0);
+			}
+		}
+		customElements.define("three-controls", ThreeControls);
+
+		// three-music-viewer uses <three-scene>
+		class ThreeMusicViewer extends HTMLElement {
+			connectedCallback() {
+				if (this._inited) return;
+				this._inited = true;
+				const abc = this.textContent.trim();
+				this.textContent = "";
+				// create renderer with id so controllers can target it
+				const rend = document.createElement("three-renderer");
+				const id = this.getAttribute("renderer-id") || `three-renderer-${Math.random().toString(36).slice(2,9)}`;
+				rend.id = id;
+				this.appendChild(rend);
+				if (abc) rend.setNotes(abc);
+			}
+		}
+		customElements.define("three-music-viewer", ThreeMusicViewer);
+
+		// three-music-editor uses <three-scene> and exposes controls
+		class ThreeMusicEditor extends HTMLElement {
+			connectedCallback() {
+				if (this._inited) return;
+				this._inited = true;
+				const initial = this.textContent.trim() || "X:1\nK:C\nC D E F | G A B c";
+				this.textContent = "";
+
+				const wrapper = document.createElement("div");
+				wrapper.style.display = "flex";
+				wrapper.style.flexDirection = "column";
+				wrapper.style.gap = "10px";
+				this.appendChild(wrapper);
+
+				// generate renderer id and create renderer first
+				const rendererId = `three-renderer-${Math.random().toString(36).slice(2,9)}`;
+				const rend = document.createElement("three-renderer");
+				rend.id = rendererId;
+				wrapper.appendChild(rend);
+
+				// use the new controls component and target the renderer
+				const controls = document.createElement("three-controls");
+				controls.setAttribute("target", rendererId);
+				controls.setAttribute("abc", initial);
+				wrapper.appendChild(controls);
+			}
+		}
+		customElements.define("three-music-editor", ThreeMusicEditor);
+	</script>
+</head>
+
+<body>
+	<!-- viewer that reads its content -->
+	<three-music-viewer>
+		X:1
+		K:C
+		C D E F | G A B c
+	</three-music-viewer>
+
+	<!-- editor with controls (uses three-scene) -->
+	<three-music-editor>
+		X:1
+		K:C
+		C D E F | G A B c
+	</three-music-editor>
+</body>
+
+</html>

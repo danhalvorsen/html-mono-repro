@@ -1,0 +1,3 @@
+packages:
+  - 'Packages/*'
+  - 'composite-design-pattern'

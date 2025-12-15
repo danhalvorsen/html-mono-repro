@@ -1,0 +1,30 @@
+{
+  "name": "absolute.consistently.tests",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@my-graphics/core-filesystem": "workspace:*",
+    "@my-graphics/core-logger": "workspace:*",
+    "@my-graphics/core-template": "workspace:*",
+    "core-reactive": "workspace:*",
+    "zod": "^3.23.8",
+    "zod-package-json": "^1.2.0"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.14"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

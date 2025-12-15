@@ -1,0 +1,23 @@
+{
+  "name": "core-example",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p .",
+    "clean": "rm -rf dist",
+    "test": "vitest run"
+  },
+  "dependencies": {},
+  "devDependencies": {
+   
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}
+

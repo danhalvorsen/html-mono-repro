@@ -1,0 +1,27 @@
+{
+  "name": "@my-graphics/core-template",
+  "version": "1.0.0",
+  "type": "module",
+  "composite": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest --config vitest.config.ts",
+    "clearCache": "vitest --clearCache"
+  },
+  "dependencies": {
+    "zod": "^3.23.8",
+    "zod-package-json": "^1.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.14",
+    "pnpm": "^10.24.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

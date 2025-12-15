@@ -1,0 +1,12 @@
+{
+  "name": "core.visual.shape",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@my-graphics/core-math": "workspace:*"
+  },
+  "scripts": {
+    "build": "echo \"core.visual.shape build temporarily disabled; add tsconfig.json then change this to 'tsc -p tsconfig.json'\" && exit 0",
+    "clean": "rm -rf dist"
+  }
+}

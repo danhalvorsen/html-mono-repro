@@ -1,0 +1,18 @@
+{
+  "name": "@my-graphics/math-types-mapping",
+  "version": "1.0.0",
+  "type": "module",
+  "composite": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}
+

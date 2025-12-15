@@ -1,0 +1,5 @@
+[master (root-commit) c6c7fb9] chore(recovery): add package.json for core-event-system to enable filtered build
+ 3 files changed, 115 insertions(+)
+ create mode 100644 Boundingboxes/main.py
+ create mode 100644 Boundingboxes/requirements.txt
+ create mode 100644 Boundingboxes/setup-venv.ps1

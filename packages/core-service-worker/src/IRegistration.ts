@@ -1,0 +1,1 @@
+console.log('IRegistration module loaded');         

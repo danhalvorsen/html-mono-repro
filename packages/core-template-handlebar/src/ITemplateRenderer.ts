@@ -1,0 +1,1 @@
+export interface ITemplateRenderer { render(templateName: string, context: object): string; }

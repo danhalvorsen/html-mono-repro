@@ -1,0 +1,1 @@
+{"version":3,"file":"ShapeNode.d.ts","sourceRoot":"","sources":["../packages/core-abstract-shape-system/src/ShapeNode.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,8CAA8C,CAAC;AAAC,OAAO,EAAE,aAAa,EAAE,MAAM,iBAAiB,CAAC;AAAC,8BAAsB,SAAU,SAAQ,aAAa;IAAG,QAAQ,CAAC,MAAM,CAAC,MAAM,EAAC,aAAa,GAAE,IAAI;IAAE,SAAS,CAAC,cAAc,CAAC,MAAM,EAAC,aAAa;CAAyF"}

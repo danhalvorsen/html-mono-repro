@@ -1,0 +1,27 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // Build output
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": "src",
+
+    // Required for monorepo / project references
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+
+    // Module config
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
+    // Safety and perf
+    "skipLibCheck": true,
+    "noEmitOnError": true,
+
+    // Enable node/global types and three.js
+    "types": ["three"]
+  },
+  "include": ["src"]
+}

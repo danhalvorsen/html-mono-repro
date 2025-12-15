@@ -1,0 +1,38 @@
+:root {
+    --ui-bg-surface: #ffffff;
+    --ui-bg-elevated: #f7f7f7;
+
+    --ui-text-1: #222;
+    --ui-text-2: #555;
+
+    --ui-primary: #0d6efd;
+
+    --ui-border-light: #dddddd;
+    --ui-border-strong: #aaaaaa;
+
+    --ui-radius-sm: 4px;
+    --ui-radius-md: 8px;
+    --ui-radius-lg: 12px;
+
+    --ui-space-1: 4px;
+    --ui-space-2: 8px;
+    --ui-space-3: 12px;
+    --ui-space-4: 16px;
+}
+"# ============================================
+# BLOCK 9 — DEMO APP (index.html, main.ts, demo-ui.ts)
+# ============================================
+
+Write-CodeFile "ui-framework/demo/index.html" @"
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>UI Framework Demo</title>
+    <link rel='stylesheet' href='../styles/style.css'>
+</head>
+<body>
+    <div id='app'></div>
+    <script type='module' src='./main.ts'></script>
+</body>
+</html>

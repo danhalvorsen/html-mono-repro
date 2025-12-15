@@ -1,0 +1,20 @@
+{
+  "name": "@my-graphics/core-specifications",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest --config vitest.config.ts"
+  },
+  "dependencies": {
+    "@my-graphics/core-design-patterns": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

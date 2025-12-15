@@ -1,0 +1,24 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": "src",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "noEmitOnError": true
+  },
+  "include": [
+    "src",
+    "test"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

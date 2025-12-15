@@ -1,0 +1,19 @@
+﻿{
+    "name": "@my-graphics/core-pubsub",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsc -b"
+    },
+    "dependencies": {
+        "@my-graphics/core-threejs": "workspace:*"
+    }
+}

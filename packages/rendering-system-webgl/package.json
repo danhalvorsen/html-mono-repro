@@ -1,0 +1,25 @@
+{
+  "name": "@my-graphics/rendering-system-webgl",
+  "type": "module",
+  "main": "dist/index.js",
+  "dependencies": {
+    "@my-graphics/core-math":"workspace:*",
+    "@my-graphics/rendering-system-abstract": "workspace:*",
+    "@my-graphics/types-abstract": "workspace:*",
+    "three": "^0.174.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "vite",
+    "preview": "vite preview",
+    "test": "vitest run --config ../../vitest.config.ts",
+    "test:watch": "vitest watch --config ../../vitest.config.ts",
+    "clearCache": "vitest --clearCache"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}
