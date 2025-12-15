@@ -1,5 +1,5 @@
 {
-    "name": "core-composition-abstract",
+    "name": "core-drag-controller-abstract",
     "version": "1.0.0",
     "type": "module",
     "main": "dist/index.js",

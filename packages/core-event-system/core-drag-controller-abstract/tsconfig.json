@@ -15,10 +15,12 @@
     "skipLibCheck": true,
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    // Using .js extensions in imports, so no need for allowImportingTsExtensions
     "moduleDetection": "force",
-    "noEmit": true,
+    "noEmit": false,
+    "declaration": true,
     "outDir": "dist",
+    "rootDir": "src",
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
