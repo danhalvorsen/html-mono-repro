@@ -1,5 +1,5 @@
 {
-  "name": "core-generators",
+  "name": "@monorepo/core-generators",
   "version": "1.0.0",
   "type": "module",
   "strict": true,
@@ -9,12 +9,11 @@
   "scripts": {
     "build": "tsc -p .",
     "clean": "rimraf dist",
-    "test": "vitest run --config ../../vitest.config.ts"
+    "test": "pnpm --workspace-root vitest run --config ../../vitest.config.ts"
   },
   "dependencies": {},
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "vitest": "^4.0.14"
+    "typescript": "^5.4.0"
   },
   "exports": {
     ".": {
@@ -23,4 +22,3 @@
     }
   }
 }
-

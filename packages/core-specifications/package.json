@@ -1,5 +1,5 @@
 {
-  "name": "@my-graphics/core-specifications",
+  "name": "@monorepo/core-specifications",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",

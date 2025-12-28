@@ -1,5 +1,5 @@
 ﻿{
-  "name": "music-components-dom",
+  "name": "@monorepo/music-components-dom",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -14,7 +14,7 @@
     "build": "tsc -b ."
   },
   "dependencies": {
-    "music-note-sheet-abstract": "workspace:*",
-    "core-composition-abstract": "workspace:*"
+    "@monorepo/music-note-sheet-abstract": "workspace:*",
+    "@monorepo/core-composition-abstract": "workspace:*"
   }
 }

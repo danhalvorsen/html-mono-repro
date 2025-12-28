@@ -1,5 +1,5 @@
 import { IComposite } from "./IComposite.js";
-import { IVisitor } from "./IVisitor.js";
+ 
 export class CompositeNode implements IComposite {
   protected children: IComposite[] = [];
   add(c: IComposite) {
@@ -11,8 +11,8 @@ export class CompositeNode implements IComposite {
   getChildren() {
     return this.children;
   }
-  accept(v: IVisitor) {
-    v.visitComposite(this);
-    this.children.forEach((c) => c.accept(v));
+  render() {
+    
+    this.children.forEach((c: IComposite) => c.render());
   }
 }

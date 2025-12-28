@@ -1,0 +1,28 @@
+{
+  "$schema": "../schemas/tsconfig-rules.schema.json",
+  "title": "tsconfig expectations",
+  "description": "Baseline requirements for every package tsconfig and tsconfig.test in the workspace.",
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "strict": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": ["ES2022", "ESNext"],
+    "lib": ["ES2022", "DOM"],
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "composite": true,
+    "declaration": true,
+    "sourceMap": true
+  },
+  "includes": ["src/**/*"],
+  "excludes": ["dist", "node_modules", "**/dist/**", "**/node_modules/**"],
+  "rules": [
+    "mustExtendBase",
+    "noCustomCompilerOut",
+    "domLibRequired"
+  ]
+}

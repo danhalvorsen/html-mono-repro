@@ -1,5 +1,5 @@
 ﻿{
-    "name": "music-note-sheet-three",
+    "name": "@monorepo/music-note-sheet-three",
     "version": "1.0.0",
     "type": "module",
     "main": "dist/index.js",
@@ -15,6 +15,6 @@
     },
     "dependencies": {
         "three": "^0.160.0",
-        "music-note-sheet-abstract": "workspace:*"
+        "@monorepo/music-note-sheet-abstract": "workspace:*"
     }
 }

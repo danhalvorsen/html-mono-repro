@@ -1,0 +1,13 @@
+{
+  "name": "@monorepo/core-web-pwa-impl",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@my-graphics/core-math": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest --config vitest.config.ts",
+    "clean": "rm -rf dist"
+  }
+}

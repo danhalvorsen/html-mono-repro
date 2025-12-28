@@ -1,15 +1,11 @@
 packages:
   # Include all packages under Libraries (recursively)
   - "packages/**"
-
-  # Include top-level Applications if present
-  - "Applications/**"
-
-# Explicitly ignore old non-Audio spreadsheet packages under packages/core.*
-# so pnpm does not try to run their scripts (they live only under packages/Audio now).
-# (This does NOT affect packages/Audio/core.spreadsheet.*)
-exclude:
-  - "packages/core.spreadsheet.*"
+  - "!packages/core-composition-lit3"
+  - "!packages/core-composition-three"
+  - "!packages/core-composition-web-audio"
+  - "!packages/core-composition-svg"
+  - "!packages/core-design-patterns"
 
 ignoredBuiltDependencies:
   - esbuild

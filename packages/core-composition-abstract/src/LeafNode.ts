@@ -1,6 +1,5 @@
 import { IComposite } from "./IComposite.js";
-import { IVisitor } from "./IVisitor.js";
-
+ 
 /**
  * Base class for a leaf in the composite pattern.
  * Leaves cannot add or remove children and always report no children.
@@ -15,5 +14,5 @@ export abstract class LeafNode implements IComposite {
   getChildren(): IComposite[] {
     return [];
   }
-  abstract accept(visitor: IVisitor): void;
+  abstract render(): void;
 }

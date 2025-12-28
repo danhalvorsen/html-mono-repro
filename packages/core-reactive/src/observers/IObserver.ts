@@ -1,5 +1,5 @@
 export interface IObserver<T> {
   next(value: T): void;
-  error?(err: any): void;
+  error?(err: unknown): void;
   complete?(): void;
-} 
+}

@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config.js';
+import { defineConfig } from 'vitest/config';
 import path from 'path';
 
 export default defineConfig({
@@ -8,12 +8,5 @@ export default defineConfig({
     include: ['tests/**/*.test.ts'],
     isolate: false,
     pool: 'threads',
-  },
-
-  resolve: {
-    alias: {
-      '@my-graphics/core-ioc': path.resolve(__dirname, './src'),
-    },
-    preserveSymlinks: true,
-  },
+  }
 });

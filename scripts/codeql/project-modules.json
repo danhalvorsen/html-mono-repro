@@ -1,0 +1,6 @@
+{
+  "allowed": {
+    "core.spreadsheet.core": "*",
+    "core.spreadsheet.abstract": "*"
+  }
+}

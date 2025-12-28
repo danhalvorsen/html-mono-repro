@@ -1,0 +1,24 @@
+﻿{
+    "name": "@monorepo/core-composition-lit3",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "test": "vitest run",
+        "clearCache": "pnpm -C .. vitest --clearCache"
+    },
+    "dependencies": {
+        "core-composition-abstract-new": "workspace:*"
+    },
+    "devDependencies": {
+     
+    }
+}

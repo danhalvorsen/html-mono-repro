@@ -1,5 +1,5 @@
 {
-  "name": "@my-graphics/math-types-mapping",
+  "name": "@monorepo/math-types-mapping",
   "version": "1.0.0",
   "type": "module",
   "composite": true,

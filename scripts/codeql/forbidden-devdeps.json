@@ -1,0 +1,6 @@
+{
+  "forbidden": [
+    "vitest",
+    "foo"
+  ]
+}

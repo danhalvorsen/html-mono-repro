@@ -1,5 +1,5 @@
 ﻿{
-    "name": "music-note-sheet-abstract",
+    "name": "@monorepo/music-note-sheet-abstract",
     "version": "1.0.0",
     "type": "module",
     "main": "dist/index.js",

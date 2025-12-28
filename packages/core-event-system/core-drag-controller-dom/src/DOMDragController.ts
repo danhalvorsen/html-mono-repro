@@ -11,6 +11,10 @@ import {
   TimeStamp
 } from "core-drag-controller-abstract";
 
+const DRAG_START_EVENT = "DRAG_START" as Drag.DRAG_START;
+const DRAG_MOVE_EVENT = "DRAG_MOVE" as Drag.DRAG_MOVE;
+const DRAG_END_EVENT = "DRAG_END" as Drag.DRAG_END;
+
 export class DOMDragController extends BaseDragController {
   private readonly mouse: IMouseController;
 
@@ -55,14 +59,14 @@ export class DOMDragController extends BaseDragController {
     };
 
     const data: IDragMoveData = {
-      event: Drag.DRAG_MOVE,
+      event: DRAG_MOVE_EVENT,
       start: this.startPos,
       current: pos,
       delta
     };
 
     const evt: ICommonEvent<IDragMoveData> = new CommonEvent(
-      Drag.DRAG_MOVE,
+      DRAG_MOVE_EVENT,
       TimeStamp.now(),
       data
     );
@@ -77,13 +81,13 @@ export class DOMDragController extends BaseDragController {
     this.dragging = false;
 
     const data: IDragEndData = {
-      event: Drag.DRAG_END,
+      event: DRAG_END_EVENT,
       start: this.startPos,
       end: pos
     };
 
     const evt: ICommonEvent<IDragEndData> = new CommonEvent(
-      Drag.DRAG_END,
+      DRAG_END_EVENT,
       TimeStamp.now(),
       data
     );

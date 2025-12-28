@@ -1,0 +1,8 @@
+packages:
+  - "./svgs"
+  - "../packages/core-composition-svg"
+  - "../packages/core-composition-abstract"
+  - "../packages/core-math"
+
+ignoredBuiltDependencies:
+  - esbuild

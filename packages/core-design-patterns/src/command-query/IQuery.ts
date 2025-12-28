@@ -1,5 +1,6 @@
+import { IPayload } from './IPayload.js';
 
-export interface IQuery<TPayload> {
-  commandName: string;
-  payload: TPayload;
+export interface IQuery<TPayload extends IPayload> {
+  readonly name: string;
+  readonly payload: TPayload;
 }

@@ -1,5 +1,5 @@
 ﻿{
-    "name": "@my-graphics/core-service-worker",
+    "name": "@monorepo/core-service-worker",
     "version": "1.0.0",
     "type": "module",
     "main": "dist/index.js",

@@ -1,27 +1,22 @@
 {
-  "name": "@my-graphics/core-math",
+  "name": "@monorepo/core-math",
   "version": "1.0.0",
   "type": "module",
-
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-
   "exports": {
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     }
   },
-
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "vitest --config vitest.config.ts --run",
+    "test": "pnpm vitest run --config ../../vitest.config.ts",
     "clear": "rimraf dist"
   },
-
   "devDependencies": {
     "typescript": "^5.6.3",
-    "vitest": "^4.0.14",
     "@types/node": "^20.11.30",
     "rimraf": "^5.0.5"
   }

@@ -1,5 +1,5 @@
 {
-  "name": "@my-graphics/rendering-system-abstract",
+  "name": "@monorepo/rendering-system-abstract",
   "version": "1.0.0",
   "type": "module",
   "composite": true,
@@ -7,15 +7,12 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -b tsconfig.json",
-    "test": "vitest --config ../../vitest.config.ts",
-    "clearCache": "vitest --clearCache"
+    "test": "pnpm --workspace-root vitest --config ../../vitest.config.ts",
+    "clearCache": "pnpm --workspace-root vitest --clearCache"
   },
   "dependencies": {
     "@my-graphics/core-math": "workspace:*",
     "@my-graphics/types-abstract": "workspace:*"
-  },
-  "devDependencies": {
-    "vitest": "^4.0.14"
   },
   "exports": {
     ".": {

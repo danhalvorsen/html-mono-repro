@@ -1,5 +1,5 @@
 {
-  "name": "multimedia-monorepo",
+  "name": "@monorepo/Multimedia",
   "private": true,
   "version": "1.0.0",
   "workspaces": [
@@ -9,15 +9,14 @@
   "scripts": {
     "build": "echo \"Multimedia aggregator has no direct build; build individual apps via root pnpm -r run build\"",
     "ensure-deps": "pnpm install",
-    "test": "pnpm run ensure-deps && pnpm -w exec vitest --config ./vitest.config.ts",
-    "test:watch": "pnpm run ensure-deps && pnpm -w exec vitest --config ./vitest.config.ts --watch",
-    "test:coverage": "pnpm run ensure-deps && pnpm -w exec vitest --config ./vitest.config.ts --coverage",
+    "test": "pnpm run ensure-deps && pnpm --workspace-root vitest --config ./vitest.config.ts",
+    "test:watch": "pnpm run ensure-deps && pnpm --workspace-root vitest --config ./vitest.config.ts --watch",
+    "test:coverage": "pnpm run ensure-deps && pnpm --workspace-root vitest --config ./vitest.config.ts --coverage",
     "sync:test-scripts": "node ./scripts/update-test-scripts.js"
   },
   "devDependencies": {
     "@testing-library/dom": "^8.20.1",
     "happy-dom": "^20.0.11",
-    "typescript": "^5.2.2",
-    "vitest": "^4.0.14"
+    "typescript": "^5.2.2"
   }
 }

@@ -1,0 +1,13 @@
+{
+  "name": "@monorepo/core-consistent-cli-app",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@monorepo/core-console-cli": "workspace:*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "pnpm --workspace-root vitest --config vitest.config.ts",
+    "clean": "rm -rf dist"
+  }
+}

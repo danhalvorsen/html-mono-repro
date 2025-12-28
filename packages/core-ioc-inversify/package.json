@@ -1,5 +1,5 @@
 {
-  "name": "core-ioc-inversify",
+  "name": "@monorepo/core-ioc-inversify",
   "version": "1.0.0",
   "type": "module",
   "moduleResolution": "bundler",
@@ -7,13 +7,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "vitest run",
-    "clearCache": "pnpm -C .. vitest --clearCache"
+    "test": "pnpm --workspace-root vitest run",
+    "clearCache": "pnpm -C .. pnpm --workspace-root vitest --clearCache"
   },
- "dependencies": {
-  "inversify": "^6.x",
-  "reflect-metadata": "^0.2.x"
-},
+  "dependencies": {
+    "inversify": "^6.x",
+    "reflect-metadata": "^0.2.x"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -22,7 +22,6 @@
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.14",
-    "@vitest/ui": "^4.0.14",
-    "vitest": "^4.0.14"
+    "@vitest/ui": "^4.0.14"
   }
 }

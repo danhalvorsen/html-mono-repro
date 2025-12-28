@@ -1,3 +1,2 @@
-export declare class index {
-}
+export {};
 //# sourceMappingURL=index.d.ts.map

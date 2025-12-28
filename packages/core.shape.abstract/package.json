@@ -1,5 +1,5 @@
 {
-  "name": "core.visual.shape",
+  "name": "@monorepo/core.shape.abstract",
   "version": "1.0.0",
   "type": "module",
   "dependencies": {

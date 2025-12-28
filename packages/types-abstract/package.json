@@ -1,5 +1,5 @@
 {
-  "name": "@my-graphics/types-abstract",
+  "name": "@monorepo/types-abstract",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",

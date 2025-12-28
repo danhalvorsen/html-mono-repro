@@ -1,5 +1,5 @@
-import { IVisitor } from "core-composition-abstract/src/IVisitor.js";
-import { LeafNode } from "core-composition-abstract/src/LeafNode.js";
+import type { IVisitor } from "../../src/IVisitor.ts";
+import { LeafNode } from "../../src/LeafNode.ts";
 
 export class TestLeaf extends LeafNode {
   accept(visitor: IVisitor): void {

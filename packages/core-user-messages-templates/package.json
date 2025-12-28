@@ -1,0 +1,11 @@
+{
+  "name": "@monorepo/core-user-messages-templates",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.js",
+  "type": "commonjs",
+  "dependencies": {
+    "@monorepo/core-messages": "workspace:",
+    "@my-graphics/core-template": "workspace:"
+  }
+}

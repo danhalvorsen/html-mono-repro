@@ -1,0 +1,24 @@
+{
+  "name": "@monorepo/core-layout",
+  "version": "1.0.0",
+  "type": "module",
+  "strict": true,
+  "forceConsistentCasingInFileNames": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p .",
+    "clean": "rimraf dist",
+    "test": "pnpm --workspace-root vitest run --config ../../vitest.config.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

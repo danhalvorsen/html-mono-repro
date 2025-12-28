@@ -1,9 +1,7 @@
-import type { IComposite, IVisitor } from "core-composition-abstract";
-
 /**
  * SVG-aware composite node that holds a group element and transform.
  */
-export class CompositeNode implements IComposite {
+export class CompositeNode {
   id: string;
   localMatrix: DOMMatrix;
   svgGroup: SVGGElement;
@@ -22,7 +20,7 @@ export class CompositeNode implements IComposite {
     this.svgGroup.setAttribute("data-id", id);
   }
 
-  add(child: IComposite) {
+  add(child: CompositeNode) {
     const node = child as CompositeNode;
     this.children.push(node);
     this.svgGroup.appendChild(node.svgGroup);
@@ -32,7 +30,7 @@ export class CompositeNode implements IComposite {
     this.add(child);
   }
 
-  remove(child: IComposite) {
+  remove(child: CompositeNode) {
     const idx = this.children.indexOf(child as CompositeNode);
     if (idx >= 0) {
       const [removed] = this.children.splice(idx, 1);
@@ -54,7 +52,7 @@ export class CompositeNode implements IComposite {
     this.svgGroup.setAttribute("data-local-bbox", `${x},${y},${w},${h}`);
   }
 
-  getChildren(): IComposite[] {
+  getChildren(): CompositeNode[] {
     return this.children;
   }
 
@@ -76,12 +74,16 @@ export class CompositeNode implements IComposite {
     this.hitProxyFor = target;
   }
 
-  accept(visitor: IVisitor): void {
+  accept(visitor: Visitor): void {
     visitor.visitComposite(this);
     this.children.forEach((c) => c.accept(visitor));
   }
 }
 
-export interface NodeBehavior extends IComposite {
+export interface NodeBehavior {
   onHit?(node: CompositeNode, event: PointerEvent, localPoint: DOMPoint): void;
+}
+
+export interface Visitor {
+  visitComposite(node: CompositeNode): void;
 }

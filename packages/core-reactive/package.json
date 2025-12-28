@@ -1,5 +1,5 @@
 {
-  "name": "core-reactive",
+  "name": "@monorepo/core-reactive",
   "version": "0.1.0",
   "description": "Reactive primitives, observers, filesystem observables, and event streams for the Possibilities platform.",
   "type": "module",
@@ -21,11 +21,7 @@
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "rxjs": "^7.8.1"
-  },
-  "devDependencies": {
-    "eslint": "^8.57.0",
-    "rimraf": "^5.0.5"
+    "rxjs": "^7.8.2"
   },
   "engines": {
     "node": ">=18"

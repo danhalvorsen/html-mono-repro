@@ -1,0 +1,25 @@
+{
+    "module-rules": {
+        "name": "containsPageageName",
+        "project.json": {
+            "exists": true,
+            "mustHave": {
+                "script": "*",
+                "script.build": "*",
+                "script.test": "tsc -p tsconfig.json"
+            }
+        },
+        "tsconfig.json": {
+            "exists": true
+        },
+        "tsconfig.test.json": {
+            "exists": true
+        },
+        "devDependencies": {
+            "vitest": "*",
+            "@vitest/ui": "*",
+            "@vitest": "*",
+            "typescript": "*"
+        }
+    }
+}

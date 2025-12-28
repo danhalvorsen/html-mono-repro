@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import type { IComposite } from "../src/IComposite.js";
 import type { IVisitor } from "../src/IVisitor.js";
 
-import { TestLeaf } from "./TestComposite/TestComposite.js";
+import { TestLeaf } from "./TestComposite/Leaf.ts";
 
 describe("LeafNode", () => {
   it("throws when calling add/remove", () => {

@@ -1,27 +1,23 @@
 {
-  "name": "@my-graphics/core-formatter",
+  "name": "@monorepo/core-formatter",
   "version": "1.0.0",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "dependencies": {
     "@my-graphics/core-template": "workspace:*",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.8.0"
   },
-  "devDependencies": {
-    "vitest": "^4.0.14"
-  },
   "scripts": {
     "build": "tsc -b tsconfig.json",
-    "test": "vitest --config ../../vitest.config.ts",
-    "clearCache": "vitest --clearCache"
+    "test": "pnpm --workspace-root vitest --config ../../vitest.config.ts",
+    "clearCache": "pnpm --workspace-root vitest --clearCache"
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
     }
   }
 }
-

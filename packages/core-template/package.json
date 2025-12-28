@@ -1,5 +1,5 @@
 {
-  "name": "@my-graphics/core-template",
+  "name": "@monorepo/core-template",
   "version": "1.0.0",
   "type": "module",
   "composite": true,
@@ -7,16 +7,14 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "vitest --config vitest.config.ts",
-    "clearCache": "vitest --clearCache"
+    "test": "pnpm --workspace-root vitest --config pnpm --workspace-root vitest.config.ts",
+    "clearCache": "pnpm --workspace-root vitest --clearCache"
   },
   "dependencies": {
-    "zod": "^3.23.8",
-    "zod-package-json": "^1.0.0"
+    "@monorepo/core-template-handlebar": "^1.0.0"
   },
   "devDependencies": {
-    "vitest": "^4.0.14",
-    "pnpm": "^10.24.0"
+ 
   },
   "exports": {
     ".": {

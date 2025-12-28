@@ -1,27 +1,26 @@
 {
-    "name": "core-drag-controller-abstract",
-    "version": "1.0.0",
-    "type": "module",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        }
-    },
-    "scripts": {
-        "build": "tsc -p tsconfig.json",
-        "test": "vitest run",
-        "clearCache": "pnpm -C .. vitest --clearCache"
-    },
-    "dependencies": {
-        "inversify": "^6.2.2",
-        "reflect-metadata": "^0.2.2"
-    },
-    "devDependencies": {
-        "@vitest/coverage-v8": "^4.0.14",
-        "@vitest/ui": "^4.0.14",
-        "vitest": "^4.0.14"
+  "name": "@monorepo/core-drag-controller-abstract",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "pnpm --workspace-root vitest run",
+    "clearCache": "pnpm -C .. pnpm --workspace-root vitest --clearCache"
+  },
+  "dependencies": {
+    "inversify": "^6.2.2",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.14",
+    "@vitest/ui": "^4.0.14"
+  }
 }

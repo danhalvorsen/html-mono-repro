@@ -1,7 +1,6 @@
-import { IVisitor } from "./IVisitor.js";
 
 export interface IComposite {
-    accept(v: IVisitor): void;
+    render( ): void;
     add(child: IComposite): void;
     remove(child: IComposite): void;
     getChildren(): IComposite[];

@@ -1,4 +1,4 @@
-import { EventBehaviorBase } from "../EventBehaviorBase.js";
+import { EventBehaviorBase } from "./EventBehaviorBase.js";
 
 export class EventCommandBehavior extends EventBehaviorBase {
   constructor(

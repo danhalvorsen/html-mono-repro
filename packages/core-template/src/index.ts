@@ -5,4 +5,4 @@ export * from "./IDebuggableTemplate.js";
 export * from "./ITemplate.js";
 export * from "./KeyValueReportTemplate.js";
 export * from "./ValidationTemplate.js";
-export * from "./ReflectionTemplates.js";
+export * from "./Messages.js";

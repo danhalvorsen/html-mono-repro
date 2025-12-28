@@ -1,0 +1,11 @@
+node_modules/
+**/node_modules/
+.pnpm-store/
+.pnpm-debug.log
+pnpm-build.log
+pnpm-lock.yaml
+.DS_Store
+.vscode/
+npm-debug.log
+
+**/dist/*

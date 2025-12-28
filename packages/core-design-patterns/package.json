@@ -1,5 +1,5 @@
 {
-  "name": "@my-graphics/core-design-patterns",
+  "name": "@monorepo/core-design-patterns",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -7,11 +7,11 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "clean": "rm -rf dist",
-    "test": "pnpm --workspace-root vitest --config Libraries/core-design-patterns/vitest.config.mts",
+    "test": "vitest run",
     "test:clear": "pnpm --workspace-root vitest --clearCache"
   },
   "dependencies": {
-    "core-ioc-inversify": "workspace:*",
+    "@monorepo/core-ioc-inversify": "workspace:*",
     "lit": "^3.3.1",
     "reflect-metadata": "^0.1.13"
   },

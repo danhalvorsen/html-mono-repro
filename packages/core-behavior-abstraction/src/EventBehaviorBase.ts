@@ -1,4 +1,4 @@
-import { BehaviorBase } from "./BehaviorBase";
+import { BehaviorBase } from "./BehaviorBase.js";
 
 export abstract class EventBehaviorBase extends BehaviorBase {
   constructor(

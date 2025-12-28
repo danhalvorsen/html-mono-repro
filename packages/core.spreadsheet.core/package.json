@@ -1,5 +1,5 @@
 ﻿{
-    "name": "core.spreadsheet.core",
+    "name": "@monorepo/core.spreadsheet.core",
     "version": "1.0.0",
     "private": true,
     "type": "module",
@@ -20,9 +20,9 @@
     "dependencies": {
         "inversify": "^6.x",
         "reflect-metadata": "^0.2.x",
-        "core-composition-abstract": "workspace:*"
+        "@monorepo/core-composition-abstract": "workspace:*"
     },
     "devDependencies": {
-        "vitest": "^4.0.14"
+         
     }
 }

@@ -7,18 +7,17 @@
   "dependencies": {
     "@my-graphics/core-template": "workspace:*",
     "reflect-metadata": "^0.2.2",
-    "tsyringe": "^4.8.0",
-    "vitest": "^3.0.8"
+    "tsyringe": "^4.8.0"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -b tsconfig.json",
     "test": "vitest --config ../../vitest.config.ts",
     "clearCache": "vitest --clearCache"
   },
   "exports": {
-  ".": {
-    "import": "./dist/index.js",
-    "types": "./dist/index.d.ts"
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   }
-}
 }

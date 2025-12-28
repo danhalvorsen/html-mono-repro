@@ -5,9 +5,8 @@ export * from './command-query/Decorators/Decorators.js';
 export * from './command-query/Dispatcher/CommandDispatcher.js';
 export * from './command-query/Dispatcher/QueryDispatcher.js';
 export * from './command-query/ICommand.js';
-export * from './command-query/ICommandHandler.js';
 export * from './command-query/IQuery.js';
-export * from './command-query/IQueryHandler.js';
+
 export * from './command-query/IQueryable.js';
 export * from './composite/composite.tree.js';
 export * from './composite/composite.js';

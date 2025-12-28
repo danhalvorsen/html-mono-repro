@@ -27,6 +27,11 @@
         "Libraries/*/dist",
         "Libraries/core-reactive-multiplatform-modules/*/src",
         "Libraries/core-reactive-multiplatform-modules/*/dist"
+      ],
+      "@monorepo/*": [
+        "packages/*/src",
+        "packages/*/dist",
+        "packages/core-consistent/src"
       ]
     }
   },

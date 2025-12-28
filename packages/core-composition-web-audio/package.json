@@ -1,0 +1,29 @@
+﻿{
+    "name": "@monorepo/core-composition-web-audio",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "test": "vitest run",
+        "clearCache": "pnpm -C .. vitest --clearCache"
+    },
+    "dependencies": {
+        "inversify": "^6.x",
+        "reflect-metadata": "^0.2.x",
+        "@monorepo/core-composition-abstract": "workspace:*"
+    },
+    "devDependencies": {
+        "@vitest/coverage-v8": "^4.0.14",
+        "@vitest/ui": "^4.0.14",
+        "jsdom": "^24.0.0",
+        "vitest": "^4.0.14"
+    }
+}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { TemplateFixture } from "./fixtures/TemplateFixture";
+import { TemplateFixture } from "./fixtures/TemplateFixture.js";
 
 describe("Handlebar Templates (Fixture DRY)", () => {
   const fx = new TemplateFixture();

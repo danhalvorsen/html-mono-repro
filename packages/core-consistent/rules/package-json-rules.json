@@ -1,0 +1,75 @@
+{
+  "$schema": "../schemas/package-rules.schema.json",
+  "title": "package.json expectations",
+  "description": "Configuration rules every workspace package manifest must obey.",
+  
+  "name": {
+    "type": "string",
+    "contains": "@monorepo/",
+    "shouldBe": "folder-name",
+    "description": "Packages must be scoped under @monorepo/ and match the module folder name."
+  },
+  "scripts": {
+    "build": {
+      "rules": [
+        {
+          "startsWith": "tsc -b",
+          "message": "Use 'pnpm run build:ts' instead of invoking tsc directly."
+        }
+      ]
+    },
+    "test": {
+      "rules": [
+        {
+          "startsWith": "vite",
+          "message": "Use 'pnpm run test:unit' instead of calling vite directly."
+        }
+      ]
+    },
+    "build:ts": {
+      "rules": [
+        {
+          "equals": "tsc -b",
+          "message": "The module-level build script should be 'tsc -b' so pnpm has a single build entry point."
+        }
+      ],
+      "required": true
+    },
+    "test:unit": {
+      "rules": [
+        {
+          "startsWith": "pnpm run",
+          "message": "Run tests through the workspace helper so filters stay consistent."
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "rules": [
+      {
+        "name": "typescript",
+        "shouldExist": false,
+        "message": "TypeScript belongs at the workspace root; drop it from package devDependencies."
+      },
+      {
+        "name": "vitest",
+        "shouldExist": false,
+        "message": "Vitest should only be installed at the workspace root; remove it here."
+      }
+    ],
+    "allowedWorkspaceOnly": ["typescript", "vitest", "vite", "eslint", "chai", "jsdom"]
+  },
+  "dependencies": {
+    "rules": [
+      {
+        "prefix": "@my-graphics/",
+        "mustUseWorkspace": true,
+        "message": "Internal dependencies must use workspace:* specifiers to keep versions in sync."
+      }
+    ]
+  },
+  "references": {
+    "shouldExist": false,
+    "message": "We rely on workspace references instead of per-package TypeScript installs; remove local references."
+  }
+}

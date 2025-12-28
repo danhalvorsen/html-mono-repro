@@ -1,5 +1,5 @@
 {
-  "name": "core-drag-controller-svg",
+  "name": "@monorepo/core-drag-controller-svg",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -12,13 +12,12 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "vitest run"
+    "test": "pnpm --workspace-root vitest run"
   },
   "dependencies": {
-    "core-drag-controller-abstract": "workspace:*"
+    "@monorepo/core-drag-controller-abstract": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.14"
+    "typescript": "^5.9.3"
   }
 }

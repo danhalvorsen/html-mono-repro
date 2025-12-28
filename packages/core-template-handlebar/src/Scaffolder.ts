@@ -1,44 +1,18 @@
-import { describe, it, expect } from "vitest";
-import { TemplateFixture } from './fixtures/TemplateFixture.js';
+import { IScaffolder } from './IScaffolder.js';
+import { ITemplateRenderer } from './ITemplateRenderer.js';
+import { IFileWriter } from './IFileWriter.js';
+import { ScaffoldingBlueprint } from './ScaffoldingBlueprint.js';
 
-describe("Handlebar Templates (Fixture DRY)", () => {
-  const fx = new TemplateFixture();
-  const templateFiles = fx.listTemplateFiles();
+export class Scaffolder implements IScaffolder {
+  constructor(
+    private readonly renderer: ITemplateRenderer,
+    private readonly writer: IFileWriter
+  ) {}
 
-  it("template root should exist", () => {
-    expect(fx.root.exists()).toBe(true);
-  });
-
-  it("should contain at least one template", () => {
-    expect(templateFiles.length).toBeGreaterThan(0);
-  });
-
-  describe.each(templateFiles)('Template: %s', (...args) => {
-    const [file] = args as [string];
-
-    it("should load raw template", () => {
-      const raw = fx.loadRaw(file);
-      expect(raw.length).toBeGreaterThan(0);
-    });
-
-    it("should compile without error", () => {
-      const raw = fx.loadRaw(file);
-      expect(() => fx.compile(raw)).not.toThrow();
-    });
-
-    it("should render final string with fixture context", () => {
-      const raw = fx.loadRaw(file);
-      const output = fx.render(raw);
-
-      expect(typeof output).toBe("string");
-      expect(output.length).toBeGreaterThan(0);
-    });
-
-    it("should not contain unresolved handlebars {{placeholders}}", () => {
-      const raw = fx.loadRaw(file);
-      const output = fx.render(raw);
-
-      expect(fx.hasUnresolvedPlaceholders(output)).toBe(false);
-    });
-  });
-});
+  scaffold(blueprint: ScaffoldingBlueprint): void {
+    for (const file of blueprint.files) {
+      const rendered = this.renderer.render(file.templateName, blueprint.context);
+      this.writer.write(file.outputFile, rendered);
+    }
+  }
+}

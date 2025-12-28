@@ -1,4 +1,4 @@
-import { EventCommandBehavior } from "../EventCommandBehavior.js";
+import { EventCommandBehavior } from "./EventCommandBehavior.js";
 
 export class ClickCommandBehavior extends EventCommandBehavior {
   constructor(

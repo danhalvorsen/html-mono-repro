@@ -1,5 +1,5 @@
 ﻿{
-    "name": "@my-graphics/core-threejs",
+    "name": "@monorepo/core-composite.threejs",
     "version": "1.0.0",
     "type": "module",
     "main": "dist/index.js",

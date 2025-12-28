@@ -22,5 +22,4 @@ export interface IVector<T> {
   equals(v: T, tolerance?: number): boolean;
   toArray(): number[];
 
-  multiplyScalar(scalar: number): T;
 }

@@ -1,5 +1,5 @@
 {
-  "name": "@my-graphics/core-filesystem",
+  "name": "@monorepo/core-filesystem",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -8,14 +8,13 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
-    "test": "vitest run --config ../vitest.config.ts"
+    "test": "pnpm --workspace-root vitest run --config ../vitest.config.ts"
   },
   "dependencies": {
     "@my-graphics/core-structures": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
-    "vitest": "^4.0.14",
     "rimraf": "^6.0.1"
   },
   "exports": {

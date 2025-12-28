@@ -1,5 +1,5 @@
 {
-  "name": "core-graph",
+  "name": "@monorepo/core-graph",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
@@ -14,14 +14,11 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "vitest run",
-    "clearCache": "pnpm -C .. vitest --clearCache"
+    "test": "pnpm --workspace-root vitest run",
+    "clearCache": "pnpm -C .. pnpm --workspace-root vitest --clearCache"
   },
   "dependencies": {
     "inversify": "^6.x",
     "reflect-metadata": "^0.2.x"
-  },
-  "devDependencies": {
-    "vitest": "^4.0.14"
   }
 }

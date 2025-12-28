@@ -1,0 +1,23 @@
+﻿{
+    "name": "@monorepo/core-composition-svg-turtle",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "exports": {
+        ".": {
+            "import": "./src/index.ts",
+            "types": "./src/index.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "test": "pnpm vitest run --config ../../vitest.config.ts",
+        "clearCache": "pnpm -C .. vitest --clearCache"
+    },
+    "dependencies": {
+        "@monorepo/core-composition-abstract-new": "workspace:*",
+        "@monorepo/core-math": "workspace:*"
+    },
+    "devDependencies": {}
+}

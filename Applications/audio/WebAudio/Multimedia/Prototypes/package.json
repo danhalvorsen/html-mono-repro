@@ -1,5 +1,5 @@
 ﻿{
-    "name": "music-note-sheet-dom",
+    "name": "@monorepo/Prototypes",
     "version": "1.0.0",
     "type": "module",
     "main": "dist/index.js",

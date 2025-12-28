@@ -1,5 +1,5 @@
 {
-  "name": "composite-web-component-lit3",
+  "name": "@monorepo/composite-web-component-lit3",
   "version": "1.0.0",
   "private": true,
   "main": "dist/index.js",
@@ -11,8 +11,7 @@
     "test:watch": "pnpm -w exec vitest --config ../../vitest.config.ts --watch"
   },
   "dependencies": {
-    "core-composition-abstract": "workspace:*",
-    "lit": "^3.0.0"
+    "@monorepo/core-composition-abstract-new": "workspace:"
   },
   "devDependencies": {
     "happy-dom": "^20.0.0"

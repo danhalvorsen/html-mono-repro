@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Minimal tsconfig schema for validator",
+  "type": "object",
+  "properties": {
+    "compilerOptions": {
+      "type": "object",
+      "properties": {
+        "target": { "type": "string" },
+        "module": { "type": "string" },
+        "moduleResolution": { "type": "string" },
+        "lib": { "type": "array", "items": { "type": "string" } },
+        "outDir": { "type": "string" },
+        "rootDir": { "type": "string" },
+        "strict": { "type": "boolean" },
+        "paths": {
+          "type": "object",
+          "additionalProperties": { "type": ["array","string"], "items": { "type": "string" } }
+        }
+      },
+      "required": ["target","module","moduleResolution"]
+    },
+    "exclude": { "type": "array", "items": { "type": "string" } },
+    "references": { "type": "array", "items": { "type": "object" } }
+  },
+  "required": ["compilerOptions"]
+}

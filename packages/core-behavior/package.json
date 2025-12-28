@@ -1,5 +1,5 @@
 {
-  "name": "core-behavior",
+  "name": "@monorepo/core-behavior",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",

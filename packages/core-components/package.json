@@ -1,5 +1,5 @@
 ﻿{
-    "name": "core-components",
+    "name": "@monorepo/core-components",
     "version": "1.0.0",
     "type": "module",
     "main": "dist/index.js",

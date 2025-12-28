@@ -1,5 +1,5 @@
  
-import { IVisitor } from "core-composition-abstract/src/IVisitor.js";
+import type { IVisitor } from "../src/IVisitor.ts";
 import { CompositeNode } from "../src/CompositeNode.js";
 import { describe, it, expect, vi } from "vitest";
  

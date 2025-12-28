@@ -1,5 +1,5 @@
 {
-  "name": "@my-graphics/core-validaton",
+  "name": "@monorepo/core-validaton",
   "version": "1.0.0",
   "type": "module",
   "dependencies": {

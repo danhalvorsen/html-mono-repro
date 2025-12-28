@@ -1,6 +1,5 @@
-import { defineConfig } from 'vitest/config';
-import path from 'path';
-
+import { defineConfig } from 'vitest/config.js';
+ 
 export default defineConfig({
   test: {
     globals: true,
@@ -11,9 +10,7 @@ export default defineConfig({
   },
 
   resolve: {
-    alias: {
-      '@my-graphics/core-ioc': path.resolve(__dirname, './src'),
-    },
+ 
     preserveSymlinks: true,
   },
 });

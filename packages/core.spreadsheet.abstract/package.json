@@ -1,5 +1,5 @@
 ﻿{
-    "name": "core.spreadsheet.abstract",
+    "name": "@monorepo/core.spreadsheet.abstract",
     "version": "1.0.0",
     "type": "module",
     "main": "dist/index.js",
@@ -20,10 +20,10 @@
     "dependencies": {
         "inversify": "^6.x",
         "reflect-metadata": "^0.2.x",
-        "core-composition-abstract": "workspace:*"
+        "@monorepo/core-composition-abstract": "workspace:*"
 
     },
     "devDependencies": {
-        "vitest": "^4.0.14"
+       "vitest": "^4.0.14"
     }
 }
