@@ -1,7 +1,6 @@
 packages:
   # Include all packages under Libraries (recursively)
   - "packages/**"
-  - "!packages/core-composition-lit3"
   - "!packages/core-composition-three"
   - "!packages/core-composition-web-audio"
 

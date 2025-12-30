@@ -19,7 +19,7 @@
         "inversify": "^6.x",
         "reflect-metadata": "^0.2.x",
         "@monorepo/core-composition-abstract": "workspace:*",
-        "core-math": "workspace:*"
+        "@monorepo/core-math": "workspace:*"
     },
     "devDependencies": {
         "@vitest/coverage-v8": "^4.0.14",

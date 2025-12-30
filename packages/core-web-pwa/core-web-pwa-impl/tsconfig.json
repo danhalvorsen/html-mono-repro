@@ -2,8 +2,13 @@
   "extends": "../../../tsconfig.node.json",
   "compilerOptions": {
     "composite": true,
-    "outDir": "dist",
+
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+
     "rootDir": "src",
+    "outDir": "dist",
+
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },

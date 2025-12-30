@@ -2,13 +2,27 @@
   "name": "@monorepo/core-web-pwa-impl",
   "version": "1.0.0",
   "type": "module",
-  "dependencies": {
-    "@monorepo/core-web-pwa-abstract": "workspace:*"
 
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
+
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+
+  "peerDependencies": {
+    "vite": "^5.0.0"
+  },
+
+  "dependencies": {
+    "@monorepo/core-web-pwa-abstract": "workspace:*",
+    "vite-plugin-pwa": "^0.21.0"
+  },
+
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "test": "vitest --config vitest.config.ts",
-    "clean": "rm -rf dist"
+    "build": "tsc -p tsconfig.json"
   }
 }

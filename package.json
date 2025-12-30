@@ -4,6 +4,7 @@
 		"inversify": "^6.x"
 	},
 	"devDependencies": {
+		"vite": "^5.0.0",
 		"@types/node": "^20.19.25",
 		"@vitest/coverage-v8": "^4.0.14",
 		"@vitest/ui": "^4.0.14",

@@ -1,0 +1,15 @@
+{
+  "name": "@monorepo/core-web-pwa-integration-tests",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@monorepo/core-web-pwa-impl": "workspace:*",
+    "vite": "^5.0.0"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "test": "vitest"
+  }
+}

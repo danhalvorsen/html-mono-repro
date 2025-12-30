@@ -1,1 +1,12 @@
-console.log('Hello from core-components!'); 
+export {
+  collectPlugins,
+  PwaFeature,
+  NetworkFirstStrategy,
+  CacheFirstStrategy,
+  StaleWhileRevalidateStrategy
+} from "./code.js";
+
+export type {
+  ViteFeature,
+  ServiceWorkerStrategy
+} from "./code.js";
