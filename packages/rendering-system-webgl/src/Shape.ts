@@ -1,7 +1,9 @@
-import { Vector3, IMatrix} from '@my-graphics/core-math';
- import { Matrix } from '@my-graphics/core-math';
-import { ILocation, IDimensions, IShape } from '@my-graphics/types-abstract';
 
+import { Vector3, Matrix} from '@my-graphics/core-math';
+import { IDimensions } from './dimensions.js';
+import { ILocation } from './location.js';
+import { IShape } from './IShape.js';
+ 
 export class Shape implements IShape {
   id: string;
   private position: Vector3;

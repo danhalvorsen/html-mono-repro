@@ -9,7 +9,7 @@
     "test": "vitest --config vitest.config.ts"
   },
   "dependencies": {
-    "@my-graphics/core-design-patterns": "workspace:*"
+    "@monorepo/core-design-patterns": "workspace:*"
   },
   "exports": {
     ".": {

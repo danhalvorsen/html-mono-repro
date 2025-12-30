@@ -3,9 +3,9 @@
   "type": "module",
   "main": "dist/index.js",
   "dependencies": {
-    "@my-graphics/core-math":"workspace:*",
-    "@my-graphics/rendering-system-abstract": "workspace:*",
-    "@my-graphics/types-abstract": "workspace:*",
+    "@monorepo/core-math":"workspace:*",
+    "@monorepo/rendering-system-abstract": "workspace:*",
+    "@monorepo/types-abstract": "workspace:*",
     "three": "^0.174.0"
   },
   "scripts": {

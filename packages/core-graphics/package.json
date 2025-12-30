@@ -1,4 +1,4 @@
-﻿{
+{
     "name": "@monorepo/core-graphics",
     "version": "1.0.0",
     "type": "module",
@@ -14,6 +14,6 @@
         "build": "tsc -b"
     },
     "dependencies": {
-        "@my-graphics/core-threejs": "workspace:*"
+        "@monorepo/core-threejs": "workspace:*"
     }
 }

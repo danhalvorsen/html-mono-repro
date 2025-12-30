@@ -11,7 +11,7 @@
     "clearCache": "pnpm --workspace-root vitest --clearCache"
   },
   "dependencies": {
-    "@monorepo/core-template-handlebar": "^1.0.0"
+    "@monorepo/core-template-handlebar": "workspace:*"
   },
   "devDependencies": {
  

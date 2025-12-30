@@ -16,7 +16,7 @@
         "clearCache": "pnpm -C .. vitest --clearCache"
     },
     "dependencies": {
-        "core-composition-abstract-new": "workspace:*"
+        "@monorepo/core-composition-abstract-new": "workspace:*"
     },
     "devDependencies": {
      

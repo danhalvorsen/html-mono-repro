@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": ".",
     "target": "ES2022",
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
@@ -26,6 +27,7 @@
     "noFallthroughCasesInSwitch": true,
   },
   "include": [
-    "src"
-, "tests/inspectors", "../core-composition-svg-turtle/src/Turtle.ts", "../core-composition-svg-turtle/src/TurtleState.ts"  ]
+    "src",
+    "tests"
+  ]
 }

@@ -7,6 +7,6 @@
   "files": ["src"]
   ,
   "dependencies": {
-    "@my-graphics/core-template": "workspace:"
+    "@monorepo/core-template": "workspace:"
   }
 }

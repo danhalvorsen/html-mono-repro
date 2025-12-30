@@ -6,21 +6,21 @@ import {
   IDragEndData,
   IDragMoveData,
   IDragStartData,
-  IMouseController,
   Position,
-  TimeStamp
+  TimeStamp,
+  Mouse
 } from "core-drag-controller-abstract";
 
 export namespace SvgDrag {
   export class SVGDragController extends BaseDragController {
     private readonly svg: SVGSVGElement;
-    private readonly mouse: IMouseController;
+    private readonly mouse: Mouse.IMouseController;
 
     private dragging = false;
     private startPos: Position | null = null;
     private lastPos: Position | null = null;
 
-    constructor(svgRoot: SVGSVGElement, mouseController: IMouseController) {
+constructor(svgRoot: SVGSVGElement, mouseController: Mouse.IMouseController){
       super();
       this.svg = svgRoot;
       this.mouse = mouseController;

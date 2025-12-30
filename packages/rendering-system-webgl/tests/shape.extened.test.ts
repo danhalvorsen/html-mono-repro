@@ -1,5 +1,5 @@
 import { Matrix, Vector3 } from "@my-graphics/math";
-import { Shape } from '../src/Shape.js'
+import { Shape } from '../src/shape.js'
 import { beforeEach, describe, expect, it } from "vitest";
 
 describe('Shape', () => {

@@ -6,6 +6,6 @@
   "type": "commonjs",
   "dependencies": {
     "@monorepo/core-messages": "workspace:",
-    "@my-graphics/core-template": "workspace:"
+    "@monorepo/core-template": "workspace:"
   }
 }

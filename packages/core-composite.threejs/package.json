@@ -1,4 +1,4 @@
-﻿{
+{
     "name": "@monorepo/core-composite.threejs",
     "version": "1.0.0",
     "type": "module",
@@ -15,7 +15,7 @@
         "test": "vitest run"
     },
     "dependencies": {
-        "@my-graphics/core-logger": "workspace:*",
+        "@monorepo/core-logger": "workspace:*",
         "three": "^0.152.2"
     }
 }

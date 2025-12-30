@@ -1,7 +1,6 @@
  
-import { IDimensions, IShape } from '@my-graphics/types-abstract';
 import * as THREE from 'three';
-import { ThreeAdapter } from './adapter.js';
+import { IShape } from './IShape.js';
 
 export class WebGLRenderer {
   canvas: HTMLCanvasElement;
@@ -50,8 +49,8 @@ export class WebGLRenderer {
     });
 
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.copy(ThreeAdapter.toVector3(pos));
-    mesh.applyMatrix4(ThreeAdapter.toMatrix4(rotation));
+    // mesh.position.copy(ThreeAdapter.toVector3(pos));
+    // mesh.applyMatrix4(ThreeAdapter.toMatrix4(rotation));
 
     this.scene.add(mesh);
   }

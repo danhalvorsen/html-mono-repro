@@ -14,7 +14,8 @@
         "./src/*": "./src/*"
     },
     "scripts": {
-        "build": "echo \"core.spreadsheet.core build temporarily disabled; run 'pnpm run build:strict' here when fixing types\" && exit 0",
+        "build": "pnpm run build:strict",
+        "build:strict": "tsc -b",
         "clearCache": "pnpm -C .. vitest --clearCache"
     },
     "dependencies": {

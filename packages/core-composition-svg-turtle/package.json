@@ -11,8 +11,8 @@
         }
     },
     "scripts": {
-        "build": "tsc -p tsconfig.json",
-        "test": "pnpm vitest run --config ../../vitest.config.ts",
+        "build": "pnpm --workspace-root tsc -p packages/core-composition-svg-turtle/tsconfig.json",
+        "test": "pnpm --workspace-root vitest run --config packages/core-composition-svg-turtle/vitest.config.ts",
         "clearCache": "pnpm -C .. vitest --clearCache"
     },
     "dependencies": {

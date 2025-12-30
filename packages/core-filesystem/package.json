@@ -10,9 +10,7 @@
     "clean": "rimraf dist",
     "test": "pnpm --workspace-root vitest run --config ../vitest.config.ts"
   },
-  "dependencies": {
-    "@my-graphics/core-structures": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "typescript": "^5.9.3",
     "rimraf": "^6.0.1"

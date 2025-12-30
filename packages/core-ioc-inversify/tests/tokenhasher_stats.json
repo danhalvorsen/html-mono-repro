@@ -1,5 +1,5 @@
 {
   "calls": 100000,
-  "collisions": 2,
+  "collisions": 4,
   "registrySize": 100000
 }

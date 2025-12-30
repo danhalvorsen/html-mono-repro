@@ -1,6 +1,6 @@
  
+import { Point2 } from "@monorepo/core-math";
 import { TurtleState } from "./TurtleState.js";
-import { Point } from "@monorepo/core-math";
 
 // ---------- Turtle (Pure Cartesian, Push / Pop) ----------
 
@@ -12,10 +12,10 @@ export class Turtle {
 
     private readonly stack: TurtleState[] = [];
 
-    public forward(distance: number): Point {
+    public forward(distance: number): Point2 {
         const rad = this.state.headingDeg * Math.PI / 180;
 
-        const next: Point = {
+        const next: Point2 = {
             x: this.state.position.x + Math.cos(rad) * distance,
             y: this.state.position.y + Math.sin(rad) * distance
         };
@@ -31,7 +31,7 @@ export class Turtle {
         };
     }
 
-    public moveTo(p: Point): void {
+    public moveTo(p: Point2): void {
         this.state = { ...this.state, position: p };
     }
 
@@ -46,7 +46,7 @@ export class Turtle {
         this.state = this.stack.pop()!;
     }
 
-    public get position(): Point {
+    public get position(): Point2 {
         return this.state.position;
     }
 

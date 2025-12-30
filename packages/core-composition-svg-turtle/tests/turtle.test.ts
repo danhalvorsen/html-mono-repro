@@ -8,8 +8,10 @@ import { describe, it, expect, beforeEach } from "vitest";
 
 import {
     Turtle,
+    CenteredCartesianMapper,
 } from "@monorepo/core-composition-svg-turtle";
-
+import { Point2 } from "@monorepo/core-math";
+ 
 // ---------- Test Fixture ----------
 
 class TurtleFixture {
@@ -24,7 +26,7 @@ class TurtleFixture {
         });
     }
 
-    svg(p: Point): Point {
+    svg(p: Point2): Point2 {
         return this.mapper.toSvg(p);
     }
 }
@@ -101,7 +103,7 @@ describe("CenteredCartesianMapper – coordinate mapping", () => {
     });
 
     it("round-trips cartesian → svg → cartesian", () => {
-        const original: Point = { x: 150, y: -75 };
+        const original: Point2 = { x: 150, y: -75 };
 
         const svg = fx.mapper.toSvg(original);
         const back = fx.mapper.fromSvg(svg);
@@ -121,7 +123,7 @@ describe("Turtle + Mapper integration", () => {
     });
 
     it("produces SVG-ready points from turtle movement", () => {
-        const path: Point[] = [];
+        const path: Point2[] = [];
 
         path.push(fx.svg(fx.turtle.position));
         fx.turtle.forward(100);

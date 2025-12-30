@@ -1,3 +1,3 @@
-export * from './src/Shape.js';
-export * from './src/WebGLRender.js';
-export * from './src/Location.js';
+export * from './src/shape.js';
+export * from './src/webGLRender.js';
+export * from './src/location.js';

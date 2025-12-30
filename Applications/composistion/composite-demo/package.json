@@ -1,0 +1,16 @@
+{
+  "name": "@monorepo/composite-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@monorepo/core-composition-abstract": "workspace:*",
+    "@monorepo/core-composition-svg":"workspace:*"
+  },
+  "devDependencies": {}
+}

@@ -11,8 +11,8 @@
     "clearCache": "pnpm --workspace-root vitest --clearCache"
   },
   "dependencies": {
-    "@my-graphics/core-math": "workspace:*",
-    "@my-graphics/types-abstract": "workspace:*"
+    "@monorepo/core-math": "workspace:*",
+    "@monorepo/types-abstract": "workspace:*"
   },
   "exports": {
     ".": {

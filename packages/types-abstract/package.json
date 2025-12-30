@@ -12,9 +12,10 @@
   },
   "scripts": {
     "build": "tsc -b tsconfig.json",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "pnpm --workspace-root vitest run --config packages/types-abstract/vitest.config.ts"
   },
   "dependencies": {
-    "@my-graphics/core-math": "workspace:*"
+    "@monorepo/core-math": "workspace:*"
   }
 }

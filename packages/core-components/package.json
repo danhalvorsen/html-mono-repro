@@ -1,4 +1,4 @@
-﻿{
+{
     "name": "@monorepo/core-components",
     "version": "1.0.0",
     "type": "module",
@@ -15,6 +15,6 @@
         "test": "vitest run --config ../../vitest.config.ts"
     },
     "dependencies": {
-        "@my-graphics/core-threejs": "workspace:*"
+        "@monorepo/core-threejs": "workspace:*"
     }
 }

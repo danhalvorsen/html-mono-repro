@@ -1,0 +1,314 @@
+{
+  "generatedAt": "2025-12-28T18:57:51.281Z",
+  "nodeVersion": "v24.12.0",
+  "packages": [
+    {
+      "name": "@monorepo/core-abstract-shape-system",
+      "directory": "packages\\core-abstract-shape-system",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-behavior",
+      "directory": "packages\\core-behavior",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-behavior-abstraction",
+      "directory": "packages\\core-behavior-abstraction",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-code-tools",
+      "directory": "packages\\core-code-tools",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-components",
+      "directory": "packages\\core-components",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-composite.threejs",
+      "directory": "packages\\core-composite.threejs",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-composition-abstract",
+      "directory": "packages\\core-composition-abstract",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-composition-abstract-new",
+      "directory": "packages\\core-composition-abstract-new",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-consistent",
+      "directory": "packages\\core-consistent",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-console-cli",
+      "directory": "packages\\core-console-cli",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-expressions",
+      "directory": "packages\\core-delegates",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-design-patterns",
+      "directory": "packages\\core-design-patterns",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-example",
+      "directory": "packages\\core-example",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-expressions",
+      "directory": "packages\\core-expressions",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-filesystem",
+      "directory": "packages\\core-filesystem",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-formatter",
+      "directory": "packages\\core-formatter",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-generators",
+      "directory": "packages\\core-generators",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-graph",
+      "directory": "packages\\core-graph",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-graphics",
+      "directory": "packages\\core-graphics",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-ioc",
+      "directory": "packages\\core-ioc",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-ioc-inversify",
+      "directory": "packages\\core-ioc-inversify",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-layout",
+      "directory": "packages\\core-layout",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-logger",
+      "directory": "packages\\core-logger",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-math",
+      "directory": "packages\\core-math",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-messages",
+      "directory": "packages\\core-messages",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-pubsub",
+      "directory": "packages\\core-pubsub",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-reactive",
+      "directory": "packages\\core-reactive",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-service-worker",
+      "directory": "packages\\core-service-worker",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-specifications",
+      "directory": "packages\\core-specifications",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-structures",
+      "directory": "packages\\core-structures",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-template",
+      "directory": "packages\\core-template",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-template-handlebar",
+      "directory": "packages\\core-template-handlebar",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-three-card",
+      "directory": "packages\\core-three-card",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-threejs",
+      "directory": "packages\\core-threejs",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-trace",
+      "directory": "packages\\core-trace",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-user-messages-templates",
+      "directory": "packages\\core-user-messages-templates",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core-validaton",
+      "directory": "packages\\core-validaton",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core.shape.abstract",
+      "directory": "packages\\core.shape.abstract",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/core.svg",
+      "directory": "packages\\core.svg",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/math-types-mapping",
+      "directory": "packages\\math-types-mapping",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/rendering-system-abstract",
+      "directory": "packages\\rendering-system-abstract",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/rendering-system-html5",
+      "directory": "packages\\rendering-system-html5",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/rendering-system-webgl",
+      "directory": "packages\\rendering-system-webgl",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    },
+    {
+      "name": "@monorepo/types-abstract",
+      "directory": "packages\\types-abstract",
+      "status": "failed",
+      "exitCode": null,
+      "output": ""
+    }
+  ]
+}

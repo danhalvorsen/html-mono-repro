@@ -4,8 +4,6 @@ packages:
   - "!packages/core-composition-lit3"
   - "!packages/core-composition-three"
   - "!packages/core-composition-web-audio"
-  - "!packages/core-composition-svg"
-  - "!packages/core-design-patterns"
 
 ignoredBuiltDependencies:
   - esbuild

@@ -11,7 +11,7 @@
     }
   },
   "dependencies": {
-    "@my-graphics/core-math": "workspace:*"
+    "@monorepo/core-math": "workspace:*"
   },
   "scripts": {
     "clearCache": "vitest --clearCache",

@@ -1,4 +1,4 @@
-import { Point } from "@monorepo/core-math";
+import { Point2 } from "@monorepo/core-math";
 
 export type Viewport = Readonly<{
     width: number;
@@ -15,7 +15,7 @@ export  class CenteredCartesianMapper {
     }
 
     /** Cartesian → SVG */
-    toSvg(p: Point): Point {
+    toSvg(p: Point2): Point2 {
         return {
             x: this.hw + p.x,
             y: this.hh - p.y
@@ -23,7 +23,7 @@ export  class CenteredCartesianMapper {
     }
 
     /** SVG → Cartesian */
-    fromSvg(p: Point): Point {
+    fromSvg(p: Point2): Point2 {
         return {
             x: p.x - this.hw,
             y: this.hh - p.y

@@ -1,8 +1,8 @@
+export * from "./interfaces/IPoint.js"
 export * from './implementations/BoundingBox.js'
 export * from './implementations/FiniteDifferenceTangentStrategy.js'
 export * from './implementations/Line.js'
 export * from './implementations/Matrix4.js';
-export * from './implementations/Point.js';
 export * from './implementations/Transform.js';
  
 export * from './implementations/interpolation/SplineInterpolator3D.js';
@@ -12,6 +12,7 @@ export * from './implementations/interpolation/hermiteInterpolation/HermiteSplin
 export * from './implementations/interpolation/hermiteInterpolation/vector3HermiteFn.js';
  
 export * from './interfaces/IBoundingBox.js';
+ 
 export * from './interfaces/IControlPointStrategy.js';
 export * from './interfaces/IInterpolationStrategy.js';
 export * from './interfaces/IInterpolator.js';

@@ -2,27 +2,23 @@ import {
   BaseDragController,
   CommonEvent,
   Drag,
-  IDragEndData,
-  IDragMoveData,
-  IDragStartData,
-  ICommonEvent,
-  IMouseController,
   Position,
-  TimeStamp
+  TimeStamp,
+  Mouse,
+  ICommonEvent,
+  IDragStartData,
+  IDragMoveData,
+  IDragEndData,
 } from "core-drag-controller-abstract";
 
-const DRAG_START_EVENT = "DRAG_START" as Drag.DRAG_START;
-const DRAG_MOVE_EVENT = "DRAG_MOVE" as Drag.DRAG_MOVE;
-const DRAG_END_EVENT = "DRAG_END" as Drag.DRAG_END;
-
 export class DOMDragController extends BaseDragController {
-  private readonly mouse: IMouseController;
+  private readonly mouse: Mouse.IMouseController;
 
   private dragging = false;
   private startPos: Position | null = null;
   private lastPos: Position | null = null;
 
-  constructor(mouseController: IMouseController) {
+  constructor(mouseController: Mouse.IMouseController) {
     super();
     this.mouse = mouseController;
 
@@ -38,9 +34,8 @@ export class DOMDragController extends BaseDragController {
 
     const data: IDragStartData = {
       event: Drag.DRAG_START,
-      start: pos
+      start: pos,
     };
-
     const evt: ICommonEvent<IDragStartData> = new CommonEvent(
       Drag.DRAG_START,
       TimeStamp.now(),
@@ -55,18 +50,18 @@ export class DOMDragController extends BaseDragController {
 
     const delta: Position = {
       x: pos.x - this.lastPos.x,
-      y: pos.y - this.lastPos.y
+      y: pos.y - this.lastPos.y,
     };
 
     const data: IDragMoveData = {
-      event: DRAG_MOVE_EVENT,
+      event: Drag.DRAG_MOVE,
       start: this.startPos,
       current: pos,
-      delta
+      delta,
     };
 
     const evt: ICommonEvent<IDragMoveData> = new CommonEvent(
-      DRAG_MOVE_EVENT,
+      Drag.DRAG_MOVE,
       TimeStamp.now(),
       data
     );
@@ -81,21 +76,18 @@ export class DOMDragController extends BaseDragController {
     this.dragging = false;
 
     const data: IDragEndData = {
-      event: DRAG_END_EVENT,
+      event: Drag.DRAG_END,
       start: this.startPos,
-      end: pos
+      end: pos,
     };
 
     const evt: ICommonEvent<IDragEndData> = new CommonEvent(
-      DRAG_END_EVENT,
+      Drag.DRAG_END,
       TimeStamp.now(),
       data
     );
 
     this.emitEnd(evt);
-
-    this.startPos = null;
-    this.lastPos = null;
   }
 
   dispose(): void {

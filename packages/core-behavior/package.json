@@ -11,7 +11,7 @@
     "test": "vitest run --config ../../vitest.config.ts"
   },
   "dependencies": {
-    "@my-graphics/core-filesystem": "workspace:*"
+    "@monorepo/core-filesystem": "workspace:*"
   },
   "exports": {
     ".": {
@@ -20,4 +20,3 @@
     }
   }
 }
-
