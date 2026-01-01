@@ -1,4 +1,4 @@
-import { Point2 } from "@monorepo/core-math";
+import type { Point2 } from "@monorepo/core-math";
 
 // ---------- Turtle State ----------
 export interface TurtleState {

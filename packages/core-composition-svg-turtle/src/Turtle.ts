@@ -1,6 +1,6 @@
  
-import { Point2 } from "@monorepo/core-math";
-import { TurtleState } from "./TurtleState.js";
+import type { Point2 } from "@monorepo/core-math";
+import type { TurtleState } from "./TurtleState.js";
 
 // ---------- Turtle (Pure Cartesian, Push / Pop) ----------
 
