@@ -17,10 +17,8 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "moduleDetection": "force",
-    "noEmit": false,
+    "noEmit": true,
     "outDir": "dist",
-    "sourceMap": true,
-    "inlineSources": true,
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
