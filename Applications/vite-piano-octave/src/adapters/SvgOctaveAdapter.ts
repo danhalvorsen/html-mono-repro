@@ -9,6 +9,9 @@ const SPACE_PERCENT = 1;
 // tolerances
 const EPS = 1e-6;
 
+// total gap between overlapping edges (each polygon moves GAP/2 away from the overlap line)
+const GAP = 2;
+
 type Point = readonly [number, number];
 
 type Segment = {
@@ -26,13 +29,13 @@ export default class SvgOctaveAdapter {
     const spaceXHalf = this.computeGlobalSpaceXHalf(polygons);
     const matrix = `matrix(1,0,0,1,${spaceXHalf},0)`;
 
-    const sharedLines = this.computeSharedAxisAlignedEdges(polygons);
+    // "overlapping edges" (vertical + horizontal) across ALL keys (incl black)
+    const overlapLines = this.computeSharedAxisAlignedEdges(polygons);
 
     return svg`
       <svg viewBox="0 0 169 ${GEOMETRY_HEIGHT_PERCENT}" xmlns="http://www.w3.org/2000/svg">
         <g transform="${matrix}">
-          ${polygons.map(p => this.renderPolygonLocal(p))}
-          ${sharedLines.map(l => this.renderRedLineLocal(l))}
+          ${polygons.map(p => this.renderPolygonLocal(p, overlapLines))}
         </g>
       </svg>
     `;
@@ -42,8 +45,53 @@ export default class SvgOctaveAdapter {
   // Rendering (local geometry coordinates; group transform handles spacing) //
   // --------------------------------------------------------------------- //
 
-  private renderPolygonLocal(p: PlacedPolygon) {
-    const points = p.geometry.points
+  /**
+   * Render-time deformation only:
+   * For every vertex that lies on an overlapping vertical/horizontal segment,
+   * push it away from that overlap line by GAP/2, creating a real visible gap.
+   */
+  private renderPolygonLocal(p: PlacedPolygon, overlapLines: readonly OrientedSharedLine[]) {
+    const pts = p.geometry.points as readonly Point[];
+
+    // classify side relative to the overlap line using bbox center
+    const box = this.bboxOf(pts);
+    const cx = (box.minX + box.maxX) * 0.5;
+    const cy = (box.minY + box.maxY) * 0.5;
+
+    const half = GAP * 0.5;
+
+    const adjusted = pts.map(([x, y]) => {
+      let nx = x;
+      let ny = y;
+
+      // NOTE: points are already sorted CW in your dataset (not required here).
+      // We only adjust vertices that lie ON an overlap segment, not whole polygons.
+      for (const l of overlapLines) {
+        if (l.kind === "V") {
+          // vertex lies on overlapping vertical segment?
+          if (
+            Math.abs(nx - l.x) <= EPS &&
+            y >= l.y1 - EPS &&
+            y <= l.y2 + EPS
+          ) {
+            nx += cx < l.x ? -half : +half;
+          }
+        } else {
+          // vertex lies on overlapping horizontal segment?
+          if (
+            Math.abs(ny - l.y) <= EPS &&
+            x >= l.x1 - EPS &&
+            x <= l.x2 + EPS
+          ) {
+            ny += cy < l.y ? -half : +half;
+          }
+        }
+      }
+
+      return [nx, ny] as const;
+    });
+
+    const points = adjusted
       .map(([x, y]) => `${x},${GEOMETRY_HEIGHT_PERCENT - y}`)
       .join(" ");
 
@@ -56,38 +104,8 @@ export default class SvgOctaveAdapter {
     `;
   }
 
-  private renderRedLineLocal(l: OrientedSharedLine) {
-    if (l.kind === "V") {
-      const y1 = GEOMETRY_HEIGHT_PERCENT - l.y1;
-      const y2 = GEOMETRY_HEIGHT_PERCENT - l.y2;
-
-      return svg`
-        <line
-          x1="${l.x}" y1="${y1}"
-          x2="${l.x}" y2="${y2}"
-          stroke="red"
-          stroke-width="0.8"
-          vector-effect="non-scaling-stroke"
-        />
-      `;
-    }
-
-    // Horizontal
-    const y = GEOMETRY_HEIGHT_PERCENT - l.y;
-
-    return svg`
-      <line
-        x1="${l.x1}" y1="${y}"
-        x2="${l.x2}" y2="${y}"
-        stroke="red"
-        stroke-width="0.8"
-        vector-effect="non-scaling-stroke"
-      />
-    `;
-  }
-
   // ------------------------------------------------------------- //
-  // Shared edges: vertical + horizontal, across ALL keys (incl black)
+  // Overlapping edges: vertical + horizontal, across ALL keys      //
   // ------------------------------------------------------------- //
 
   private computeSharedAxisAlignedEdges(polygons: readonly PlacedPolygon[]): OrientedSharedLine[] {
@@ -97,17 +115,19 @@ export default class SvgOctaveAdapter {
 
     for (let i = 0; i < polygons.length; i++) {
       const A = polygons[i].geometry;
-      const aEdges = this.extractAxisAlignedEdges(A.points as readonly Point[]);
+      const aPts = A.points as readonly Point[];
+      const aEdges = this.extractAxisAlignedEdges(aPts);
+
+      const aBox = this.bboxOf(aPts);
 
       for (let j = i + 1; j < polygons.length; j++) {
         const B = polygons[j].geometry;
+        const bPts = B.points as readonly Point[];
 
         // Fast reject by bbox
-        if (!this.bboxIntersects(this.bboxOf(A.points as readonly Point[]), this.bboxOf(B.points as readonly Point[]))) {
-          continue;
-        }
+        if (!this.bboxIntersects(aBox, this.bboxOf(bPts))) continue;
 
-        const bEdges = this.extractAxisAlignedEdges(B.points as readonly Point[]);
+        const bEdges = this.extractAxisAlignedEdges(bPts);
 
         // Match vertical-with-vertical + horizontal-with-horizontal
         for (const ea of aEdges) {
@@ -171,7 +191,7 @@ export default class SvgOctaveAdapter {
     const bVert = Math.abs(cx - dx) <= EPS && Math.abs(cy - dy) > EPS;
     const bHorz = Math.abs(cy - dy) <= EPS && Math.abs(cx - dx) > EPS;
 
-    // Vertical shared edge
+    // Vertical overlapping segment
     if (aVert && bVert) {
       if (Math.abs(ax - cx) > EPS) return null;
 
@@ -188,7 +208,7 @@ export default class SvgOctaveAdapter {
       return { kind: "V", x: ax, y1, y2 };
     }
 
-    // Horizontal shared edge
+    // Horizontal overlapping segment
     if (aHorz && bHorz) {
       if (Math.abs(ay - cy) > EPS) return null;
 
@@ -231,7 +251,7 @@ export default class SvgOctaveAdapter {
   }
 
   private widthOf(points: readonly Point[]): number {
-    const xs = points.map(p => p[0]);
+    const xs = points.map(pt => pt[0]);
     return Math.max(...xs) - Math.min(...xs);
   }
 
@@ -250,8 +270,10 @@ export default class SvgOctaveAdapter {
     return { minX, maxX, minY, maxY };
   }
 
-  private bboxIntersects(a: { minX: number; maxX: number; minY: number; maxY: number },
-                         b: { minX: number; maxX: number; minY: number; maxY: number }) {
+  private bboxIntersects(
+    a: { minX: number; maxX: number; minY: number; maxY: number },
+    b: { minX: number; maxX: number; minY: number; maxY: number }
+  ) {
     return !(a.maxX < b.minX || b.maxX < a.minX || a.maxY < b.minY || b.maxY < a.minY);
   }
 }
