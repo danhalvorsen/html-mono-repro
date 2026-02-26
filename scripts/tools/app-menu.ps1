@@ -1,9 +1,19 @@
 # scripts/tools/app-menu.ps1
 # Professional boxed menu (Unicode) + tabs (\t) + color
 # Controls:
-#   - Type digits for index, ENTER selects, BACKSPACE edits, ESC exits
+#   - ↑/↓ selects, PgUp/PgDn scrolls, Enter selects, ESC exits
 #   - T toggles sort (DATE/NAME) and re-renders
 #   - After app select: 0=build, 1=dev (default=dev), T toggles selection
+#
+# Dev "last mile":
+#   - Runs pnpm dev in-process (same console) via a spawned process attached to console
+#   - Probes the Vite URL until it responds
+#   - Opens browser once ready
+#   - Pins port to 5173 (deterministic open)
+#
+# Robustness:
+#   - Resolves pnpm deterministically: pnpm on PATH -> corepack pnpm -> npx pnpm
+#   - Clear error if none found
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
@@ -73,8 +83,8 @@ function Write-BoxLine {
     With-Fg $Color { Write-Host ("│" + $text + (" " * $pad) + "│") }
 }
 
-function Write-BoxTop { param([Parameter(Mandatory)] [int]$Width) Write-Host ("┌" + ("─" * $Width) + "┐") }
-function Write-BoxSep { param([Parameter(Mandatory)] [int]$Width) Write-Host ("├" + ("─" * $Width) + "┤") }
+function Write-BoxTop    { param([Parameter(Mandatory)] [int]$Width) Write-Host ("┌" + ("─" * $Width) + "┐") }
+function Write-BoxSep    { param([Parameter(Mandatory)] [int]$Width) Write-Host ("├" + ("─" * $Width) + "┤") }
 function Write-BoxBottom { param([Parameter(Mandatory)] [int]$Width) Write-Host ("└" + ("─" * $Width) + "┘") }
 
 function Fit {
@@ -98,64 +108,93 @@ function Sort-Apps {
 # ----------------------------
 # Render app list (boxed)
 # ----------------------------
+function Write-BoxLineHighlighted {
+    param(
+        [Parameter(Mandatory)] [string]$Content,
+        [Parameter(Mandatory)] [int]$Width,
+        [ConsoleColor]$Fg = [ConsoleColor]::Black,
+        [ConsoleColor]$Bg = [ConsoleColor]::Cyan
+    )
+
+    $text = $Content
+    if ($text.Length -gt $Width) { $text = $text.Substring(0, $Width) }
+    $pad = $Width - $text.Length
+
+    $oldFg = [Console]::ForegroundColor
+    $oldBg = [Console]::BackgroundColor
+    try {
+        [Console]::ForegroundColor = $Fg
+        [Console]::BackgroundColor = $Bg
+        Write-Host ("│" + $text + (" " * $pad) + "│")
+    }
+    finally {
+        [Console]::ForegroundColor = $oldFg
+        [Console]::BackgroundColor = $oldBg
+    }
+}
+
 function Render-AppsBox {
     param(
         [Parameter(Mandatory)] $Apps,
         [Parameter(Mandatory)] [ValidateSet("date","name")] [string]$Sort,
-        [Parameter(Mandatory)] [AllowEmptyString()] [string]$Typed
+        [Parameter(Mandatory)] [int]$SelectedIndex,
+        [Parameter(Mandatory)] [int]$TopIndex
     )
 
-    $inner = [Math]::Min(120, [Math]::Max(80, [Console]::WindowWidth - 4))
+    $inner = [Math]::Min(120, [Math]::Max(90, [Console]::WindowWidth - 4))
+
+    # Layout
+    $wIndex = 4
+    $wName  = 28
+    $wDate  = 16
+    $wPath  = [Math]::Max(10, $inner - ($wIndex + 1 + $wName + 1 + $wDate + 1))
+
+    # How many rows can we show
+    $rowsVisible = [Math]::Max(8, [Console]::WindowHeight - 12)
+    $end = [Math]::Min($Apps.Count, $TopIndex + $rowsVisible)
 
     Clear-Host
     Write-BoxTop -Width $inner
 
     $sortBadge = if ($Sort -eq "date") { "DATE" } else { "NAME" }
-    $header = " MonoRepro App Menu`t`t`t" + (Get-Date).ToString("yyyy-MM-dd HH:mm")
+    $header = " MonoRepro App Menu    " + (Get-Date).ToString("yyyy-MM-dd HH:mm")
     Write-BoxLine -Width $inner -Color Cyan -Content (Fit $header $inner)
     Write-BoxSep -Width $inner
 
-    $statusIndex = if ([string]::IsNullOrWhiteSpace($Typed)) { "<type digits>" } else { $Typed }
-    $status = " Sort:`t[$sortBadge]`t(press T)`tIndex:`t$statusIndex`tApps:`t$($Apps.Count)"
-    Write-BoxLine -Width $inner -Color Gray -Content (Fit $status $inner)
-
-    $hint = " T=Toggle Sort`tESC=Exit`tBackspace=Edit`tEnter=Select"
-    Write-BoxLine -Width $inner -Color DarkGray -Content (Fit $hint $inner)
+    $status = " Sort: [$sortBadge] (T toggles)   ↑↓ move   PgUp/PgDn scroll   Enter select   ESC exit   Apps: $($Apps.Count)"
+    Write-BoxLine -Width $inner -Color DarkGray -Content (Fit $status $inner)
 
     Write-BoxSep -Width $inner
-   $wIndex = 4
-$wName  = 28
-$wDate  = 16   # "yyyy-MM-dd HH:mm" = 16 chars
-$wPath  = [Math]::Max(10, $inner - ($wIndex + 1 + $wName + 1 + $wDate + 1)) # remaining
 
-$header = ("{0,-$wIndex} {1,-$wName} {2,-$wDate} {3,-$wPath}" -f "#", "Name", "Last Modified", "Path")
-Write-BoxLine -Width $inner -Color DarkCyan -Content (Fit $header $inner)
-Write-BoxSep -Width $inner
+    $hdr = ("{0,-$wIndex} {1,-$wName} {2,-$wDate} {3,-$wPath}" -f "#", "Name", "Last Modified", "Path")
+    Write-BoxLine -Width $inner -Color DarkCyan -Content (Fit $hdr $inner)
+    Write-BoxSep -Width $inner
 
-$maxRows = [Math]::Min($Apps.Count, [Math]::Max(8, [Console]::WindowHeight - 12))
-for ($i = 0; $i -lt $maxRows; $i++) {
-    $a = $Apps[$i]
+    for ($i = $TopIndex; $i -lt $end; $i++) {
+        $a = $Apps[$i]
 
-    $idxText  = "$i"
-    $nameText = Fit $a.Name $wName
-    $dateText = $a.LastModified.ToString("yyyy-MM-dd HH:mm")
-    $pathText = Fit $a.Path $wPath
+        $row = ("{0,-$wIndex} {1,-$wName} {2,-$wDate} {3,-$wPath}" -f
+            "$i",
+            (Fit $a.Name $wName),
+            ($a.LastModified.ToString("yyyy-MM-dd HH:mm")),
+            (Fit $a.Path $wPath)
+        )
 
-    $row = ("{0,-$wIndex} {1,-$wName} {2,-$wDate} {3,-$wPath}" -f $idxText, $nameText, $dateText, $pathText)
-    Write-BoxLine -Width $inner -Color Gray -Content (Fit $row $inner)
-}
+        if ($i -eq $SelectedIndex) {
+            Write-BoxLineHighlighted -Width $inner -Content (Fit $row $inner) -Fg Black -Bg Cyan
+        }
+        else {
+            Write-BoxLine -Width $inner -Color Gray -Content (Fit $row $inner)
+        }
+    }
 
-    if ($Apps.Count -gt $maxRows) {
+    if ($Apps.Count -gt $end) {
         Write-BoxSep -Width $inner
-        Write-BoxLine -Width $inner -Color DarkGray -Content (Fit (" … showing $maxRows of $($Apps.Count). Resize console to show more.") $inner)
+        Write-BoxLine -Width $inner -Color DarkGray -Content (Fit " … more below (PgDn)" $inner)
     }
 
     Write-BoxBottom -Width $inner
     Write-Host ""
-
-    # Sort badge color (overlay info line below box)
-    Write-Host -NoNewline "Sort badge: "
-    if ($Sort -eq "date") { With-Fg Green { Write-Host "[DATE]" } } else { With-Fg Yellow { Write-Host "[NAME]" } }
 }
 
 function Select-IndexInteractive {
@@ -164,40 +203,43 @@ function Select-IndexInteractive {
         [Parameter(Mandatory)] [ref]$SortRef
     )
 
-    $typed = ""
+    $selected = 0
+    $top = 0
 
     while ($true) {
-        Render-AppsBox -Apps $Apps -Sort $SortRef.Value -Typed $typed
-        $key = [Console]::ReadKey($true)
+        Render-AppsBox -Apps $Apps -Sort $SortRef.Value -SelectedIndex $selected -TopIndex $top
 
+        $key = [Console]::ReadKey($true)
         switch ($key.Key) {
             ([ConsoleKey]::Escape) { return $null }
+            ([ConsoleKey]::Enter)  { return $selected }
 
-            ([ConsoleKey]::Backspace) {
-                if ($typed.Length -gt 0) { $typed = $typed.Substring(0, $typed.Length - 1) }
+            ([ConsoleKey]::UpArrow) {
+                if ($selected -gt 0) { $selected-- }
             }
-
-            ([ConsoleKey]::Enter) {
-                if ([string]::IsNullOrWhiteSpace($typed)) { continue }
-
-                [int]$idx = 0
-                if (-not [int]::TryParse($typed, [ref]$idx)) { $typed = ""; continue }
-                if ($idx -lt 0 -or $idx -ge $Apps.Count) { $typed = ""; continue }
-                return $idx
+            ([ConsoleKey]::DownArrow) {
+                if ($selected -lt ($Apps.Count - 1)) { $selected++ }
             }
-
+            ([ConsoleKey]::PageUp) {
+                $selected = [Math]::Max(0, $selected - 10)
+            }
+            ([ConsoleKey]::PageDown) {
+                $selected = [Math]::Min($Apps.Count - 1, $selected + 10)
+            }
             default {
                 if ($key.KeyChar -eq 't' -or $key.KeyChar -eq 'T') {
                     $SortRef.Value = if ($SortRef.Value -eq "date") { "name" } else { "date" }
                     $Apps = Sort-Apps -Apps $Apps -Sort $SortRef.Value
-                    continue
-                }
-
-                if ($key.KeyChar -ge '0' -and $key.KeyChar -le '9') {
-                    if ($typed.Length -lt 6) { $typed += [string]$key.KeyChar }
+                    if ($selected -gt ($Apps.Count - 1)) { $selected = $Apps.Count - 1 }
                 }
             }
         }
+
+        # keep selected in view
+        $rowsVisible = [Math]::Max(8, [Console]::WindowHeight - 12)
+        if ($selected -lt $top) { $top = $selected }
+        if ($selected -ge ($top + $rowsVisible)) { $top = $selected - $rowsVisible + 1 }
+        if ($top -lt 0) { $top = 0 }
     }
 }
 
@@ -263,6 +305,112 @@ function Select-ActionInteractive {
             }
         }
     }
+}
+
+# ----------------------------
+# Dev "last mile" helpers
+# ----------------------------
+function Test-HttpOk {
+    param(
+        [Parameter(Mandatory)] [string]$Url,
+        [int]$TimeoutSeconds = 1
+    )
+    try {
+        # GET is more compatible than HEAD across dev servers/proxies.
+        $resp = Invoke-WebRequest -Uri $Url -UseBasicParsing -Method Get -TimeoutSec $TimeoutSeconds
+        return ($resp.StatusCode -ge 200 -and $resp.StatusCode -lt 500)
+    } catch {
+        return $false
+    }
+}
+
+function Wait-ForHttpOk {
+    param(
+        [Parameter(Mandatory)] [string]$Url,
+        [int]$MaxWaitSeconds = 12
+    )
+    $deadline = (Get-Date).AddSeconds($MaxWaitSeconds)
+    while ((Get-Date) -lt $deadline) {
+        if (Test-HttpOk -Url $Url) { return $true }
+        Start-Sleep -Milliseconds 250
+    }
+    return $false
+}
+
+# ----------------------------
+# pnpm resolution + process launch
+# ----------------------------
+function Resolve-CommandPathOrNull {
+    param([Parameter(Mandatory)] [string]$Name)
+    try {
+        $cmd = Get-Command $Name -ErrorAction Stop
+        return $cmd.Source
+    } catch {
+        return $null
+    }
+}
+
+function Resolve-PnpmInvocation {
+    # Returns: @{ FileName = "<exe>"; PrefixArgs = @("pnpm")? }
+    # PrefixArgs are inserted BEFORE normal pnpm args (for corepack/npx shims).
+    $pnpm = Resolve-CommandPathOrNull -Name "pnpm"
+    if ($pnpm) { return @{ FileName = $pnpm; PrefixArgs = @() } }
+
+    $corepack = Resolve-CommandPathOrNull -Name "corepack"
+    if ($corepack) { return @{ FileName = $corepack; PrefixArgs = @("pnpm") } }
+
+    $npx = Resolve-CommandPathOrNull -Name "npx"
+    if ($npx) { return @{ FileName = $npx; PrefixArgs = @("pnpm") } }
+
+    return $null
+}
+
+function Quote-ArgForProcess {
+    param([Parameter(Mandatory)] [string]$Arg)
+    if ($Arg -match '\s|"') {
+        return '"' + ($Arg -replace '"','\"') + '"'
+    }
+    return $Arg
+}
+
+function Start-PnpmRun {
+    param(
+        [Parameter(Mandatory)] [string]$RepoRoot,
+        [Parameter(Mandatory)] [string]$Filter,
+        [Parameter(Mandatory)] [ValidateSet("build","dev")] [string]$Action,
+        [string[]] $ExtraArgs = @()
+    )
+
+    $inv = Resolve-PnpmInvocation
+    if ($null -eq $inv) {
+        throw @"
+pnpm not found.
+Fix options (pick one) and restart terminal:
+  1) Corepack:
+       corepack enable
+       corepack prepare pnpm@latest --activate
+  2) Global:
+       npm i -g pnpm
+"@
+    }
+
+    $psi = New-Object System.Diagnostics.ProcessStartInfo
+    $psi.FileName = $inv.FileName
+    $psi.WorkingDirectory = $RepoRoot
+    $psi.UseShellExecute = $false
+    $psi.RedirectStandardOutput = $false
+    $psi.RedirectStandardError  = $false
+
+    $args = @()
+    $args += $inv.PrefixArgs
+    $args += @("-F", $Filter, $Action)
+    $args += $ExtraArgs
+
+    $psi.Arguments = ($args | ForEach-Object { Quote-ArgForProcess -Arg ([string]$_) }) -join " "
+
+    $p = [System.Diagnostics.Process]::Start($psi)
+    if ($null -eq $p) { throw "Failed to start pnpm process." }
+    return $p
 }
 
 # ----------------------------
@@ -337,12 +485,34 @@ $action = Select-ActionInteractive -AppName $app.Name -AppPath $app.Path
 if ($null -eq $action) { exit 0 }
 
 Clear-Host
-With-Fg Cyan { Write-Host "Executing:" }
-With-Fg Yellow { Write-Host ("pnpm -F `"$($app.Name)...`" $action") }
+
+$filter = "$($app.Name)..."
+
+With-Fg Cyan   { Write-Host "Executing:" }
+With-Fg Yellow { Write-Host ("pnpm -F `"$filter`" $action") }
+Write-Host ""
 
 Push-Location $RepoRoot
 try {
-    & pnpm -F "$($app.Name)..." $action
+    if ($action -eq "dev") {
+        $port = 5173
+        $url  = "http://localhost:$port/"
+
+        # Run dev server (attached). Pass-through args to underlying dev runner via `-- ...`
+        $p = Start-PnpmRun -RepoRoot $RepoRoot -Filter $filter -Action "dev" -ExtraArgs @("--", "--port", "$port")
+
+        # Probe and open browser once responding (do not fail if it never responds)
+        if (Wait-ForHttpOk -Url $url -MaxWaitSeconds 12) {
+            Start-Process $url
+        }
+
+        $p.WaitForExit()
+        if ($p.ExitCode -ne 0) { exit $p.ExitCode }
+        exit 0
+    }
+
+    # Build uses the current PowerShell invocation.
+    & pnpm -F $filter $action
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 finally {
