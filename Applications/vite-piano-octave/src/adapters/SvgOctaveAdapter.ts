@@ -1,56 +1,43 @@
-// Applications/vite-piano-octave/src/adapters/SvgOctaveAdapter.ts
-
 import { svg } from "lit";
 import type { PlacedPolygon } from "../octave/PlacedPolygon";
-
-const GEOMETRY_HEIGHT_PERCENT = 100;
-const SPACE_PERCENT = 1;
-
-// tolerances
-const EPS = 1e-6;
-
-// total gap between overlapping edges (each polygon moves GAP/2 away from the overlap line)
-const GAP = 2;
-
-type Point = readonly [number, number];
-
-type Segment = {
-  readonly a: Point;
-  readonly b: Point;
-};
-
-type OrientedSharedLine =
-  | { readonly kind: "V"; readonly x: number; readonly y1: number; readonly y2: number }
-  | { readonly kind: "H"; readonly y: number; readonly x1: number; readonly x2: number };
+import type { OrientedSharedLine } from "./OrientedSharedLine";
+import { GEOMETRY_HEIGHT_PERCENT, type Point, GAP, EPS, type Segment, SPACE_PERCENT } from "../types";
 
 export default class SvgOctaveAdapter {
   adapt(polygons: PlacedPolygon[]) {
     // One global spacing transform for ALL polygons (keeps geometry comparable)
     const spaceXHalf = this.computeGlobalSpaceXHalf(polygons);
-    const matrix = `matrix(1,0,0,1,${spaceXHalf},0)`;
+    const tx = this.snapHalfPx(spaceXHalf);
+    const matrix = `matrix(1,0,0,1,${tx},0)`;
 
     // "overlapping edges" (vertical + horizontal) across ALL keys (incl black)
     const overlapLines = this.computeSharedAxisAlignedEdges(polygons);
 
     return svg`
-      <svg viewBox="0 0 169 ${GEOMETRY_HEIGHT_PERCENT}" xmlns="http://www.w3.org/2000/svg">
-        <g transform="${matrix}">
-          ${polygons.map(p => this.renderPolygonLocal(p, overlapLines))}
-        </g>
-      </svg>
-    `;
+  <svg
+    viewBox="0 0 169 ${GEOMETRY_HEIGHT_PERCENT}"
+    xmlns="http://www.w3.org/2000/svg"
+    shape-rendering="geometricPrecision"
+  >
+    <g transform="${matrix}">
+      ${polygons.map((p) => this.renderPolygonLocal(p, overlapLines))}
+    </g>
+  </svg>
+`;
   }
 
   // --------------------------------------------------------------------- //
   // Rendering (local geometry coordinates; group transform handles spacing) //
   // --------------------------------------------------------------------- //
-
   /**
    * Render-time deformation only:
    * For every vertex that lies on an overlapping vertical/horizontal segment,
    * push it away from that overlap line by GAP/2, creating a real visible gap.
    */
-  private renderPolygonLocal(p: PlacedPolygon, overlapLines: readonly OrientedSharedLine[]) {
+  private renderPolygonLocal(
+    p: PlacedPolygon,
+    overlapLines: readonly OrientedSharedLine[]
+  ) {
     const pts = p.geometry.points as readonly Point[];
 
     // classify side relative to the overlap line using bbox center
@@ -69,26 +56,18 @@ export default class SvgOctaveAdapter {
       for (const l of overlapLines) {
         if (l.kind === "V") {
           // vertex lies on overlapping vertical segment?
-          if (
-            Math.abs(nx - l.x) <= EPS &&
-            y >= l.y1 - EPS &&
-            y <= l.y2 + EPS
-          ) {
+          if (Math.abs(nx - l.x) <= EPS && y >= l.y1 - EPS && y <= l.y2 + EPS) {
             nx += cx < l.x ? -half : +half;
           }
         } else {
           // vertex lies on overlapping horizontal segment?
-          if (
-            Math.abs(ny - l.y) <= EPS &&
-            x >= l.x1 - EPS &&
-            x <= l.x2 + EPS
-          ) {
+          if (Math.abs(ny - l.y) <= EPS && x >= l.x1 - EPS && x <= l.x2 + EPS) {
             ny += cy < l.y ? -half : +half;
           }
         }
       }
 
-      return [nx, ny] as const;
+      return [this.snap(nx), this.snap(ny)] as const;
     });
 
     const points = adjusted
@@ -96,19 +75,31 @@ export default class SvgOctaveAdapter {
       .join(" ");
 
     return svg`
-      <polygon
-        points="${points}"
-        fill="${p.isBlack ? "#000" : "#fff"}"
-        stroke="#000"
-      />
-    `;
+<polygon
+  points="${points}"
+  fill="${p.isBlack ? "#000" : "#fff"}"
+  stroke="#000"
+  stroke-width="1"
+  stroke-linecap="butt"
+  stroke-linejoin="miter"
+  vector-effect="non-scaling-stroke"
+/>
+`;
   }
 
+  private snap(v: number): number {
+    // snap to half units => stable rasterization for 1px strokes
+    return Math.round(v * 2) / 2;
+  }
+  private snapHalfPx(v: number): number {
+    return Math.round(v * 2) / 2;
+  }
   // ------------------------------------------------------------- //
   // Overlapping edges: vertical + horizontal, across ALL keys      //
   // ------------------------------------------------------------- //
-
-  private computeSharedAxisAlignedEdges(polygons: readonly PlacedPolygon[]): OrientedSharedLine[] {
+  private computeSharedAxisAlignedEdges(
+    polygons: readonly PlacedPolygon[]
+  ): OrientedSharedLine[] {
     // Small N (12) => simple all-pairs is fine and very robust.
     const shared: OrientedSharedLine[] = [];
     const seen = new Set<string>();
@@ -230,7 +221,7 @@ export default class SvgOctaveAdapter {
 
   private lineKey(l: OrientedSharedLine): string {
     // quantize to avoid eps-noise duplicates
-    const q = (v: number) => Math.round(v * 1_000_000) / 1_000_000;
+    const q = (v: number) => Math.round(v * 1000000) / 1000000;
 
     if (l.kind === "V") return `V:${q(l.x)}:${q(l.y1)}:${q(l.y2)}`;
     return `H:${q(l.y)}:${q(l.x1)}:${q(l.x2)}`;
@@ -239,11 +230,12 @@ export default class SvgOctaveAdapter {
   // ------------------------------------------------------------- //
   // Layout: compute one global spacing shift (no geometry changes) //
   // ------------------------------------------------------------- //
-
   private computeGlobalSpaceXHalf(polygons: readonly PlacedPolygon[]): number {
     // Use median white-key width as representative (stable)
-    const whites = polygons.filter(p => !p.isBlack).map(p => p.geometry.points as readonly Point[]);
-    const widths = whites.map(pts => this.widthOf(pts)).sort((a, b) => a - b);
+    const whites = polygons
+      .filter((p) => !p.isBlack)
+      .map((p) => p.geometry.points as readonly Point[]);
+    const widths = whites.map((pts) => this.widthOf(pts)).sort((a, b) => a - b);
     const medianWidth = widths[Math.floor(widths.length / 2)] ?? 0;
 
     const spaceX = medianWidth * (SPACE_PERCENT / 100);
@@ -251,14 +243,13 @@ export default class SvgOctaveAdapter {
   }
 
   private widthOf(points: readonly Point[]): number {
-    const xs = points.map(pt => pt[0]);
+    const xs = points.map((pt) => pt[0]);
     return Math.max(...xs) - Math.min(...xs);
   }
 
   // --------------------- //
   // bbox helpers          //
   // --------------------- //
-
   private bboxOf(points: readonly Point[]) {
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
     for (const [x, y] of points) {
@@ -271,9 +262,14 @@ export default class SvgOctaveAdapter {
   }
 
   private bboxIntersects(
-    a: { minX: number; maxX: number; minY: number; maxY: number },
-    b: { minX: number; maxX: number; minY: number; maxY: number }
+    a: { minX: number; maxX: number; minY: number; maxY: number; },
+    b: { minX: number; maxX: number; minY: number; maxY: number; }
   ) {
-    return !(a.maxX < b.minX || b.maxX < a.minX || a.maxY < b.minY || b.maxY < a.minY);
+    return !(
+      a.maxX < b.minX ||
+      b.maxX < a.minX ||
+      a.maxY < b.minY ||
+      b.maxY < a.minY
+    );
   }
 }

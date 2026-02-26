@@ -3,6 +3,8 @@ packages:
   - "packages/**"
   - "!packages/core-composition-three"
   - "!packages/core-composition-web-audio"
+  # Applications (Vite and other demos) are part of the workspace too
+  - "Applications/**"
 
 ignoredBuiltDependencies:
   - esbuild

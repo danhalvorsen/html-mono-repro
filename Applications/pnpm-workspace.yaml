@@ -5,8 +5,11 @@ packages:
   - "../packages/core-composition-abstract"
   - "../packages/core-composition-svg-turtle"
   - "../packages/core-design-patterns"
+  - "../packages/core-ioc-inversify"
   - "../packages/core-threejs"
+  - "../packages/core-composition-abstract-new"
   - "../packages/core-math"
+  - "./vite-piano-octave"
 
 ignoredBuiltDependencies:
   - esbuild

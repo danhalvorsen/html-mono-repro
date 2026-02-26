@@ -6,11 +6,7 @@ import SvgOctaveAdapter from "../adapters/SvgOctaveAdapter";
 import { DEFAULT_OCTAVE_GEOMETRY } from "../octave/geometry/DefaultOctaveGeometry";
 import type { Polygon2D } from "../octave/geometry/Polygon2D";
 import type { PlacedPolygon } from "../octave/PlacedPolygon";
-
-type RawPolygon2D = {
-  name: string;
-  points: number[][];
-};
+import type { RawPolygon2D } from "../types";
 
 export class PianoOctaveHost extends LitElement {
 

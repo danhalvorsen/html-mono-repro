@@ -1,17 +1,13 @@
 {
-  "name": "@monorepo/Multimedia",
+  "name": "@monorepo/multimedia",
   "private": true,
   "version": "1.0.0",
-  "workspaces": [
-    "Packages/*",
-    "composite-design-pattern"
-  ],
+  "type": "module",
   "scripts": {
-    "build": "echo \"Multimedia aggregator has no direct build; build individual apps via root pnpm -r run build\"",
-    "ensure-deps": "pnpm install",
-    "test": "pnpm run ensure-deps && pnpm --workspace-root vitest --config ./vitest.config.ts",
-    "test:watch": "pnpm run ensure-deps && pnpm --workspace-root vitest --config ./vitest.config.ts --watch",
-    "test:coverage": "pnpm run ensure-deps && pnpm --workspace-root vitest --config ./vitest.config.ts --coverage",
+    "build": "echo \"Multimedia aggregator has no direct build; build via root pnpm -r run build\"",
+    "test": "pnpm --workspace-root vitest --config ./vitest.config.ts",
+    "test:watch": "pnpm --workspace-root vitest --config ./vitest.config.ts --watch",
+    "test:coverage": "pnpm --workspace-root vitest --config ./vitest.config.ts --coverage",
     "sync:test-scripts": "node ./scripts/update-test-scripts.js"
   },
   "devDependencies": {

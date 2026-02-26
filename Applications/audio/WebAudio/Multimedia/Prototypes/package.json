@@ -1,5 +1,5 @@
 ﻿{
-    "name": "@monorepo/Prototypes",
+    "name": "@monorepo/prototypes",
     "version": "1.0.0",
     "type": "module",
     "main": "dist/index.js",
@@ -14,6 +14,6 @@
         "build": "echo \"Prototypes build temporarily disabled; fix its tsconfig path before enabling.\" && exit 0"
     },
     "dependencies": {
-       "music-note-sheet-abstract": "workspace:*"
+        "@monorepo/music-note-sheet-abstract": "workspace:*"
     }
 }

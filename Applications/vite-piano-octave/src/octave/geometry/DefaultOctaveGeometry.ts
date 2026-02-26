@@ -1,4 +1,3 @@
-import type { Polygon2D } from "./Polygon2D";
 
 export const DEFAULT_OCTAVE_GEOMETRY = {
   whiteKeys: [
