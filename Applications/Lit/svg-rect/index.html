@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>svg-rect</title>
+   <style>
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  .flex-container {
+    height: 100vh;          /* ✅ key */
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    gap: 0;
+  }
+
+  .flex-container > svg-canvas {
+    flex: 1 1 100%;
+    height: 100%;           /* ✅ key */
+    min-height: 0;          /* ✅ prevents flex overflow quirks */
+  }
+</style>
+  </head>
+  <body>
+    <div class="flex-container">
+      
+      <svg-canvas>
+        <mr-panel></mr-panel>
+      </svg-canvas>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
