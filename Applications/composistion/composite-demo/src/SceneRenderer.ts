@@ -1,4 +1,4 @@
-import type { CompositeNode } from "core-composition-svg";
+import type { CompositeNode } from "@monorepo/core-composition-svg";
 
 export class SceneRenderer {
   root: CompositeNode;

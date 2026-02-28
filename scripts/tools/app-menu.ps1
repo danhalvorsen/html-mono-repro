@@ -5,15 +5,13 @@
 #   - T toggles sort (DATE/NAME) and re-renders
 #   - After app select: 0=build, 1=dev (default=dev), T toggles selection
 #
-# Dev "last mile":
-#   - Runs pnpm dev in-process (same console) via a spawned process attached to console
-#   - Probes the Vite URL until it responds
-#   - Opens browser once ready
-#   - Pins port to 5173 (deterministic open)
+# Dev:
+#   - Starts pnpm dev ONLY (no HTTP probing, no curl, no URL open)
+#   - Pins port to 5173 (deterministic) by passing args to your dev script
 #
 # Robustness:
-#   - Resolves pnpm deterministically: pnpm on PATH -> corepack pnpm -> npx pnpm
-#   - Clear error if none found
+#   - Windows-safe pnpm resolution:
+#       pnpm.cmd/exe -> pnpm(.ps1 wrapped via pwsh/powershell) -> corepack pnpm -> npx pnpm
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
@@ -308,37 +306,7 @@ function Select-ActionInteractive {
 }
 
 # ----------------------------
-# Dev "last mile" helpers
-# ----------------------------
-function Test-HttpOk {
-    param(
-        [Parameter(Mandatory)] [string]$Url,
-        [int]$TimeoutSeconds = 1
-    )
-    try {
-        # GET is more compatible than HEAD across dev servers/proxies.
-        $resp = Invoke-WebRequest -Uri $Url -UseBasicParsing -Method Get -TimeoutSec $TimeoutSeconds
-        return ($resp.StatusCode -ge 200 -and $resp.StatusCode -lt 500)
-    } catch {
-        return $false
-    }
-}
-
-function Wait-ForHttpOk {
-    param(
-        [Parameter(Mandatory)] [string]$Url,
-        [int]$MaxWaitSeconds = 12
-    )
-    $deadline = (Get-Date).AddSeconds($MaxWaitSeconds)
-    while ((Get-Date) -lt $deadline) {
-        if (Test-HttpOk -Url $Url) { return $true }
-        Start-Sleep -Milliseconds 250
-    }
-    return $false
-}
-
-# ----------------------------
-# pnpm resolution + process launch
+# pnpm resolution + process launch (WINDOWS SAFE, NO URL, NO HTTP)
 # ----------------------------
 function Resolve-CommandPathOrNull {
     param([Parameter(Mandatory)] [string]$Name)
@@ -350,15 +318,56 @@ function Resolve-CommandPathOrNull {
     }
 }
 
-function Resolve-PnpmInvocation {
-    # Returns: @{ FileName = "<exe>"; PrefixArgs = @("pnpm")? }
-    # PrefixArgs are inserted BEFORE normal pnpm args (for corepack/npx shims).
-    $pnpm = Resolve-CommandPathOrNull -Name "pnpm"
-    if ($pnpm) { return @{ FileName = $pnpm; PrefixArgs = @() } }
+function Resolve-PwshOrPowershell {
+    $pwsh = Resolve-CommandPathOrNull -Name "pwsh"
+    if ($pwsh) { return $pwsh }
 
+    $powershell = Resolve-CommandPathOrNull -Name "powershell"
+    if ($powershell) { return $powershell }
+
+    return $null
+}
+
+function Resolve-PnpmInvocation {
+    # Returns: @{ FileName = "<exe>"; PrefixArgs = @(...) }
+    # PrefixArgs are inserted BEFORE normal pnpm args (corepack/npx shims, or pwsh wrapper for pnpm.ps1).
+
+    # Prefer actual executables on Windows
+    $pnpmCmd = Resolve-CommandPathOrNull -Name "pnpm.cmd"
+    if ($pnpmCmd) { return @{ FileName = $pnpmCmd; PrefixArgs = @() } }
+
+    $pnpmExe = Resolve-CommandPathOrNull -Name "pnpm.exe"
+    if ($pnpmExe) { return @{ FileName = $pnpmExe; PrefixArgs = @() } }
+
+    # Fallback: pnpm (may be .ps1)
+    $pnpm = Resolve-CommandPathOrNull -Name "pnpm"
+    if ($pnpm) {
+        $ext = [IO.Path]::GetExtension($pnpm).ToLowerInvariant()
+        if ($ext -eq ".ps1") {
+            $shell = Resolve-PwshOrPowershell
+            if (-not $shell) {
+                throw "pnpm resolves to a PowerShell script ($pnpm) but neither 'pwsh' nor 'powershell' was found on PATH."
+            }
+
+            return @{
+                FileName   = $shell
+                PrefixArgs = @(
+                    "-NoLogo",
+                    "-NoProfile",
+                    "-ExecutionPolicy", "Bypass",
+                    "-File", $pnpm
+                )
+            }
+        }
+
+        return @{ FileName = $pnpm; PrefixArgs = @() }
+    }
+
+    # Next: corepack pnpm
     $corepack = Resolve-CommandPathOrNull -Name "corepack"
     if ($corepack) { return @{ FileName = $corepack; PrefixArgs = @("pnpm") } }
 
+    # Last: npx pnpm
     $npx = Resolve-CommandPathOrNull -Name "npx"
     if ($npx) { return @{ FileName = $npx; PrefixArgs = @("pnpm") } }
 
@@ -495,25 +504,20 @@ Write-Host ""
 Push-Location $RepoRoot
 try {
     if ($action -eq "dev") {
+        # Start dev server ONLY. No HTTP probing. No URL. No browser.
         $port = 5173
-        $url  = "http://localhost:$port/"
-
-        # Run dev server (attached). Pass-through args to underlying dev runner via `-- ...`
         $p = Start-PnpmRun -RepoRoot $RepoRoot -Filter $filter -Action "dev" -ExtraArgs @("--", "--port", "$port")
-
-        # Probe and open browser once responding (do not fail if it never responds)
-        if (Wait-ForHttpOk -Url $url -MaxWaitSeconds 12) {
-            Start-Process $url
-        }
 
         $p.WaitForExit()
         if ($p.ExitCode -ne 0) { exit $p.ExitCode }
         exit 0
     }
 
-    # Build uses the current PowerShell invocation.
-    & pnpm -F $filter $action
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    # Build via the same process-start path (avoids pnpm.ps1 "not a valid application")
+    $p = Start-PnpmRun -RepoRoot $RepoRoot -Filter $filter -Action "build"
+    $p.WaitForExit()
+    if ($p.ExitCode -ne 0) { exit $p.ExitCode }
+    exit 0
 }
 finally {
     Pop-Location

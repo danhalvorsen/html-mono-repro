@@ -1,0 +1,78 @@
+﻿{
+    "compilerOptions": {
+        "target": "es2022",
+        "experimentalDecorators": true,
+        "useDefineForClassFields": false,
+        "module": "esnext",
+        "lib": [
+            "es2022",
+            "dom",
+            "dom.iterable"
+        ],
+        "types": [
+            "vite/client"
+        ],
+        "skipLibCheck": true,
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "moduleDetection": "force",
+        "noEmit": true,
+        "outDir": "./dist",
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "allowSyntheticDefaultImports": true,
+        "resolvePackageJsonExports": true,
+        "resolvePackageJsonImports": true,
+        "resolveJsonModule": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "strictBuiltinIteratorReturn": true,
+        "alwaysStrict": true,
+        "useUnknownInCatchVariables": true
+    },
+    "files": [
+        "./src/CompositeNode.ts",
+        "./src/CoordinateMapper.ts",
+        "./src/HitTester.ts",
+        "./src/IPoint.ts",
+        "./src/PointMapper.ts",
+        "./src/SceneRenderer.ts",
+        "./src/index.ts",
+        "./src/behaviors/BehaviorHandler.ts",
+        "./src/behaviors/BehaviorNode.ts",
+        "./src/behaviors/OnClickBehavior.ts",
+        "./src/primetives/CenteredCartesianMapper.ts",
+        "./src/primetives/Color.ts",
+        "./src/primetives/Point.ts",
+        "./src/primetives/Rect.ts",
+        "./src/primetives/base/BasePrimitive.ts",
+        "./src/primetives/base/Line.ts",
+        "./src/primetives/base/Polygon.ts",
+        "./src/primetives/base/PrimitiveStyle.ts",
+        "./src/primetives/base/Rectangle.ts",
+        "./src/primetives/base/Triangle.ts",
+        "./src/primetives/base/composites/CLine.ts",
+        "./src/primetives/base/composites/Circle.ts",
+        "./src/primetives/builders/Fills.ts",
+        "./src/primetives/builders/IStyleBuilder.ts",
+        "./src/primetives/builders/PrimitiveBuilder.ts",
+        "./src/primetives/builders/StyleBuilder.ts",
+        "../core-composition-svg-turtle/src/Turtle.ts",
+        "../core-composition-svg-turtle/src/TurtleState.ts"
+    ],
+    "include": [
+        "src",
+        "tests/inspectors",
+        "../core-composition-svg-turtle/src/Turtle.ts",
+        "../core-composition-svg-turtle/src/TurtleState.ts"
+    ],
+    "exclude": [
+        "src/app.ts"
+    ]
+}

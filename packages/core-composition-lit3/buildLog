@@ -1,0 +1,6 @@
+
+> @monorepo/core-composition-lit3@1.0.0 build C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-composition-lit3
+> tsc -p tsconfig.json
+
+error TS18003: No inputs were found in config file 'C:/Users/danha/source/repos/HTML/MonoRepro/packages/core-composition-lit3/tsconfig.json'. Specified 'include' paths were '["src"]' and 'exclude' paths were '["C:/Users/danha/source/repos/HTML/MonoRepro/packages/core-composition-lit3/dist"]'.
+ÔÇëELIFECYCLEÔÇë Command failed with exit code 2.

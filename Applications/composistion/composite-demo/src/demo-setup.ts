@@ -1,4 +1,4 @@
-import { CompositeNode, Rectangle } from "core-composition-svg";
+import type { CompositeNode } from "@monorepo/core-composition-svg";
 import { SceneRenderer } from "./SceneRenderer.js";
 
 /**

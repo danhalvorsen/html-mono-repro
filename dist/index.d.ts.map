@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../packages/core-components/src/index.ts"],"names":[],"mappings":""}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../packages/core-web-pwa/core-web-pwa-impl/src/index.ts"],"names":[],"mappings":"AAAA,OAAO,EACL,cAAc,EACd,UAAU,EACV,oBAAoB,EACpB,kBAAkB,EAClB,4BAA4B,EAC7B,MAAM,WAAW,CAAC;AAEnB,YAAY,EACV,WAAW,EACX,qBAAqB,EACtB,MAAM,WAAW,CAAC"}
