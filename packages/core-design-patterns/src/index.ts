@@ -1,13 +1,4 @@
-export * from './carrier/commandCarrier.js';
-export * from './carrier/queryCarriere.js';
-export * from './command-query/DecoratorBasedHandlerRegistrar.js';
-export * from './command-query/Decorators/Decorators.js';
-export * from './command-query/Dispatcher/CommandDispatcher.js';
-export * from './command-query/Dispatcher/QueryDispatcher.js';
-export * from './command-query/ICommand.js';
-export * from './command-query/IQuery.js';
-
-export * from './command-query/IQueryable.js';
+export * from './CQRS/cqrsCode.js';
 export * from './composite/composite.tree.js';
 export * from './composite/composite.js';
 export * from './composite/demo/ui-framework/behavior/clickable.js';
@@ -38,7 +29,7 @@ export * from './composite/demo/ui-framework/web-components/ui-box.js';
 export * from './composite/demo/ui-framework/web-components/ui-clickable.js';
 export * from './composite/demo/ui-framework/web-components/ui-column.js';
 export * from './composite/demo/ui-framework/web-components/ui-divider.js';
- 
+export * from './composite/demo/ui-framework/web-components/ui-error.js';
 export * from './composite/demo/ui-framework/web-components/ui-focusable.js';
 export * from './composite/demo/ui-framework/web-components/ui-hoverable.js';
 export * from './composite/demo/ui-framework/web-components/ui-input-checkbox.js';
@@ -52,10 +43,9 @@ export * from './composite/demo/ui-framework/web-components/ui-stack.js';
 export * from './composite/demo/ui-framework/web-components/ui-surface.js';
 export * from './composite/demo/ui-framework/web-components/ui-toggleable.js';
 export * from './composite/demo/ui-framework/web-components/ui-validatable.js';
-// Test files should not be exported from the package entry.
-// The test at './datastructures/ntree.test.ts' has been moved to the test suite.
-// Export removed intentionally.
 export * from './functional/either/either.js';
 export * from './functional/option/option.js';
 export * from './functional/result/result.js';
-
+export * from './mediator-pipeline/code.js';
+export * from './visitor/visitor.js';
+ 

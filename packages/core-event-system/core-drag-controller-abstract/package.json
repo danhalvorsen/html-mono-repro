@@ -19,8 +19,5 @@
     "inversify": "^6.2.2",
     "reflect-metadata": "^0.2.2"
   },
-  "devDependencies": {
-    "@vitest/coverage-v8": "^4.0.14",
-    "@vitest/ui": "^4.0.14"
-  }
+  "devDependencies": {}
 }

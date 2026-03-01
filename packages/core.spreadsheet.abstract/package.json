@@ -21,9 +21,6 @@
         "inversify": "^6.x",
         "reflect-metadata": "^0.2.x",
         "@monorepo/core-composition-abstract": "workspace:*"
-
     },
-    "devDependencies": {
-       "vitest": "^4.0.14"
-    }
+    "devDependencies": {}
 }

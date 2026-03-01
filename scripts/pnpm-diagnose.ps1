@@ -1,80 +1,99 @@
-# pnpm-diagnose.ps1
-# READ ONLY — DOES NOT MODIFY ANYTHING
+<#
+  pnpm-diagnose.ps1
+  Read-only diagnostics:
+   - Finds workspace roots (pnpm-workspace.yaml)
+   - Lists all package.json names
+   - Finds workspace:* deps referencing missing package names
+   - Detects common “scope mismatch” candidates
+#>
 
-Write-Host "==== PNPM WORKSPACE DIAGNOSTIC ====" -ForegroundColor Cyan
-Write-Host ""
+[CmdletBinding()]
+param(
+  [Parameter(Mandatory = $false)]
+  [string] $RepoRoot = (Get-Location).Path
+)
 
-$repo = Get-Location
-
-Write-Host "Repo:" $repo
-Write-Host ""
-
-# ------------------------------------------------
-Write-Host "Workspace files:" -ForegroundColor Yellow
-Get-ChildItem -Recurse -Filter pnpm-workspace.yaml -ErrorAction SilentlyContinue |
-Where-Object FullName -notmatch "node_modules" |
-ForEach-Object { Write-Host " - $($_.FullName)" }
-
-Write-Host ""
-
-# ------------------------------------------------
-Write-Host "Collecting package names..." -ForegroundColor Yellow
-
-$packages = @{}
-
-Get-ChildItem -Recurse -Filter package.json |
-Where-Object FullName -notmatch "node_modules" |
-ForEach-Object {
-    try {
-        $json = Get-Content $_.FullName -Raw | ConvertFrom-Json
-        if ($json.name) {
-            $packages[$json.name] = $_.FullName
-        }
-    } catch {}
+function Read-JsonFile {
+  param([string]$Path)
+  try { return Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json }
+  catch { return $null }
 }
 
-Write-Host "Packages detected:" $packages.Count
-$packages.Keys | Sort-Object | ForEach-Object { Write-Host "  $_" }
-
+Write-Host "RepoRoot: $RepoRoot"
 Write-Host ""
 
-# ------------------------------------------------
-Write-Host "Checking workspace:* dependencies..." -ForegroundColor Yellow
+# 1) Find pnpm workspace roots (nested workspaces are a frequent source of confusion)
+$workspaceFiles = Get-ChildItem -LiteralPath $RepoRoot -Recurse -File -Filter "pnpm-workspace.yaml" -ErrorAction SilentlyContinue |
+  Where-Object { $_.FullName -notmatch "\\node_modules\\" } |
+  Sort-Object FullName
 
-$errors = @()
+Write-Host "pnpm-workspace.yaml files found: $($workspaceFiles.Count)"
+$workspaceFiles | ForEach-Object { Write-Host " - $($_.FullName)" }
+Write-Host ""
 
-Get-ChildItem -Recurse -Filter package.json |
-Where-Object FullName -notmatch "node_modules" |
-ForEach-Object {
+# 2) Collect all package.json (excluding node_modules) and resolve package names
+$packageFiles = Get-ChildItem -LiteralPath $RepoRoot -Recurse -File -Filter "package.json" -ErrorAction SilentlyContinue |
+  Where-Object { $_.FullName -notmatch "\\node_modules\\" } |
+  Sort-Object FullName
 
-    $path = $_.FullName
-    try { $json = Get-Content $path -Raw | ConvertFrom-Json } catch { return }
+$packages = @()
+foreach ($f in $packageFiles) {
+  $j = Read-JsonFile $f.FullName
+  if ($null -eq $j) { continue }
+  if ([string]::IsNullOrWhiteSpace($j.name)) { continue }
 
-    if (-not $json.dependencies) { return }
+  $packages += [pscustomobject]@{
+    Name = [string]$j.name
+    Path = $f.FullName
+  }
+}
 
-    foreach ($dep in $json.dependencies.PSObject.Properties) {
+$packageNames = $packages | Select-Object -ExpandProperty Name
 
-        if ($dep.Value -eq "workspace:*") {
+Write-Host "package.json with a name field: $($packages.Count)"
+Write-Host ""
 
-            if (-not $packages.ContainsKey($dep.Name)) {
+# 3) Find workspace:* dependencies that reference missing packages
+$missingWorkspaceDeps = @()
 
-                $errors += [pscustomobject]@{
-                    Missing      = $dep.Name
-                    ReferencedBy = $path
-                }
-            }
-        }
+foreach ($f in $packageFiles) {
+  $j = Read-JsonFile $f.FullName
+  if ($null -eq $j) { continue }
+
+  $deps = @()
+  if ($j.dependencies) { $deps += $j.dependencies.PSObject.Properties }
+  if ($j.devDependencies) { $deps += $j.devDependencies.PSObject.Properties }
+  if ($j.peerDependencies) { $deps += $j.peerDependencies.PSObject.Properties }
+  if ($j.optionalDependencies) { $deps += $j.optionalDependencies.PSObject.Properties }
+
+  foreach ($p in $deps) {
+    $depName = $p.Name
+    $depVer  = [string]$p.Value
+
+    if ($depVer -ne "workspace:*") { continue }
+
+    if ($packageNames -notcontains $depName) {
+      # Try to suggest a scoped candidate if one exists
+      $candidates = $packageNames | Where-Object { $_.Split("/")[-1] -eq $depName } | Sort-Object
+      $suggest = if ($candidates.Count -gt 0) { ($candidates -join ", ") } else { "" }
+
+      $missingWorkspaceDeps += [pscustomobject]@{
+        Missing      = $depName
+        ReferencedBy = $f.FullName
+        Suggestion   = $suggest
+      }
     }
+  }
 }
 
-if ($errors.Count -eq 0) {
-    Write-Host "OK — no missing workspace deps." -ForegroundColor Green
-}
-else {
-    Write-Host ""
-    Write-Host "Missing workspace packages:" -ForegroundColor Red
-    $errors | Sort-Object Missing | Format-Table -AutoSize
+if ($missingWorkspaceDeps.Count -eq 0) {
+  Write-Host "OK: No missing workspace:* dependencies found."
+} else {
+  Write-Host "ERROR: Missing workspace:* dependencies found: $($missingWorkspaceDeps.Count)"
+  $missingWorkspaceDeps |
+    Sort-Object Missing, ReferencedBy |
+    Format-Table -AutoSize
 }
 
 Write-Host ""
-Write-Host "==== DONE (NO CHANGES MADE) ====" -ForegroundColor Cyan
+Write-Host "Tip: Any Suggestion values are scoped packages that likely should replace the Missing name."

@@ -20,8 +20,5 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "devDependencies": {
-    "@vitest/coverage-v8": "^4.0.14",
-    "@vitest/ui": "^4.0.14"
-  }
+  "devDependencies": {}
 }
