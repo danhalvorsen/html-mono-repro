@@ -63,10 +63,14 @@ export class UiDemoApp extends LitElement {
     )
   );
 
+  protected firstUpdated(): void {
+    const root = this.renderRoot.querySelector("#root");
+    if (!root) throw new Error("Missing #root");
+    root.replaceChildren(this.#ui.createElement());
+  }
+
   protected render() {
-    const el = this.#ui.createElement();
-    (el as unknown as { model: Component }).model = this.#ui;
-    return html`${el}`;
+    return html`<div id="root"></div>`;
   }
 }
 

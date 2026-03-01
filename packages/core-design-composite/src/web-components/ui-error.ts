@@ -4,7 +4,7 @@ import { UIElement } from '../core/ui-element.js';
 
 @customElement('ui-error')
 export class UIErrorElement extends UIElement {
-  @property({ type: String }) message = '';
+  @property({ type: String }) accessor message = '';
 
   static styles = css`
     :host {

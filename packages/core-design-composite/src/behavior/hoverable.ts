@@ -3,5 +3,5 @@ import type { Component } from '../core/component.js';
 
 export class HoverableUI extends Composite {
     constructor(child: Component) { super('Hoverable', [child]); }
-    createElement(): HTMLElement { return document.createElement('ui-hoverable'); }
+    protected createHostElement(): HTMLElement { return document.createElement('ui-hoverable'); }
 }

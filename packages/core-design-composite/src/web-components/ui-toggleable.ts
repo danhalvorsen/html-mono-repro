@@ -5,7 +5,7 @@ import { UIElement } from '../core/ui-element.js';
 @customElement('ui-toggleable')
 export class UIToggleableElement extends UIElement {
    
-  @property({ type: Boolean }) state = false;
+  @property({ type: Boolean }) accessor state = false;
 
   static styles = css`
     :host {

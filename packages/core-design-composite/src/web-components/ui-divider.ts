@@ -5,7 +5,7 @@ import { UIElement } from '../core/ui-element.js';
 @customElement('ui-divider')
 export class UIDividerElement extends UIElement {
   @property({ type: String })
-  direction: 'horizontal' | 'vertical' = 'horizontal';
+  accessor direction: 'horizontal' | 'vertical' = 'horizontal';
 
   static styles = css`
     :host {

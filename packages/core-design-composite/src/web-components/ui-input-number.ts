@@ -4,13 +4,13 @@ import { UIElement } from '../core/ui-element.js';
 
 @customElement('ui-input-number')
 export class UIInputNumberElement extends UIElement {
-  @property({ type: Number }) value: number | null = null;
-  @property({ type: String }) placeholder = '';
+  @property({ type: Number }) accessor value: number | null = null;
+  @property({ type: String }) accessor placeholder = '';
 
   // Optional extras
-  @property({ type: Number }) min?: number;
-  @property({ type: Number }) max?: number;
-  @property({ type: Number }) step?: number;
+  @property({ type: Number }) accessor min: number | undefined;
+  @property({ type: Number }) accessor max: number | undefined;
+  @property({ type: Number }) accessor step: number | undefined;
 
   static styles = css`
     :host {

@@ -4,7 +4,7 @@ import { UIElement } from '../core/ui-element.js';
 
 @customElement('ui-spacer')
 export class UISpacerElement extends UIElement {
-  @property({ type: Number }) size = 8;
+  @property({ type: Number }) accessor size = 8;
 
   static styles = css`
     :host {

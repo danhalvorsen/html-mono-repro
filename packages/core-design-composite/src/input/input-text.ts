@@ -5,7 +5,7 @@ export class InputTextUI extends Composite {
     super('InputText');
   }
 
-  createElement(): HTMLElement {
+  protected createHostElement(): HTMLElement {
     const el = document.createElement('ui-input-text');
     el.setAttribute('placeholder', this.placeholder);
     return el;

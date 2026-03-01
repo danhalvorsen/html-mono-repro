@@ -4,8 +4,8 @@ import { UIElement } from '../core/ui-element.js';
 
 @customElement('ui-input-select')
 export class UIInputSelectElement extends UIElement {
-  @property({ type: Array }) options: string[] = [];
-  @property({ type: String }) value: string | null = null;
+  @property({ type: Array }) accessor options: string[] = [];
+  @property({ type: String }) accessor value: string | null = null;
 
   static styles = css`
     :host {

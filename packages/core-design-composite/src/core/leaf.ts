@@ -1,13 +1,15 @@
 import { Component } from "./component.js";
 
-export class Leaf implements Component {
-  constructor(public readonly name: string) {}
+/**
+ * Leaf: a terminal node in the composite tree.
+ * Each leaf decides its own element (ui-label, ui-error, etc).
+ */
+export abstract class Leaf implements Component {
+    constructor(public readonly name: string) {}
 
-  get children(): ReadonlyArray<Component> {
-    return [];
-  }
+    get children(): ReadonlyArray<Component> {
+        return [];
+    }
 
-  createElement(): HTMLElement {
-    throw new Error(`Leaf '${this.name}' has no WebComponent.`);
-  }
+    abstract createElement(): HTMLElement;
 }

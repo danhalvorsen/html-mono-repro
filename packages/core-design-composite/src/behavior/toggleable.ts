@@ -6,9 +6,9 @@ export class ToggleableUI extends Composite {
     super('Toggleable', [child]);
   }
 
-  createElement(): HTMLElement {
+  protected createHostElement(): HTMLElement {
     const el = document.createElement('ui-toggleable') as any;
-    el.state = this.defaultState; // ← correct property binding
+    el.state = this.defaultState;
     return el;
   }
 }

@@ -5,8 +5,8 @@ import { UIElement } from '../core/ui-element.js';
 @customElement('ui-input-text')
 export class UIInputTextElement extends UIElement {
  
-  @property({ type: String }) value: string = '';
-  @property({ type: String }) placeholder: string = '';
+  @property({ type: String }) accessor value: string = '';
+  @property({ type: String }) accessor placeholder: string = '';
 
   static styles = css`
     :host {
