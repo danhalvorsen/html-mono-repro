@@ -97,3 +97,7 @@ dist/index.d.ts
 dist/index.d.ts.map
 **/*.tsbuildinfo
 tmpclaude-*
+
+**/nul
+**/NUL
+
