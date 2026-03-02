@@ -1,103 +1,53 @@
+# ----------------------------
+# Dependencies
+# ----------------------------
+**/node_modules/
+.pnpm-store/
+
+# ----------------------------
+# Build outputs
+# ----------------------------
+**/dist/
+**/dist-ssr/
+**/.vite/
+**/*.tsbuildinfo
+
+# ----------------------------
 # Logs
-logs
-*.log
+# ----------------------------
+**/logs/
+**/*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-**/dist/**
-**/dist/*
+# ----------------------------
+# Local env / temp
+# ----------------------------
+**/*.local
+**/*.json.bak
+**/*.*.bak
+**/tmp/
+tmp/
+tmpclaude-*
+**/tmpclaude-*/
 
-dist-ssr
-*.local
-
-# Editor directories and files
+# ----------------------------
+# OS / Editor
+# ----------------------------
+.DS_Store
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
-*.sln
 *.sw?
 
-node_modules/
-**/node_modules/
-.pnpm-store/
-.pnpm-debug.log
-pnpm-build.log
-pnpm-lock.yaml
-.DS_Store
-.vscode/
-npm-debug.log
-dist/EventCommandBehavior.d.ts
-**disk/**.*
-dist/**
-dist/**
-demo/dist/**
-
-packages/Audio/core.spreadsheet.core/tests/FormulaParser.test.d.ts.mappackages/Audio/core.spreadsheet.core/tests/FormulaParser.test.d.ts.map
-packages/**/*d.ts.map
-**/*.json.bak
-**/*.*.bak
-dist/index.d.ts
-**/dist/**
-**/dist/*
-**/dist/
-dist/index.d.ts
-dist/index.d.ts.map
-dist/code.d.ts
-dist/code.d.ts.map
-dist/index.d.ts
-dist/index.d.ts.map
-dist/IRenderEngine.d.ts
-dist/IRenderEngine.d.ts.map
-dist/IShape.d.ts
-dist/IShape.d.ts.map
-dist/ShapeNode.d.ts
-dist/ShapeNode.d.ts.map
-tmp/dist-list-core-composition-lit3.txt
-tmp/fixed-vitest-scripts.json
-tmp/remove-vitest-report.json
-tmp/tsconfig-validation.json
-tmp/validate-tsconfigs-jsonc.js
-tmp/vitest-find.json
-dist/code.d.ts
-dist/code.d.ts.map
-dist/index.d.ts
-dist/index.d.ts.map
-dist/IRenderEngine.d.ts
-dist/IRenderEngine.d.ts.map
-dist/IShape.d.ts
-dist/IShape.d.ts.map
-dist/ShapeNode.d.ts
-dist/ShapeNode.d.ts.map
-dist/code.d.ts
-dist/code.d.ts.map
-dist/index.d.ts
-dist/index.d.ts.map
-dist/IRenderEngine.d.ts
-dist/IRenderEngine.d.ts.map
-dist/IShape.d.ts
-dist/IShape.d.ts.map
-dist/ShapeNode.d.ts
-dist/ShapeNode.d.ts.map
-dist/index.d.ts
-dist/index.d.ts.map
-dist/index.d.ts
-dist/index.d.ts.map
-dist/code.d.ts
-dist/code.d.ts.map
-dist/index.d.ts
-dist/index.d.ts.map
-**/*.tsbuildinfo
-tmpclaude-*
-
+# ----------------------------
+# Windows reserved device names (prevents weird Git/path issues)
+# ----------------------------
 **/nul
 **/NUL
-
