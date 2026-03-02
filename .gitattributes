@@ -1,0 +1,19 @@
+# Default: normalize to LF in repo
+* text=auto eol=lf
+
+# Windows scripts must remain CRLF
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Binary files (never normalize)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.woff binary
+*.woff2 binary
