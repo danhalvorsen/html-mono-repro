@@ -1,5 +1,6 @@
 // packages/core-design-composite/src/index.ts
 
+export * from './behavior/button.js';
 export * from './behavior/clickable.js';
 export * from './behavior/focusable.js';
 export * from './behavior/hoverable.js';
@@ -24,12 +25,14 @@ export * from './input/label.js';
 export * from './layout/box.js';
 export * from './layout/column.js';
 export * from './layout/divider.js';
+export * from './layout/rectangle.js';
 export * from './layout/row.js';
 export * from './layout/spacer.js';
 export * from './layout/stack.js';
 export * from './layout/surface.js';
 
 export * from './web-components/ui-box.js';
+export * from './web-components/ui-button.js';
 export * from './web-components/ui-clickable.js';
 export * from './web-components/ui-column.js';
 export * from './web-components/ui-divider.js';
@@ -41,6 +44,7 @@ export * from './web-components/ui-input-number.js';
 export * from './web-components/ui-input-select.js';
 export * from './web-components/ui-input-text.js';
 export * from './web-components/ui-label.js';
+export * from './web-components/ui-rectangle.js';
 export * from './web-components/ui-row.js';
 export * from './web-components/ui-spacer.js';
 export * from './web-components/ui-stack.js';
