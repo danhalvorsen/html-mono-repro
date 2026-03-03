@@ -1,7 +1,7 @@
 import { IFsmDefinition } from './IFsm.js';
 import { ITransition } from "./ITransition.js";
 import { InvalidDefinitionError } from "./Errors/InvalidDefinitionError.js";
-import { InputType, StateId, IInput, ContextReducer, OutputFactory, Guard } from './Types.js';
+import { InputType, StateId, IInput, OutputFactory, Guard } from './Types.js';
 
 export class FsmDefinition<
   TState extends StateId,

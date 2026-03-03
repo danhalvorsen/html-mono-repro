@@ -83,7 +83,7 @@ describe("StateBuilderImpl / TransitionBuilderImpl (fluent builder)", () => {
       .from(fx.S.Idle)
       .on(fx.E.Start)
       .withGuard(fx.guard)
-      .withReducer(fx.reduce)
+      .withAction(fx.reduce)
       .withOutput(fx.output)
       .to(fx.S.Running)
       .build();
@@ -95,7 +95,7 @@ describe("StateBuilderImpl / TransitionBuilderImpl (fluent builder)", () => {
     expect(await t.guard!({ context: { n: 0 }, input: { type: fx.E.Start, payload: { inc: -1 } } })).toBe(false);
 
     // reducer
-    const c1 = await t.reduce!({ context: fx.ctx0, input: { type: fx.E.Start, payload: { inc: 5 } } });
+    const c1 = await t.action!({ context: fx.ctx0, input: { type: fx.E.Start, payload: { inc: 5 } } });
     expect(c1).toEqual({ n: 5 });
 
     // output factory (note: output runs after reducer in engine; here we just validate it exists and works)

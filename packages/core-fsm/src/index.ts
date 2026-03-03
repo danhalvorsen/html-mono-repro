@@ -11,6 +11,6 @@ export * from './Errors/InvalidDefinitionError.js'
 export * from './Errors/NoTransitionError.js'
 export * from './FsmDefinition.js';
 export * from './FsmEngine.js';
-export * from './FsmLoggedEngine.js';
+export * from './LoggedFsmEngine.js';
 export * from './IFsm.js';
 export * from './Types.js';

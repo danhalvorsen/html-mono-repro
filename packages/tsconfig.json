@@ -6,7 +6,7 @@
   "include": [
     "./**/*.ts",
     "./**/*.tsx"
-  ],
+, "core-fsm/tests/Fixtures/LoggedFsmEngineFixture.ts"  ],
   "exclude": [
     "node_modules",
     "dist",

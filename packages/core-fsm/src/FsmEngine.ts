@@ -3,9 +3,6 @@ import { ITransition } from "./ITransition.js";
 import { ThrowOnUnhandledInput } from "./Errors/ThrowOnUnhandledInput.js";
 import { IUnhandledInputPolicy } from "./Errors/IUnhandledInputPolicy.js";
 import { StateId, IInput, InputType, IDispatchResult } from "./Types.js";
-
-/* ============================= ENGINE (PURE, SRP) ============================= */
-
 export class FsmEngine<
   TState extends StateId,
   TContext,
@@ -59,7 +56,7 @@ export class FsmEngine<
       };
     }
 
-    const nextContext = await this.applyReducer(t, prevContext, input);
+    const nextContext = await this.applyTransitionAction(t, prevContext, input);
     const outputs = await this.emitOutputs(t, nextContext, input);
 
     this._context = nextContext;
@@ -84,13 +81,13 @@ export class FsmEngine<
     return await t.guard({ context, input });
   }
 
-  private async applyReducer(
+  private async applyTransitionAction(
     t: ITransition<TState, TContext, TInput, TOut>,
     context: TContext,
     input: TInput
   ): Promise<TContext> {
-    if (!t.reduce) return context;
-    return await t.reduce({ context, input });
+    if (!t.action) return context;
+    return await t.action({ context, input });
   }
 
   private async emitOutputs(

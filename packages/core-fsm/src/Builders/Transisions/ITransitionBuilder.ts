@@ -1,4 +1,4 @@
- import { InputType, StateId, IInput, Guard, ContextReducer, OutputFactory } from '../../Types.js';
+ import { InputType, StateId, IInput, Guard, TransitionAction as TransitionAction, OutputFactory } from '../../Types.js';
 import { FsmBuilder } from '../Fsm/FsmBuilder.js';
  
 export interface ITransitionBuilder<
@@ -9,7 +9,7 @@ export interface ITransitionBuilder<
   TSpecificInput extends TInput
 > {
   withGuard(guard: Guard<TContext, TSpecificInput>): this;
-  withReducer(reduce: ContextReducer<TContext, TSpecificInput>): this;
+  withAction(action: TransitionAction<TContext, TSpecificInput>): this;
   withOutput(output: OutputFactory<TContext, TSpecificInput, TOut>): this;
   to(to: TState): FsmBuilder<TState, TContext, TInput, TOut>;
 }

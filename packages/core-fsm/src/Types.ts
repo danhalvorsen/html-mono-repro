@@ -15,7 +15,7 @@ export interface IInput<TType extends InputType = InputType, TPayload = unknown>
 export type Guard<TContext, TInput extends IInput> =
   (args: { readonly context: TContext; readonly input: TInput }) => MaybePromise<boolean>;
 
-export type ContextReducer<TContext, TInput extends IInput> =
+export type TransitionAction<TContext, TInput extends IInput> =
   (args: { readonly context: TContext; readonly input: TInput }) => MaybePromise<TContext>;
 
 export type OutputFactory<TContext, TInput extends IInput, TOut> =

@@ -23,7 +23,7 @@ export function createFx() {
   const guard = async ({ context, input }: { readonly context: Ctx; readonly input: Start }) =>
     context.n + input.payload.inc >= 0;
 
-  const reduce = ({ context, input }: { readonly context: Ctx; readonly input: Start }): Ctx => ({
+  const action = ({ context, input }: { readonly context: Ctx; readonly input: Start }): Ctx => ({
     n: context.n + input.payload.inc,
   });
 
@@ -34,7 +34,7 @@ export function createFx() {
 
   const builder = () => new FsmBuilder<State, Ctx, Input, Out>().initial(S.Idle);
 
-  return { S, E, ctx0, guard, reduce, output, builder };
+  return { S, E, ctx0, guard, action, output, builder };
 }
 
 export function expectTransition(

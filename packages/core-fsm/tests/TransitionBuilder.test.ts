@@ -20,7 +20,7 @@ class Fixture {
   public readonly guard = async ({ context, input }: { readonly context: Ctx; readonly input: Start }) =>
     context.n + input.payload.inc >= 0;
 
-  public readonly reduce = ({ context, input }: { readonly context: Ctx; readonly input: Start }): Ctx => ({
+  public readonly action = ({ context, input }: { readonly context: Ctx; readonly input: Start }): Ctx => ({
     n: context.n + input.payload.inc,
   });
 
@@ -43,7 +43,7 @@ describe("TransitionBuilderImpl", () => {
       .from(fx.S.Idle)
       .on(fx.E.Start)
       .withGuard(fx.guard)
-      .withReducer(fx.reduce)
+      .withAction(fx.action)
       .withOutput(fx.output)
       .to(fx.S.Running)
       .build();
@@ -54,7 +54,7 @@ describe("TransitionBuilderImpl", () => {
     expect(t!.from).toBe(fx.S.Idle);
     expect(t!.to).toBe(fx.S.Running);
     expect(typeof t!.guard).toBe("function");
-    expect(typeof t!.reduce).toBe("function");
+    expect(typeof t!.action).toBe("function");
     expect(typeof t!.output).toBe("function");
   });
 
@@ -71,7 +71,7 @@ describe("TransitionBuilderImpl", () => {
 
     expect(t).toBeTruthy();
     expect(t!.guard).toBeUndefined();
-    expect(t!.reduce).toBeUndefined();
+    expect(t!.action).toBeUndefined();
     expect(t!.output).toBeUndefined();
   });
 

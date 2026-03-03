@@ -1,9 +1,7 @@
 import { IFsm } from "./IFsm.js";
 import { StateId, IInput, InputType, ILogger, IDispatchResult } from "./Types.js";
-
-/* ============================= LOGGING DECORATOR (OPTIONAL, OCP) ============================= */
-
-export class FsmLoggedEngine<
+ 
+export class LoggedFsmEngine<
   TState extends StateId,
   TContext,
   TInput extends IInput<InputType, any>,
@@ -31,7 +29,7 @@ export class FsmLoggedEngine<
 
   public reset(context?: TContext): void {
     this.inner.reset(context);
-    this.log.debug("[{name}] reset -> state={state}", { name: this.name, state: FsmLoggedEngine.idToString(this.state) });
+    this.log.debug("[{name}] reset -> state={state}", { name: this.name, state: LoggedFsmEngine.idToString(this.state) });
   }
 
   public async dispatch(input: TInput): Promise<IDispatchResult<TState, TInput, TContext, TOut>> {
@@ -40,8 +38,8 @@ export class FsmLoggedEngine<
     if (this.verbose) {
       this.log.debug("[{name}] dispatch start: state={state}, input={input}, payload={payload}", {
         name: this.name,
-        state: FsmLoggedEngine.idToString(before),
-        input: FsmLoggedEngine.idToString(input.type),
+        state: LoggedFsmEngine.idToString(before),
+        input: LoggedFsmEngine.idToString(input.type),
         payload: input.payload,
       });
     }
@@ -52,15 +50,15 @@ export class FsmLoggedEngine<
       if (result.transitionTaken) {
         this.log.info("[{name}] transition: {from} --{input}--> {to}", {
           name: this.name,
-          from: FsmLoggedEngine.idToString(result.from),
-          input: FsmLoggedEngine.idToString(result.input.type),
-          to: FsmLoggedEngine.idToString(result.to),
+          from: LoggedFsmEngine.idToString(result.from),
+          input: LoggedFsmEngine.idToString(result.input.type),
+          to: LoggedFsmEngine.idToString(result.to),
         });
       } else {
         this.log.warn("[{name}] no transition taken: state={state}, input={input}", {
           name: this.name,
-          state: FsmLoggedEngine.idToString(before),
-          input: FsmLoggedEngine.idToString(input.type),
+          state: LoggedFsmEngine.idToString(before),
+          input: LoggedFsmEngine.idToString(input.type),
         });
       }
 
@@ -76,8 +74,8 @@ export class FsmLoggedEngine<
     } catch (error) {
       this.log.error("[{name}] dispatch error: state={state}, input={input}, error={error}", {
         name: this.name,
-        state: FsmLoggedEngine.idToString(before),
-        input: FsmLoggedEngine.idToString(input.type),
+        state: LoggedFsmEngine.idToString(before),
+        input: LoggedFsmEngine.idToString(input.type),
         error,
       });
       throw error;
