@@ -13,10 +13,5 @@
     "winston": "^3.18.3",
     "@monorepo/core-composition-abstract": "workspace:*"
   },
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  }
+  "exports": { ".": { "import": "./dist/index.js", "types": "./dist/types/index.d.ts" } }
 }

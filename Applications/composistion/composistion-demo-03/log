@@ -1,0 +1,32 @@
+Scope: 58 of 59 workspace projects
+../../default build$ vite build
+../../default build: [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+../../default build: transforming...
+../../default build: [32mÔ£ô[39m 23 modules transformed.
+../../default build: rendering chunks...
+../../default build: computing gzip size...
+../../default build: [2mdist/[22m[32mindex.html                 [39m[1m[2m 0.49 kB[22m[1m[22m[2m Ôöé gzip: 0.31 kB[22m
+../../default build: [2mdist/[22m[35massets/index-BN3zvx7y.css  [39m[1m[2m 0.52 kB[22m[1m[22m[2m Ôöé gzip: 0.33 kB[22m
+../../default build: [2mdist/[22m[36massets/index-Cs5XBB_b.js   [39m[1m[2m19.80 kB[22m[1m[22m[2m Ôöé gzip: 7.71 kB[22m
+../../default build: [32mÔ£ô built in 214ms[39m
+../../default build: Done
+../../vite-project build$ tsc && vite build
+../../vite-project build: [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+../../vite-project build: transforming...
+../../vite-project build: [32mÔ£ô[39m 23 modules transformed.
+../../vite-project build: rendering chunks...
+../../vite-project build: computing gzip size...
+../../vite-project build: [2mdist/[22m[32mindex.html                 [39m[1m[2m 0.49 kB[22m[1m[22m[2m Ôöé gzip: 0.31 kB[22m
+../../vite-project build: [2mdist/[22m[35massets/index-BN3zvx7y.css  [39m[1m[2m 0.52 kB[22m[1m[22m[2m Ôöé gzip: 0.33 kB[22m
+../../vite-project build: [2mdist/[22m[36massets/index-Cs5XBB_b.js   [39m[1m[2m19.80 kB[22m[1m[22m[2m Ôöé gzip: 7.71 kB[22m
+../../vite-project build: [32mÔ£ô built in 200ms[39m
+../../vite-project build: Done
+.../packages/core-composition-abstract build$ tsc -p tsconfig.json
+.../packages/core-composition-abstract build: Done
+.../core-composition-abstract-new build$ tsc -p tsconfig.json
+.../core-composition-abstract-new build: Done
+../../../packages/core-delegates build$ tsc -p .
+../../../packages/core-delegates build: Done
+../../../packages/core-design-composite build$ tsc -p tsconfig.json
+../../../packages/core-design-composite build: Done
+../../../packages/core-example build$ tsc -p .

@@ -1,11 +1,11 @@
-import { Composite } from '../core/composite.js';
+import { Leaf } from '../core/leaf.js';
 
-export class InputTextUI extends Composite {
+export class InputTextUI extends Leaf {
   constructor(public placeholder: string = '') {
     super('InputText');
   }
 
-  protected createHostElement(): HTMLElement {
+  createElement(): HTMLElement {
     const el = document.createElement('ui-input-text');
     el.setAttribute('placeholder', this.placeholder);
     return el;

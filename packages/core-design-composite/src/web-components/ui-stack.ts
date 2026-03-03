@@ -12,6 +12,7 @@ export class UIStackElement extends UIElement {
     ::slotted(*) {
       grid-area: 1 / 1;
     }
+
   `;
 
   render() {
