@@ -1,3 +1,5 @@
+ console.log("HIT main.ts", import.meta.url);
+//debugger;
 // Applications/composistion/composistion-demo/src/main.ts
 import "./demo-app.js";
 
