@@ -1,11 +1,22 @@
 // packages/core-design-patterns/tests/CQRS/code.test.ts
+import {
+  CommandHandler,
+  QueryHandler,
+  NotificationHandler,
+  type ICommand,
+  type IQuery,
+  type INotification,
+  type NonUndefined,
+  type Result,
+} from '../../src/index.js'
+import { CqrsContractFixture } from "./fixtures/CqrsContractFixture.js";
+import { FooCommand, FooQuery, FooNotification } from "./messages/FooMessages.js";
+
 import { describe, it, expect } from "vitest";
 
-import type { Result } from "../../src/functional/result/result.js";
-import type { IPayload, ICommand, IQuery, INotification } from "../../src/CQRS/cqrsCode.js";
-import { CommandHandler, QueryHandler, NotificationHandler } from "../../src/CQRS/cqrsCode.js";
-
 describe("CQRS contracts", () => {
+  const fx = new CqrsContractFixture();
+
   it("exports handler base classes at runtime", () => {
     expect(typeof CommandHandler).toBe("function");
     expect(typeof QueryHandler).toBe("function");
@@ -13,65 +24,48 @@ describe("CQRS contracts", () => {
   });
 
   it("command handler can be implemented and invoked", async () => {
-    type FooPayload = IPayload & { readonly value: number };
-
-    class FooCommand implements ICommand<FooPayload> {
-      public readonly name = "FooCommand";
-      public constructor(public readonly payload: FooPayload) {}
-    }
-
-    const expected = {} as unknown as Result<number, string>;
+    const command = fx.createCommand(new FooCommand(1));
+    const expected = fx.createExpectedResult<number, string>();
 
     class FooCommandHandler extends CommandHandler<FooCommand, number, string> {
-      public async handle(_command: FooCommand): Promise<Result<number, string>> {
+      public Handle(command: ICommand<FooCommand>): Promise<Result<number, string>> {
+        throw new Error("Method not implemented.");
+      }
+      public async handle(_command: ICommand<FooCommand>): Promise<Result<number, string>> {
         return expected;
       }
     }
 
     const handler = new FooCommandHandler();
-    const actual = await handler.handle(new FooCommand({ value: 1 } as FooPayload));
+    const actual = await handler.handle(command);
 
     expect(actual).toBe(expected);
   });
 
   it("query handler can be implemented and invoked", async () => {
-    type FooPayload = IPayload & { readonly id: string };
+    const query = fx.createQuery(new FooQuery("a"));
+    const expected = fx.createExpectedResult<({ id: string; value: number } & NonUndefined), string>();
 
-    class FooQuery implements IQuery<FooPayload> {
-      public readonly name = "FooQuery";
-      public constructor(public readonly payload: FooPayload) {}
-    }
-
-    type FooQueryResult = { id: string; value: number };
-    const expected = {} as unknown as Result<FooQueryResult, string>;
-
-    class FooQueryHandler extends QueryHandler<FooQuery, FooQueryResult, string> {
-      public async handle(_query: FooQuery): Promise<Result<FooQueryResult, string>> {
+    class FooQueryHandler extends QueryHandler<FooQuery, ({ id: string; value: number } & NonUndefined), string> {
+      public async handle(_query: IQuery<FooQuery>): Promise<Result<({ id: string; value: number } & NonUndefined), string>> {
         return expected;
       }
     }
 
     const handler = new FooQueryHandler();
-    const actual = await handler.handle(new FooQuery({ id: "a" } as FooPayload));
+    const actual = await handler.handle(query);
 
     expect(actual).toBe(expected);
   });
 
   it("notification handler can be implemented and invoked", async () => {
-    type FooPayload = IPayload & { readonly message: string };
-
-    class FooNotification implements INotification<FooPayload> {
-      public readonly name = "FooNotification";
-      public constructor(public readonly payload: FooPayload) {}
-    }
+    const notification = fx.createNotification(new FooNotification("x"));
 
     class FooNotificationHandler extends NotificationHandler<FooNotification> {
-      public async handle(_notification: FooNotification): Promise<void> {}
+      public async handle(_notification: INotification<FooNotification>): Promise<void> {}
     }
 
     const handler = new FooNotificationHandler();
-    await handler.handle(new FooNotification({ message: "x" } as FooPayload));
-
-    expect(true).toBe(true);
+    await expect(handler.handle(notification)).resolves.toBeUndefined();
   });
 });

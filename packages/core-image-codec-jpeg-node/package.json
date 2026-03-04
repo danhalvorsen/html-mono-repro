@@ -1,0 +1,29 @@
+{
+  "name": "@monorepo/core-image-codec-jpeg-node",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@monorepo/core-image": "workspace:*",
+    "@monorepo/core-image-codec": "workspace:*",
+    "@monorepo/core-math": "workspace:*",
+    "jpeg-js": "^0.4.4"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}
