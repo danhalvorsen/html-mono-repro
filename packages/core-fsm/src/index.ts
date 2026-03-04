@@ -3,7 +3,6 @@ export * from './Builders/State/IStateBuilder.js';
 export * from './Builders/State/StateBuilderImpl.js';
 export * from './Builders/Transisions/ITransitionBuilder.js';
 export * from './Builders/Transisions/TransitionBuilderImpl.js';
-export * from './Errors/ErrorHandling.js';
 export * from './Errors/IUnhandledInputPolicy.js';
 export * from './Errors/IgnoreUnhandledInput.js';
 export * from './Errors/ThrowOnUnhandledInput.js';

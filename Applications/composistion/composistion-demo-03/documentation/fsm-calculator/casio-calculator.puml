@@ -1,0 +1,18 @@
+@startuml
+title Calculator FSM (Casio reset)
+
+[*] --> EnteringNumber
+
+EnteringNumber --> EnteringNumber : Digit
+EnteringNumber --> OperatorPressed : Operator
+EnteringNumber --> EnteringNumber : Equals
+EnteringNumber --> EnteringNumber : CR
+
+OperatorPressed --> EnteringNumber : Digit
+OperatorPressed --> Error : Operator
+OperatorPressed --> Error : Equals
+OperatorPressed --> EnteringNumber : CR
+
+Error --> EnteringNumber : CR
+
+@enduml

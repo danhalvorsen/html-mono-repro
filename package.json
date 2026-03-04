@@ -1,39 +1,41 @@
 {
-	"activationEvents": [],
-	"dependencies": {
-		"inversify": "^6.x",
-		"reflect-metadata": "^0.2.2"
-	},
-	"devDependencies": {
-		"@types/node": "^20.19.25",
-		"@vitest/coverage-v8": "4.0.14",
-		"@vitest/ui": "4.0.14",
-		"eslint": "^8.57.0",
-		"eslint-config-prettier": "^9.0.0",
-		"eslint-import-resolver-typescript": "^3.5.1",
-		"eslint-plugin-import": "^2.29.1",
-		"eslint-plugin-unused-imports": "^3.1.0",
-		"pnpm": "^10.24.0",
-		"rimraf": "^5.0.5",
-		"tsx": "^4.21.0",
-		"typescript": "^5.9.3",
-		"vite": "^5.0.0",
-		"vitest": "4.0.14"
-	},
-	"scripts": {
-		"build": "pnpm -r run build",
-		"test": "pnpm --workspace-root vitest",
-		"fix:tsc-scripts": "node ./scripts/fix-tsc-in-scripts.js",
-		"fix:workspace-deps": "node ./scripts/fix-workspace-deps.js",
-		"fix:all": "node ./scripts/fix-workspace-deps.js && node ./scripts/fix-tsc-in-scripts.js",
-		"scan:packages": "node ./scripts/scan-package-names.js",
-		"agent:run": "powershell -ExecutionPolicy Bypass -File ./scripts/agent-run.ps1",
-		"workspace:build": "pnpm -r run build",
-		"bootstrap": "pnpm install --recursive",
-		"ci-install": "pnpm install --shamefully-hoist --reporter=silent",
-		"prebuild": "node -e \"const fs=require('fs'); if(!fs.existsSync('./node_modules/pnpm')){console.error('ERROR: pnpm is not installed in this repo. Run `pnpm install` at the repo root (or `pnpm bootstrap`).'); process.exit(1)}\"",
-		"postinstall": "node ./scripts/ensure-pnpm.js || true",
-		"prebuild:win": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if(-not (Test-Path './node_modules/pnpm')) { Write-Error 'ERROR: pnpm binary not found in workspace node_modules. Run `pnpm install` at the repo root.'; exit 1 }\""
-	},
-	"packageManager": "pnpm@10.24.0"
+    "activationEvents": [],
+    "dependencies": {
+        "inversify": "^6.x",
+        "reflect-metadata": "^0.2.2"
+    },
+    "devDependencies": {
+        "@types/node": "^20.19.25",
+        "@vitest/coverage-v8": "4.0.14",
+        "@vitest/ui": "4.0.14",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-import-resolver-typescript": "^3.5.1",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-unused-imports": "^3.1.0",
+        "pnpm": "^10.24.0",
+        "rimraf": "^5.0.5",
+        "tsx": "^4.21.0",
+        "typescript": "^5.9.3",
+        "vite": "^5.0.0",
+        "vitest": "4.0.14"
+    },
+    "scripts": {
+        "build:packages": "pnpm -r --filter \"./packages/**\" run build",
+        "build:apps": "pnpm -r --filter \"./Applications/**\" run build",
+        "build": "pnpm -r run build",
+        "test": "pnpm --workspace-root vitest",
+        "fix:tsc-scripts": "node ./scripts/fix-tsc-in-scripts.js",
+        "fix:workspace-deps": "node ./scripts/fix-workspace-deps.js",
+        "fix:all": "node ./scripts/fix-workspace-deps.js && node ./scripts/fix-tsc-in-scripts.js",
+        "scan:packages": "node ./scripts/scan-package-names.js",
+        "agent:run": "powershell -ExecutionPolicy Bypass -File ./scripts/agent-run.ps1",
+        "workspace:build": "pnpm -r run build",
+        "bootstrap": "pnpm install --recursive",
+        "ci-install": "pnpm install --shamefully-hoist --reporter=silent",
+        "prebuild": "node -e \"const fs=require('fs'); if(!fs.existsSync('./node_modules/pnpm')){console.error('ERROR: pnpm is not installed in this repo. Run `pnpm install` at the repo root (or `pnpm bootstrap`).'); process.exit(1)}\"",
+        "postinstall": "node ./scripts/ensure-pnpm.js || true",
+        "prebuild:win": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if(-not (Test-Path './node_modules/pnpm')) { Write-Error 'ERROR: pnpm binary not found in workspace node_modules. Run `pnpm install` at the repo root.'; exit 1 }\""
+    },
+    "packageManager": "pnpm@10.24.0"
 }

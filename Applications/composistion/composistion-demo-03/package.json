@@ -1,7 +1,7 @@
 {
-  "name": "@monorepo/composistion-demo-02",
+  "name": "@monorepo/composistion-demo-03",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,11 +11,11 @@
   },
   "dependencies": {
     "lit": "^3.3.1",
-    "@monorepo/core-design-composite": "workspace:*"
+    "@monorepo/core-design-composite": "workspace:*",
+    "@monorepo/core-fsm": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "~5.9.3",
-    "vite": "^7.3.1"
-
+    "vite": "^7.3.1",
+    "typescript": "~5.9.3"
   }
 }
