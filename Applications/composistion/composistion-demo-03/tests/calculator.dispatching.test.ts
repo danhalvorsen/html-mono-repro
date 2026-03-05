@@ -76,4 +76,5 @@ describe("calculator.dispatching (fixture)", () => {
 
     fx.Expect(calc, { display: "10", state: State.EnteringNumber });
   });
+  
 });

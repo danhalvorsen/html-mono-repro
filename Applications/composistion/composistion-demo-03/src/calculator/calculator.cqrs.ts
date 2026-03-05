@@ -1,18 +1,28 @@
 // src/calculator/calculator.cqrs.ts
-import type { Result, NonUndefined, ICommand, IQuery } from "@monorepo/core-design-patterns";
-import { Ok, Err, CommandHandler, QueryHandler } from "@monorepo/core-design-patterns";
+// Logging added without changing CQRS contracts
+
+import {
+  Err,
+  type Result,
+  type NonUndefined,
+  Ok} from "@monorepo/core-design-patterns";
+
+import { CommandHandler, QueryHandler, type ICommand, type ICommandBase, type IQuery, type IQueryBase } from "@monorepo/core-design-patterns-cqrs";
 
 import type { Calculator } from "./calculator.js";
-import type {
-  CalculatorCommand,
-  CalculatorQuery,
-  CalculatorQueryResult,
-  DigitCmd,
-  // OperatorCmd, ClearCmd, EqualCmd, GetDisplayQry, GetStateQry  // (assumed in your messages file)
-} from "./calculator.cqrs.messages.js";
-import type { Digit, Operator } from "./calculator.types.js";
+
 import { CalculatorMessageName } from "./calculator.cqrs.names.js";
 import { Inputs } from "./calculator.inputs.js";
+import type { Digit, Operator } from "./calculator.types.js";
+
+import type {
+  DigitCmdMsg,
+  OperatorCmdMsg,
+  ClearCmdMsg,
+  EqualCmdMsg,
+  GetDisplayQryMsg,
+  GetStateQryMsg
+} from "./calculator.cqrs.messages.js";
 
 /* ============================= Errors ============================= */
 
@@ -21,124 +31,142 @@ export type CalculatorError =
   | { readonly kind: "UnknownQuery"; readonly name: string }
   | { readonly kind: "ExecutionFailed"; readonly name: string; readonly error: unknown };
 
-function parseJson<T>(json: string): T {
+type CmdOk = null;
+
+/* ============================= Logging ============================= */
+
+function log(scope: string, msg: unknown): void {
+  console.info(`[calculator-cqrs] ${scope}`, msg);
+}
+
+/* ============================= JSON helper ============================= */
+
+function parseJson<T extends ICommandBase | IQueryBase>(json: string): T {
   return JSON.parse(json) as T;
 }
 
-/**
- * Commands return `null` because `Result<T, E>` in core-design-patterns requires `T extends NonUndefined`
- * and `void` is not allowed. `null` *is* allowed by your `NonUndefined = {} | null`.
- */
-type CmdOk = null;
-
 /* ============================= Command handlers ============================= */
 
-export type DigitCommand = ICommand<DigitCmd> & { readonly name: typeof CalculatorMessageName.Digit };
-// If you have explicit payload types, prefer them here:
-export type OperatorCommand = ICommand<{ readonly op: string }> & { readonly name: typeof CalculatorMessageName.Operator };
-export type ClearCommand = ICommand<{ readonly _?: null }> & { readonly name: typeof CalculatorMessageName.Clear };
-export type EqualCommand = ICommand<{ readonly _?: null }> & { readonly name: typeof CalculatorMessageName.Equal };
-
-export class DigitCmdHandler extends CommandHandler<DigitCommand, CmdOk, CalculatorError> {
-  Handle(_command: ICommand<DigitCommand>): Promise<Result<null, CalculatorError>> {
-    throw new Error("Method not implemented.");
-  }
-  public constructor(private readonly calculator: Calculator) {
+export class DigitCmdHandler
+  extends CommandHandler<DigitCmdMsg, CmdOk, CalculatorError>
+{
+  constructor(private readonly calculator: Calculator) {
     super();
   }
 
-  public async handle(command: DigitCommand): Promise<Result<CmdOk, CalculatorError>> {
-    const payload = parseJson<{ digit?: Digit; payload?: { digit?: Digit } }>(command.json);
-    const digit = payload.digit ?? payload.payload?.digit;
+  public async Handle(command: ICommand<DigitCmdMsg>): Promise<Result<CmdOk, CalculatorError>> {
 
-    if (digit === undefined) {
-      return Err<CmdOk, CalculatorError>({ kind: "ExecutionFailed", name: command.name, error: "Missing digit" });
-    }
+    const msg = parseJson<DigitCmdMsg>(command.json);
+
+    log("DigitCmd", msg);
+
+    const digit: Digit = msg.digit;
 
     await this.calculator.dispatch(Inputs.digit(digit));
-    return Ok<CmdOk, CalculatorError>(null);
+
+    return Ok(null);
   }
 }
 
-export class OperatorCmdHandler extends CommandHandler<OperatorCommand, CmdOk, CalculatorError> {
-  Handle(_command: ICommand<OperatorCommand>): Promise<Result<null, CalculatorError>> {
-    throw new Error("Method not implemented.");
-  }
-  public constructor(private readonly calculator: Calculator) {
+export class OperatorCmdHandler
+  extends CommandHandler<OperatorCmdMsg, CmdOk, CalculatorError>
+{
+  constructor(private readonly calculator: Calculator) {
     super();
   }
 
-  public async handle(command: OperatorCommand): Promise<Result<CmdOk, CalculatorError>> {
-    const payload = parseJson<{ op?: Operator; payload?: { op?: Operator } }>(command.json);
-    const op = payload.op ?? payload.payload?.op;
+  public async Handle(command: ICommand<OperatorCmdMsg>): Promise<Result<CmdOk, CalculatorError>> {
 
-    if (op === undefined) {
-      return Err<CmdOk, CalculatorError>({ kind: "ExecutionFailed", name: command.name, error: "Missing operator" });
-    }
+    const msg = parseJson<OperatorCmdMsg>(command.json);
+
+    log("OperatorCmd", msg);
+
+    const op: Operator = msg.op;
 
     await this.calculator.dispatch(Inputs.op(op));
-    return Ok<CmdOk, CalculatorError>(null);
+
+    return Ok(null);
   }
 }
 
-export class ClearCmdHandler extends CommandHandler<ClearCommand, CmdOk, CalculatorError> {
-  Handle(_command: ICommand<ClearCommand>): Promise<Result<null, CalculatorError>> {
-    throw new Error("Method not implemented.");
-  }
-  public constructor(private readonly calculator: Calculator) {
+export class ClearCmdHandler
+  extends CommandHandler<ClearCmdMsg, CmdOk, CalculatorError>
+{
+  constructor(private readonly calculator: Calculator) {
     super();
   }
 
-  public async handle(_command: ClearCommand): Promise<Result<CmdOk, CalculatorError>> {
+  public async Handle(command: ICommand<ClearCmdMsg>): Promise<Result<CmdOk, CalculatorError>> {
+
+    const msg = parseJson<ClearCmdMsg>(command.json);
+
+    log("ClearCmd", msg);
+
     await this.calculator.dispatch(Inputs.cr());
-    return Ok<CmdOk, CalculatorError>(null);
+
+    return Ok(null);
   }
 }
 
-export class EqualCmdHandler extends CommandHandler<EqualCommand, CmdOk, CalculatorError> {
-  Handle(_command: ICommand<EqualCommand>): Promise<Result<null, CalculatorError>> {
-    throw new Error("Method not implemented.");
-  }
-  public constructor(private readonly calculator: Calculator) {
+export class EqualCmdHandler
+  extends CommandHandler<EqualCmdMsg, CmdOk, CalculatorError>
+{
+  constructor(private readonly calculator: Calculator) {
     super();
   }
 
-  public async handle(_command: EqualCommand): Promise<Result<CmdOk, CalculatorError>> {
+  public async Handle(command: ICommand<EqualCmdMsg>): Promise<Result<CmdOk, CalculatorError>> {
+
+    const msg = parseJson<EqualCmdMsg>(command.json);
+
+    log("EqualCmd", msg);
+
     await this.calculator.dispatch(Inputs.eq());
-    return Ok<CmdOk, CalculatorError>(null);
+
+    return Ok(null);
   }
 }
 
 /* ============================= Query handlers ============================= */
 
-export type GetDisplayQuery = IQuery<{ readonly _?: null }> & { readonly name: typeof CalculatorMessageName.GetDisplay };
-export type GetStateQuery = IQuery<{ readonly _?: null }> & { readonly name: typeof CalculatorMessageName.GetState };
-
-export class GetDisplayQryHandler extends QueryHandler<GetDisplayQuery, string, CalculatorError> {
-  public constructor(private readonly calculator: Calculator) {
+export class GetDisplayQryHandler
+  extends QueryHandler<GetDisplayQryMsg, string, CalculatorError>
+{
+  constructor(private readonly calculator: Calculator) {
     super();
   }
 
-  public async handle(_query: GetDisplayQuery): Promise<Result<string, CalculatorError>> {
-    // Ensure display is never `undefined` in Calculator; otherwise return a safe NonUndefined fallback.
-    return Ok<string, CalculatorError>(this.calculator.display);
+  public async handle(query: IQuery<GetDisplayQryMsg>): Promise<Result<string, CalculatorError>> {
+
+    const msg = parseJson<GetDisplayQryMsg>(query.json);
+
+    log("GetDisplayQry", msg);
+
+    return Ok(this.calculator.display);
   }
 }
 
-export class GetStateQryHandler extends QueryHandler<GetStateQuery, NonUndefined, CalculatorError> {
-  public constructor(private readonly calculator: Calculator) {
+export class GetStateQryHandler
+  extends QueryHandler<GetStateQryMsg, NonUndefined, CalculatorError>
+{
+  constructor(private readonly calculator: Calculator) {
     super();
   }
 
-  public async handle(_query: GetStateQuery): Promise<Result<NonUndefined, CalculatorError>> {
-    // If `calculator.state` is guaranteed non-undefined, tighten the return type accordingly.
-    return Ok<NonUndefined, CalculatorError>(this.calculator.state as NonUndefined);
+  public async handle(query: IQuery<GetStateQryMsg>): Promise<Result<NonUndefined, CalculatorError>> {
+
+    const msg = parseJson<GetStateQryMsg>(query.json);
+
+    log("GetStateQry", msg);
+
+    return Ok(this.calculator.state as NonUndefined);
   }
 }
 
-/* ============================= Facade / Dispatcher ============================= */
+/* ============================= Facade ============================= */
 
 export class CalculatorCqrs {
+
   private readonly digit: DigitCmdHandler;
   private readonly op: OperatorCmdHandler;
   private readonly clear: ClearCmdHandler;
@@ -147,7 +175,8 @@ export class CalculatorCqrs {
   private readonly getDisplay: GetDisplayQryHandler;
   private readonly getState: GetStateQryHandler;
 
-  public constructor(calculator: Calculator) {
+  constructor(calculator: Calculator) {
+
     this.digit = new DigitCmdHandler(calculator);
     this.op = new OperatorCmdHandler(calculator);
     this.clear = new ClearCmdHandler(calculator);
@@ -157,43 +186,55 @@ export class CalculatorCqrs {
     this.getState = new GetStateQryHandler(calculator);
   }
 
-  public async execute(cmd: CalculatorCommand): Promise<Result<CmdOk, CalculatorError>> {
-    try {
-      switch (cmd.name) {
-        case CalculatorMessageName.Digit:
-          return await this.digit.handle(cmd as DigitCommand);
+  public async execute(cmd: ICommand<ICommandBase>)
+    : Promise<Result<CmdOk, CalculatorError>>
+  {
+    const msg = parseJson<ICommandBase & { name: string }>(cmd.json);
 
-        case CalculatorMessageName.Operator:
-          return await this.op.handle(cmd as OperatorCommand);
+    log("execute", msg);
 
-        case CalculatorMessageName.Clear:
-          return await this.clear.handle(cmd as ClearCommand);
+    switch (msg.name) {
 
-        case CalculatorMessageName.Equal:
-          return await this.eq.handle(cmd as EqualCommand);
+      case CalculatorMessageName.Digit:
+        return this.digit.Handle(cmd as ICommand<DigitCmdMsg>);
 
-        default:
-          return Err<CmdOk, CalculatorError>({ kind: "UnknownCommand", name: (cmd as { name?: string }).name ?? "unknown" });
-      }
-    } catch (e) {
-      return Err<CmdOk, CalculatorError>({ kind: "ExecutionFailed", name: (cmd as { name?: string }).name ?? "unknown", error: e });
+      case CalculatorMessageName.Operator:
+        return this.op.Handle(cmd as ICommand<OperatorCmdMsg>);
+
+      case CalculatorMessageName.Clear:
+        return this.clear.Handle(cmd as ICommand<ClearCmdMsg>);
+
+      case CalculatorMessageName.Equal:
+        return this.eq.Handle(cmd as ICommand<EqualCmdMsg>);
+
+      default:
+        return Err({
+          kind: "UnknownCommand",
+          name: msg.name
+        });
     }
   }
 
-  public async query<Q extends CalculatorQuery>(q: Q): Promise<Result<CalculatorQueryResult<Q>, CalculatorError>> {
-    try {
-      switch (q.name) {
-        case CalculatorMessageName.GetDisplay:
-          return (await this.getDisplay.handle(q as GetDisplayQuery)) as Result<CalculatorQueryResult<Q>, CalculatorError>;
+  public async query(q: IQuery<IQueryBase>)
+    : Promise<Result<NonUndefined, CalculatorError>>
+  {
+    const msg = parseJson<IQueryBase & { name: string }>(q.json);
 
-        case CalculatorMessageName.GetState:
-          return (await this.getState.handle(q as GetStateQuery)) as Result<CalculatorQueryResult<Q>, CalculatorError>;
+    log("query", msg);
 
-        default:
-          return Err<CalculatorQueryResult<Q>, CalculatorError>({ kind: "UnknownQuery", name: (q as { name?: string }).name ?? "unknown" });
-      }
-    } catch (e) {
-      return Err<CalculatorQueryResult<Q>, CalculatorError>({ kind: "ExecutionFailed", name: (q as { name?: string }).name ?? "unknown", error: e });
+    switch (msg.name) {
+
+      case CalculatorMessageName.GetDisplay:
+        return this.getDisplay.handle(q as IQuery<GetDisplayQryMsg>);
+
+      case CalculatorMessageName.GetState:
+        return this.getState.handle(q as IQuery<GetStateQryMsg>);
+
+      default:
+        return Err({
+          kind: "UnknownQuery",
+          name: msg.name
+        });
     }
   }
 }
