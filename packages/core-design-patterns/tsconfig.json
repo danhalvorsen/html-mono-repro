@@ -1,6 +1,5 @@
-// packages/core-design-composite/tsconfig.json  (adjusted)
 {
-  "extends": "../../tsconfig.node.json",
+  "extends": "../../../tsconfig.node.json",
   "compilerOptions": {
     // ✅ must emit
     "noEmit": false,

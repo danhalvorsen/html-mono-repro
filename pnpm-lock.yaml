@@ -192,9 +192,15 @@ importers:
       '@monorepo/core-design-patterns':
         specifier: workspace:*
         version: link:../../../packages/core-design-patterns
+      '@monorepo/core-design-patterns-cqrs':
+        specifier: workspace:*
+        version: link:../../../packages/core-design-patterns-cqrs
       '@monorepo/core-fsm':
         specifier: workspace:*
         version: link:../../../packages/core-fsm
+      '@monorepo/core-ioc-inversify':
+        specifier: workspace:*
+        version: link:../../../packages/core-ioc-inversify
       lit:
         specifier: ^3.3.1
         version: 3.3.2
@@ -488,6 +494,50 @@ importers:
   packages/core-design-composite: {}
 
   packages/core-design-patterns:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/core-design-patterns-cqrs:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/core-design-patterns-mediator:
+    dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../core-design-patterns
+      '@monorepo/core-design-patterns-cqrs':
+        specifier: workspace:*
+        version: link:../core-design-patterns-cqrs
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/core-design-patterns-mediator-sample:
+    dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../core-design-patterns
+      '@monorepo/core-design-patterns-cqrs':
+        specifier: workspace:*
+        version: link:../core-design-patterns-cqrs
+      '@monorepo/core-design-patterns-mediator':
+        specifier: workspace:*
+        version: link:../core-design-patterns-mediator
     devDependencies:
       rimraf:
         specifier: ^6.0.1
