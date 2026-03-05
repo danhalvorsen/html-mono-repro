@@ -1,31 +1,33 @@
+// packages/core-design-composite/tsconfig.json  (adjusted)
 {
   "extends": "../../tsconfig.node.json",
-
   "compilerOptions": {
-    "composite": true,
+    // ✅ must emit
+    "noEmit": false,
     "declaration": true,
     "declarationMap": true,
-   "emitDeclarationOnly": false,
+    "declarationDir": "dist",
+    // ✅ output
     "outDir": "dist",
     "rootDir": "src",
 
+    // ✅ library compile surface
     "lib": ["ES2021", "DOM"],
-    "types": ["node"],
+    "types": [],
 
+    // ✅ make module settings consistent (NodeNext requires module=NodeNext)
+    "module": "NodeNext",
     "moduleResolution": "NodeNext",
 
+    // decorators (keep if you actually need it)
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-
   "include": ["src/**/*"],
-
   "exclude": [
     "tests",
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    "**/*.test.js",
-    "**/*.spec.js",
+    "**/*.test.*",
+    "**/*.spec.*",
     "vitest.config.ts",
     "vite.config.ts"
   ]
