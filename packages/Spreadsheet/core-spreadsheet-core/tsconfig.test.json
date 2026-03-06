@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "composite": false,
+    "types": ["vitest", "node"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "skipLibCheck": true
+  },
+  "include": [
+    "tests/**/*.test.ts",
+    "tests/**/*.spec.ts"
+  ]
+}

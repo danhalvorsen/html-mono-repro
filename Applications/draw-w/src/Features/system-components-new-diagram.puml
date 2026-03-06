@@ -1,0 +1,23 @@
+@startuml system-components-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title System Components
+LAYOUT_LEFT_RIGHT()
+
+System_Boundary(system, "Spreadsheet System") {
+
+  Component(ui, "Spreadsheet UI", "Lit Web Components", "Renders grid, handles editing and selection")
+  Component(engine, "Calculation Engine", "TypeScript", "Evaluates formulas and manages dependency graph")
+  Component(addressing, "Address Resolver", "TypeScript", "Parses A1 notation and resolves ranges")
+  Component(dag, "Dependency Graph", "core-graph", "Tracks cell dependencies as DAG")
+  Component(storage, "Workbook Store", "IndexedDB", "Persists workbook state")
+
+}
+
+Rel(ui, engine, "sends formula updates")
+Rel(engine, addressing, "resolves references")
+Rel(addressing, dag, "creates dependency edges")
+Rel(engine, dag, "reads evaluation order")
+Rel(engine, storage, "saves workbook")
+
+@enduml

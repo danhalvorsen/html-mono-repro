@@ -1,0 +1,66 @@
+@startuml draw_w_system_component_diagram
+title draw-w - Current Component Diagram
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+package "draw-w App" {
+	component "my-element\n(Lit root component)" as MyElement
+	component "my-point-view\n(PointView web component)" as PointView
+	component "JSON Points Loader\n(import.meta.glob ../points*.json)" as JsonLoader
+
+	component "GraphicalCoordinateSystem" as CoordSystem
+	component "Viewport" as Viewport
+
+	component "ThreeCanvas" as ThreeCanvas
+	component "Application\n(Three.js wrapper)" as Application
+}
+
+package "Coordinate System CQRS Artifacts\n(currently defined in app)" {
+	component "PlotCommand" as PlotCommand
+	component "ShowCoordinateSystemCommand" as ShowCommand
+	component "HideCoordinateSystemCommand" as HideCommand
+	component "IsCoordinateSystemVisibleQuery" as VisibleQuery
+}
+
+package "External Libraries" {
+	component "three" as ThreeJs
+	component "@monorepo/core-math\n(Point2)" as CoreMath
+	component "@monorepo/core-composition-svg-turtle\n(Turtle, CenteredCartesianMapper)" as TurtleLib
+	component "@monorepo/core-design-patterns-cqrs\n(ICommand, IQuery)" as CqrsContracts
+}
+
+MyElement --> PointView : passes points/behavior\nhandles UI events
+MyElement --> JsonLoader : select + load points dataset
+JsonLoader --> MyElement : Point2[]
+
+MyElement --> CoordSystem : toCartesian()\nupdateViewport()
+CoordSystem --> Viewport
+CoordSystem --> TurtleLib : CenteredCartesianMapper
+
+MyElement --> TurtleLib : Turtle path behavior
+MyElement --> ThreeCanvas : clear(), drawLine(), start()
+ThreeCanvas --> Application
+Application --> ThreeJs : renderer/scene/camera/line primitives
+
+MyElement ..> CoreMath : Point2 type
+PointView ..> CoreMath : Point2 type
+
+PlotCommand ..> CqrsContracts : ICommand<T>
+ShowCommand ..> CqrsContracts : ICommand<T>
+HideCommand ..> CqrsContracts : ICommand<T>
+VisibleQuery ..> CqrsContracts : IQuery<T>
+
+note right of MyElement
+	Composition root for UI + rendering.
+	Owns point state, behavior mode,
+	JSON file selection, and redraw cycle.
+end note
+
+note right of ThreeCanvas
+	Canvas adapter around Application.
+	Handles ResizeObserver + disposal.
+end note
+
+@enduml

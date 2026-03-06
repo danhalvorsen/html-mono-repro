@@ -31,4 +31,5 @@ export * from './interfaces/new/gpu/vector.js';
 export * from './interpolation/CatmullRomSpline3D.js';
 export * from './interpolation/ISpline.js';
 export * from './interpolation/LinearInterpolator3D.js';
+export * from './types/Types.js';
  

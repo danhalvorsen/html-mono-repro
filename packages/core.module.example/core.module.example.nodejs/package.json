@@ -1,0 +1,27 @@
+{
+  "name": "@monorepo/core.module.example.nodejs",
+  "version": "1.0.0",
+  "description": "Node.js version of the core.module.example package.",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^4.0.0",
+    "jest": "^26.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/core.module.example.git"
+  },
+  "keywords": [
+    "core",
+    "module",
+    "example",
+    "node"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
