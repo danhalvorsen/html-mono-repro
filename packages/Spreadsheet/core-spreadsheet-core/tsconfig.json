@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+
+    // Emit JS + d.ts into dist
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Monorepo folder hygiene
+    "rootDir": "src",
+    "outDir": "dist",
+    "noEmitOnError": true,
+
+    // Module system for Node/Vite compatibility
+    "module": "NodeNext"
+  },
+  "include": ["src"],
+  "exclude": ["dist", "node_modules"]
+}

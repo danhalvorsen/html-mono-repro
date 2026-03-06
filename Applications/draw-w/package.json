@@ -12,6 +12,7 @@
     "@monorepo/core-composition-svg-turtle": "workspace:*",
     "@monorepo/core-math": "workspace:*",
     "@monorepo/core-design-patterns": "workspace:*",
+    "@monorepo/core-design-patterns-cqrs": "workspace:*",
     "lit": "^3.3.1",
     "three": "^0.174.0"
   },

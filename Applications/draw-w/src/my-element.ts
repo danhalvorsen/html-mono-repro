@@ -7,6 +7,15 @@ import { GraphicalCoordinateSystem } from './coordindate-system/GraphicalCoordin
 import { Viewport } from './coordindate-system/types/Viewport'
 import './PointView.ts'
 
+const rootJsonModules = import.meta.glob('../points*.json', { eager: true }) as Record<
+  string,
+  { default: unknown } | unknown
+>
+
+const rootJsonFiles = Object.keys(rootJsonModules)
+  .map((path) => path.replace('../', ''))
+  .sort((a, b) => a.localeCompare(b))
+
 @customElement('my-element')
 export class MyElement extends LitElement {
   @query('#viewport') private viewport?: HTMLCanvasElement
@@ -16,6 +25,8 @@ export class MyElement extends LitElement {
     { x: 20, y: 120 },
   ]
   @state() private behavior: 'absolute' | 'turtle-centered' = 'absolute'
+  @state() private selectedJsonFile = ''
+  @state() private jsonLoadMessage = ''
 
   #three: ThreeCanvas | undefined
   #coords: GraphicalCoordinateSystem | undefined
@@ -24,6 +35,26 @@ export class MyElement extends LitElement {
     return html`
       <div class="layout">
         <aside class="left" part="ui">
+          <div class="json-loader">
+            <label for="points-json-select">Points JSON</label>
+            <div class="json-loader-row">
+              <select
+                id="points-json-select"
+                .value=${this.selectedJsonFile}
+                @change=${(e: Event) => this.onJsonFileChange(e)}
+              >
+                <option value="">Select a JSON file…</option>
+                ${rootJsonFiles.map(
+                  (file) => html`<option value=${file}>${file}</option>`,
+                )}
+              </select>
+              <button type="button" @click=${() => this.loadSelectedJsonPoints()}>Load</button>
+            </div>
+            ${this.jsonLoadMessage
+              ? html`<div class="json-loader-msg">${this.jsonLoadMessage}</div>`
+              : null}
+          </div>
+
           <my-point-view
             .points=${this.points}
             .behavior=${this.behavior}
@@ -157,6 +188,57 @@ export class MyElement extends LitElement {
     this.redraw()
   }
 
+  private onJsonFileChange(e: Event) {
+    const target = e.currentTarget as HTMLSelectElement | null
+    this.selectedJsonFile = target?.value ?? ''
+  }
+
+  private loadSelectedJsonPoints() {
+    if (!this.selectedJsonFile) {
+      this.jsonLoadMessage = 'Select a JSON file first.'
+      return
+    }
+
+    const key = `../${this.selectedJsonFile}`
+    const mod = rootJsonModules[key]
+    const payload =
+      mod && typeof mod === 'object' && 'default' in mod
+        ? (mod as { default: unknown }).default
+        : mod
+
+    const parsed = this.parsePointJson(payload)
+    if (!parsed) {
+      this.jsonLoadMessage = `No valid points found in ${this.selectedJsonFile}. Expected Point2[] or { points: Point2[] }.`
+      return
+    }
+
+    this.points = parsed
+    this.jsonLoadMessage = `Loaded ${parsed.length} points from ${this.selectedJsonFile}.`
+    this.redraw()
+  }
+
+  private parsePointJson(value: unknown): Point2[] | null {
+    const source =
+      Array.isArray(value)
+        ? value
+        : value && typeof value === 'object' && Array.isArray((value as { points?: unknown }).points)
+          ? (value as { points: unknown[] }).points
+          : null
+
+    if (!source) return null
+
+    const points: Point2[] = []
+    for (const item of source) {
+      if (!item || typeof item !== 'object') return null
+      const x = Number((item as { x?: unknown }).x)
+      const y = Number((item as { y?: unknown }).y)
+      if (!Number.isFinite(x) || !Number.isFinite(y)) return null
+      points.push({ x, y })
+    }
+
+    return points
+  }
+
   static styles = css`
     :host {
       display: block;
@@ -176,6 +258,41 @@ export class MyElement extends LitElement {
       border-right: 1px solid rgba(255, 255, 255, 0.08);
       background: rgba(12, 18, 34, 0.9);
       overflow: auto;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .json-loader {
+      display: grid;
+      gap: 8px;
+      color: #cdd7ff;
+      margin-bottom: 10px;
+    }
+
+    .json-loader-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .json-loader select,
+    .json-loader button {
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: #111a2f;
+      color: #e7edff;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
+
+    .json-loader button {
+      cursor: pointer;
+    }
+
+    .json-loader-msg {
+      font-size: 12px;
+      opacity: 0.9;
     }
 
     .right {

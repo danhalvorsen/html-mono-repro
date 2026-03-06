@@ -1,0 +1,30 @@
+﻿{
+  "name": "@monorepo/core-spreadsheet-core-addressing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "inversify": "^6.x",
+    "reflect-metadata": "^0.2.x",
+    "@monorepo/core-spreadsheet-abstract": "workspace:*",
+    "@monorepo/core-spreadsheet-core": "workspace:*",
+    "@monorepo/core-graph": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "rimraf": "^6.0.1"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

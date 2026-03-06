@@ -1,0 +1,49 @@
+@startuml draw_w_system_component_diagram
+title Shape
+
+interface IShape {
+    render():void;
+    features: IMyReeactiveControllers[]
+}
+
+interface IMyReeactiveController {
+    handleMouseMove(event: MouseEvent): void
+    onMouseMove: Observable<Point2>
+     hostDisconnected() : void
+     hostConnected() : void 
+     hostUpdate() : void    
+     hostConnected(): void  
+}   
+class MouseController implements IMyReeactiveController {
+    +handleMouseMove(event: MouseEvent): void
+    hostDisconnected() : void {}
+     hostConnected() : void {}
+     hostUpdate() : void    {}
+
+     hostConnected(): void  {}
+}
+
+class DragController implements IMyReeactiveController {
+    k
+    +handleMouseMove(event: MouseEvent): void
+    hostDisconnected() : void {}
+     hostConnected() : void {}
+     hostUpdate() : void    {}
+
+     hostConnected(): void  {}                                                              
+}
+
+class OnClickController implements IMyReeactiveController {
+    +handleMouseMove(event: MouseEvent): void
+    hostDisconnected() : void {}
+     hostConnected() : void {}
+     hostUpdate() : void    {}
+
+     hostConnected(): void  {}                                              
+}
+
+class Shape implements IShape {
+    +render(): void
+    features: IMyReeactiveControllers[] = [new MouseController(), new DragController(), new OnClickController()]    
+}
+ @enduml

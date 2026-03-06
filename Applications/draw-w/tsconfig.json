@@ -17,7 +17,8 @@
     "baseUrl": ".",
     "paths": {
       "@monorepo/core-math": ["../../packages/core-math/src/index.ts"],
-      "@monorepo/core-design-patterns": ["../../packages/core-design-patterns/src/index.ts"]
+      "@monorepo/core-design-patterns": ["../../packages/core-design-patterns/src/index.ts"],
+      "@monorepo/core-design-patterns-cqrs": ["../../packages/core-design-patterns-cqrs/src/index.ts"]
     },
 
     /* Linting */
