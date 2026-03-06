@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createThreeShapesModule, StringShapeTypeFactory, ThreeShapeFactory, UuidShapeIdentityFactory } from "../src/Index.js";
+import { createThreeShapesModule, StringShapeTypeFactory, ThreeShapeFactory, UuidShapeIdentityFactory } from "../src/index.js";
 import { Object3D } from "three";
 describe("createThreeShapesModule", () => {
   it("creates fully wired module", () => {

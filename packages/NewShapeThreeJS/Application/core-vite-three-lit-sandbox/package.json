@@ -1,0 +1,30 @@
+{
+  "name": "@monorepo/core-vite-three-lit-sandbox",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+
+  "dependencies": {
+    "lit": "^3.3.1",
+    "three": "^0.183.2",
+
+    "@monorepo/core-shapes-abstract": "workspace:*",
+    "@monorepo/core-shapes-threejs": "workspace:*",
+    "@monorepo/core-reactive-abstract": "workspace:*",
+    "@monorepo/core-drawing-infrastructure-abstract": "workspace:*",
+    "@monorepo/core-drawing-infrastructure-threejs": "workspace:*"
+  },
+
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "vite": "^7.3.1",
+    "@types/three": "^0.183.0"
+  }
+}

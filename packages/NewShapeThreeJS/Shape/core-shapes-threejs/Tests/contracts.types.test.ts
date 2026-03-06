@@ -12,7 +12,7 @@ import type {
   IThreeShape,
   IThreeShapeFactory,
   ThreeShapeOptions
-} from '../src/Index.js'
+} from '../src/index.js'
 
 describe("core-shapes-threejs contracts (type-level)", () => {
   it("IThreeDrawContext requires scene", () => {

@@ -4,7 +4,7 @@ import { Object3D, Scene } from "three";
 import type { IReactiveShapeController } from "@monorepo/core-reactive-abstract";
 import type { ShapeId, ShapeType } from "@monorepo/core-shapes-abstract";
 import type { IThreeShape } from "../../src/IThreeShape.js";
-import type { ThreeShapeOptions } from "../../src/Index.js";
+import type { ThreeShapeOptions } from "../../src/index.js";
 import { ThreeShape } from "../../src/ThreeShape.js";
 
 export class FakeReactiveShapeController implements IReactiveShapeController<IThreeShape> {

@@ -4,7 +4,6 @@ export * from './IThreeDrawContext.js';
 export * from './IThreeObjectProvider.js';
 export * from './IThreeShape.js';
 export * from './IThreeShapeFactory.js';
-export * from './Index.js';
 export * from './StringShapeTypeFactory.js';
 export * from './ThreeShape.js';
 export * from './ThreeShapeFactory.js';

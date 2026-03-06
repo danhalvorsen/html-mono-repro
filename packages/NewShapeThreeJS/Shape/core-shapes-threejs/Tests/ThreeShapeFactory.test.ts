@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { IShapeIdentityFactory, IShapeTypeFactory, ThreeShapeFactory } from "../src/Index.js";
+import { IShapeIdentityFactory, IShapeTypeFactory, ThreeShapeFactory } from "../src/index.js";
 import type { IDrawableShape, ShapeId, ShapeType } from "@monorepo/core-shapes-abstract";
 import { Object3D } from "three";
 class ShapeIdentityFactoryStub implements IShapeIdentityFactory {

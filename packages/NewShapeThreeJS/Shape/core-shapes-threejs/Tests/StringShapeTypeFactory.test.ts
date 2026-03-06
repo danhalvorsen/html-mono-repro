@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { StringShapeTypeFactory } from "../src/Index.js";
+import { StringShapeTypeFactory } from "../src/index.js";
 
 describe("StringShapeTypeFactory", () => {
   it("creates ShapeType from trimmed value", () => {
