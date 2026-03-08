@@ -1,107 +1,47 @@
+// packages/core-filesystem/src/Directory.ts
 
 import fs from "fs";
-import { FileSystemEvent } from "./Events/FileSystemEvent.js";
-import { IFileSystemEmitter, IFileSystemObserver } from "./Events/IFileSystemObserver.js";
+import { File } from "./File.js";
 import { Path } from "./Path.js";
 
-export interface Directory {
-  path: Path;
-}
+export class Directory {
+  public constructor(public readonly path: Path) {}
 
-export class PollingDirectoryWatcher implements IFileSystemEmitter {
-  private observers = new Set<IFileSystemObserver>();
-  private timer: NodeJS.Timeout | null = null;
-  private lastSnapshot = new Map<string, number>();
-
-  constructor(
-    private readonly root: Directory,
-    private readonly intervalMs: number = 250
-  ) {}
-
-  subscribe(observer: IFileSystemObserver): () => void {
-    this.observers.add(observer);
-    return () => this.observers.delete(observer);
+  public exists(): boolean {
+    return this.path.exists();
   }
 
-  start(): void {
-    if (this.timer) return;
-    this.scan();
-    this.timer = setInterval(() => this.scan(), this.intervalMs);
+  public create(recursive: boolean = true): void {
+    fs.mkdirSync(this.path.full, { recursive });
   }
 
-  stop(): void {
-    if (!this.timer) return;
-    clearInterval(this.timer);
-    this.timer = null;
-  }
-
-  private emit(event: FileSystemEvent): void {
-    for (const o of this.observers) o(event);
-  }
-
-  private scan(): void {
-    let files: string[] = [];
-
-    try {
-      files = fs.readdirSync(this.root.path.full);
-    } catch {
+  public delete(recursive: boolean = true): void {
+    if (!this.exists()) {
       return;
     }
 
-    const seen = new Set<string>();
+    fs.rmSync(this.path.full, { recursive, force: true });
+  }
 
-    for (const name of files) {
-      const full = this.root.path.join(name).full;
-
-      let stat: fs.Stats;
-      try {
-        stat = fs.statSync(full);
-      } catch {
-        continue;
-      }
-
-      const mtime = stat.mtimeMs;
-      seen.add(full);
-
-      if (!this.lastSnapshot.has(full)) {
-        this.lastSnapshot.set(full, mtime);
-
-        this.emit({
-          type: stat.isDirectory() ? "dir.created" : "file.created",
-          path: full,
-          relative: name,
-          timestamp: Date.now()
-        });
-
-        continue;
-      }
-
-      const old = this.lastSnapshot.get(full)!;
-      if (mtime !== old) {
-        this.lastSnapshot.set(full, mtime);
-
-        // this.emit({
-        //   // type: stat.isDirectory() ? "dir.modified" : "file.modified",
-        //   // path: full,
-        //   // relative: name,
-        //   // timestamp: Date.now()
-        // });
-      }
+  public listFiles(): ReadonlyArray<File> {
+    if (!this.exists()) {
+      return [];
     }
 
-    for (const old of this.lastSnapshot.keys()) {
-      if (!seen.has(old)) {
-        this.lastSnapshot.delete(old);
+    return fs
+      .readdirSync(this.path.full, { withFileTypes: true })
+      .filter(entry => entry.isFile())
+      .map(entry => new File(this.path.join(entry.name)));
+  }
 
-        const relative = Path.from(old).basename;
-
-        this.emit({
-          type: old.endsWith("/") ? "dir.deleted" : "file.deleted",
-          path: old,
-          relative,
-          timestamp: Date.now()
-        });
-      }
+  public listDirs(): ReadonlyArray<Directory> {
+    if (!this.exists()) {
+      return [];
     }
+
+    return fs
+      .readdirSync(this.path.full, { withFileTypes: true })
+      .filter(entry => entry.isDirectory())
+      .map(entry => new Directory(this.path.join(entry.name)));
   }
 }

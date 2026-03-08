@@ -19,7 +19,8 @@
     "@monorepo/core-shapes-threejs": "workspace:*",
     "@monorepo/core-reactive-abstract": "workspace:*",
     "@monorepo/core-drawing-infrastructure-abstract": "workspace:*",
-    "@monorepo/core-drawing-infrastructure-threejs": "workspace:*"
+    "@monorepo/core-drawing-infrastructure-threejs": "workspace:*",
+    "@monorepo/core-shapes-threejs-intergration": "workspace:*"
   },
 
   "devDependencies": {

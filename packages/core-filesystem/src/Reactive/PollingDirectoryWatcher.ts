@@ -1,88 +1,163 @@
+// packages/core-filesystem/src/Reactive/PollingDirectoryWatcher.ts
+
+import fs from "fs";
+import path from "path";
 import { Directory } from "../Directory.js";
 import { FileSystemEvent } from "../Events/FileSystemEvent.js";
-import { IFileSystemEmitter, IFileSystemObserver } from "../Events/IFileSystemObserver.js";
- 
-import { Path } from "../Path.js";
-import fs from "fs";
+import {
+  IFileSystemEmitter,
+  IFileSystemObserver
+} from "../Events/IFileSystemObserver.js";
+
+type EntryKind = "file" | "dir";
+
+interface EntrySnapshot {
+  readonly kind: EntryKind;
+  readonly mtimeMs: number;
+}
+
+export interface PollingDirectoryWatcherOptions {
+  readonly intervalMs?: number;
+  readonly recursive?: boolean;
+}
 
 export class PollingDirectoryWatcher implements IFileSystemEmitter {
-  private observers = new Set<IFileSystemObserver>();
-  private timer: any;
-  private lastSnapshot = new Map<string, number>();
+  private readonly observers = new Set<IFileSystemObserver>();
+  private readonly intervalMs: number;
+  private readonly recursive: boolean;
+  private timer: NodeJS.Timeout | null = null;
+  private snapshot = new Map<string, EntrySnapshot>();
+  private started = false;
 
-  constructor(
+  public constructor(
     private readonly root: Directory,
-    private readonly intervalMs: number = 250
-  ) {}
+    options: PollingDirectoryWatcherOptions = {}
+  ) {
+    this.intervalMs = options.intervalMs ?? 250;
+    this.recursive = options.recursive ?? false;
+  }
 
-  subscribe(observer: IFileSystemObserver): () => void {
+  public subscribe(observer: IFileSystemObserver): () => void {
     this.observers.add(observer);
-    return () => this.observers.delete(observer);
+    return () => {
+      this.observers.delete(observer);
+    };
   }
 
-  start(): void {
-    if (this.timer) return;
-    this.scan();
+  public start(): void {
+    if (this.started) {
+      return;
+    }
+
+    this.snapshot = this.createSnapshot();
     this.timer = setInterval(() => this.scan(), this.intervalMs);
+    this.started = true;
   }
 
-  stop(): void {
-    if (!this.timer) return;
-    clearInterval(this.timer);
-    this.timer = null;
-  }
+  public stop(): void {
+    if (!this.started) {
+      return;
+    }
 
-  private emit(event: FileSystemEvent) {
-    this.observers.forEach(o => o(event));
+    if (this.timer !== null) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+
+    this.started = false;
   }
 
   private scan(): void {
-    const files = fs.readdirSync(this.root.path.full);
+    let nextSnapshot: Map<string, EntrySnapshot>;
 
-    const seen = new Set<string>();
+    try {
+      nextSnapshot = this.createSnapshot();
+    } catch {
+      return;
+    }
 
-    for (const name of files) {
-      const full = this.root.path.join(name).full;
-      const stat = fs.statSync(full);
-      const mtime = stat.mtimeMs;
+    const now = Date.now();
 
-      seen.add(full);
+    for (const [fullPath, next] of nextSnapshot) {
+      const previous = this.snapshot.get(fullPath);
 
-      if (!this.lastSnapshot.has(full)) {
-        this.lastSnapshot.set(full, mtime);
+      if (!previous) {
         this.emit({
-          type: stat.isDirectory() ? "dir.created" : "file.created",
-          path: full,
-          relative: name,
-          timestamp: Date.now()
+          type: next.kind === "dir" ? "dir.created" : "file.created",
+          path: fullPath,
+          relative: this.toRelative(fullPath),
+          timestamp: now
         });
         continue;
       }
 
-      const oldMtime = this.lastSnapshot.get(full)!;
-      if (mtime !== oldMtime) {
-        this.lastSnapshot.set(full, mtime);
+      if (next.kind === "file" && next.mtimeMs !== previous.mtimeMs) {
         this.emit({
           type: "file.modified",
-          path: full,
-          relative: name,
-          timestamp: Date.now()
+          path: fullPath,
+          relative: this.toRelative(fullPath),
+          timestamp: now
         });
       }
     }
 
-    // Deleted items
-    for (const old of [...this.lastSnapshot.keys()]) {
-      if (!seen.has(old)) {
-        this.lastSnapshot.delete(old);
-        const relative = Path.from(old).basename;
-        this.emit({
-          type: "file.deleted",
-          path: old,
-          relative,
-          timestamp: Date.now()
-        });
+    for (const [fullPath, previous] of this.snapshot) {
+      if (nextSnapshot.has(fullPath)) {
+        continue;
+      }
+
+      this.emit({
+        type: previous.kind === "dir" ? "dir.deleted" : "file.deleted",
+        path: fullPath,
+        relative: this.toRelative(fullPath),
+        timestamp: now
+      });
+    }
+
+    this.snapshot = nextSnapshot;
+  }
+
+  private emit(event: FileSystemEvent): void {
+    for (const observer of this.observers) {
+      observer(event);
+    }
+  }
+
+  private createSnapshot(): Map<string, EntrySnapshot> {
+    const result = new Map<string, EntrySnapshot>();
+    this.walk(this.root.path.full, result);
+    return result;
+  }
+
+  private walk(currentPath: string, result: Map<string, EntrySnapshot>): void {
+    let entries: fs.Dirent[];
+
+    entries = fs.readdirSync(currentPath, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const fullPath = path.join(currentPath, entry.name);
+
+      let stat: fs.Stats;
+      try {
+        stat = fs.statSync(fullPath);
+      } catch {
+        continue;
+      }
+
+      const kind: EntryKind = entry.isDirectory() ? "dir" : "file";
+
+      result.set(fullPath, {
+        kind,
+        mtimeMs: stat.mtimeMs
+      });
+
+      if (this.recursive && entry.isDirectory()) {
+        this.walk(fullPath, result);
       }
     }
+  }
+
+  private toRelative(fullPath: string): string {
+    return path.relative(this.root.path.full, fullPath);
   }
 }

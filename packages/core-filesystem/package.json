@@ -8,7 +8,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
-    "test": "pnpm --workspace-root vitest run --config ../vitest.config.ts"
+    "test": "pnpm --workspace-root vitest run --config packages/core-filesystem/vitest.config.ts"
   },
   "dependencies": {},
   "devDependencies": {

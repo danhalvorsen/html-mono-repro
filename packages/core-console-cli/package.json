@@ -6,15 +6,17 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
     "start": "tsx src/index.ts"
   },
   "dependencies": {
+    "@monorepo/core-design-patterns": "workspace:*",
+    "@monorepo/core-design-patterns-cqrs": "workspace:*",
     "@monorepo/core-filesystem": "workspace:*",
-    "@monorepo/core-template": "workspace:*",
-    "chalk": "^5.3.0",
-    "inquirer": "^9.2.7"
+    "@monorepo/core-fsm": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^20.19.27",
     "tsx": "^4.6.2",
     "typescript": "^5.3.0"
   },

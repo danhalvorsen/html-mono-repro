@@ -1,22 +1,24 @@
-import fs from 'fs';
-import { Path } from './Path.js';
+// packages/core-filesystem/src/File.ts
+
+import fs from "fs";
+import { Path } from "./Path.js";
 
 export class File {
-    constructor(public readonly path: Path) { }
+  public constructor(public readonly path: Path) {}
 
-    read(): string {
-        return fs.readFileSync(this.path.full, 'utf-8');
-    }
+  public read(): string {
+    return fs.readFileSync(this.path.full, "utf-8");
+  }
 
-    write(content: string): void {
-        fs.writeFileSync(this.path.full, content, 'utf-8');
-    }
+  public write(content: string): void {
+    fs.writeFileSync(this.path.full, content, "utf-8");
+  }
 
-    delete(): void {
-        fs.unlinkSync(this.path.full);
-    }
+  public delete(): void {
+    fs.unlinkSync(this.path.full);
+  }
 
-    exists(): boolean {
-        return this.path.exists();
-    }
+  public exists(): boolean {
+    return this.path.exists();
+  }
 }

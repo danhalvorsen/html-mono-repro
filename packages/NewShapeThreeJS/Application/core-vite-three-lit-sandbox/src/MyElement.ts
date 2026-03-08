@@ -1,4 +1,5 @@
-import { createThreeShapesModule, type IThreeShape } from "@monorepo/core-shapes-threejs";
+import { createThreeShapesModule, type IThreeDrawContext, type IThreeShape } from "@monorepo/core-shapes-threejs";
+import { ThreeDrawableShapeFactory } from '@monorepo/core-shapes-threejs-intergration';
 import { LitElement, html } from "lit";
 // ============================================================================
 // packages/NewShapeThreeJS/Application/core-vite-three-lit-sandbox/src/my-element.ts
@@ -6,7 +7,6 @@ import { LitElement, html } from "lit";
 import { css } from "lit";
 import { customElement } from "lit/decorators.js";
 import { WebGLRenderer, Scene, PerspectiveCamera, AmbientLight, Color, Mesh, BoxGeometry, MeshNormalMaterial } from "three";
-
 
 @customElement("my-element")
 export class MyElement extends LitElement {
@@ -17,6 +17,9 @@ export class MyElement extends LitElement {
   private camera?: PerspectiveCamera;
   private shape?: IThreeShape;
   private ambientLight?: AmbientLight;
+  private shapeFactory?: ThreeDrawableShapeFactory ;
+  private canvas:
+  private threeDrawContext?: IThreeDrawContext;
 
   private frameId?: number;
   private resizeObserver?: ResizeObserver;
@@ -39,6 +42,13 @@ export class MyElement extends LitElement {
     camera.position.set(0, 0, 4);
     scene.add(ambientLight);
 
+    this.
+    this.shapeFactory = new ThreeDrawableShapeFactory("FooFighter", {
+      build: (mesh: Mesh) => mesh
+    });
+
+    const factory = this.shapeFactory;
+    
     const mesh = new Mesh(
       new BoxGeometry(1.25, 1.25, 1.25),
       new MeshNormalMaterial()

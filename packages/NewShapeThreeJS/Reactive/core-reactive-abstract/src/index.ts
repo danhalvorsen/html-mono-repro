@@ -9,3 +9,4 @@ export * from './contracts/IReactiveHost.js';
 export * from './contracts/IReactiveShapeController.js';
 export * from './contracts/IRenderer.js';
 export * from './contracts/ReactiveShapeHost.js';
+export * from './contracts/IFeatureCollection.js';
