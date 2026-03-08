@@ -5,8 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "webpack serve --mode development",
-    "test": "jest"
+    "test": "vitest run"
   },
   "keywords": [
     "example",
@@ -15,12 +14,9 @@
   ],
   "author": "Your Name",
   "license": "MIT",
-  "dependencies": {
-    
-  },
+  "dependencies": {},
   "devDependencies": {
-    "typescript": "^4.0.0",
-    "webpack": "^5.0.0",
-    "jest": "^26.0.0"
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
   }
 }
