@@ -6,14 +6,13 @@ import type {
   IQueryBase,
 } from '@monorepo/core-design-patterns-cqrs';
 import {
-  CliInputTokenizer,
   CliParser,
   CliRunner,
-  CliTypeRegistrar,
   CommandRegistry,
-  createPayloadFactory,
   type CliInvocationContext,
-} from '../src/index.js';
+} from '../src/code.js';
+import { CliInputTokenizer } from '../src/fsm.js';
+import { CliTypeRegistrar, createPayloadFactory } from '../src/cli-registration.js';
 
 interface AddDigitCommandPayload extends ICommandBase {
   readonly digit: number;
@@ -104,7 +103,7 @@ class FindRangeQuery implements FindRangeQueryPayload {
   ) {}
 }
 
-final class CliTypeRegistrarFixture {
+class CliTypeRegistrarFixture {
   public createRegistry(): CommandRegistry {
     return new CommandRegistry();
   }

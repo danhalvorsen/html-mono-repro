@@ -13,7 +13,7 @@ import {
   type CliActionDefinition,
   type CliInvocationContext,
   type CliOptionSchema,
-} from '../src/index.js';
+} from '../src/code.js';
 import type { ICommandBase, IQueryBase } from '@monorepo/core-design-patterns-cqrs';
 
 interface CreateUserCommandPayload extends ICommandBase {

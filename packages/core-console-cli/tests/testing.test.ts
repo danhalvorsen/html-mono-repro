@@ -4,7 +4,6 @@ import { describe, expect, it } from 'vitest';
 import type { ICommandBase, IQueryBase } from '@monorepo/core-design-patterns-cqrs';
 import {
   CliCommand,
-  CliInputTokenizer,
   CliParser,
   CliQuery,
   CliRunner,
@@ -15,7 +14,8 @@ import {
   type CliInvocationContext,
   type CliOptionSchema,
   type CliQueryHandler,
-} from '../src/index.js';
+} from '../src/code.js';
+import { CliInputTokenizer } from '../src/fsm.js';
 
 export interface TestCommandPayload extends ICommandBase {
   readonly name: string;

@@ -98,21 +98,14 @@ export class NodeOptionSchemaMapper implements INodeOptionSchemaMapper {
   }
 
   private createOption(definition: CliOptionDefinition): NodeOptionConfig {
-    const option: NodeOptionConfig = {
+    const defaultValue = this.mapDefault(definition);
+
+    return {
       type: this.mapType(definition.type),
       multiple: definition.multiple ?? false,
+      ...(definition.short !== undefined ? { short: definition.short } : {}),
+      ...(defaultValue !== undefined ? { default: defaultValue } : {}),
     };
-
-    if (definition.short !== undefined) {
-      option.short = definition.short;
-    }
-
-    const defaultValue = this.mapDefault(definition);
-    if (defaultValue !== undefined) {
-      option.default = defaultValue;
-    }
-
-    return option;
   }
 
   private mapType(type: CliOptionType): NodeOptionType {
