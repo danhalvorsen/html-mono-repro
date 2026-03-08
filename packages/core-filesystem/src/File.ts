@@ -15,6 +15,10 @@ export class File {
   }
 
   public delete(): void {
+    if (!this.exists()) {
+      return;
+    }
+
     fs.unlinkSync(this.path.full);
   }
 

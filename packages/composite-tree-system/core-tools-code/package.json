@@ -1,5 +1,5 @@
 {
-  "name": "@monorepo/core-components.abstract",
+  "name": "@monorepo/core-tools-code",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -13,7 +13,8 @@
   "dependencies": {
     "@monorepo/core-design-patterns-cqrs": "workspace:*",
     "@monorepo/core-logger": "workspace:*",
-    "@monorepo/core-filesystem": "workspace:*"
+    "@monorepo/core-filesystem": "workspace:*",
+    "@monorepo/core-console-cli": "workspace:*"
 
   },
   "devDependencies": {
