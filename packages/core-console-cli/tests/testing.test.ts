@@ -1,8 +1,21 @@
 // packages/core-console-cli/tests/testing.test.ts
 
 import { describe, expect, it } from 'vitest';
-import type { ICommandBase, IQueryBase } from '@monorepo/core-design-patterns-cqrs'; 
-import { CliCommandHandler, CliCommand, CliQueryHandler, CliQuery, CliInputTokenizer, CliParser, CommandRegistry, CliRunner, CliOptionSchema, CliActionDefinition, CliInvocationContext, UnknownCommandError } from 'core-console-cli/src/code.js';
+import type { ICommandBase, IQueryBase } from '@monorepo/core-design-patterns-cqrs';
+import {
+  CliCommand,
+  CliInputTokenizer,
+  CliParser,
+  CliQuery,
+  CliRunner,
+  CommandRegistry,
+  UnknownCommandError,
+  type CliActionDefinition,
+  type CliCommandHandler,
+  type CliInvocationContext,
+  type CliOptionSchema,
+  type CliQueryHandler,
+} from '../src/index.js';
 
 export interface TestCommandPayload extends ICommandBase {
   readonly name: string;

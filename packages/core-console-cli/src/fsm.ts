@@ -1,3 +1,7 @@
+// ============================================================================
+// packages/core-console-cli/src/fsm.ts
+// ============================================================================
+
 import {
   FsmBuilder,
   FsmEngine,
@@ -13,14 +17,6 @@ export type TokenizerState =
   | 'escaping-default'
   | 'escaping-single'
   | 'escaping-double';
-
-export type TokenizerInputType =
-  | 'value'
-  | 'whitespace'
-  | 'escape'
-  | 'single-quote'
-  | 'double-quote'
-  | 'end';
 
 export interface ValueInput extends IInput<'value', { readonly value: string }> {
   readonly type: 'value';

@@ -1,3 +1,7 @@
+// ============================================================================
+// packages/core-console-cli/src/code.ts
+// ============================================================================
+
 import type {
   ICommand,
   ICommandBase,
@@ -5,6 +9,7 @@ import type {
   IQueryBase,
 } from '@monorepo/core-design-patterns-cqrs';
 import { parseArgs } from 'node:util';
+import { CliInputTokenizer, type IInputTokenizer } from './fsm.js';
 
 export class CliCommand<TPayload extends ICommandBase> implements ICommand<TPayload> {
   public constructor(
@@ -68,10 +73,6 @@ export interface CliParsedInvocation extends CliParsedOptions {
   readonly args: string[];
 }
 
-export interface IInputTokenizer {
-  tokenize(input: string): string[];
-}
-
 export interface INodeOptionSchemaMapper {
   map(schema: CliOptionSchema): NodeOptionsConfig;
 }
@@ -83,64 +84,7 @@ export interface IOptionValueNormalizer {
   ): Record<string, CliOptionParsedValue>;
 }
 
-export class CliInputTokenizer implements IInputTokenizer {
-  private static readonly WHITESPACE = /\s/;
-
-  public tokenize(input: string): string[] {
-    const tokens: string[] = [];
-    let buffer = '';
-    let inQuotes = false;
-    let quoteChar = '';
-    let escaping = false;
-
-    for (const char of input) {
-      if (escaping) {
-        buffer += char;
-        escaping = false;
-        continue;
-      }
-
-      if (char === '\\') {
-        escaping = true;
-        continue;
-      }
-
-      if (inQuotes) {
-        if (char === quoteChar) {
-          inQuotes = false;
-          quoteChar = '';
-          continue;
-        }
-
-        buffer += char;
-        continue;
-      }
-
-      if (char === '"' || char === "'") {
-        inQuotes = true;
-        quoteChar = char;
-        continue;
-      }
-
-      if (CliInputTokenizer.WHITESPACE.test(char)) {
-        if (buffer.length > 0) {
-          tokens.push(buffer);
-          buffer = '';
-        }
-
-        continue;
-      }
-
-      buffer += char;
-    }
-
-    if (buffer.length > 0) {
-      tokens.push(buffer);
-    }
-
-    return tokens;
-  }
-}
+// packages/core-console-cli/src/code.ts
 
 export class NodeOptionSchemaMapper implements INodeOptionSchemaMapper {
   public map(schema: CliOptionSchema): NodeOptionsConfig {
@@ -154,12 +98,21 @@ export class NodeOptionSchemaMapper implements INodeOptionSchemaMapper {
   }
 
   private createOption(definition: CliOptionDefinition): NodeOptionConfig {
-    return {
+    const option: NodeOptionConfig = {
       type: this.mapType(definition.type),
       multiple: definition.multiple ?? false,
-      short: definition.short,
-      default: this.mapDefault(definition),
     };
+
+    if (definition.short !== undefined) {
+      option.short = definition.short;
+    }
+
+    const defaultValue = this.mapDefault(definition);
+    if (defaultValue !== undefined) {
+      option.default = defaultValue;
+    }
+
+    return option;
   }
 
   private mapType(type: CliOptionType): NodeOptionType {
@@ -233,8 +186,8 @@ export class CliParser {
     private readonly optionValueNormalizer: IOptionValueNormalizer = new OptionValueNormalizer(),
   ) {}
 
-  public split(rawInput: string | string[]): CliSplit {
-    const tokens = this.normalizeInput(rawInput);
+  public async split(rawInput: string | string[]): Promise<CliSplit> {
+    const tokens = await this.normalizeInput(rawInput);
     const args = [...tokens];
     const command = args.shift();
 
@@ -253,15 +206,16 @@ export class CliParser {
     });
 
     return {
-      options: this.optionValueNormalizer.normalize(schema, {
-        ...values,
-      }),
+      options: this.optionValueNormalizer.normalize(schema, { ...values }),
       positionals,
     };
   }
 
-  public parse(rawInput: string | string[], schema: CliOptionSchema = {}): CliParsedInvocation {
-    const split = this.split(rawInput);
+  public async parse(
+    rawInput: string | string[],
+    schema: CliOptionSchema = {},
+  ): Promise<CliParsedInvocation> {
+    const split = await this.split(rawInput);
     const parsed = this.parseOptions(split.args, schema);
 
     return {
@@ -271,7 +225,7 @@ export class CliParser {
     };
   }
 
-  private normalizeInput(rawInput: string | string[]): string[] {
+  private async normalizeInput(rawInput: string | string[]): Promise<string[]> {
     if (Array.isArray(rawInput)) {
       return rawInput.filter((token) => token.length > 0);
     }
@@ -378,7 +332,7 @@ export class CliRunner {
   public async execute(
     rawInput: string | string[],
   ): Promise<CliExecutionResult<ICommandBase | IQueryBase, unknown>> {
-    const split = this.parser.split(rawInput);
+    const split = await this.parser.split(rawInput);
 
     if (!split.command) {
       throw new UnknownCommandError();
