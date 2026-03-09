@@ -1,4 +1,4 @@
-import type { IDrawableShape, ShapeId, ShapeType } from "@monorepo/core-shapes-abstract";
+import type { IDrawableShape, ShapeId, ShapeType } from "@monorepo/core-new-shapes-abstract";
 import type { Mesh } from "three";
 import type { IBuilder } from "../contracts/IBuilder.js";
 import type { IShapeFactory } from "../contracts/IShapeFactory.js";

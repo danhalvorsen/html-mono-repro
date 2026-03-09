@@ -1,5 +1,5 @@
 ﻿{
-  "name": "@monorepo/core-components.abstract",
+  "name": "@monorepo/core-tools-typescript",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -11,8 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@monorepo/core-shapes-abstract": "workspace:*",
-    "@monorepo/core-reactive-abstract": "workspace:*"
+     
   },
   "devDependencies": {
     "typescript": "^5.9.3",

@@ -2,7 +2,7 @@ import {
   ControllerHostCore,
   IReactiveShapeController
 } from "@monorepo/core-reactive-abstract";
-import { ShapeId, ShapeType } from "@monorepo/core-shapes-abstract";
+import { ShapeId, ShapeType } from "@monorepo/core-new-shapes-abstract";
 import { Object3D, Scene } from "three";
 import { IThreeDrawContext } from "./IThreeDrawContext.js";
 import { IThreeShape } from "./IThreeShape.js";

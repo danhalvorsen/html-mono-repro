@@ -1,4 +1,4 @@
-import { ShapeId, ShapeType } from "@monorepo/core-shapes-abstract";
+import { ShapeId, ShapeType } from "@monorepo/core-new-shapes-abstract";
 import { Object3D } from "three/src/Three.js";
 import { IShapeTypeFactory } from "./IShapeTypeFactory.js";
 import { IShapeIdentityFactory } from "./IShapeIdentityFactory.js";

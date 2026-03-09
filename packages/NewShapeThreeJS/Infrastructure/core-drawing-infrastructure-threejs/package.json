@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@monorepo/core-math": "workspace:*",
-    "@monorepo/core-shapes-abstract": "workspace:*",  
+    "@monorepo/core-new-shapes-abstract": "workspace:*",  
     "@monorepo/core-shapes-threejs": "workspace:*",     
     "@monorepo/core-drawing-infrastructure-abstract": "workspace:*",
     "three": "0.183.2"

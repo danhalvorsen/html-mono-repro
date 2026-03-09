@@ -1,34 +1,21 @@
-/* ============================================================
-   OOP Tree Traversal Module
-   Depends only on INode<TNode> from core-composition-abstract
-   ============================================================ */
+import type { INode } from "@monorepo/core-composite-tree-abstract";
 
-export interface INode<TNode extends INode<TNode>> {
-  readonly id: string;
-  readonly parent: TNode | null;
-  readonly children: readonly TNode[];
-}
-
-/* ------------------------------------------------------------
-   Visitor
-   ------------------------------------------------------------ */
+import { CompositeNode, LeafNode } from "@monorepo/core-composite-tree-abstract";
 
 export interface INodeVisitor<TNode extends INode<TNode>> {
   enter(node: TNode): void;
   leave(node: TNode): void;
 }
 
-/* ------------------------------------------------------------
-   Traversal strategy
-   ------------------------------------------------------------ */
+export abstract class NodeVisitorBase<TNode extends INode<TNode>>
+  implements INodeVisitor<TNode> {
+  public enter(_node: TNode): void {}
+  public leave(_node: TNode): void {}
+}
 
 export interface ITraversalStrategy<TNode extends INode<TNode>> {
   traverse(root: TNode, visitor: INodeVisitor<TNode>): void;
 }
-
-/* ------------------------------------------------------------
-   Tree walker
-   ------------------------------------------------------------ */
 
 export interface ITreeWalker<TNode extends INode<TNode>> {
   walk(root: TNode, visitor: INodeVisitor<TNode>): void;
@@ -36,7 +23,6 @@ export interface ITreeWalker<TNode extends INode<TNode>> {
 
 export class TreeWalker<TNode extends INode<TNode>>
   implements ITreeWalker<TNode> {
-
   public constructor(
     private readonly strategy: ITraversalStrategy<TNode>
   ) {}
@@ -46,36 +32,33 @@ export class TreeWalker<TNode extends INode<TNode>>
   }
 }
 
-/* ============================================================
-   Traversal strategies
-   ============================================================ */
-
-/* ---------- Depth-first (pre-order) ---------- */
-
 export class DepthFirstTraversalStrategy<TNode extends INode<TNode>>
   implements ITraversalStrategy<TNode> {
-
   public traverse(root: TNode, visitor: INodeVisitor<TNode>): void {
-    visitor.enter(root);
+    this.visit(root, visitor);
+  }
 
-    for (const child of root.children) {
-      this.traverse(child, visitor);
+  private visit(node: TNode, visitor: INodeVisitor<TNode>): void {
+    visitor.enter(node);
+
+    for (const child of node.children) {
+      this.visit(child, visitor);
     }
 
-    visitor.leave(root);
+    visitor.leave(node);
   }
 }
 
-/* ---------- Breadth-first traversal ---------- */
-
 export class BreadthFirstTraversalStrategy<TNode extends INode<TNode>>
   implements ITraversalStrategy<TNode> {
-
   public traverse(root: TNode, visitor: INodeVisitor<TNode>): void {
     const queue: TNode[] = [root];
 
     while (queue.length > 0) {
-      const node = queue.shift()!;
+      const node = queue.shift();
+      if (node === undefined) {
+        return;
+      }
 
       visitor.enter(node);
 
@@ -88,22 +71,8 @@ export class BreadthFirstTraversalStrategy<TNode extends INode<TNode>>
   }
 }
 
-/* ============================================================
-   Reusable visitors
-   ============================================================ */
-
-export abstract class NodeVisitorBase<TNode extends INode<TNode>>
-  implements INodeVisitor<TNode> {
-
-  public enter(_node: TNode): void {}
-  public leave(_node: TNode): void {}
-}
-
-/* ---------- Find first matching node ---------- */
-
 export class FindFirstVisitor<TNode extends INode<TNode>>
   extends NodeVisitorBase<TNode> {
-
   private resultNode: TNode | null = null;
 
   public constructor(
@@ -113,7 +82,9 @@ export class FindFirstVisitor<TNode extends INode<TNode>>
   }
 
   public override enter(node: TNode): void {
-    if (this.resultNode !== null) return;
+    if (this.resultNode !== null) {
+      return;
+    }
 
     if (this.predicate(node)) {
       this.resultNode = node;
@@ -125,11 +96,8 @@ export class FindFirstVisitor<TNode extends INode<TNode>>
   }
 }
 
-/* ---------- Collect nodes ---------- */
-
 export class CollectVisitor<TNode extends INode<TNode>>
   extends NodeVisitorBase<TNode> {
-
   private readonly items: TNode[] = [];
 
   public constructor(
@@ -149,40 +117,24 @@ export class CollectVisitor<TNode extends INode<TNode>>
   }
 }
 
-/* ============================================================
-   Example usage
-   ============================================================ */
+export class RecordingVisitor<TNode extends INode<TNode>>
+  extends NodeVisitorBase<TNode> {
+  private readonly enteredNodes: TNode[] = [];
+  private readonly leftNodes: TNode[] = [];
 
-interface ITreeNode extends INode<ITreeNode> {}
+  public override enter(node: TNode): void {
+    this.enteredNodes.push(node);
+  }
 
-class SimpleNode implements ITreeNode {
-  public readonly children: ITreeNode[] = [];
+  public override leave(node: TNode): void {
+    this.leftNodes.push(node);
+  }
 
-  constructor(
-    public readonly id: string,
-    public readonly parent: ITreeNode | null = null
-  ) {}
+  public get entered(): readonly TNode[] {
+    return this.enteredNodes;
+  }
 
-  add(child: SimpleNode) {
-    this.children.push(child);
+  public get left(): readonly TNode[] {
+    return this.leftNodes;
   }
 }
-
-const root = new SimpleNode("root");
-const a = new SimpleNode("A");
-const b = new SimpleNode("B");
-const c = new SimpleNode("C");
-
-root.add(a);
-root.add(b);
-a.add(c);
-
-const walker = new TreeWalker<ITreeNode>(
-  new DepthFirstTraversalStrategy()
-);
-
-const findVisitor = new FindFirstVisitor<ITreeNode>(n => n.id === "C");
-
-walker.walk(root, findVisitor);
-
-console.log(findVisitor.result?.id); // C

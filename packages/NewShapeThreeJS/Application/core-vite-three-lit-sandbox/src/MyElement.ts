@@ -1,4 +1,4 @@
-import { createThreeShapesModule, type IThreeDrawContext, type IThreeShape } from "@monorepo/core-shapes-threejs";
+import { createThreeShapesModule, type IThreeDrawContext, type IThreeShape } from "@monorepo/core-new-shapes-threejs";
 import { ThreeDrawableShapeFactory } from '@monorepo/core-shapes-threejs-intergration';
 import { LitElement, html } from "lit";
 // ============================================================================

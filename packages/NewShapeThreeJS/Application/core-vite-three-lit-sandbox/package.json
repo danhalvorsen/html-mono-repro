@@ -15,7 +15,7 @@
     "lit": "^3.3.1",
     "three": "^0.183.2",
 
-    "@monorepo/core-shapes-abstract": "workspace:*",
+    "@monorepo/core-new-shapes-abstract": "workspace:*",
     "@monorepo/core-shapes-threejs": "workspace:*",
     "@monorepo/core-reactive-abstract": "workspace:*",
     "@monorepo/core-drawing-infrastructure-abstract": "workspace:*",

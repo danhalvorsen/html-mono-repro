@@ -1,5 +1,5 @@
 ﻿{
-  "name": "@monorepo/core-components.abstract",
+  "name": "@monorepo/core-composite-tree-car",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@monorepo/core-shapes-abstract": "workspace:*",
+    "@monorepo/core-new-shapes-abstract": "workspace:*",
     "@monorepo/core-reactive-abstract": "workspace:*"
   },
   "devDependencies": {
