@@ -1,10 +1,18 @@
-import { defineConfig } from 'vitest/config';
+// packages/core-template-handlebar/vitest.config.ts
+
+import { defineConfig } from "vitest/config";
+import { fileURLToPath } from "node:url";
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@monorepo/core-filesystem": fileURLToPath(
+        new URL("../core-filesystem/src/index.ts", import.meta.url),
+      ),
+    },
+  },
   test: {
     globals: true,
-    environment: 'node',
-    include: ['test/**/*.test.ts'],
-    exclude: ['dist', 'node_modules']
-  }
+    include: ["tests/**/*.test.ts"],
+  },
 });

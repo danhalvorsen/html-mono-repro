@@ -3,22 +3,16 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-
     "rootDir": "src",
     "outDir": "dist",
-
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-
-    "composite": true,
     "incremental": true,
     "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
-
     "strict": true,
     "skipLibCheck": true,
     "noEmitOnError": true,
-
     "lib": ["ES2022"],
     "types": ["node"]
   },

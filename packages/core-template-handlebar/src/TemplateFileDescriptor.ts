@@ -1,4 +1,4 @@
-import { File } from '@monorepo/core-filesystem';
+import { File } from "@monorepo/core-filesystem";
 
 export class TemplateFileDescriptor {
   constructor(
