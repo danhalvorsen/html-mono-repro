@@ -16,6 +16,7 @@
     "noEmit": false,
     "rootDir": "./src",
     "outDir": "./dist",
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
 
     "declaration": true,
 
