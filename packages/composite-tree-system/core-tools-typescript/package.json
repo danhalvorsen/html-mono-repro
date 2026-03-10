@@ -11,7 +11,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-     
+    "@monorepo/core-console-cli": "workspace:*",  
+    "@monorepo/core-filesystem": "workspace:*",
+    "@monorepo/core-logger-abstract": "workspace:*",
+    "@monorepo/core-logger-nodejs": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

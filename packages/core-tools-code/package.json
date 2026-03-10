@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@monorepo/core-design-patterns-cqrs": "workspace:*",
-    "@monorepo/core-logger": "workspace:*",
+    "@monorepo/core-logger-web": "workspace:*",
     "@monorepo/core-filesystem": "workspace:*",
     "@monorepo/core-console-cli": "workspace:*"
 

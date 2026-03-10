@@ -15,7 +15,8 @@
         "test": "vitest run"
     },
     "dependencies": {
-        "@monorepo/core-logger": "workspace:*",
+        "@monorepo/core-logger-abstract": "workspace:*",
+        "@monorepo/core-logger-web": "workspace:*",
         "three": "^0.152.2"
     }
 }
