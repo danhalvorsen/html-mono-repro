@@ -1,4 +1,4 @@
-import { File } from '@my-graphics/core-filesystem';
+import { File } from "@monorepo/core-filesystem";
 
 export class TemplateFileDescriptor {
   constructor(

@@ -1,16 +1,23 @@
-import { defineConfig } from 'vitest/config.js';
- 
+import { defineConfig } from "vitest/config";
+
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'node',
-    include: ['tests/**/*.test.ts'],
+    environment: "node",
+    include: ["tests/**/*.test.ts"],
+    exclude: ["dist/**", "node_modules/**"],
+
+    pool: "threads",
     isolate: false,
-    pool: 'threads',
+
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "html"],
+      include: ["src/**/*.ts"]
+    }
   },
 
   resolve: {
- 
-    preserveSymlinks: true,
-  },
+    preserveSymlinks: true
+  }
 });

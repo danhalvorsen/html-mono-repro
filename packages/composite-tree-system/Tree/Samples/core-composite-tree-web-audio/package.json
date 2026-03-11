@@ -1,0 +1,32 @@
+﻿{
+  "name": "@monorepo/core-composite-tree-web-audio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "test": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts"
+  },
+  "dependencies": {
+    "@monorepo/core-composite-tree-abstract": "workspace:*",
+    "@monorepo/core-graph": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@vitest/browser-playwright": "^4.0.14",
+    "playwright": "^1.55.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.14"
+  }
+}

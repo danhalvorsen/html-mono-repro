@@ -1,0 +1,28 @@
+{
+  "name": "@monorepo/core-logger-abstract",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/code.js",
+  "types": "./dist/types/code.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.test.json --noEmit"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/code.js",
+      "types": "./dist/types/code.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.14"
+  }
+}

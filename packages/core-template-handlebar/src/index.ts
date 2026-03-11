@@ -1,3 +1,12 @@
-// ...existing imports from your package...
-export * from './TemplateRenderer.js';
-// export other types/engines here as needed
+export * from "./IFileWriter.js";
+export * from "./IScaffolder.js";
+export * from "./ITemplateEngine.js";
+export * from "./ITemplateRenderer.js";
+export * from "./ITemplateResolver.js";
+export * from "./FilesystemWriter.js";
+export * from "./HandlebarTemplateResolver.js";
+export * from "./HandlebarsTemplateEngine.js";
+export * from "./Scaffolder.js";
+export * from "./ScaffoldingBlueprint.js";
+export * from "./TemplateFileDescriptor.js";
+export * from "./TemplateRenderer.js";

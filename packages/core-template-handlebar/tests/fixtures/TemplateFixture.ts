@@ -1,61 +1,49 @@
+// packages/core-template-handlebar/tests/fixtures/TemplateFixture.ts
+
 import Handlebars from "handlebars";
-import { Directory, Path, File } from "@my-graphics/core-filesystem";
+import { fileURLToPath } from "node:url";
+import { Directory, File, Path } from "@monorepo/core-filesystem";
 
 export class TemplateFixture {
-  /** Root directory where all .hbs templates live */
-  readonly root: Directory;
+  public readonly root: Directory;
+  public readonly context: Readonly<Record<string, unknown>>;
 
-  /** Default context used when rendering templates */
-  readonly context: Record<string, unknown>;
+  public constructor() {
+    const templatesAbsolutePath = fileURLToPath(
+      new URL("../../templates/", import.meta.url),
+    );
 
-  constructor() {
-    this.root = new Directory(Path.from(process.cwd(), "templates"));
+    this.root = new Directory(Path.from(templatesAbsolutePath));
 
-    // Minimal, valid context for all template types
-    this.context = {
+    this.context = Object.freeze({
       name: "demo-package",
-      scope: "@my-graphics",
+      scope: "@monorepo",
       version: "1.0.0",
       module: "NodeNext",
       target: "ES2022",
       environment: "node",
-    };
+    });
   }
 
-  /**
-   * Returns all .hbs template files inside the templates directory.
-   */
-  listTemplateFiles(): File[] {
+  public listTemplateFiles(): File[] {
     return this.root
       .listFiles()
-      .filter((file) => file.path.extension === ".hbs");
+      .filter((file: { path: { extension: string; }; }) => file.path.extension === ".hbs");
   }
 
-  /**
-   * Reads a template file into raw text.
-   */
-  loadRaw(file: File): string {
+  public loadRaw(file: File): string {
     return file.read();
   }
 
-  /**
-   * Compiles a raw handlebars template into a render function.
-   */
-  compile(raw: string): HandlebarsTemplateDelegate<any> {
+  public compile(raw: string): HandlebarsTemplateDelegate<Record<string, unknown>> {
     return Handlebars.compile(raw);
   }
 
-  /**
-   * Renders a raw template string using the fixture's default context.
-   */
-  render(raw: string): string {
+  public render(raw: string): string {
     return this.compile(raw)(this.context);
   }
 
-  /**
-   * Checks whether output still contains unresolved MUSTACHE placeholders.
-   */
-  hasUnresolvedPlaceholders(output: string): boolean {
+  public hasUnresolvedPlaceholders(output: string): boolean {
     return /{{.*?}}/g.test(output);
   }
 }

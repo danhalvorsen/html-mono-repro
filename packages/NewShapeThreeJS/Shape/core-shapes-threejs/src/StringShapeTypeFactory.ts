@@ -1,6 +1,6 @@
  
 import { IShapeTypeFactory } from "./IShapeTypeFactory.js";
-import { ShapeType } from '@monorepo/core-shapes-abstract'
+import { ShapeType } from '@monorepo/core-new-shapes-abstract'
 
 export class StringShapeTypeFactory implements IShapeTypeFactory {
     public create(value: string): ShapeType {

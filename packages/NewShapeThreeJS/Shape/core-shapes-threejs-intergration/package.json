@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "three": "0.183.2",
-    "@monorepo/core-shapes-abstract": "workspace:*",
+    "@monorepo/core-new-shapes-abstract": "workspace:*",
     "@monorepo/core-shapes-threejs": "workspace:*"
   },
   "devDependencies": {

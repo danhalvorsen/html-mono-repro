@@ -1,4 +1,4 @@
-import { ShapeId } from "@monorepo/core-shapes-abstract";
+import { ShapeId } from "@monorepo/core-new-shapes-abstract";
 
 export interface IShapeIdentityFactory {
     createId(): ShapeId;

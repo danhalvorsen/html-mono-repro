@@ -1,0 +1,34 @@
+
+{
+  "name": "@monorepo/core-logger-nodejs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/code.js",
+  "types": "./dist/types/code.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.test.json --noEmit"
+  },
+  "dependencies": {
+    "@monorepo/core-logger-abstract": "workspace:*",
+    "chalk": "^5.0.0",
+    "winston": "^3.18.3"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/code.js",
+      "types": "./dist/types/code.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.14"
+  }
+}

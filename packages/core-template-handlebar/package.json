@@ -3,19 +3,30 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "clean": "rimraf dist",
-    "test": "pnpm --workspace-root vitest run"
+    "test": "vitest run --config vitest.config.ts"
   },
   "dependencies": {
-    "handlebars": "^4.7.8",
-    "@monorepo/core-filesystem": "workspace:*"
+    "@monorepo/core-filesystem": "workspace:*",
+    "handlebars": "^4.7.8"
   },
   "devDependencies": {
+    "rimraf": "^6.0.1",
     "typescript": "^5.9.3",
-    "rimraf": "^6.0.1"
+    "vitest": "^4.0.14"
   }
 }

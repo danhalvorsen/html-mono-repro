@@ -1,5 +1,5 @@
 import { IFileWriter } from './IFileWriter.js';
-import { File } from '@my-graphics/core-filesystem';
+import { File } from '@monorepo/core-filesystem'; 
 
 export class FilesystemWriter implements IFileWriter {
   write(f: File, c: string) {

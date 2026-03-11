@@ -7,13 +7,13 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "rimraf dist tsconfig.tsbuildinfo && tsc -p tsconfig.json",
     "clean": "rimraf dist",
     "test": "vitest run"
   },
   "dependencies": {
       "three": "0.183.2",
-      "@monorepo/core-shapes-abstract": "workspace:*",
+      "@monorepo/core-new-shapes-abstract": "workspace:*",
       "@monorepo/core-reactive-abstract": "workspace:*"
   },
   "devDependencies": {

@@ -1,7 +1,8 @@
-import { defineConfig } from 'vitest/config.js';
-import path from 'path';
+import { defineConfig } from 'vitest/config';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
+  root: fileURLToPath(new URL('.', import.meta.url)),
   test: {
     globals: true,
     environment: 'node',
@@ -10,7 +11,5 @@ export default defineConfig({
     pool: 'threads',
   },
 
-  resolve: {
- 
-}}
-);
+  resolve: {},
+});
