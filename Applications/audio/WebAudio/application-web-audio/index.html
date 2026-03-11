@@ -1,44 +1,56 @@
 <!-- Applications/audio/WebAudio/application-web-audio/index.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Audio Builder + Factory Demo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-      body {
-        font-family: system-ui, sans-serif;
-        background: #111;
-        color: #eee;
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-      }
 
-      mr-canvas {
-        width: 600px;
-        height: 300px;
-      }
-    </style>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Audio Builder + Factory Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #111;
+      color: #eee;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
 
-  <body>
-    <mr-synth-controls></mr-synth-controls>
-    
-    <mr-canvas>
-      <mr-draggable>
-        <mr-rect x="40" y="40" width="120" height="80" fill="red"></mr-rect>
-      </mr-draggable>
+    mr-canvas {
+      width: 600px;
+      height: 300px;
+    }
+  </style>
+</head>
 
-      <mr-draggable>
-        <mr-rect x="220" y="120" width="140" height="90" fill="steelblue"></mr-rect>
-      </mr-draggable>
-    </mr-canvas>
+<body>
+  <mr-synth-controls></mr-synth-controls>
 
-    <script type="module" src="./src/index.ts"></script>
-  </body>
+  <mr-canvas>
+    <mr-draggable>
+      <mr-rect x="40" y="40" width="120" height="80" fill="yellow"></mr-rect>
+    </mr-draggable>
+<mr-draggable>
+  <mr-knob
+    x="40"
+    y="40"
+    radius="42"
+    steps="10"
+    selected-index="3"
+    start-angle-deg="135"
+    end-angle-deg="405">
+  </mr-knob>
+</mr-draggable>
+    <mr-draggable>
+      <mr-rect x="220" y="120" width="140" height="90" fill="steelblue"></mr-rect>
+    </mr-draggable>
+  </mr-canvas>
+
+  <script type="module" src="./src/index.ts"></script>
+</body>
+
 </html>

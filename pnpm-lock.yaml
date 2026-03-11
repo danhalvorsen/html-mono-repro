@@ -135,6 +135,9 @@ importers:
 
   Applications/audio/WebAudio/application-web-audio:
     dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../../packages/core-math
       lit:
         specifier: ^3.0.0
         version: 3.3.2

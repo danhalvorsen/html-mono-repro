@@ -9,13 +9,13 @@
     "useDefineForClassFields": false,
 
     "isolatedModules": true,
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
 
     "strict": true,
     
     "noUncheckedIndexedAccess": true,
     "noFallthroughCasesInSwitch": true,
-
+    
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": false,
     "skipLibCheck": true,

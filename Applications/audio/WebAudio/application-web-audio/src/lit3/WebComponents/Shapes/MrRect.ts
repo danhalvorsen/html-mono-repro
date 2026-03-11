@@ -4,9 +4,24 @@ import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { ICanvasContext } from "../ICanvasContext.js";
 import type { IShape } from "./IShape.js";
+import { BoundingBox2D } from "@monorepo/core-math";
 
 @customElement("mr-rect")
 export class MrRect extends LitElement implements IShape {
+  getBoundingBox(): BoundingBox2D {
+    return new BoundingBox2D(
+      { x: this.x, y: this.y } as any,
+      { x: this.x + this.width, y: this.y + this.height } as any,
+    );
+  }
+
+  setBoundingBox(bounds: BoundingBox2D): void {
+    this.x = bounds.min.x;
+    this.y = bounds.min.y;
+
+    this.width = bounds.width();
+    this.height = bounds.height();
+  }
   @property({ type: Number }) public x = 0;
   @property({ type: Number }) public y = 0;
   @property({ type: Number }) public width = 100;

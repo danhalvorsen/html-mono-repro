@@ -1,9 +1,12 @@
-import type { ICanvasContext } from "../ICanvasContext.js";
+import type { BoundingBox2D } from "@monorepo/core-math";
+import type { ICanvasContext } from "../ICanvasContext";
 
 export interface IShape {
-  x: number;
-  y: number;
 
   draw(context: ICanvasContext): void;
-  containsPoint(x: number, y: number): boolean;
+
+  getBoundingBox(): BoundingBox2D;
+
+  setBoundingBox(bounds: BoundingBox2D): void;
+
 }

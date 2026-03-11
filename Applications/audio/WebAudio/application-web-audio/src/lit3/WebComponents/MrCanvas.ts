@@ -84,15 +84,17 @@ export class MrCanvas extends LitElement {
     const draggables: IDraggable[] = [];
 
     for (const element of elements) {
-      const candidate = element as unknown as Partial<IDraggable>;
+      if (element instanceof HTMLElement && "shape" in element) {
+        const candidate = element as unknown as Partial<IDraggable>;
 
-      if (
-        typeof candidate.getPosition === "function" &&
-        typeof candidate.setPosition === "function" &&
-        typeof candidate.containsPoint === "function" &&
-        "shape" in candidate
-      ) {
-        draggables.push(candidate as IDraggable);
+        if (
+          typeof candidate.getPosition === "function" &&
+          typeof candidate.setPosition === "function" &&
+          typeof candidate.containsPoint === "function" &&
+          "shape" in candidate
+        ) {
+          draggables.push(candidate as IDraggable);
+        }
       }
     }
 

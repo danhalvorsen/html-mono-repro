@@ -9,16 +9,23 @@ export const SynthPresets = {
       {
         id: "osc-1",
         type: "sawtooth",
-        frequency: 440,
-        detune: -6,
-        gain: 0.18,
+        frequency: 220,     // fundamental
+        detune: 0,
+        gain: 0.22,
       },
       {
         id: "osc-2",
         type: "sawtooth",
-        frequency: 440,
-        detune: 6,
-        gain: 0.18,
+        frequency: 440,     // first harmonic (2 × osc-1)
+        detune: 0,
+        gain: 0.14,
+      },
+        {
+        id: "osc-3",
+        type: "sawtooth",
+        frequency: 880,     // second harmonic (4 × osc-1)
+        detune: 0,
+        gain: 0.7,
       }
     ],
     mixerLevel: 1,

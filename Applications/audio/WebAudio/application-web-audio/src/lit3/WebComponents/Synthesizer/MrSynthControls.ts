@@ -1,3 +1,5 @@
+// Applications/audio/WebAudio/application-web-audio/src/lit3/WebComponents/Synthesizer/MrSynthControls.ts
+
 import { LitElement, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import "../MrSynthToggle.js";
@@ -23,7 +25,7 @@ export class MrSynthControls extends LitElement {
 
   protected override render() {
     return html`
-       <mr-synth-toggle
+      <mr-synth-toggle
         .playing=${this.playing}
         @toggle-requested=${this.onToggleRequested}>
       </mr-synth-toggle>
