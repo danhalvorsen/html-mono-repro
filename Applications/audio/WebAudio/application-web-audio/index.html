@@ -31,20 +31,22 @@
   <mr-synth-controls></mr-synth-controls>
 
   <mr-canvas>
+
     <mr-draggable>
       <mr-rect x="40" y="40" width="120" height="80" fill="yellow"></mr-rect>
     </mr-draggable>
-<mr-draggable>
-  <mr-knob
-    x="40"
-    y="40"
-    radius="42"
-    steps="10"
-    selected-index="3"
-    start-angle-deg="135"
-    end-angle-deg="405">
-  </mr-knob>
-</mr-draggable>
+
+    <mr-draggable>
+      <mr-knob x="40" y="40" radius="42" steps="10" selected-index="3" start-angle-deg="135" end-angle-deg="405">
+      </mr-knob>
+    </mr-draggable>
+    
+    <mr-draggable>
+      <mr-edge-shape start-x="100" start-y="200" end-x="200" end-y="300" stroke="steelblue" stroke-width="3.5"
+        handle-radius="16">
+      </mr-edge-shape>
+    </mr-draggable>
+    
     <mr-draggable>
       <mr-rect x="220" y="120" width="140" height="90" fill="steelblue"></mr-rect>
     </mr-draggable>

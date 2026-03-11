@@ -1,10 +1,10 @@
 import { Vector3 } from "../implementations/Vector3.js";
 import { IMatrix} from './IMatrix.js';
  
-import { Vector2 } from './IPoint.js';
+import { Point2, Point3 } from './IPoint.js';
 
 export interface ITransform {
-  translate(offset: Vector2 | Vector3): this;
+  translate(offset: Point2 | Point3): this;
   rotate(angleInRadians: number): this;
   scale(sx: number, sy: number): this;
 

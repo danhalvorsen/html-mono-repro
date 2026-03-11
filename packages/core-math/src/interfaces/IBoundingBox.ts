@@ -1,4 +1,4 @@
-import { Vector2 } from './IPoint.js'
+import { Vector2 } from '../implementations/Vector2.js'
 
 export interface IBoundingBox {
   min: Vector2;

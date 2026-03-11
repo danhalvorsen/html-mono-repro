@@ -9,7 +9,7 @@ import type { ICanvasContext } from "../ICanvasContext.js";
 import { IShape } from "./IShape.js";
 
 @customElement("mr-circle-shape")
-export class CircleShape extends LitElement    implements IShape {
+export class CircleShape extends LitElement implements IShape {
   @property({ type: Number }) public x = 0;
   @property({ type: Number }) public y = 0;
   @property({ type: Number }) public radius = 6;

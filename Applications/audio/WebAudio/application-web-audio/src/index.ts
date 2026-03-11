@@ -8,3 +8,4 @@ import "./lit3/WebComponents/OscillatorControl/MrOscillatorControls.js";
 import "./lit3/WebComponents/OscillatorControl/Atomic/MrOscillatorTypeSelect.js";
 import "./lit3/WebComponents/OscillatorControl/Atomic/MrSlider.js";
 import "./lit3/WebComponents/Shapes/MrKnob.js";  
+import "./lit3/WebComponents/Shapes/EdgeShape.js";  

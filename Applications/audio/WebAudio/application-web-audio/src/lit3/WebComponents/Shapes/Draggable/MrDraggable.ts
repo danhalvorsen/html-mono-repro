@@ -51,6 +51,9 @@ export class MrDraggable extends LitElement implements IDraggable {
   }
 
   public containsPoint(point: Point): boolean {
+    if (typeof (this.shapeRef as any).containsPoint === "function") {
+      return (this.shapeRef as any).containsPoint(point.x, point.y);
+    }
     const bounds = this.shapeRef.getBoundingBox();
     return (
       point.x >= bounds.min.x &&
