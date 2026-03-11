@@ -1,78 +1,48 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
-import type { IDraggable } from "../WebComponents/IDraggable.js";
-import { MouseController } from "./MouseController.js";
-
-type Point = Readonly<{
-  x: number;
-  y: number;
-}>;
+import type { IDraggable, Point } from "../WebComponents/IDraggable.js";
 
 export class DragController implements ReactiveController {
-  private readonly host: ReactiveControllerHost;
-  private readonly mouse: MouseController;
-  private readonly documentRef: Document;
-
   private active: IDraggable | null = null;
-  private lastPointerPosition: Point | null = null;
-  private isConnected = false;
+  private lastPoint: Point | null = null;
 
   public constructor(
-    host: ReactiveControllerHost,
-    mouse: MouseController,
-    documentRef: Document = document,
+    private readonly host: ReactiveControllerHost,
+    private readonly getDraggables: () => readonly IDraggable[],
+    private readonly toLocalPoint: (event: MouseEvent) => Point,
   ) {
-    this.host = host;
-    this.mouse = mouse;
-    this.documentRef = documentRef;
-
     this.host.addController(this);
   }
 
-  public hostConnected(): void {
-    if (this.isConnected) {
-      return;
-    }
-
-    this.documentRef.addEventListener("mousemove", this.onMove);
-    this.documentRef.addEventListener("mouseup", this.onUp);
-
-    this.isConnected = true;
-  }
-
   public hostDisconnected(): void {
-    if (!this.isConnected) {
-      return;
-    }
-
-    this.documentRef.removeEventListener("mousemove", this.onMove);
-    this.documentRef.removeEventListener("mouseup", this.onUp);
-
-    this.isConnected = false;
-    this.cancelDrag();
-  }
-
-  public startDrag(target: IDraggable, x: number, y: number): void {
-    this.active = target;
-    this.lastPointerPosition = { x, y };
-  }
-
-  public cancelDrag(): void {
     this.active = null;
-    this.lastPointerPosition = null;
+    this.lastPoint = null;
   }
 
-  private readonly onMove = (event: MouseEvent): void => {
-    if (this.active === null || this.lastPointerPosition === null) {
+  public onMouseDown(event: MouseEvent): void {
+    const point = this.toLocalPoint(event);
+
+    for (const draggable of [...this.getDraggables()].reverse()) {
+      if (draggable.containsPoint(point)) {
+        this.active = draggable;
+        this.lastPoint = {
+          x: event.clientX,
+          y: event.clientY,
+        };
+        return;
+      }
+    }
+
+    this.active = null;
+    this.lastPoint = null;
+  }
+
+  public onMouseMove(event: MouseEvent): void {
+    if (this.active === null || this.lastPoint === null) {
       return;
     }
 
-    const currentPointerPosition: Point = {
-      x: event.clientX,
-      y: event.clientY,
-    };
-
-    const dx = currentPointerPosition.x - this.lastPointerPosition.x;
-    const dy = currentPointerPosition.y - this.lastPointerPosition.y;
+    const dx = event.clientX - this.lastPoint.x;
+    const dy = event.clientY - this.lastPoint.y;
 
     if (dx === 0 && dy === 0) {
       return;
@@ -85,11 +55,16 @@ export class DragController implements ReactiveController {
       y: position.y + dy,
     });
 
-    this.lastPointerPosition = currentPointerPosition;
-    this.host.requestUpdate();
-  };
+    this.lastPoint = {
+      x: event.clientX,
+      y: event.clientY,
+    };
 
-  private readonly onUp = (): void => {
-    this.cancelDrag();
-  };
+    this.host.requestUpdate();
+  }
+
+  public onMouseUp(): void {
+    this.active = null;
+    this.lastPoint = null;
+  }
 }

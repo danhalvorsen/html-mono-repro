@@ -1,45 +1,55 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
+import type { DragController } from "./DragController.js";
 
 export class MouseController implements ReactiveController {
-
-  private host: ReactiveControllerHost;
   private target: EventTarget | null = null;
 
-  constructor(host: ReactiveControllerHost) {
-    this.host = host;
-    host.addController(this);
+  public constructor(
+    private readonly host: ReactiveControllerHost,
+    private readonly drag: DragController,
+  ) {
+    this.host.addController(this);
   }
 
-  attach(target: EventTarget) {
+  public attach(target: EventTarget): void {
+    this.detach();
+
     this.target = target;
-
-    target.addEventListener("mousedown", this.onMouse);
-    target.addEventListener("mousemove", this.onMouse);
-    target.addEventListener("mouseup", this.onMouse);
+    this.target.addEventListener("mousedown", this.onMouseDown);
+    this.target.addEventListener("mousemove", this.onMouseMove);
+    this.target.addEventListener("mouseup", this.onMouseUp);
   }
 
-  detach() {
-    if (!this.target) return;
+  public detach(): void {
+    if (this.target === null) {
+      return;
+    }
 
-    this.target.removeEventListener("mousedown", this.onMouse);
-    this.target.removeEventListener("mousemove", this.onMouse);
-    this.target.removeEventListener("mouseup", this.onMouse);
-
+    this.target.removeEventListener("mousedown", this.onMouseDown);
+    this.target.removeEventListener("mousemove", this.onMouseMove);
+    this.target.removeEventListener("mouseup", this.onMouseUp);
     this.target = null;
   }
 
-  hostDisconnected() {
+  public hostDisconnected(): void {
     this.detach();
   }
 
-  private onMouse = (event: Event) => {
+  private readonly onMouseDown = (event: Event): void => {
+    if (event instanceof MouseEvent) {
+      this.drag.onMouseDown(event);
+    }
+  };
 
-    if (!(event instanceof MouseEvent)) return;
+  private readonly onMouseMove = (event: Event): void => {
+    if (event instanceof MouseEvent) {
+      this.drag.onMouseMove(event);
+    }
+  };
 
-    const host = this.host as unknown as {
-      mouseEvent?: (event: MouseEvent) => void;
-    };
-
-    host.mouseEvent?.(event);
+  private readonly onMouseUp = (event: Event): void => {
+    if (event instanceof MouseEvent) {
+      this.drag.onMouseUp();
+    }
   };
 }

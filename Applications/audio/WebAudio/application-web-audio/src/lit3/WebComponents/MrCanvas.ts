@@ -1,3 +1,4 @@
+
 import { LitElement, css, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
 
@@ -14,11 +15,16 @@ export class MrCanvas extends LitElement {
   @query("slot")
   private slotElement!: HTMLSlotElement;
 
-  private readonly mouse = new MouseController(this);
-  private readonly drag = new DragController(this, this.mouse);
+  private readonly drag = new DragController(
+    this,
+    () => this.getDraggables(),
+    (event) => this.toCanvasPoint(event),
+  );
+
+  private readonly mouse = new MouseController(this, this.drag);
   private resizeObserver: ResizeObserver | null = null;
 
-  static styles = css`
+  public static override styles = css`
     :host {
       display: block;
       position: relative;
@@ -38,18 +44,14 @@ export class MrCanvas extends LitElement {
     }
   `;
 
-  render() {
+  protected override render() {
     return html`
-      <canvas
-        @mousedown=${this.onMouseDown}
-        @mousemove=${this.onMouseMove}
-        @mouseup=${this.onMouseUp}
-      ></canvas>
+      <canvas></canvas>
       <slot @slotchange=${this.onSlotChange}></slot>
     `;
   }
 
-  firstUpdated() {
+  protected override firstUpdated(): void {
     this.resizeCanvas();
     this.mouse.attach(this.canvas);
 
@@ -62,7 +64,11 @@ export class MrCanvas extends LitElement {
     this.draw();
   }
 
-  disconnectedCallback() {
+  protected override updated(): void {
+    this.draw();
+  }
+
+  public override disconnectedCallback(): void {
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
     this.mouse.detach();
@@ -73,18 +79,24 @@ export class MrCanvas extends LitElement {
     this.draw();
   };
 
-  private getDraggables(): IDraggable[] {
+  private getDraggables(): readonly IDraggable[] {
     const elements = this.slotElement.assignedElements({ flatten: true });
+    const draggables: IDraggable[] = [];
 
-    return elements.filter((element): element is IDraggable => {
-      const candidate = element as Partial<IDraggable>;
-      return (
+    for (const element of elements) {
+      const candidate = element as unknown as Partial<IDraggable>;
+
+      if (
         typeof candidate.getPosition === "function" &&
         typeof candidate.setPosition === "function" &&
         typeof candidate.containsPoint === "function" &&
         "shape" in candidate
-      );
-    });
+      ) {
+        draggables.push(candidate as IDraggable);
+      }
+    }
+
+    return draggables;
   }
 
   private resizeCanvas(): void {
@@ -98,7 +110,7 @@ export class MrCanvas extends LitElement {
     this.canvas.height = Math.round(height * dpr);
 
     const ctx = this.canvas.getContext("2d");
-    if (!ctx) {
+    if (ctx === null) {
       return;
     }
 
@@ -107,7 +119,7 @@ export class MrCanvas extends LitElement {
 
   private draw(): void {
     const ctx = this.canvas.getContext("2d");
-    if (!ctx) {
+    if (ctx === null) {
       return;
     }
 
@@ -117,13 +129,13 @@ export class MrCanvas extends LitElement {
     for (const draggable of this.getDraggables()) {
       const shape = this.tryGetShape(draggable);
 
-      if (!shape) {
+      if (shape === null) {
         continue;
       }
 
       shape.draw({
         canvas: this.canvas,
-        ctx
+        ctx,
       });
     }
   }
@@ -142,36 +154,12 @@ export class MrCanvas extends LitElement {
     }
   }
 
-  private readonly onMouseDown = (event: MouseEvent): void => {
-    const point = this.toCanvasPoint(event);
-
-    for (const draggable of this.getDraggables()) {
-      if (draggable.containsPoint(point)) {
-        this.drag.startDrag(draggable, point.x, point.y);
-        break;
-      }
-    }
-  };
-
-  private readonly onMouseMove = (_event: MouseEvent): void => {
-    this.draw();
-  };
-
-  private readonly onMouseUp = (): void => {
-  };
-
-  public mouseEvent(event: MouseEvent): void {
-    if (event.type === "mousemove") {
-      this.draw();
-    }
-  }
-
   private toCanvasPoint(event: MouseEvent): Readonly<{ x: number; y: number }> {
     const rect = this.canvas.getBoundingClientRect();
 
     return {
       x: event.clientX - rect.left,
-      y: event.clientY - rect.top
+      y: event.clientY - rect.top,
     };
   }
 }
