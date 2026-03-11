@@ -1,4 +1,4 @@
-import type { IShape } from "./IShape.js";
+import type { IShape } from "./Shapes/IShape.js";
 
 export type Point = Readonly<{
   x: number;

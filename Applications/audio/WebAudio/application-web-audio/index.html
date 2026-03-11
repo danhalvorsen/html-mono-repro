@@ -1,4 +1,4 @@
-<!-- index.html -->
+<!-- Applications/audio/WebAudio/application-web-audio/index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -19,26 +19,6 @@
         gap: 1rem;
       }
 
-      .panel {
-        background: #1e1e1e;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        text-align: center;
-      }
-
-      button {
-        font-size: 1rem;
-        padding: 0.6rem 1.2rem;
-        margin: 0.5rem;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-      }
-
-      .start { background: #3aa675; color: white; }
-      .stop  { background: #c94b4b; color: white; }
-
       mr-canvas {
         width: 600px;
         height: 300px;
@@ -47,11 +27,8 @@
   </head>
 
   <body>
-    <div class="panel">
-      <h2>Web Audio Synth Demo</h2>
-      <button id="start" class="start">Start Synth</button>
-      <button id="stop" class="stop">Stop Synth</button>
-    </div>
+    <mr-synth-controls></mr-synth-controls>
+    <mr-synth-toggle></mr-synth-toggle>
 
     <mr-canvas>
       <mr-draggable>
@@ -63,9 +40,6 @@
       </mr-draggable>
     </mr-canvas>
 
-    <script type="module" src="/src/index.ts"></script>
-    <script type="module" src="/src/lit3/WebComponents/MrCanvas.ts"></script>
-    <script type="module" src="/src/lit3/WebComponents/MrDraggable.ts"></script>
-    <script type="module" src="/src/lit3/WebComponents/MrRect.ts"></script>
+    <script type="module" src="./src/index.ts"></script>
   </body>
 </html>

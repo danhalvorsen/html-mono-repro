@@ -1,8 +1,7 @@
 // Applications/audio/WebAudio/application-web-audio/src/Audio/MakeIt.ts
-// BREAKING CHANGES ONLY
 
-import { DefaultAudioNodeFactory } from "./DefaultAudioNodeFactory";
-import { PresetSynthFactory } from "./PresetSynthFactory";
+import type { OscillatorModel } from "../lit3/WebComponents/OscillatorControl/OscillatorModel.js";
+import type { SynthesizerModel } from "../lit3/WebComponents/Synthesizer/SynthesizerModel.js";
 
 export interface IAudioComponent {
   connect(destination: AudioNode): void;
@@ -25,22 +24,12 @@ export interface IOscillatorConfig {
   readonly detune: number;
 }
 
-export interface IVoiceConfig {
-  readonly oscillator: IOscillatorConfig;
-  readonly gain: number;
-}
-
 export interface IGainConfig {
   readonly gain: number;
 }
 
 export interface IMixerConfig {
   readonly level: number;
-}
-
-export interface ISimpleSynthConfig {
-  readonly voices: readonly IVoiceConfig[];
-  readonly mixer: IMixerConfig;
 }
 
 export interface IAudioNodeFactory {
@@ -50,21 +39,9 @@ export interface IAudioNodeFactory {
 }
 
 export interface ISynthBuilder {
-  addOscillator(
-    type: OscillatorType,
-    frequency: number,
-    detune?: number,
-    gain?: number,
-  ): ISynthBuilder;
-
+  addOscillator(model: OscillatorModel): ISynthBuilder;
   withMixerLevel(value: number): ISynthBuilder;
   build(): ISynthesizer;
-}
-
-export interface ISynthFactory {
-  createDefault(): ISynthesizer;
-  createLead(): ISynthesizer;
-  createBass(): ISynthesizer;
 }
 
 export class Guard {
@@ -81,7 +58,15 @@ export class Guard {
   }
 }
 
-export function createSynthFactory(context: AudioContext): ISynthFactory {
-  const nodeFactory = new DefaultAudioNodeFactory(context);
-  return new PresetSynthFactory(nodeFactory);
-}
+export const DefaultSynthModel: SynthesizerModel = {
+  oscillators: [
+    {
+      id: "osc-1",
+      type: "sine",
+      frequency: 440,
+      detune: 0,
+      gain: 0.25,
+    },
+  ],
+  mixerLevel: 1,
+};

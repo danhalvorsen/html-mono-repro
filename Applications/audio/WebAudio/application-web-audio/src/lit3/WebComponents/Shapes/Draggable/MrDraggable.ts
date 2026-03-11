@@ -3,8 +3,8 @@
 import { LitElement, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
 
-import type { IDraggable, Point } from "./IDraggable.js";
-import type { IShape } from "./IShape.js";
+import type { IDraggable, Point } from "../../IDraggable.js";
+import type { IShape } from "../IShape.js";
 
 @customElement("mr-draggable")
 export class MrDraggable extends LitElement implements IDraggable {

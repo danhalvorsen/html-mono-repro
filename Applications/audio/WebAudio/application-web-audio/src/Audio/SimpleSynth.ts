@@ -1,11 +1,10 @@
 // Applications/audio/WebAudio/application-web-audio/src/Audio/SimpleSynth.ts
 
-import type { MixerBus } from "./MixerBus";
-import type { ISynthesizer } from "./MakeIt";
+import type { MixerBus } from "./MixerBus.js";
+import type { ISynthesizer } from "./MakeIt.js";
 
 export class SimpleSynth implements ISynthesizer {
   public readonly output: AudioNode;
-
   private started = false;
 
   public constructor(
@@ -45,9 +44,11 @@ export class SimpleSynth implements ISynthesizer {
       try {
         oscillator.stop(when);
       } catch {
-        // no-op
+        // ignore repeated stop
       }
     }
+
+    this.started = false;
   }
 
   public dispose(): void {

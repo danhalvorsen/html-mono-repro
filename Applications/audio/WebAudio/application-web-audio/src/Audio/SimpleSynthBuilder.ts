@@ -1,44 +1,26 @@
 // Applications/audio/WebAudio/application-web-audio/src/Audio/SimpleSynthBuilder.ts
-// BREAKING CHANGES ONLY
 
-import { Guard, type IAudioNodeFactory, type ISynthBuilder, type ISynthesizer, type IVoiceConfig } from "./MakeIt";
-import { MixerBus } from "./MixerBus";
-import { SimpleSynth } from "./SimpleSynth";
+import type { OscillatorModel } from "../lit3/WebComponents/OscillatorControl/OscillatorModel.js";
+import {
+  Guard,
+  type IAudioNodeFactory,
+  type ISynthBuilder,
+  type ISynthesizer,
+} from "./MakeIt.js";
+import { MixerBus } from "./MixerBus.js";
+import { SimpleSynth } from "./SimpleSynth.js";
 
 export class SimpleSynthBuilder implements ISynthBuilder {
-  private readonly voices: IVoiceConfig[] = [
-    {
-      oscillator: {
-        type: "sine",
-        frequency: 440,
-        detune: 0,
-      },
-      gain: 0.25,
-    },
-  ];
-
+  private readonly oscillators: OscillatorModel[] = [];
   private mixerLevel = 1;
 
   public constructor(private readonly factory: IAudioNodeFactory) {}
 
-  public addOscillator(
-    type: OscillatorType,
-    frequency: number,
-    detune = 0,
-    gain = 0.25,
-  ): ISynthBuilder {
-    Guard.positive("frequency", frequency);
-    Guard.gain("gain", gain);
+  public addOscillator(model: OscillatorModel): ISynthBuilder {
+    Guard.positive("frequency", model.frequency);
+    Guard.gain("gain", model.gain);
 
-    this.voices.push({
-      oscillator: {
-        type,
-        frequency,
-        detune,
-      },
-      gain,
-    });
-
+    this.oscillators.push(model);
     return this;
   }
 
@@ -49,54 +31,68 @@ export class SimpleSynthBuilder implements ISynthBuilder {
   }
 
   public build(): ISynthesizer {
-    const normalizedVoices = this.normalizeVoices(this.voices);
-    const normalizedMixerLevel = this.normalizeMixerLevel(
-      this.mixerLevel,
-      normalizedVoices.length,
-    );
-
     const mixer = new MixerBus(this.factory, {
-      level: normalizedMixerLevel,
+      level: this.normalizeMixerLevel(this.mixerLevel, this.oscillators.length),
     });
 
-    const oscillators: OscillatorNode[] = [];
-    const gains: GainNode[] = [];
+    const oscillatorNodes: OscillatorNode[] = [];
+    const gainNodes: GainNode[] = [];
 
-    for (const voice of normalizedVoices) {
-      const oscillator = this.factory.createOscillator(voice.oscillator);
-      const gain = this.factory.createGain({ gain: voice.gain });
+    for (const oscillator of this.normalizeOscillators(this.oscillators)) {
+      const oscillatorNode = this.factory.createOscillator({
+        type: oscillator.type,
+        frequency: oscillator.frequency,
+        detune: oscillator.detune,
+      });
 
-      oscillator.connect(gain);
-      gain.connect(mixer.input);
+      const gainNode = this.factory.createGain({
+        gain: oscillator.gain,
+      });
 
-      oscillators.push(oscillator);
-      gains.push(gain);
+      oscillatorNode.connect(gainNode);
+      gainNode.connect(mixer.input);
+
+      oscillatorNodes.push(oscillatorNode);
+      gainNodes.push(gainNode);
     }
 
-    return new SimpleSynth(oscillators, gains, mixer);
+    return new SimpleSynth(oscillatorNodes, gainNodes, mixer);
   }
 
-  private normalizeVoices(voices: readonly IVoiceConfig[]): readonly IVoiceConfig[] {
-    const totalGain = voices.reduce((sum, voice) => sum + voice.gain, 0);
+  private normalizeOscillators(
+    oscillators: readonly OscillatorModel[],
+  ): readonly OscillatorModel[] {
+    if (oscillators.length === 0) {
+      return [
+        {
+          id: "osc-default",
+          type: "sine",
+          frequency: 440,
+          detune: 0,
+          gain: 0.25,
+        },
+      ];
+    }
+
+    const totalGain = oscillators.reduce((sum, item) => sum + item.gain, 0);
 
     if (totalGain <= 1) {
-      return [...voices];
+      return [...oscillators];
     }
 
     const scale = 1 / totalGain;
 
-    return voices.map((voice) => ({
-      oscillator: voice.oscillator,
-      gain: voice.gain * scale,
+    return oscillators.map((item) => ({
+      ...item,
+      gain: item.gain * scale,
     }));
   }
 
-  private normalizeMixerLevel(level: number, voiceCount: number): number {
-    if (voiceCount <= 1) {
+  private normalizeMixerLevel(level: number, oscillatorCount: number): number {
+    if (oscillatorCount <= 1) {
       return level;
     }
 
-    const equalPowerScale = 1 / Math.sqrt(voiceCount);
-    return Math.min(level, equalPowerScale);
+    return Math.min(level, 1 / Math.sqrt(oscillatorCount));
   }
 }

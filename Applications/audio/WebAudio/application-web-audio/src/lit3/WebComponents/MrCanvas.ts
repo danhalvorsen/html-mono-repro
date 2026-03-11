@@ -5,7 +5,7 @@ import { customElement, query } from "lit/decorators.js";
 import { MouseController } from "../Controllers/MouseController.js";
 import { DragController } from "../Controllers/DragController.js";
 import type { IDraggable } from "./IDraggable.js";
-import type { IShape } from "./IShape.js";
+import type { IShape } from "./Shapes/IShape.js";
 
 @customElement("mr-canvas")
 export class MrCanvas extends LitElement {

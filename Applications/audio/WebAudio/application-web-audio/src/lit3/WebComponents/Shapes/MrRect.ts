@@ -2,7 +2,7 @@
 
 import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import type { ICanvasContext } from "./ICanvasContext.js";
+import type { ICanvasContext } from "../ICanvasContext.js";
 import type { IShape } from "./IShape.js";
 
 @customElement("mr-rect")
