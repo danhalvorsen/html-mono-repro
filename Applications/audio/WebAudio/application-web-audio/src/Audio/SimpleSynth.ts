@@ -1,21 +1,18 @@
+// Applications/audio/WebAudio/application-web-audio/src/Audio/SimpleSynth.ts
+
 import type { MixerBus } from "./MixerBus";
 import type { ISynthesizer } from "./MakeIt";
 
- export class SimpleSynth implements ISynthesizer {
-
+export class SimpleSynth implements ISynthesizer {
   public readonly output: AudioNode;
 
   private started = false;
 
   public constructor(
-    private readonly oscillator: OscillatorNode,
-    private readonly gain: GainNode,
-    private readonly mixer: MixerBus
+    private readonly oscillators: readonly OscillatorNode[],
+    private readonly gains: readonly GainNode[],
+    private readonly mixer: MixerBus,
   ) {
-
-    oscillator.connect(gain);
-    gain.connect(mixer.input);
-
     this.output = mixer.output;
   }
 
@@ -28,26 +25,42 @@ import type { ISynthesizer } from "./MakeIt";
   }
 
   public start(when = 0): void {
+    if (this.started) {
+      return;
+    }
 
-    if (this.started) return;
+    for (const oscillator of this.oscillators) {
+      oscillator.start(when);
+    }
 
-    this.oscillator.start(when);
     this.started = true;
   }
 
   public stop(when = 0): void {
+    if (!this.started) {
+      return;
+    }
 
-    if (!this.started) return;
-
-    this.oscillator.stop(when);
+    for (const oscillator of this.oscillators) {
+      try {
+        oscillator.stop(when);
+      } catch {
+        // no-op
+      }
+    }
   }
 
   public dispose(): void {
-
     this.disconnect();
 
-    this.oscillator.disconnect();
-    this.gain.disconnect();
+    for (const oscillator of this.oscillators) {
+      oscillator.disconnect();
+    }
+
+    for (const gain of this.gains) {
+      gain.disconnect();
+    }
+
     this.mixer.dispose();
   }
 }

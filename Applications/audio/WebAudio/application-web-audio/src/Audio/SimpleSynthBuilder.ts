@@ -1,86 +1,102 @@
- 
-import type { IAudioNodeFactory, ISimpleSynthConfig, ISynthBuilder, ISynthesizer } from "./MakeIt";
+// Applications/audio/WebAudio/application-web-audio/src/Audio/SimpleSynthBuilder.ts
+// BREAKING CHANGES ONLY
+
+import { Guard, type IAudioNodeFactory, type ISynthBuilder, type ISynthesizer, type IVoiceConfig } from "./MakeIt";
 import { MixerBus } from "./MixerBus";
 import { SimpleSynth } from "./SimpleSynth";
- 
-// ============================================================
-// Builder
-// ============================================================
 
 export class SimpleSynthBuilder implements ISynthBuilder {
-
-  private config: ISimpleSynthConfig = {
-    oscillator: {
-      type: "sine",
-      frequency: 440,
-      detune: 0
+  private readonly voices: IVoiceConfig[] = [
+    {
+      oscillator: {
+        type: "sine",
+        frequency: 440,
+        detune: 0,
+      },
+      gain: 0.25,
     },
-    voiceGain: {
-      gain: 0.25
-    },
-    mixer: {
-      level: 1
-    }
-  };
+  ];
 
-  public constructor(private readonly factory: IAudioNodeFactory) { }
+  private mixerLevel = 1;
 
-  public withOscillatorType(type: OscillatorType): ISynthBuilder {
+  public constructor(private readonly factory: IAudioNodeFactory) {}
 
-    this.config = {
-      ...this.config,
-      oscillator: { ...this.config.oscillator, type }
-    };
+  public addOscillator(
+    type: OscillatorType,
+    frequency: number,
+    detune = 0,
+    gain = 0.25,
+  ): ISynthBuilder {
+    Guard.positive("frequency", frequency);
+    Guard.gain("gain", gain);
 
-    return this;
-  }
-
-  public withFrequency(value: number): ISynthBuilder {
-
-    this.config = {
-      ...this.config,
-      oscillator: { ...this.config.oscillator, frequency: value }
-    };
-
-    return this;
-  }
-
-  public withDetune(value: number): ISynthBuilder {
-
-    this.config = {
-      ...this.config,
-      oscillator: { ...this.config.oscillator, detune: value }
-    };
-
-    return this;
-  }
-
-  public withVoiceGain(value: number): ISynthBuilder {
-
-    this.config = {
-      ...this.config,
-      voiceGain: { gain: value }
-    };
+    this.voices.push({
+      oscillator: {
+        type,
+        frequency,
+        detune,
+      },
+      gain,
+    });
 
     return this;
   }
 
   public withMixerLevel(value: number): ISynthBuilder {
-
-    this.config = {
-      ...this.config,
-      mixer: { level: value }
-    };
-
+    Guard.gain("mixerLevel", value);
+    this.mixerLevel = value;
     return this;
   }
 
   public build(): ISynthesizer {
+    const normalizedVoices = this.normalizeVoices(this.voices);
+    const normalizedMixerLevel = this.normalizeMixerLevel(
+      this.mixerLevel,
+      normalizedVoices.length,
+    );
 
-    const osc = this.factory.createOscillator(this.config.oscillator);
-    const gain = this.factory.createGain(this.config.voiceGain);
-    const mixer = new MixerBus(this.factory, this.config.mixer);
+    const mixer = new MixerBus(this.factory, {
+      level: normalizedMixerLevel,
+    });
 
-    return new SimpleSynth(osc, gain, mixer);
+    const oscillators: OscillatorNode[] = [];
+    const gains: GainNode[] = [];
+
+    for (const voice of normalizedVoices) {
+      const oscillator = this.factory.createOscillator(voice.oscillator);
+      const gain = this.factory.createGain({ gain: voice.gain });
+
+      oscillator.connect(gain);
+      gain.connect(mixer.input);
+
+      oscillators.push(oscillator);
+      gains.push(gain);
+    }
+
+    return new SimpleSynth(oscillators, gains, mixer);
+  }
+
+  private normalizeVoices(voices: readonly IVoiceConfig[]): readonly IVoiceConfig[] {
+    const totalGain = voices.reduce((sum, voice) => sum + voice.gain, 0);
+
+    if (totalGain <= 1) {
+      return [...voices];
+    }
+
+    const scale = 1 / totalGain;
+
+    return voices.map((voice) => ({
+      oscillator: voice.oscillator,
+      gain: voice.gain * scale,
+    }));
+  }
+
+  private normalizeMixerLevel(level: number, voiceCount: number): number {
+    if (voiceCount <= 1) {
+      return level;
+    }
+
+    const equalPowerScale = 1 / Math.sqrt(voiceCount);
+    return Math.min(level, equalPowerScale);
   }
 }

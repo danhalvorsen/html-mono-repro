@@ -1,11 +1,8 @@
-// src/web-audio-builder-factory.ts
+// Applications/audio/WebAudio/application-web-audio/src/Audio/MakeIt.ts
+// BREAKING CHANGES ONLY
 
 import { DefaultAudioNodeFactory } from "./DefaultAudioNodeFactory";
 import { PresetSynthFactory } from "./PresetSynthFactory";
-
-// ============================================================
-// Contracts
-// ============================================================
 
 export interface IAudioComponent {
   connect(destination: AudioNode): void;
@@ -28,6 +25,11 @@ export interface IOscillatorConfig {
   readonly detune: number;
 }
 
+export interface IVoiceConfig {
+  readonly oscillator: IOscillatorConfig;
+  readonly gain: number;
+}
+
 export interface IGainConfig {
   readonly gain: number;
 }
@@ -37,8 +39,7 @@ export interface IMixerConfig {
 }
 
 export interface ISimpleSynthConfig {
-  readonly oscillator: IOscillatorConfig;
-  readonly voiceGain: IGainConfig;
+  readonly voices: readonly IVoiceConfig[];
   readonly mixer: IMixerConfig;
 }
 
@@ -49,10 +50,13 @@ export interface IAudioNodeFactory {
 }
 
 export interface ISynthBuilder {
-  withOscillatorType(type: OscillatorType): ISynthBuilder;
-  withFrequency(value: number): ISynthBuilder;
-  withDetune(value: number): ISynthBuilder;
-  withVoiceGain(value: number): ISynthBuilder;
+  addOscillator(
+    type: OscillatorType,
+    frequency: number,
+    detune?: number,
+    gain?: number,
+  ): ISynthBuilder;
+
   withMixerLevel(value: number): ISynthBuilder;
   build(): ISynthesizer;
 }
@@ -62,10 +66,6 @@ export interface ISynthFactory {
   createLead(): ISynthesizer;
   createBass(): ISynthesizer;
 }
-
-// ============================================================
-// Guards
-// ============================================================
 
 export class Guard {
   public static positive(name: string, value: number): void {
@@ -81,13 +81,7 @@ export class Guard {
   }
 }
 
-// ============================================================
-// Composition root
-// ============================================================
-
 export function createSynthFactory(context: AudioContext): ISynthFactory {
-
   const nodeFactory = new DefaultAudioNodeFactory(context);
-
   return new PresetSynthFactory(nodeFactory);
 }

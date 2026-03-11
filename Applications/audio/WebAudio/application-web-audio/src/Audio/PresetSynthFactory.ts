@@ -1,39 +1,31 @@
+// Applications/audio/WebAudio/application-web-audio/src/Audio/PresetSynthFactory.ts
+
 import { SimpleSynthBuilder } from "./SimpleSynthBuilder";
 import type { ISynthFactory, IAudioNodeFactory, ISynthesizer } from "./MakeIt";
 
-// ============================================================
-// Preset factory (GOF Factory)
-// ============================================================
 export class PresetSynthFactory implements ISynthFactory {
-
-  public constructor(private readonly nodeFactory: IAudioNodeFactory) { }
+  public constructor(private readonly nodeFactory: IAudioNodeFactory) {}
 
   public createDefault(): ISynthesizer {
-
     return new SimpleSynthBuilder(this.nodeFactory)
-      .withOscillatorType("sine")
-      .withFrequency(440)
-      .withVoiceGain(0.25)
+      .addOscillator("sine", 440, 0, 0.25)
+      .withMixerLevel(1)
       .build();
   }
 
   public createLead(): ISynthesizer {
-
     return new SimpleSynthBuilder(this.nodeFactory)
-      .withOscillatorType("sawtooth")
-      .withFrequency(660)
-      .withDetune(8)
-      .withVoiceGain(0.15)
+      .addOscillator("sawtooth", 660, 0, 0.15)
+      .addOscillator("sawtooth", 660, 8, 0.15)
+      .withMixerLevel(1)
       .build();
   }
 
   public createBass(): ISynthesizer {
-
     return new SimpleSynthBuilder(this.nodeFactory)
-      .withOscillatorType("square")
-      .withFrequency(110)
-      .withDetune(-4)
-      .withVoiceGain(0.2)
+      .addOscillator("square", 110, -4, 0.2)
+      .addOscillator("sine", 55, 0, 0.1)
+      .withMixerLevel(1)
       .build();
   }
 }
