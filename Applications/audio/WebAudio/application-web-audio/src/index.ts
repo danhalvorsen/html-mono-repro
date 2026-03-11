@@ -1,58 +1,83 @@
-// src/index.ts
+// Applications/audio/WebAudio/application-web-audio/src/index.ts
 
-import {
-  createSynthFactory,
-  type ISynthesizer
-} from "./web-audio-builder-factory";
+import "./lit3/WebComponents/MrCanvas.js";
+import "./lit3/WebComponents/MrDraggable.js";
+import "./lit3/WebComponents/MrRect.js";
+
+import { createSynthFactory, type ISynthesizer } from "./Audio/MakeIt.js";
+
+const startButton = document.getElementById("start");
+const stopButton = document.getElementById("stop");
+
+if (!(startButton instanceof HTMLButtonElement)) {
+  throw new Error('Element with id="start" was not found or is not a button.');
+}
+
+if (!(stopButton instanceof HTMLButtonElement)) {
+  throw new Error('Element with id="stop" was not found or is not a button.');
+}
 
 let context: AudioContext | null = null;
 let synth: ISynthesizer | null = null;
 
-async function ensureContext(): Promise<AudioContext> {
-  if (!context) {
-    context = new AudioContext();
+function getOrCreateContext(): AudioContext {
+  if (context !== null) {
+    return context;
   }
 
-  if (context.state === "suspended") {
-    await context.resume();
-  }
-
+  context = new AudioContext();
   return context;
 }
 
-async function startSynth(): Promise<void> {
-  const ctx = await ensureContext();
+function createAndStartSynth(): void {
+  const audioContext = getOrCreateContext();
 
-  if (synth) {
+  if (synth !== null) {
     return;
   }
 
-  const factory = createSynthFactory(ctx);
+  const factory = createSynthFactory(audioContext);
 
   synth = factory.createLead();
-  synth.connect(ctx.destination);
+  synth.connect(audioContext.destination);
   synth.start();
 }
 
-function stopSynth(): void {
-  if (!synth) return;
+async function startAsync(): Promise<void> {
+  const audioContext = getOrCreateContext();
 
-  synth.stop();
-  synth.dispose();
-  synth = null;
+  if (audioContext.state === "suspended") {
+    await audioContext.resume();
+  }
+
+  createAndStartSynth();
 }
 
-function bindUI(): void {
-  const startBtn = document.getElementById("start") as HTMLButtonElement;
-  const stopBtn = document.getElementById("stop") as HTMLButtonElement;
+function stopAndDisposeSynth(): void {
+  if (synth === null) {
+    return;
+  }
 
-  startBtn.addEventListener("click", () => {
-    void startSynth();
-  });
-
-  stopBtn.addEventListener("click", () => {
-    stopSynth();
-  });
+  try {
+    synth.stop();
+  } finally {
+    synth.dispose();
+    synth = null;
+  }
 }
 
-document.addEventListener("DOMContentLoaded", bindUI);
+startButton.addEventListener("click", () => {
+  void startAsync();
+});
+
+stopButton.addEventListener("click", () => {
+  stopAndDisposeSynth();
+});
+
+window.addEventListener("beforeunload", () => {
+  stopAndDisposeSynth();
+
+  if (context !== null && context.state !== "closed") {
+    void context.close();
+  }
+});
