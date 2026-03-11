@@ -1,80 +1,64 @@
-import { describe, it, expect } from "vitest";
- 
-import { DagGraph } from "../src/DagGraph.js";
-  
-describe("DagGraph", () => {
+// packages/core-graph/tests/dagGraph.test.ts
 
+import { describe, expect, it } from "vitest";
+import { fixture } from "./Fixtures.js";
+
+describe("DagGraph", () => {
   it("adds nodes", () => {
-    const g = new DagGraph();
-    const a = g.addNode("A");
-    const b = g.addNode("B");
-    expect(g.nodes.length).toBe(2);
-    expect(a.id).toBe("A");
-    expect(b.id).toBe("B");
+    const { graph, nodes } = fixture.createDagWithNodes("A", "B");
+
+    expect(graph.nodes).toHaveLength(2);
+    expect(nodes.A.id).toBe("A");
+    expect(nodes.B.id).toBe("B");
   });
 
   it("adds edges correctly", () => {
-    const g = new DagGraph();
-    const a = g.addNode("A");
-    const b = g.addNode("B");
+    const { graph, nodes } = fixture.createDagWithNodes("A", "B");
 
-    const e = g.addEdge(a, b);
-    expect(g.edges.length).toBe(1);
-    expect(e.source.id).toBe("A");
-    expect(e.target.id).toBe("B");
+    const edge = graph.addEdge(nodes.A, nodes.B);
+
+    expect(graph.edges).toHaveLength(1);
+    expect(edge.source.id).toBe("A");
+    expect(edge.target.id).toBe("B");
   });
 
   it("rejects direct 2-node cycle and rolls back", () => {
-    const g = new DagGraph();
-    const a = g.addNode("A");
-    const b = g.addNode("B");
+    const { graph, nodes } = fixture.createDagWithNodes("A", "B");
 
-    g.addEdge(a, b);
-    expect(() => g.addEdge(b, a))
+    graph.addEdge(nodes.A, nodes.B);
+
+    expect(() => graph.addEdge(nodes.B, nodes.A))
       .toThrowError("Cycle detected adding B->A");
 
-    expect(g.edges.length).toBe(1); // rolled back
+    expect(graph.edges).toHaveLength(1);
   });
 
   it("rejects long-chain cycle and rolls back", () => {
-    const g = new DagGraph();
-    const a = g.addNode("A");
-    const b = g.addNode("B");
-    const c = g.addNode("C");
-    const d = g.addNode("D");
+    const { graph, nodes } = fixture.createDagWithNodes("A", "B", "C", "D");
 
-    g.addEdge(a, b);
-    g.addEdge(b, c);
-    g.addEdge(c, d);
+    graph.addEdge(nodes.A, nodes.B);
+    graph.addEdge(nodes.B, nodes.C);
+    graph.addEdge(nodes.C, nodes.D);
 
-    expect(() => g.addEdge(d, a))
+    expect(() => graph.addEdge(nodes.D, nodes.A))
       .toThrowError("Cycle detected adding D->A");
 
-    expect(g.edges.length).toBe(3);
+    expect(graph.edges).toHaveLength(3);
   });
 
   it("handles large DAG without cycles", () => {
-    const g = new DagGraph();
-    const nodes = [...Array(50)].map((_, i) => g.addNode("N" + i));
+    const { graph } = fixture.createDagChain(50);
 
-    for (let i = 0; i < nodes.length - 1; i++) {
-      g.addEdge(nodes[i], nodes[i + 1]);
-    }
-
-    expect(g.isAcyclic).toBe(true);
-    expect(g.edges.length).toBe(49);
+    expect(graph.isAcyclic).toBe(true);
+    expect(graph.edges).toHaveLength(49);
   });
 
   it("detects backward-edge cycle in large graph", () => {
-    const g = new DagGraph();
-    const nodes = [...Array(20)].map((_, i) => g.addNode("N" + i));
+    const { graph, nodes } = fixture.createDagChain(20);
 
-    for (let i = 0; i < 19; i++) g.addEdge(nodes[i], nodes[i + 1]);
-
-    expect(() => g.addEdge(nodes[10], nodes[5]))
+    expect(() => graph.addEdge(nodes[10], nodes[5]))
       .toThrowError("Cycle detected adding N10->N5");
 
-    expect(g.edges.length).toBe(19);
+    expect(graph.edges).toHaveLength(19);
   });
-
 });

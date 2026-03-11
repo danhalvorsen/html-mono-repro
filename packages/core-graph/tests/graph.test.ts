@@ -1,46 +1,42 @@
-import { describe, it, expect } from "vitest";
+// packages/core-graph/tests/graph.test.ts
 
-import { Association } from "../src/Association.js";
-import { Graph } from "../src/Graph.js";
-import { GraphNode } from "../src/GraphNode.js";
-import { Edge } from "../src/Edge.js";
-import { CycleDetector } from "../src/CycleDetector.js";
-import { DagGraph } from "../src/DagGraph.js";
+import { describe, expect, it } from "vitest";
+import { fixture } from "./Fixtures.js";
 
 describe("Graph", () => {
-
   it("adds nodes", () => {
-    const g = new Graph();
-    const a = g.addNode("A");
-    expect(g.nodes.length).toBe(1);
-    expect(a.id).toBe("A");
+    const graph = fixture.createGraph();
+
+    const node = graph.addNode("A");
+
+    expect(graph.nodes).toHaveLength(1);
+    expect(node.id).toBe("A");
   });
 
   it("adds nodes with payload", () => {
-    const g = new Graph();
-    const a = g.addNode("A", { x: 5 });
-    expect(a.payload).toEqual({ x: 5 });
+    const graph = fixture.createGraph();
+
+    const node = graph.addNode("A", { x: 5 });
+
+    expect(node.payload).toEqual({ x: 5 });
   });
 
   it("adds edges", () => {
-    const g = new Graph();
-    const a = g.addNode("A");
-    const b = g.addNode("B");
-    const e = g.addEdge(a, b);
+    const { graph, nodes } = fixture.createGraphWithNodes("A", "B");
 
-    expect(g.edges.length).toBe(1);
-    expect(e.source).toBe(a);
-    expect(e.target).toBe(b);
+    const edge = graph.addEdge(nodes.A, nodes.B);
+
+    expect(graph.edges).toHaveLength(1);
+    expect(edge.source).toBe(nodes.A);
+    expect(edge.target).toBe(nodes.B);
   });
 
-  it("handles multiple nodes & edges", () => {
-    const g = new Graph();
-    const nodes = ["A", "B", "C"].map(n => g.addNode(n));
+  it("handles multiple nodes and edges", () => {
+    const { graph, nodes } = fixture.createGraphWithNodes("A", "B", "C");
 
-    g.addEdge(nodes[0], nodes[1]);
-    g.addEdge(nodes[1], nodes[2]);
+    graph.addEdge(nodes.A, nodes.B);
+    graph.addEdge(nodes.B, nodes.C);
 
-    expect(g.edges.length).toBe(2);
+    expect(graph.edges).toHaveLength(2);
   });
-
 });

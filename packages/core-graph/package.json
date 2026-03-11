@@ -1,21 +1,23 @@
+
 {
   "name": "@monorepo/core-graph",
   "version": "1.0.0",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./dist/*": "./dist/*",
-    "./src/*": "./src/*"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "pnpm --workspace-root vitest run",
-    "clearCache": "pnpm -C .. pnpm --workspace-root vitest --clearCache"
+    "test": "vitest run --config vitest.config.ts",
+    "clearCache": "vitest --config vitest.config.ts --clearCache"
   },
   "dependencies": {
     "inversify": "^6.x",

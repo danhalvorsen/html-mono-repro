@@ -45,6 +45,8 @@ tmpclaude-*
 *.ntvs*
 *.njsproj
 *.sw?
+.vs/
+**/.vs/
 
 # ----------------------------
 # Windows reserved device names (prevents weird Git/path issues)

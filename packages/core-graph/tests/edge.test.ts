@@ -1,17 +1,17 @@
-import { describe, it, expect } from "vitest";
+// packages/core-graph/tests/edge.test.ts
 
-import { GraphNode } from "../src/GraphNode.js";
-import { Edge } from "../src/Edge.js";
- 
+import { describe, expect, it } from "vitest";
+import { Edge } from "../src/index.js";
+import { fixture } from "./Fixtures.js";
+
 describe("Edge", () => {
-
   it("creates an edge between nodes", () => {
-    const a = new GraphNode("A");
-    const b = new GraphNode("B");
-    const e = new Edge(a, b);
+    const a = fixture.createNode("A");
+    const b = fixture.createNode("B");
 
-    expect(e.source).toBe(a);
-    expect(e.target).toBe(b);
+    const edge = new Edge(a, b);
+
+    expect(edge.source).toBe(a);
+    expect(edge.target).toBe(b);
   });
-
 });
