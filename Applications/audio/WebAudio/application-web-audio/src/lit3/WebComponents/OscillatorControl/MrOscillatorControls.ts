@@ -1,5 +1,3 @@
-// Applications/audio/WebAudio/application-web-audio/src/lit3/WebComponents/OscillatorControl/MrOscillatorControls.ts
-
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import "./Atomic/MrOscillatorTypeSelect.js";

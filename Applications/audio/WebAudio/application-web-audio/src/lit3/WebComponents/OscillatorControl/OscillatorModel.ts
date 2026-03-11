@@ -5,4 +5,3 @@ export type OscillatorModel = Readonly<{
   detune: number;
   gain: number;
 }>;
-

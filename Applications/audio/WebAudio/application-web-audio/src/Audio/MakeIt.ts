@@ -1,7 +1,4 @@
-// Applications/audio/WebAudio/application-web-audio/src/Audio/MakeIt.ts
-
 import type { OscillatorModel } from "../lit3/WebComponents/OscillatorControl/OscillatorModel.js";
-import type { SynthesizerModel } from "../lit3/WebComponents/Synthesizer/SynthesizerModel.js";
 
 export interface IAudioComponent {
   connect(destination: AudioNode): void;
@@ -57,16 +54,3 @@ export class Guard {
     }
   }
 }
-
-export const DefaultSynthModel: SynthesizerModel = {
-  oscillators: [
-    {
-      id: "osc-1",
-      type: "sine",
-      frequency: 440,
-      detune: 0,
-      gain: 0.25,
-    },
-  ],
-  mixerLevel: 1,
-};

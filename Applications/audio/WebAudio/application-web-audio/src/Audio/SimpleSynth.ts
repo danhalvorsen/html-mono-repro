@@ -1,5 +1,3 @@
-// Applications/audio/WebAudio/application-web-audio/src/Audio/SimpleSynth.ts
-
 import type { MixerBus } from "./MixerBus.js";
 import type { ISynthesizer } from "./MakeIt.js";
 
@@ -44,7 +42,7 @@ export class SimpleSynth implements ISynthesizer {
       try {
         oscillator.stop(when);
       } catch {
-        // ignore repeated stop
+        // ignored by design
       }
     }
 

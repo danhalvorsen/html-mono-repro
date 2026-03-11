@@ -1,17 +1,13 @@
-// Applications/audio/WebAudio/application-web-audio/src/lit3/WebComponents/Synthesizer/SynthesizerController.ts
-
 import { DefaultAudioNodeFactory } from "../../../Audio/DefaultAudioNodeFactory.js";
-import { SimpleSynthBuilder } from "../../../Audio/SimpleSynthBuilder.js";
 import type { ISynthesizer } from "../../../Audio/MakeIt.js";
+import { SimpleSynthBuilder } from "../../../Audio/SimpleSynthBuilder.js";
+import { SynthPresets } from "../../../Audio/SynthPresets.js";
 import type { SynthesizerModel } from "./SynthesizerModel.js";
 
 export class SynthesizerController {
   private context: AudioContext | null = null;
   private synth: ISynthesizer | null = null;
-  private model: SynthesizerModel = {
-    oscillators: [],
-    mixerLevel: 1,
-  };
+  private model: SynthesizerModel = SynthPresets.default;
 
   public get isPlaying(): boolean {
     return this.synth !== null;
@@ -23,6 +19,15 @@ export class SynthesizerController {
 
   public setModel(model: SynthesizerModel): void {
     this.model = model;
+  }
+
+  public async toggle(): Promise<void> {
+    if (this.synth !== null) {
+      this.stop();
+      return;
+    }
+
+    await this.start();
   }
 
   public async start(): Promise<void> {
@@ -56,15 +61,6 @@ export class SynthesizerController {
     }
   }
 
-  public async toggle(): Promise<void> {
-    if (this.isPlaying) {
-      this.stop();
-      return;
-    }
-
-    await this.start();
-  }
-
   public dispose(): void {
     this.stop();
 
@@ -76,8 +72,7 @@ export class SynthesizerController {
   }
 
   private createSynth(context: AudioContext): ISynthesizer {
-    const nodeFactory = new DefaultAudioNodeFactory(context);
-    const builder = new SimpleSynthBuilder(nodeFactory)
+    const builder = new SimpleSynthBuilder(new DefaultAudioNodeFactory(context))
       .withMixerLevel(this.model.mixerLevel);
 
     for (const oscillator of this.model.oscillators) {

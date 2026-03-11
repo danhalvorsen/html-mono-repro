@@ -1,5 +1,3 @@
-// Applications/audio/WebAudio/application-web-audio/src/Audio/SimpleSynthBuilder.ts
-
 import type { OscillatorModel } from "../lit3/WebComponents/OscillatorControl/OscillatorModel.js";
 import {
   Guard,
@@ -31,14 +29,16 @@ export class SimpleSynthBuilder implements ISynthBuilder {
   }
 
   public build(): ISynthesizer {
+    const normalizedOscillators = this.normalizeOscillators(this.oscillators);
+
     const mixer = new MixerBus(this.factory, {
-      level: this.normalizeMixerLevel(this.mixerLevel, this.oscillators.length),
+      level: this.normalizeMixerLevel(this.mixerLevel, normalizedOscillators.length),
     });
 
     const oscillatorNodes: OscillatorNode[] = [];
     const gainNodes: GainNode[] = [];
 
-    for (const oscillator of this.normalizeOscillators(this.oscillators)) {
+    for (const oscillator of normalizedOscillators) {
       const oscillatorNode = this.factory.createOscillator({
         type: oscillator.type,
         frequency: oscillator.frequency,

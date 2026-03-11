@@ -1,5 +1,3 @@
-// Applications/audio/WebAudio/application-web-audio/src/Audio/DefaultAudioNodeFactory.ts
-
 import {
   Guard,
   type IAudioNodeFactory,

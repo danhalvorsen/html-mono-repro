@@ -1,18 +1,11 @@
-import type { IAudioComponent, IAudioNodeFactory, IMixerConfig } from "./MakeIt";
-
-// ============================================================
-// Mixer
-// ============================================================
+import type { IAudioComponent, IAudioNodeFactory, IMixerConfig } from "./MakeIt.js";
 
 export class MixerBus implements IAudioComponent {
-
   public readonly input: GainNode;
   public readonly output: GainNode;
 
   public constructor(factory: IAudioNodeFactory, config: IMixerConfig) {
-
     const mixer = factory.createMixer(config);
-
     this.input = mixer;
     this.output = mixer;
   }
