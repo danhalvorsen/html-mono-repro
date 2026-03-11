@@ -630,6 +630,19 @@ importers:
         specifier: ^4.0.14
         version: 4.0.14(@types/node@24.12.0)(@vitest/browser-playwright@4.0.18)(@vitest/ui@4.0.14)(happy-dom@20.0.11)(jsdom@27.0.0)(terser@5.46.0)(tsx@4.21.0)
 
+  packages/composite-tree-system/Tree/Samples/core-composite-tree-web-audio-sample:
+    dependencies:
+      '@monorepo/core-composite-tree-web-audio':
+        specifier: workspace:*
+        version: link:../core-composite-tree-web-audio
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^5.4.0
+        version: 5.4.21(@types/node@24.12.0)(terser@5.46.0)
+
   packages/composite-tree-system/Tree/core-composite-tree-abstract:
     dependencies:
       '@monorepo/core-new-shapes-abstract':
@@ -673,22 +686,6 @@ importers:
       '@monorepo/core-logger-nodejs':
         specifier: workspace:*
         version: link:../../core-logger-nodejs
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.2
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/composite-tree-system/samples/core-composite-tree-car:
-    dependencies:
-      '@monorepo/core-new-shapes-abstract':
-        specifier: workspace:*
-        version: link:../../../NewShapeThreeJS/Shape/core-new-shapes-abstract
-      '@monorepo/core-reactive-abstract':
-        specifier: workspace:*
-        version: link:../../../NewShapeThreeJS/Reactive/core-reactive-abstract
     devDependencies:
       rimraf:
         specifier: ^6.0.1
