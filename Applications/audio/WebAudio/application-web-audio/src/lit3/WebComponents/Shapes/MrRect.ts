@@ -1,52 +1,112 @@
-// src/lit3/WebComponents/MrRect.ts
+// src/lit3/WebComponents/Shapes/MrRect.ts
 
 import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+import { BoundingBox2D, Vector2 } from "@monorepo/core-math";
+
 import type { ICanvasContext } from "../ICanvasContext.js";
 import type { IShape } from "./IShape.js";
-import { BoundingBox2D } from "@monorepo/core-math";
 
 @customElement("mr-rect")
 export class MrRect extends LitElement implements IShape {
-  getBoundingBox(): BoundingBox2D {
-    return new BoundingBox2D(
-      { x: this.x, y: this.y } as any,
-      { x: this.x + this.width, y: this.y + this.height } as any,
+  @property({ attribute: false })
+  public bounds: BoundingBox2D = new BoundingBox2D(
+    new Vector2(0, 0),
+    new Vector2(100, 60),
+  );
+
+  @property({ type: String })
+  public fill = "#4caf50";
+
+  public get x(): number {
+    return this.bounds.min.x;
+  }
+
+  public set x(value: number) {
+    const width = this.bounds.width();
+
+    this.bounds = new BoundingBox2D(
+      new Vector2(value, this.bounds.min.y),
+      new Vector2(value + width, this.bounds.max.y),
     );
   }
 
-  setBoundingBox(bounds: BoundingBox2D): void {
-    this.x = bounds.min.x;
-    this.y = bounds.min.y;
-
-    this.width = bounds.width();
-    this.height = bounds.height();
+  public get y(): number {
+    return this.bounds.min.y;
   }
-  @property({ type: Number }) public x = 0;
-  @property({ type: Number }) public y = 0;
-  @property({ type: Number }) public width = 100;
-  @property({ type: Number }) public height = 60;
-  @property({ type: String }) public fill = "#4caf50";
+
+  public set y(value: number) {
+    const height = this.bounds.height();
+
+    this.bounds = new BoundingBox2D(
+      new Vector2(this.bounds.min.x, value),
+      new Vector2(this.bounds.max.x, value + height),
+    );
+  }
+
+  public get width(): number {
+    return this.bounds.width();
+  }
+
+  public set width(value: number) {
+    const safeWidth = Math.max(0, value);
+
+    this.bounds = new BoundingBox2D(
+      this.bounds.min,
+      new Vector2(this.bounds.min.x + safeWidth, this.bounds.max.y),
+    );
+  }
+
+  public get height(): number {
+    return this.bounds.height();
+  }
+
+  public set height(value: number) {
+    const safeHeight = Math.max(0, value);
+
+    this.bounds = new BoundingBox2D(
+      this.bounds.min,
+      new Vector2(this.bounds.max.x, this.bounds.min.y + safeHeight),
+    );
+  }
+
+  public getBoundingBox(): BoundingBox2D {
+    return this.bounds;
+  }
+
+  public setBoundingBox(bounds: BoundingBox2D): void {
+    this.bounds = bounds;
+  }
+
+  public containsPoint(point: Vector2): boolean {
+    return this.bounds.contains(point);
+  }
 
   public draw(context: ICanvasContext): void {
     const ctx = context.ctx;
+    const fill =
+      getComputedStyle(this).getPropertyValue("--rect-fill").trim() ||
+      this.fill;
 
     ctx.save();
-    ctx.fillStyle = this.fill;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.fillStyle = fill;
+    ctx.fillRect(
+      this.bounds.min.x,
+      this.bounds.min.y,
+      this.bounds.width(),
+      this.bounds.height(),
+    );
     ctx.restore();
   }
 
-  public containsPoint(x: number, y: number): boolean {
-    return (
-      x >= this.x &&
-      y >= this.y &&
-      x <= this.x + this.width &&
-      y <= this.y + this.height
-    );
-  }
-
-  protected render() {
+  protected override render() {
     return html``;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "mr-rect": MrRect;
   }
 }

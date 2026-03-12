@@ -3,15 +3,14 @@
 import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { BoundingBox2D } from '@monorepo/core-math';
+import { BoundingBox2D, Vector2 } from '@monorepo/core-math';
 
 import type { ICanvasContext } from "../ICanvasContext.js";
 import { IShape } from "./IShape.js";
 
 @customElement("mr-circle-shape")
 export class CircleShape extends LitElement implements IShape {
-  @property({ type: Number }) public x = 0;
-  @property({ type: Number }) public y = 0;
+ @property({ attribute: false }) public center: Vector2 = new Vector2(30, 20);
   @property({ type: Number }) public radius = 6;
 
   @property({ type: String }) public fill = "#ffffff";
@@ -23,7 +22,7 @@ export class CircleShape extends LitElement implements IShape {
 
     ctx.save();
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.arc(this.center.x, this.center.y, this.radius, 0, Math.PI * 2);
     ctx.fillStyle = this.fill;
     ctx.fill();
     ctx.lineWidth = this.strokeWidth;
@@ -32,16 +31,16 @@ export class CircleShape extends LitElement implements IShape {
     ctx.restore();
   }
 
-  public containsPoint(x: number, y: number): boolean {
-    const dx = this.x - x;
-    const dy = this.y - y;
+  public containsPoint(point: Vector2): boolean {
+    const dx = this.center.x - point.x;
+    const dy = this.center.y - point.y;
     return Math.hypot(dx, dy) <= this.radius;
   }
 
   public getBoundingBox(): BoundingBox2D {
     return new BoundingBox2D(
-      { x: this.x - this.radius, y: this.y - this.radius } as any,
-      { x: this.x + this.radius, y: this.y + this.radius } as any,
+      { x: this.center.x - this.radius, y: this.center.y - this.radius } as any,
+      { x: this.center.x + this.radius, y: this.center.y + this.radius } as any,
     );
   }
 
@@ -50,8 +49,7 @@ export class CircleShape extends LitElement implements IShape {
     const nextRadius = Math.max(0, size / 2);
     const center = bounds.center();
 
-    this.x = center.x;
-    this.y = center.y;
+    this.center = center;
     this.radius = nextRadius;
   }
 

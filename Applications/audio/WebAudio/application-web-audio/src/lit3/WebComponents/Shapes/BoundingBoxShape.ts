@@ -97,11 +97,8 @@ export class BoundingBoxShape extends LitElement {
     endY: number,
   ): void {
 
-    edge.startX = startX;
-    edge.startY = startY;
-
-    edge.endX = endX;
-    edge.endY = endY;
+    edge.p0 = new Vector2(startX, startY);
+    edge.p1 = new Vector2(endX, endY);
   }
 }
 

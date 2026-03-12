@@ -548,6 +548,42 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/Physical/core.module.example.web copy:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.12.0)(@vitest/ui@4.0.14)(happy-dom@20.0.11)(jsdom@27.0.0)(terser@5.46.0)(tsx@4.21.0)
+
+  packages/Physical/core.module.example.web copy 2:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.12.0)(@vitest/ui@4.0.14)(happy-dom@20.0.11)(jsdom@27.0.0)(terser@5.46.0)(tsx@4.21.0)
+
+  packages/Physical/core.physical:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.12.0)(@vitest/ui@4.0.14)(happy-dom@20.0.11)(jsdom@27.0.0)(terser@5.46.0)(tsx@4.21.0)
+
   packages/Spreadsheet/core-spreadsheet-abstract:
     dependencies:
       '@monorepo/core-graph':
@@ -1377,6 +1413,9 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.12.0)(@vitest/ui@4.0.14)(happy-dom@20.0.11)(jsdom@27.0.0)(terser@5.46.0)(tsx@4.21.0)
 
   packages/core.shape.abstract:
     dependencies:

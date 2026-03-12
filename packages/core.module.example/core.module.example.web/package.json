@@ -1,22 +1,37 @@
+ 
 {
-  "name": "@monorepro/core.module.example.web",
+  "name": "@monorepo/core.module.example.web",
   "version": "1.0.0",
-  "description": "A module example for web applications.",
-  "main": "src/index.js",
+  "description": "Example module scaffold.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsc",
-    "test": "vitest run"
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
   },
   "keywords": [
-    "example",
     "module",
-    "web"
+    "typescript",
+    "example"
   ],
-  "author": "Your Name",
+  "author": "",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
     "rimraf": "^6.0.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   }
 }
