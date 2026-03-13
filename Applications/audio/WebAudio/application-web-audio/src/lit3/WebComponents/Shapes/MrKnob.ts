@@ -4,10 +4,17 @@ import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { ICanvasContext } from "../ICanvasContext.js";
 import type { IShape } from "./IShape.js";
-import { BoundingBox2D } from "@monorepo/core-math";
-
+import { BoundingBox2D, Vector2 } from "@monorepo/core-math";
+ 
 @customElement("mr-knob")
 export class MrKnob extends LitElement implements IShape {
+  containsPoint(point: Vector2): boolean {
+    const center = this.getCenter();
+    const dx = point.x - center.x;
+    const dy = point.y - center.y;
+    return dx * dx + dy * dy <= this.radius * this.radius;
+  }
+
   getBoundingBox(): BoundingBox2D {
     return new BoundingBox2D(
       { x: this.x, y: this.y } as any,
@@ -117,13 +124,6 @@ export class MrKnob extends LitElement implements IShape {
     this.drawCenterCap(ctx, center.x, center.y);
 
     ctx.restore();
-  }
-
-  public containsPoint(px: number, py: number): boolean {
-    const center = this.getCenter();
-    const dx = px - center.x;
-    const dy = py - center.y;
-    return dx * dx + dy * dy <= this.radius * this.radius;
   }
 
   public getStepAngleDeg(): number {

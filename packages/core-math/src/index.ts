@@ -1,5 +1,6 @@
 export * from "./interfaces/IPoint.js"
 export * from './implementations/Vector2.js'
+export * from './implementations/Vector3.js'
 export * from './implementations/BoundingBox.js'
 export * from './implementations/FiniteDifferenceTangentStrategy.js'
 export * from './implementations/Line.js'
