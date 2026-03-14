@@ -1,10 +1,12 @@
-// tests/fixtures/createDragControllerFixture.ts
+// ====================================================================================
+// FILE: tests/fixtures/createDragControllerFixture.ts
+// ====================================================================================
 
 import type { ReactiveController, ReactiveControllerHost } from "lit";
-import { beforeEach } from "vitest";
 
-import { DragController } from "../../src/index.js";
-import type { IDraggable, IVisualShape, Point } from "../../src/index.js";
+import { DragController } from "../../src/lit3/Controllers/DragController.js";
+import type { IDraggable, Point } from "../../src/lit3/WebComponents/IDraggable.js";
+import type { Shape } from "../../src/lit3/WebComponents/Shapes/Shape/Shape.js";
 
 class TestReactiveHost implements ReactiveControllerHost {
   public requestUpdateCalls = 0;
@@ -27,8 +29,8 @@ class TestReactiveHost implements ReactiveControllerHost {
   }
 }
 
-class TestDraggable implements IDraggable {
-  public readonly shape = {} as IVisualShape;
+class TestDraggable extends HTMLElement implements IDraggable {
+  public readonly shape = {} as Shape;
   public position: Point;
   public hit = false;
 
@@ -36,6 +38,7 @@ class TestDraggable implements IDraggable {
   public readonly containsPointCalls: Point[] = [];
 
   public constructor(position: Point = { x: 0, y: 0 }) {
+    super();
     this.position = position;
   }
 
@@ -54,40 +57,38 @@ class TestDraggable implements IDraggable {
   }
 }
 
+if (!customElements.get("test-draggable")) {
+  customElements.define("test-draggable", TestDraggable);
+}
+
 export type DragControllerFixture = {
   host: TestReactiveHost;
   controller: DragController;
-  setCandidates: (candidates: IDraggable[]) => void;
+  setCandidates: (candidates: Element[]) => void;
   createDraggable: (options?: Partial<{ x: number; y: number; hit: boolean }>) => TestDraggable;
   createPoint: (x: number, y: number) => Point;
 };
 
 export function createDragControllerFixture(): DragControllerFixture {
-  const fixture = {} as DragControllerFixture;
+  const host = new TestReactiveHost();
+  const candidates: Element[] = [];
+  const controller = new DragController(host, () => candidates);
 
-  beforeEach(() => {
-    const host = new TestReactiveHost();
-    const candidates: IDraggable[] = [];
-    const controller = new DragController(
-      host,
-      () => candidates as unknown as Element[],
-    );
-
-    fixture.host = host;
-    fixture.controller = controller;
-    fixture.setCandidates = (nextCandidates) => {
+  return {
+    host,
+    controller,
+    setCandidates: (nextCandidates) => {
       candidates.splice(0, candidates.length, ...nextCandidates);
-    };
-    fixture.createDraggable = (options) => {
-      const draggable = new TestDraggable({
+    },
+    createDraggable: (options) => {
+      const draggable = document.createElement("test-draggable") as TestDraggable;
+      draggable.position = {
         x: options?.x ?? 0,
         y: options?.y ?? 0,
-      });
+      };
       draggable.hit = options?.hit ?? false;
       return draggable;
-    };
-    fixture.createPoint = (x, y) => ({ x, y });
-  });
-
-  return fixture;
+    },
+    createPoint: (x, y) => ({ x, y }),
+  };
 }

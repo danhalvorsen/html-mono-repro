@@ -7,18 +7,13 @@ import { customElement, property } from "lit/decorators.js";
 import { Vector2 } from "@monorepo/core-math";
 
 import type { ICanvasContext } from "../ICanvasContext.js";
-import { Shape, ShapeType } from "./Shape/Shape.js";
+import { Shape, type ShapeType } from "./Shape/Shape.js";
 import { Vector2CenterConverter } from "./Vector2CenterConverter.js";
 
 const vector2CenterConverter = new Vector2CenterConverter(new Vector2(30, 20));
 
 @customElement("mr-circle-shape")
 export class CircleShape extends Shape {
-  public pointInsideShape(point: Vector2, type: ShapeType): boolean {
-     return this.pointInsidePrimitiveController
-       .pointInsideCircle(point, this.getPosition(), this.getWidth() * 0.5 );
-  }
-
   @property({ attribute: "center", converter: vector2CenterConverter })
   public center: Vector2 = new Vector2(30, 20);
 
@@ -33,6 +28,14 @@ export class CircleShape extends Shape {
 
   @property({ type: Number })
   public strokeWidth = 1;
+
+  public override pointInsideShape(point: Vector2, _type: ShapeType): boolean {
+    return this.pointInsidePrimitiveController.pointInsideCircle(
+      point,
+      this.center,
+      this.radius,
+    );
+  }
 
   public override getCenter(): Vector2 {
     return this.center;

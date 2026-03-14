@@ -20,5 +20,6 @@ export interface IShape {
   setHeight(height: number): void;
   
   setSize(width: number, height: number): void;
-  pointInsideShape(point: Vector2, type: ShapeType ): boolean;  draw(context: ICanvasContext): void;
+  pointInsideShape(point: Vector2, type: ShapeType ): boolean;  
+  draw(context: ICanvasContext): void;
 }

@@ -1,9 +1,13 @@
+// ====================================================================================
+// FILE: tests/CircleShape.test.ts
+// ====================================================================================
+
 import { Vector2 } from "@monorepo/core-math";
 import { describe, expect, it } from "vitest";
 
 import { CircleShape } from "../src/lit3/WebComponents/Shapes/CircleShape.js";
 
-describe("CircleShape.containsPoint", () => {
+describe("CircleShape.pointInsideShape", () => {
   function createCircle(centerX = 50, centerY = 50, radius = 10): CircleShape {
     const circle = new CircleShape();
     circle.center = new Vector2(centerX, centerY);
@@ -11,27 +15,27 @@ describe("CircleShape.containsPoint", () => {
     return circle;
   }
 
-  it("returns true for the center point", () => {
+  it("should return true for the center point", () => {
     const circle = createCircle();
 
-    expect(circle.containsPoint(new Vector2(50, 50))).toBe(true);
+    expect(circle.pointInsideShape(new Vector2(50, 50), "circle")).toBe(true);
   });
 
-  it("returns true for a point on the bounding box boundary", () => {
+  it("should return true for a point on the circle boundary", () => {
     const circle = createCircle();
 
-    expect(circle.containsPoint(new Vector2(60, 60))).toBe(true);
+    expect(circle.pointInsideShape(new Vector2(60, 50), "circle")).toBe(true);
   });
 
-  it("returns true for a point inside the bounding box", () => {
+  it("should return true for a point inside the circle", () => {
     const circle = createCircle();
 
-    expect(circle.containsPoint(new Vector2(59, 59))).toBe(true);
+    expect(circle.pointInsideShape(new Vector2(55, 55), "circle")).toBe(true);
   });
 
-  it("returns false for a point outside the bounding box", () => {
+  it("should return false for a point outside the circle", () => {
     const circle = createCircle();
 
-    expect(circle.containsPoint(new Vector2(80, 80))).toBe(false);
+    expect(circle.pointInsideShape(new Vector2(80, 80), "circle")).toBe(false);
   });
 });
