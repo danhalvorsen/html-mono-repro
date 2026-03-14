@@ -4,10 +4,6 @@ import type { ReactiveController, ReactiveControllerHost } from "lit";
 
 import { Shape } from "../WebComponents/Shapes/Shape/Shape.js";
 
-type IShapeWrapper = {
-  readonly shape: Shape;
-};
-
 export class ShapeController implements ReactiveController {
   public constructor(
     private readonly host: ReactiveControllerHost,
@@ -36,22 +32,8 @@ export class ShapeController implements ReactiveController {
       return;
     }
 
-    if (this.isShapeWrapper(element)) {
-      result.push(element.shape);
-      return;
-    }
-
     for (const child of Array.from(element.children)) {
       this.collectShapes(child, result);
     }
-  }
-
-  private isShapeWrapper(value: unknown): value is IShapeWrapper {
-    return (
-      typeof value === "object" &&
-      value !== null &&
-      "shape" in (value as object) &&
-      (value as { shape?: unknown }).shape instanceof Shape
-    );
   }
 }

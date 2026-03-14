@@ -1,10 +1,11 @@
-// src/lit3/WebComponents/Shapes/EdgeShape.ts
+// Applications/audio/WebAudio/application-web-audio/src/lit3/WebComponents/Shapes/EdgeShape.ts
 
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Vector2 } from "@monorepo/core-math";
 
 import type { ICanvasContext } from "../ICanvasContext.js";
+import type { IDraggable, Point } from "../IDraggable.js";
 import { CircleShape } from "./CircleShape.js";
 import { Shape, ShapeType } from "./Shape/Shape.js";
 import { Vector2CenterConverter } from "./Vector2CenterConverter.js";
@@ -13,12 +14,33 @@ const startConverter = new Vector2CenterConverter(new Vector2(30, 20));
 const endConverter = new Vector2CenterConverter(new Vector2(200, 300));
 
 @customElement("mr-edge-shape")
-export class EdgeShape extends Shape {
-  @property({ attribute: false })
-  public p0: Vector2 = new Vector2(30, 20);
+export class EdgeShape extends Shape implements IDraggable {
+  private _p0: Vector2 = new Vector2(30, 20);
+  private _p1: Vector2 = new Vector2(200, 300);
 
-  @property({ attribute: false })
-  public p1: Vector2 = new Vector2(200, 300);
+  public get p0(): Vector2 {
+    return this._p0;
+  }
+
+  public set p0(value: Vector2) {
+    this._p0 = value;
+    this.syncHandles();
+    this.requestUpdate();
+  }
+
+  public get p1(): Vector2 {
+    return this._p1;
+  }
+
+  public set p1(value: Vector2) {
+    this._p1 = value;
+    this.syncHandles();
+    this.requestUpdate();
+  }
+
+  public get shape(): Shape {
+    return this;
+  }
 
   @property({ attribute: "start", converter: startConverter })
   public get start(): Vector2 {
@@ -27,8 +49,6 @@ export class EdgeShape extends Shape {
 
   public set start(value: Vector2) {
     this.p0 = value;
-    this.syncHandles();
-    this.requestUpdate();
   }
 
   @property({ attribute: "end", converter: endConverter })
@@ -38,8 +58,6 @@ export class EdgeShape extends Shape {
 
   public set end(value: Vector2) {
     this.p1 = value;
-    this.syncHandles();
-    this.requestUpdate();
   }
 
   @property({ type: String })
@@ -81,41 +99,45 @@ export class EdgeShape extends Shape {
     const current = this.getCenter();
     const delta = center.subtract(current);
 
-    this.p0 = this.p0.add(delta);
-    this.p1 = this.p1.add(delta);
+    this._p0 = this._p0.add(delta);
+    this._p1 = this._p1.add(delta);
 
     this.syncHandles();
     this.requestUpdate();
   }
 
-  public getPosition(): Vector2 {
+  public override getPosition(): Vector2 {
     return new Vector2(
       Math.min(this.p0.x, this.p1.x),
       Math.min(this.p0.y, this.p1.y),
     );
   }
 
-  public setPosistion(position: Vector2): void {
+  public override setPosistion(position: Vector2): void {
     const size = this.getSizeVector();
     this.applyBounds(position, size);
   }
 
-  public getWidth(): number {
+  public setPosition(position: Point): void {
+    this.setPosistion(new Vector2(position.x, position.y));
+  }
+
+  public override getWidth(): number {
     return Math.abs(this.p1.x - this.p0.x);
   }
 
-  public setWidth(width: number): void {
+  public override setWidth(width: number): void {
     this.applyBounds(
       this.getPosition(),
       new Vector2(Math.max(0, width), this.getHeight()),
     );
   }
 
-  public getHeight(): number {
+  public override getHeight(): number {
     return Math.abs(this.p1.y - this.p0.y);
   }
 
-  public setHeight(height: number): void {
+  public override setHeight(height: number): void {
     this.applyBounds(
       this.getPosition(),
       new Vector2(this.getWidth(), Math.max(0, height)),
@@ -129,7 +151,23 @@ export class EdgeShape extends Shape {
     );
   }
 
-  public override pointInsideShape(point: Vector2, type: ShapeType = "circle"): boolean {
+  public containsPoint(point: Point): boolean;
+  public containsPoint(point: Vector2): boolean;
+  public containsPoint(point: Point | Vector2): boolean {
+    this.syncHandles();
+
+    const probe =
+      point instanceof Vector2 ? point : new Vector2(point.x, point.y);
+
+    return this.pointInsideShape(probe, "edge");
+  }
+
+  public override pointInsideShape(
+    point: Vector2,
+    type: ShapeType = "circle",
+  ): boolean {
+    this.syncHandles();
+
     if (this.startCircle.pointInsideShape(point, type)) {
       this.hitZone = "start";
       return true;
@@ -174,7 +212,10 @@ export class EdgeShape extends Shape {
 
     const { ctx } = context;
     const stroke = this.resolveStringCssVar("--shape-stroke", this.stroke);
-    const strokeWidth = this.resolveNumberCssVar("--shape-stroke-width", this.strokeWidth);
+    const strokeWidth = this.resolveNumberCssVar(
+      "--shape-stroke-width",
+      this.strokeWidth,
+    );
 
     ctx.save();
     ctx.beginPath();
@@ -200,16 +241,16 @@ export class EdgeShape extends Shape {
   private applyBounds(position: Vector2, size: Vector2): void {
     switch (this.hitZone) {
       case "start":
-        this.p0 = new Vector2(position.x, position.y);
+        this._p0 = new Vector2(position.x, position.y);
         break;
 
       case "end":
-        this.p1 = new Vector2(position.x + size.x, position.y + size.y);
+        this._p1 = new Vector2(position.x + size.x, position.y + size.y);
         break;
 
       default:
-        this.p0 = position;
-        this.p1 = new Vector2(position.x + size.x, position.y + size.y);
+        this._p0 = position;
+        this._p1 = new Vector2(position.x + size.x, position.y + size.y);
         break;
     }
 
@@ -218,9 +259,18 @@ export class EdgeShape extends Shape {
   }
 
   private syncHandles(): void {
-    const handleRadius = this.resolveNumberCssVar("--handle-radius", this.handleRadius);
-    const handleFill = this.resolveStringCssVar("--handle-fill", this.handleFill);
-    const handleStroke = this.resolveStringCssVar("--handle-stroke", this.handleStroke);
+    const handleRadius = this.resolveNumberCssVar(
+      "--handle-radius",
+      this.handleRadius,
+    );
+    const handleFill = this.resolveStringCssVar(
+      "--handle-fill",
+      this.handleFill,
+    );
+    const handleStroke = this.resolveStringCssVar(
+      "--handle-stroke",
+      this.handleStroke,
+    );
     const handleStrokeWidth = this.resolveNumberCssVar(
       "--handle-stroke-width",
       this.handleStrokeWidth,
@@ -240,12 +290,19 @@ export class EdgeShape extends Shape {
   }
 
   private resolveStringCssVar(name: string, fallback: string): string {
-    const value = globalThis.getComputedStyle(this).getPropertyValue(name).trim();
+    const value = globalThis
+      .getComputedStyle(this)
+      .getPropertyValue(name)
+      .trim();
+
     return value !== "" ? value : fallback;
   }
 
   private resolveNumberCssVar(name: string, fallback: number): number {
-    const value = globalThis.getComputedStyle(this).getPropertyValue(name).trim();
+    const value = globalThis
+      .getComputedStyle(this)
+      .getPropertyValue(name)
+      .trim();
 
     if (value === "") {
       return fallback;
@@ -253,11 +310,5 @@ export class EdgeShape extends Shape {
 
     const parsed = Number(value);
     return Number.isFinite(parsed) ? parsed : fallback;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "mr-edge-shape": EdgeShape;
   }
 }

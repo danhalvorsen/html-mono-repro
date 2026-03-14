@@ -32,12 +32,21 @@
   <mr-canvas style="width: 800px; height: 400px;">
     <mr-draggable>
       <mr-line-shape>
-
         <mr-circle-shape slot="start" center='{"x":80,"y":80}' radius="10" fill="cyan"></mr-circle-shape>
-
         <mr-circle-shape slot="end" center='{"x":220,"y":160}' radius="50" fill="blue"></mr-circle-shape>
-
       </mr-line-shape>
+    </mr-draggable>
+
+    <mr-draggable>
+      <mr-edge-shape>
+        <mr-circle-shape slot="start" center='{"x":300,"y":100}' radius="20" fill="lightgreen"></mr-circle-shape>
+        <mr-circle-shape slot="end" center='{"x":500,"y":250}' radius="20" fill="lightcoral"></mr-circle-shape>
+      </mr-edge-shape>
+    </mr-draggable>
+
+    <mr-draggable>
+      <mr-circle-shape center='{"x":400,"y":200}' radius="30" fill="pink"></mr-circle-shape>
+      <mr-circle-shape center='{"x":700,"y":300}' radius="30" fill="gray"></mr-circle-shape>
     </mr-draggable>
   </mr-canvas>
 

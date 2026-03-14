@@ -100,6 +100,7 @@ export class DragController implements ReactiveController {
   private collectDraggables(element: Element, result: IDraggable[]): void {
     if (this.isDraggable(element)) {
       result.push(element);
+      return; // critical: draggable owns its subtree
     }
 
     for (const child of Array.from(element.children)) {
