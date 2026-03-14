@@ -1,22 +1,20 @@
+// Applications/audio/WebAudio/application-web-audio/src/lit3/WebComponents/Shapes/Draggable/MrDraggable.ts
+
 import { LitElement, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
+import { Vector2 } from "@monorepo/core-math";
+
 import type { IDraggable, Point } from "../../IDraggable.js";
-import type { IShape } from "../IShape.js";
- 
-type IPositionableShape = IShape & {
-  x: number;
-  y: number;
-};
+import { Shape } from "../Shape/Shape.js";
 
 @customElement("mr-draggable")
 export class MrDraggable extends LitElement implements IDraggable {
-
   @query("slot")
   private slotElement!: HTMLSlotElement;
 
-  private shapeRef!: IPositionableShape;
+  private shapeRef!: Shape;
 
-  public get shape(): IShape {
+  public get shape(): Shape {
     return this.shapeRef;
   }
 
@@ -24,58 +22,46 @@ export class MrDraggable extends LitElement implements IDraggable {
     this.shapeRef = this.resolveShape();
   }
 
-  private resolveShape(): IPositionableShape {
-
-    const element = this.slotElement.assignedElements({ flatten: true })[0];
-
-    if (!element) {
-      throw new Error("mr-draggable requires one slotted shape.");
-    }
-
-    if (!this.isShape(element)) {
-      throw new Error("slotted element must implement IShape.");
-    }
-
-    return element;
-  }
-
-  private isShape(value: unknown): value is IPositionableShape {
-    return (
-      typeof value === "object" &&
-      value !== null &&
-      typeof (value as IShape).draw === "function" &&
-      typeof (value as any).containsPoint === "function" &&
-      typeof (value as any).x === "number" &&
-      typeof (value as any).y === "number"
-    );
-  }
-
   public containsPoint(point: Point): boolean {
-    if (typeof (this.shapeRef as any).containsPoint === "function") {
-      return (this.shapeRef as any).containsPoint(point.x, point.y);
-    }
-    const bounds = this.shapeRef.getBoundingBox();
-    return (
-      point.x >= bounds.min.x &&
-      point.x <= bounds.max.x &&
-      point.y >= bounds.min.y &&
-      point.y <= bounds.max.y
-    );
+    const shape = this.shapeRef as unknown as {
+      containsPoint(p: Vector2): boolean;
+    };
+
+    return shape.containsPoint(new Vector2(point.x, point.y));
   }
 
   public getPosition(): Point {
+    const shape = this.shapeRef as unknown as {
+      getPosition(): Vector2;
+    };
+
+    const position = shape.getPosition();
+
     return {
-      x: this.shapeRef.x,
-      y: this.shapeRef.y
+      x: position.x,
+      y: position.y,
     };
   }
 
   public setPosition(position: Point): void {
-    this.shapeRef.x = position.x;
-    this.shapeRef.y = position.y;
+    const shape = this.shapeRef as unknown as {
+      setPosistion(p: Vector2): void;
+    };
+
+    shape.setPosistion(new Vector2(position.x, position.y));
   }
 
   protected override render() {
     return html`<slot></slot>`;
+  }
+
+  private resolveShape(): Shape {
+    const element = this.slotElement.assignedElements({ flatten: true })[0];
+
+    if (!(element instanceof Shape)) {
+      throw new Error("mr-draggable requires one slotted Shape.");
+    }
+
+    return element;
   }
 }

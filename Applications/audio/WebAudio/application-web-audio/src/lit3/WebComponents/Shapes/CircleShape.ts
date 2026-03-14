@@ -1,21 +1,86 @@
-// Applications/audio/WebAudio/application-web-audio/src/lit3/WebComponents/Shapes/CircleShape.ts
+// ====================================================================================
+// FILE: src/lit3/WebComponents/Shapes/CircleShape.ts
+// ====================================================================================
 
-import { LitElement, html } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { BoundingBox2D, Vector2 } from '@monorepo/core-math';
+import { Vector2 } from "@monorepo/core-math";
 
 import type { ICanvasContext } from "../ICanvasContext.js";
-import { IShape } from "./IShape.js";
+import { Shape, ShapeType } from "./Shape/Shape.js";
+import { Vector2CenterConverter } from "./Vector2CenterConverter.js";
+
+const vector2CenterConverter = new Vector2CenterConverter(new Vector2(30, 20));
 
 @customElement("mr-circle-shape")
-export class CircleShape extends LitElement implements IShape {
- @property({ attribute: false }) public center: Vector2 = new Vector2(30, 20);
-  @property({ type: Number }) public radius = 6;
+export class CircleShape extends Shape {
+  public pointInsideShape(point: Vector2, type: ShapeType): boolean {
+     return this.pointInsidePrimitiveController
+       .pointInsideCircle(point, this.getPosition(), this.getWidth() * 0.5 );
+  }
 
-  @property({ type: String }) public fill = "#ffffff";
-  @property({ type: String }) public stroke = "#1f2937";
-  @property({ type: Number }) public strokeWidth = 1;
+  @property({ attribute: "center", converter: vector2CenterConverter })
+  public center: Vector2 = new Vector2(30, 20);
+
+  @property({ type: Number })
+  public radius = 6;
+
+  @property({ type: String })
+  public fill = "#ffffff";
+
+  @property({ type: String })
+  public stroke = "#1f2937";
+
+  @property({ type: Number })
+  public strokeWidth = 1;
+
+  public override getCenter(): Vector2 {
+    return this.center;
+  }
+
+  public override setCenter(center: Vector2): void {
+    this.center = center;
+    this.requestUpdate();
+  }
+
+  public override getPosition(): Vector2 {
+    return new Vector2(
+      this.center.x - this.radius,
+      this.center.y - this.radius,
+    );
+  }
+
+  public override setPosistion(position: Vector2): void {
+    this.center = new Vector2(
+      position.x + this.radius,
+      position.y + this.radius,
+    );
+
+    this.requestUpdate();
+  }
+
+  public override getWidth(): number {
+    return this.radius * 2;
+  }
+
+  public override setWidth(width: number): void {
+    this.radius = Math.max(0, width * 0.5);
+    this.requestUpdate();
+  }
+
+  public override getHeight(): number {
+    return this.radius * 2;
+  }
+
+  public override setHeight(height: number): void {
+    this.radius = Math.max(0, height * 0.5);
+    this.requestUpdate();
+  }
+
+  public override setSize(width: number, height: number): void {
+    this.radius = Math.max(0, Math.min(width, height) * 0.5);
+    this.requestUpdate();
+  }
 
   public draw(context: ICanvasContext): void {
     const { ctx } = context;
@@ -31,35 +96,7 @@ export class CircleShape extends LitElement implements IShape {
     ctx.restore();
   }
 
-  public containsPoint(point: Vector2): boolean {
-    const dx = this.center.x - point.x;
-    const dy = this.center.y - point.y;
-    return Math.hypot(dx, dy) <= this.radius;
-  }
-
-  public getBoundingBox(): BoundingBox2D {
-    return new BoundingBox2D(
-      { x: this.center.x - this.radius, y: this.center.y - this.radius } as any,
-      { x: this.center.x + this.radius, y: this.center.y + this.radius } as any,
-    );
-  }
-
-  public setBoundingBox(bounds: BoundingBox2D): void {
-    const size = Math.min(bounds.width(), bounds.height());
-    const nextRadius = Math.max(0, size / 2);
-    const center = bounds.center();
-
-    this.center = center;
-    this.radius = nextRadius;
-  }
-
   protected override render() {
     return html``;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "mr-circle-shape": CircleShape;
   }
 }

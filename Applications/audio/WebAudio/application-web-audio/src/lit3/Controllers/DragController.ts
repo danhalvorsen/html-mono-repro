@@ -1,4 +1,7 @@
+// Applications/audio/WebAudio/application-web-audio/src/lit3/Controllers/DragController.ts
+
 import type { ReactiveController, ReactiveControllerHost } from "lit";
+
 import type { IDraggable, Point } from "../WebComponents/IDraggable.js";
 
 export class DragController implements ReactiveController {
@@ -7,64 +10,115 @@ export class DragController implements ReactiveController {
 
   public constructor(
     private readonly host: ReactiveControllerHost,
-    private readonly getDraggables: () => readonly IDraggable[],
-    private readonly toLocalPoint: (event: MouseEvent) => Point,
+    private readonly getCandidates: () => readonly Element[],
   ) {
     this.host.addController(this);
   }
 
-  public hostDisconnected(): void {
-    this.active = null;
-    this.lastPoint = null;
+  public hostConnected(): void {
+    // no-op
   }
 
-  public onMouseDown(event: MouseEvent): void {
-    const point = this.toLocalPoint(event);
+  public hostDisconnected(): void {
+    this.reset();
+  }
 
-    for (const draggable of [...this.getDraggables()].reverse()) {
-      if (draggable.containsPoint(point)) {
-        this.active = draggable;
-        this.lastPoint = {
-          x: event.clientX,
-          y: event.clientY,
-        };
-        return;
+  public onPointerDown(point: Point): void {
+    const draggables = this.resolveDraggables();
+
+    for (const draggable of [...draggables].reverse()) {
+      if (!draggable.containsPoint(point)) {
+        continue;
       }
+
+      this.active = draggable;
+      this.lastPoint = point;
+      return;
     }
 
-    this.active = null;
-    this.lastPoint = null;
+    this.reset();
   }
 
-  public onMouseMove(event: MouseEvent): void {
+  public onPointerMove(point: Point): void {
     if (this.active === null || this.lastPoint === null) {
       return;
     }
 
-    const dx = event.clientX - this.lastPoint.x;
-    const dy = event.clientY - this.lastPoint.y;
+    const dx = point.x - this.lastPoint.x;
+    const dy = point.y - this.lastPoint.y;
 
     if (dx === 0 && dy === 0) {
       return;
     }
 
-    const position = this.active.getPosition();
+    const current = this.active.getPosition();
 
     this.active.setPosition({
-      x: position.x + dx,
-      y: position.y + dy,
+      x: current.x + dx,
+      y: current.y + dy,
     });
 
-    this.lastPoint = {
-      x: event.clientX,
-      y: event.clientY,
-    };
-
+    this.lastPoint = point;
     this.host.requestUpdate();
   }
 
-  public onMouseUp(): void {
+  public onPointerUp(): void {
+    this.reset();
+  }
+
+  public onPointerLeave(): void {
+    this.reset();
+  }
+
+  public hitTest(point: Point): IDraggable | null {
+    const draggables = this.resolveDraggables();
+
+    for (const draggable of [...draggables].reverse()) {
+      if (draggable.containsPoint(point)) {
+        return draggable;
+      }
+    }
+
+    return null;
+  }
+
+  private reset(): void {
     this.active = null;
     this.lastPoint = null;
+  }
+
+  private resolveDraggables(): readonly IDraggable[] {
+    const result: IDraggable[] = [];
+
+    for (const candidate of this.getCandidates()) {
+      this.collectDraggables(candidate, result);
+    }
+
+    return result;
+  }
+
+  private collectDraggables(element: Element, result: IDraggable[]): void {
+    if (this.isDraggable(element)) {
+      result.push(element);
+    }
+
+    for (const child of Array.from(element.children)) {
+      this.collectDraggables(child, result);
+    }
+  }
+
+  private isDraggable(value: unknown): value is IDraggable {
+    if (typeof value !== "object" || value === null) {
+      return false;
+    }
+
+    const candidate = value as Partial<IDraggable> & Record<string, unknown>;
+
+    return (
+      typeof candidate.getPosition === "function" &&
+      typeof candidate.setPosition === "function" &&
+      typeof candidate.containsPoint === "function" &&
+      "shape" in candidate
+    );
   }
 }

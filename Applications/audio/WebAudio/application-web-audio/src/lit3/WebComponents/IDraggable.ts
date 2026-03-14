@@ -1,4 +1,4 @@
-import type { IShape } from "./Shapes/IShape.js";
+import { Shape } from "./Shapes/Shape/Shape.js";
 
 export type Point = Readonly<{
   x: number;
@@ -6,7 +6,7 @@ export type Point = Readonly<{
 }>;
 
 export interface IDraggable {
-  readonly shape: IShape;
+  readonly shape: Shape;
   getPosition(): Point;
   setPosition(position: Point): void;
   containsPoint(point: Point): boolean;

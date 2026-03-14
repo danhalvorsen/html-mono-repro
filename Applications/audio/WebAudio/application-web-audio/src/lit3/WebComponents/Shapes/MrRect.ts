@@ -1,101 +1,107 @@
-// src/lit3/WebComponents/Shapes/MrRect.ts
 
-import { LitElement, html } from "lit";
+import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { BoundingBox2D, Vector2 } from "@monorepo/core-math";
+import { Vector2 } from "@monorepo/core-math";
 
 import type { ICanvasContext } from "../ICanvasContext.js";
-import type { IShape } from "./IShape.js";
+import { Shape } from "./Shape/Shape.js";
+import { Vector2CenterConverter } from "./Vector2CenterConverter.js";
+
+const centerConverter = new Vector2CenterConverter(new Vector2(50, 30));
+const dimConverter = new Vector2CenterConverter(new Vector2(100, 60));
 
 @customElement("mr-rect")
-export class MrRect extends LitElement implements IShape {
+export class MrRect extends Shape {
   @property({ attribute: false })
-  public bounds: BoundingBox2D = new BoundingBox2D(
-    new Vector2(0, 0),
-    new Vector2(100, 60),
-  );
+  public position: Vector2 = new Vector2(0, 0);
+
+  @property({ attribute: false })
+  public dimensions: Vector2 = new Vector2(100, 60);
+
+  @property({ attribute: "center", converter: centerConverter })
+  public get center(): Vector2 {
+    return this.getCenter();
+  }
+
+  public set center(value: Vector2) {
+    this.setCenter(value);
+  }
+
+  @property({ attribute: "dim", converter: dimConverter })
+  public get dim(): Vector2 {
+    return this.dimensions;
+  }
+
+  public set dim(value: Vector2) {
+    this.setSize(value.x, value.y);
+  }
 
   @property({ type: String })
   public fill = "#4caf50";
 
-  public get x(): number {
-    return this.bounds.min.x;
+  public getPosition(): Vector2 {
+    return this.position;
   }
 
-  public set x(value: number) {
-    const width = this.bounds.width();
-
-    this.bounds = new BoundingBox2D(
-      new Vector2(value, this.bounds.min.y),
-      new Vector2(value + width, this.bounds.max.y),
-    );
+  public setPosistion(position: Vector2): void {
+    this.position = position;
+    this.requestUpdate();
   }
 
-  public get y(): number {
-    return this.bounds.min.y;
+  public getWidth(): number {
+    return this.dimensions.x;
   }
 
-  public set y(value: number) {
-    const height = this.bounds.height();
-
-    this.bounds = new BoundingBox2D(
-      new Vector2(this.bounds.min.x, value),
-      new Vector2(this.bounds.max.x, value + height),
-    );
+  public setWidth(width: number): void {
+    this.dimensions = new Vector2(Math.max(0, width), this.dimensions.y);
+    this.requestUpdate();
   }
 
-  public get width(): number {
-    return this.bounds.width();
+  public getHeight(): number {
+    return this.dimensions.y;
   }
 
-  public set width(value: number) {
-    const safeWidth = Math.max(0, value);
-
-    this.bounds = new BoundingBox2D(
-      this.bounds.min,
-      new Vector2(this.bounds.min.x + safeWidth, this.bounds.max.y),
-    );
+  public setHeight(height: number): void {
+    this.dimensions = new Vector2(this.dimensions.x, Math.max(0, height));
+    this.requestUpdate();
   }
 
-  public get height(): number {
-    return this.bounds.height();
+  public override setSize(width: number, height: number): void {
+    this.dimensions = new Vector2(Math.max(0, width), Math.max(0, height));
+    this.requestUpdate();
   }
 
-  public set height(value: number) {
-    const safeHeight = Math.max(0, value);
-
-    this.bounds = new BoundingBox2D(
-      this.bounds.min,
-      new Vector2(this.bounds.max.x, this.bounds.min.y + safeHeight),
-    );
-  }
-
-  public getBoundingBox(): BoundingBox2D {
-    return this.bounds;
-  }
-
-  public setBoundingBox(bounds: BoundingBox2D): void {
-    this.bounds = bounds;
+  pointInsideShape(point: Vector2): boolean {
+    return this.pointInsidePrimitiveController.pointInsideRect(point, this.position, this.dimensions.x, this.dimensions.y);
   }
 
   public containsPoint(point: Vector2): boolean {
-    return this.bounds.contains(point);
+    const minX = this.position.x;
+    const minY = this.position.y;
+    const maxX = this.position.x + this.dimensions.x;
+    const maxY = this.position.y + this.dimensions.y;
+
+    return (
+      point.x >= minX &&
+      point.x <= maxX &&
+      point.y >= minY &&
+      point.y <= maxY
+    );
   }
 
   public draw(context: ICanvasContext): void {
-    const ctx = context.ctx;
+    const { ctx } = context;
     const fill =
-      getComputedStyle(this).getPropertyValue("--rect-fill").trim() ||
+      globalThis.getComputedStyle(this).getPropertyValue("--rect-fill").trim() ||
       this.fill;
 
     ctx.save();
     ctx.fillStyle = fill;
     ctx.fillRect(
-      this.bounds.min.x,
-      this.bounds.min.y,
-      this.bounds.width(),
-      this.bounds.height(),
+      this.position.x,
+      this.position.y,
+      this.dimensions.x,
+      this.dimensions.y,
     );
     ctx.restore();
   }

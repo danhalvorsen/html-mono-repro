@@ -1,11 +1,11 @@
+// Applications/audio/WebAudio/application-web-audio/src/lit3/WebComponents/MrCanvas.ts
 
 import { LitElement, css, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
 
-import { MouseController } from "../Controllers/MouseController.js";
 import { DragController } from "../Controllers/DragController.js";
-import type { IDraggable } from "./IDraggable.js";
-import type { IShape } from "./Shapes/IShape.js";
+import { MouseController } from "../Controllers/MouseController.js";
+import { ShapeController } from "../Controllers/ShapeController.js";
 
 @customElement("mr-canvas")
 export class MrCanvas extends LitElement {
@@ -15,28 +15,39 @@ export class MrCanvas extends LitElement {
   @query("slot")
   private slotElement!: HTMLSlotElement;
 
-  private readonly drag = new DragController(
+  private readonly shapeController = new ShapeController(
     this,
-    () => this.getDraggables(),
-    (event) => this.toCanvasPoint(event),
+    () => this.getAssignedElements(),
   );
 
-  private readonly mouse = new MouseController(this, this.drag);
+  private readonly dragController = new DragController(
+    this,
+    () => this.getAssignedElements(),
+  );
+
+  private readonly mouseController = new MouseController(
+    this,
+    this.dragController,
+  );
+
   private resizeObserver: ResizeObserver | null = null;
 
   public static override styles = css`
     :host {
       display: block;
       position: relative;
-      border: 1px solid red;
+      width: 100%;
+      min-height: 320px;
+      box-sizing: border-box;
     }
 
     canvas {
       display: block;
       width: 100%;
       height: 100%;
-      border: 1px solid yellow;
+      min-height: 320px;
       background: #222;
+      box-sizing: border-box;
     }
 
     slot {
@@ -53,7 +64,7 @@ export class MrCanvas extends LitElement {
 
   protected override firstUpdated(): void {
     this.resizeCanvas();
-    this.mouse.attach(this.canvas);
+    this.mouseController.attach(this.canvas);
 
     this.resizeObserver = new ResizeObserver(() => {
       this.resizeCanvas();
@@ -71,39 +82,26 @@ export class MrCanvas extends LitElement {
   public override disconnectedCallback(): void {
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
-    this.mouse.detach();
+    this.mouseController.detach();
     super.disconnectedCallback();
   }
 
-  private readonly onSlotChange = (): void => {
+  private readonly onSlotChange = async (): Promise<void> => {
+    await this.updateComplete;
     this.draw();
   };
 
-  private getDraggables(): readonly IDraggable[] {
-    const elements = this.slotElement.assignedElements({ flatten: true });
-    const draggables: IDraggable[] = [];
-
-    for (const element of elements) {
-      if (element instanceof HTMLElement && "shape" in element) {
-        const candidate = element as unknown as Partial<IDraggable>;
-
-        if (
-          typeof candidate.getPosition === "function" &&
-          typeof candidate.setPosition === "function" &&
-          typeof candidate.containsPoint === "function" &&
-          "shape" in candidate
-        ) {
-          draggables.push(candidate as IDraggable);
-        }
-      }
+  private getAssignedElements(): readonly Element[] {
+    if (!this.slotElement) {
+      return [];
     }
 
-    return draggables;
+    return this.slotElement.assignedElements({ flatten: true });
   }
 
   private resizeCanvas(): void {
-    const rect = this.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
+    const rect = this.canvas.getBoundingClientRect();
+    const dpr = globalThis.devicePixelRatio || 1;
 
     const width = Math.max(1, Math.round(rect.width));
     const height = Math.max(1, Math.round(rect.height));
@@ -111,57 +109,28 @@ export class MrCanvas extends LitElement {
     this.canvas.width = Math.round(width * dpr);
     this.canvas.height = Math.round(height * dpr);
 
-    const ctx = this.canvas.getContext("2d");
-    if (ctx === null) {
+    const context = this.canvas.getContext("2d");
+    if (context === null) {
       return;
     }
 
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    context.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   private draw(): void {
-    const ctx = this.canvas.getContext("2d");
-    if (ctx === null) {
+    const context = this.canvas.getContext("2d");
+    if (context === null) {
       return;
     }
 
-    const rect = this.getBoundingClientRect();
-    ctx.clearRect(0, 0, rect.width, rect.height);
+    const rect = this.canvas.getBoundingClientRect();
+    context.clearRect(0, 0, rect.width, rect.height);
 
-    for (const draggable of this.getDraggables()) {
-      const shape = this.tryGetShape(draggable);
-
-      if (shape === null) {
-        continue;
-      }
-
+    for (const shape of this.shapeController.getShapes()) {
       shape.draw({
         canvas: this.canvas,
-        ctx,
+        ctx: context,
       });
     }
-  }
-
-  private tryGetShape(draggable: IDraggable): IShape | null {
-    try {
-      const shape = draggable.shape;
-
-      if (!shape || typeof shape.draw !== "function") {
-        return null;
-      }
-
-      return shape;
-    } catch {
-      return null;
-    }
-  }
-
-  private toCanvasPoint(event: MouseEvent): Readonly<{ x: number; y: number }> {
-    const rect = this.canvas.getBoundingClientRect();
-
-    return {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-    };
   }
 }
