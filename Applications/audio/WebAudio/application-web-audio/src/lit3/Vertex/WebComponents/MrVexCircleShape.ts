@@ -33,6 +33,20 @@ export class MrVexCircleShape extends Shape implements IDraggable {
   protected readonly vertex = new VexVertex(new Vector2(60, 60), 10, true, true);
 
   @property({
+    type: String,
+    attribute: "vertex-id",
+    reflect: true,
+  })
+  public get vertexId(): string {
+    return this.vertex.getId();
+  }
+
+  public set vertexId(value: string) {
+    this.vertex.setId(value);
+    this.requestUpdate();
+  }
+
+  @property({
     attribute: "center",
     converter: centerConverter,
     reflect: true,

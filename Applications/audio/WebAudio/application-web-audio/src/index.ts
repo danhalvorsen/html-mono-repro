@@ -30,6 +30,7 @@ export * from './lit3/Vertex/Style/IFillStrokeStyle';
 export * from './lit3/Vertex/Style/IStrokeStyle';
 export * from './lit3/Vertex/Renderers/VexVertexRenderer';
 export * from './lit3/Vertex/WebComponents/MrVexCircleShape';
+export * from './lit3/Vertex/WebComponents/MrVexArrowShape';
 export * from './lit3/Vertex/WebComponents/MrVexLineShape';
 export * from './lit3/Vertex/WebComponents/MrVexMultiLineShape';
 export * from './lit3/Vertex/WebComponents/MrVexPolygonShape';
