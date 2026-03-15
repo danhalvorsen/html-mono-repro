@@ -2,7 +2,8 @@
 
 import { afterEach, describe, expect, it } from "vitest";
 import { Vector2 } from "@monorepo/core-math";
-import {EdgeShapeDragFixture} from "./fixtures/EdgeShapeDragFixture.js";
+import { EdgeShapeDragFixture } from "./Edge/EdgeShapeDragFixture";
+
 describe("EdgeShape handle dragging through DragController", () => {
   afterEach(() => {
     document.body.innerHTML = "";
