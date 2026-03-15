@@ -1,4 +1,4 @@
-// Applications/audio/WebAudio/application-web-audio/src/lit3/WebComponents/Shapes/Draggable/MrDraggable.ts
+// src/lit3/WebComponents/Shapes/Draggable/MrDraggable.ts
 
 import { LitElement, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
@@ -25,20 +25,24 @@ export class MrDraggable extends LitElement implements IDraggable {
   }
 
   protected override firstUpdated(): void {
-    this.refreshShapes();
+    void this.refreshShapesAsync();
   }
 
   public containsPoint(point: Point): boolean {
-    this.ensureShapesResolved();
+    const shapes = this.tryGetShapes();
 
-    const delegated = this.tryGetDelegatedDraggable();
+    if (shapes.length === 0) {
+      return false;
+    }
+
+    const delegated = this.tryGetDelegatedDraggable(shapes);
     if (delegated !== null) {
       return delegated.containsPoint(point);
     }
 
     const probe = new Vector2(point.x, point.y);
 
-    for (const shape of [...this.shapeRefs].reverse()) {
+    for (const shape of [...shapes].reverse()) {
       if (this.containsShapePoint(shape, probe)) {
         return true;
       }
@@ -48,14 +52,18 @@ export class MrDraggable extends LitElement implements IDraggable {
   }
 
   public getPosition(): Point {
-    this.ensureShapesResolved();
+    const shapes = this.tryGetShapes();
 
-    const delegated = this.tryGetDelegatedDraggable();
+    if (shapes.length === 0) {
+      return { x: 0, y: 0 };
+    }
+
+    const delegated = this.tryGetDelegatedDraggable(shapes);
     if (delegated !== null) {
       return delegated.getPosition();
     }
 
-    const bounds = this.getBounds();
+    const bounds = this.getBounds(shapes);
 
     return {
       x: bounds.min.x,
@@ -64,16 +72,20 @@ export class MrDraggable extends LitElement implements IDraggable {
   }
 
   public setPosition(position: Point): void {
-    this.ensureShapesResolved();
+    const shapes = this.tryGetShapes();
 
-    const delegated = this.tryGetDelegatedDraggable();
+    if (shapes.length === 0) {
+      return;
+    }
+
+    const delegated = this.tryGetDelegatedDraggable(shapes);
     if (delegated !== null) {
       delegated.setPosition(position);
       this.requestUpdate();
       return;
     }
 
-    const current = this.getBounds().min;
+    const current = this.getBounds(shapes).min;
     const next = new Vector2(position.x, position.y);
     const delta = next.subtract(current);
 
@@ -81,7 +93,7 @@ export class MrDraggable extends LitElement implements IDraggable {
       return;
     }
 
-    for (const shape of this.shapeRefs) {
+    for (const shape of shapes) {
       shape.setPosistion(shape.getPosition().add(delta));
     }
 
@@ -93,23 +105,21 @@ export class MrDraggable extends LitElement implements IDraggable {
   }
 
   private readonly onSlotChange = (): void => {
-    this.refreshShapes();
+    void this.refreshShapesAsync();
   };
 
-  private refreshShapes(): void {
+  private async refreshShapesAsync(): Promise<void> {
+    await this.updateComplete;
     this.shapeRefs = this.resolveShapes();
   }
 
-  private ensureShapesResolved(): void {
+  private tryGetShapes(): readonly Shape[] {
     if (this.shapeRefs.length > 0) {
-      return;
+      return this.shapeRefs;
     }
 
-    this.refreshShapes();
-
-    if (this.shapeRefs.length === 0) {
-      throw new Error("mr-draggable requires at least one slotted Shape.");
-    }
+    this.shapeRefs = this.resolveShapes();
+    return this.shapeRefs;
   }
 
   private resolveShapes(): readonly Shape[] {
@@ -118,10 +128,6 @@ export class MrDraggable extends LitElement implements IDraggable {
 
     for (const element of assigned) {
       this.collectShapes(element, result);
-    }
-
-    if (result.length === 0) {
-      throw new Error("mr-draggable requires at least one slotted Shape.");
     }
 
     return result;
@@ -136,14 +142,24 @@ export class MrDraggable extends LitElement implements IDraggable {
     for (const child of Array.from(element.children)) {
       this.collectShapes(child, result);
     }
+
+    const shadowRoot = (element as Element & { shadowRoot?: ShadowRoot | null }).shadowRoot;
+
+    if (shadowRoot === null || shadowRoot === undefined) {
+      return;
+    }
+
+    for (const child of Array.from(shadowRoot.children)) {
+      this.collectShapes(child, result);
+    }
   }
 
-  private tryGetDelegatedDraggable(): IDraggable | null {
-    if (this.shapeRefs.length !== 1) {
+  private tryGetDelegatedDraggable(shapes: readonly Shape[]): IDraggable | null {
+    if (shapes.length !== 1) {
       return null;
     }
 
-    const candidate = this.shapeRefs[0];
+    const candidate = shapes[0];
     return this.isDraggable(candidate) ? candidate : null;
   }
 
@@ -159,7 +175,7 @@ export class MrDraggable extends LitElement implements IDraggable {
       typeof candidate.getPosition === "function" &&
       typeof candidate.setPosition === "function" &&
       typeof candidate.containsPoint === "function" &&
-      "shape" in candidate
+      "shape" in (candidate as Record<string, unknown>)
     );
   }
 
@@ -180,11 +196,14 @@ export class MrDraggable extends LitElement implements IDraggable {
     return false;
   }
 
-  private getBounds(): { min: Vector2; max: Vector2 } {
-    const first = this.shapeRefs[0];
+  private getBounds(shapes: readonly Shape[]): { min: Vector2; max: Vector2 } {
+    const first = shapes[0];
 
     if (first === undefined) {
-      throw new Error("mr-draggable requires at least one slotted Shape.");
+      return {
+        min: new Vector2(0, 0),
+        max: new Vector2(0, 0),
+      };
     }
 
     let minX = first.getPosition().x;
@@ -192,8 +211,8 @@ export class MrDraggable extends LitElement implements IDraggable {
     let maxX = first.getPosition().x + first.getWidth();
     let maxY = first.getPosition().y + first.getHeight();
 
-    for (let index = 1; index < this.shapeRefs.length; index++) {
-      const shape = this.shapeRefs[index];
+    for (let index = 1; index < shapes.length; index++) {
+      const shape = shapes[index];
 
       if (shape === undefined) {
         continue;
@@ -213,5 +232,11 @@ export class MrDraggable extends LitElement implements IDraggable {
       min: new Vector2(minX, minY),
       max: new Vector2(maxX, maxY),
     };
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "mr-draggable": MrDraggable;
   }
 }

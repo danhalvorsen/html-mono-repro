@@ -178,28 +178,16 @@ export class EdgeShape extends Shape implements IDraggable {
       return true;
     }
 
-    const dx = this.p1.x - this.p0.x;
-    const dy = this.p1.y - this.p0.y;
-    const lengthSquared = dx * dx + dy * dy;
-
-    if (lengthSquared === 0) {
-      return false;
-    }
-
-    const t = Math.max(
-      0,
-      Math.min(
-        1,
-        ((point.x - this.p0.x) * dx + (point.y - this.p0.y) * dy) / lengthSquared,
-      ),
-    );
-
-    const closestX = this.p0.x + t * dx;
-    const closestY = this.p0.y + t * dy;
-    const distance = Math.hypot(point.x - closestX, point.y - closestY);
     const tolerance = Math.max(this.handleRadius, this.strokeWidth + 4);
 
-    if (distance <= tolerance) {
+    if (
+      this.pointInsidePrimitiveController.pointNearLineSegment(
+        point,
+        this.p0,
+        this.p1,
+        tolerance,
+      )
+    ) {
       this.hitZone = "line";
       return true;
     }

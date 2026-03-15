@@ -5,7 +5,7 @@ import type { Point } from "@monorepo/core-math";
 
 import { DragController } from "../../src/index.js";
 import { TestReactiveHost } from "./TestReactiveHost.js";
-
+ 
 export abstract class DragTestFixtureBase {
   public readonly host: TestReactiveHost;
   public readonly controller: DragController;

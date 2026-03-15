@@ -1,81 +1,76 @@
-// Applications/audio/WebAudio/application-web-audio/src/lit3/Controllers/MouseController.ts
+// src/lit3/Controllers/MouseController.ts
 
-import type { ReactiveController, ReactiveControllerHost } from "lit";
-
+import { Vector2 } from "@monorepo/core-math";
 import type { DragController } from "./DragController.js";
-import type { Point } from "../WebComponents/IDraggable.js";
 
-export class MouseController implements ReactiveController {
+export class MouseController {
+
   private canvas: HTMLCanvasElement | null = null;
 
-  private readonly onMouseDownBound = (event: MouseEvent): void => {
-    this.dragController.onPointerDown(this.toCanvasPoint(event));
-  };
-
-  private readonly onMouseMoveBound = (event: MouseEvent): void => {
-    this.dragController.onPointerMove(this.toCanvasPoint(event));
-  };
-
-  private readonly onMouseUpBound = (): void => {
-    this.dragController.onPointerUp();
-  };
-
-  private readonly onMouseLeaveBound = (): void => {
-    this.dragController.onPointerLeave();
-  };
-
   public constructor(
-    private readonly host: ReactiveControllerHost,
+    private readonly host: HTMLElement,
     private readonly dragController: DragController,
-  ) {
-    this.host.addController(this);
-  }
-
-  public hostConnected(): void {
-    // no-op
-  }
-
-  public hostDisconnected(): void {
-    this.detach();
-  }
+  ) {}
 
   public attach(canvas: HTMLCanvasElement): void {
-    if (this.canvas === canvas) {
-      return;
-    }
 
-    this.detach();
     this.canvas = canvas;
 
-    this.canvas.addEventListener("mousedown", this.onMouseDownBound);
-    this.canvas.addEventListener("mousemove", this.onMouseMoveBound);
-    this.canvas.addEventListener("mouseup", this.onMouseUpBound);
-    this.canvas.addEventListener("mouseleave", this.onMouseLeaveBound);
+    console.log("[MouseController] attach", canvas);
+
+    canvas.addEventListener("pointerdown", this.onPointerDown);
+    canvas.addEventListener("pointermove", this.onPointerMove);
+    canvas.addEventListener("pointerup", this.onPointerUp);
+    canvas.addEventListener("pointerleave", this.onPointerUp);
   }
 
   public detach(): void {
-    if (this.canvas === null) {
+
+    if (!this.canvas) {
       return;
     }
 
-    this.canvas.removeEventListener("mousedown", this.onMouseDownBound);
-    this.canvas.removeEventListener("mousemove", this.onMouseMoveBound);
-    this.canvas.removeEventListener("mouseup", this.onMouseUpBound);
-    this.canvas.removeEventListener("mouseleave", this.onMouseLeaveBound);
+    this.canvas.removeEventListener("pointerdown", this.onPointerDown);
+    this.canvas.removeEventListener("pointermove", this.onPointerMove);
+    this.canvas.removeEventListener("pointerup", this.onPointerUp);
+    this.canvas.removeEventListener("pointerleave", this.onPointerUp);
 
     this.canvas = null;
   }
 
-  private toCanvasPoint(event: MouseEvent): Point {
-    if (this.canvas === null) {
-      return { x: 0, y: 0 };
+  private readonly onPointerDown = (event: PointerEvent): void => {
+
+    const point = this.getCanvasPoint(event);
+
+    console.log("[MouseController] pointerdown", point);
+
+    // FIX: DragController now resolves the target itself
+    this.dragController.onPointerDown(point);
+  };
+
+  private readonly onPointerMove = (event: PointerEvent): void => {
+
+    const point = this.getCanvasPoint(event);
+
+    this.dragController.onPointerMove(point);
+  };
+
+  private readonly onPointerUp = (_event: PointerEvent): void => {
+
+    this.dragController.onPointerUp();
+  };
+
+  private getCanvasPoint(event: PointerEvent): Vector2 {
+
+    if (!this.canvas) {
+      return new Vector2(0, 0);
     }
 
     const rect = this.canvas.getBoundingClientRect();
 
-    return {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-    };
+    return new Vector2(
+      event.clientX - rect.left,
+      event.clientY - rect.top,
+    );
   }
 }

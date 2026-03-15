@@ -31,33 +31,41 @@
   <mr-synth-controls></mr-synth-controls>
   <mr-canvas style="width: 800px; height: 400px;">
     <mr-draggable>
-      <mr-line-shape>
-        <mr-circle-shape slot="start" center='{"x":80,"y":80}' radius="10" fill="cyan"></mr-circle-shape>
-        <mr-circle-shape slot="end" center='{"x":220,"y":160}' radius="50" fill="blue"></mr-circle-shape>
-      </mr-line-shape>
-    </mr-draggable>
+      <mr-vex-multi-line-shape stroke="#60a5fa" stroke-width="3">
+        <mr-vex-circle-shape vertex-id="A" center='{"x":80,"y":320}' radius="10" draggable="false">
+        </mr-vex-circle-shape>
 
+        <mr-vex-circle-shape vertex-id="D" center='{"x":180,"y":80}' radius="10">
+        </mr-vex-circle-shape>
+
+        <mr-vex-circle-shape vertex-id="S" center='{"x":360,"y":180}' radius="10">
+        </mr-vex-circle-shape>
+
+        <mr-vex-circle-shape vertex-id="R" center='{"x":620,"y":180}' radius="10" draggable="false">
+        </mr-vex-circle-shape>
+      </mr-vex-multi-line-shape>
+    </mr-draggable>
+  </mr-canvas>'
+  <mr-canvas>
     <mr-draggable>
-      <mr-edge-shape>
-        <mr-circle-shape slot="start" center='{"x":300,"y":100}' radius="20" fill="lightgreen"></mr-circle-shape>
-        <mr-circle-shape slot="end" center='{"x":500,"y":250}' radius="20" fill="lightcoral"></mr-circle-shape>
-      </mr-edge-shape>
+      <mr-vex-multi-line-shape stroke="#60a5fa" stroke-width="3">
+        <mr-vex-circle-shape vertex-id="A" center='{"x":80,"y":320}' radius="10"
+          draggable="false"></mr-vex-circle-shape>
+        <mr-vex-circle-shape vertex-id="D" center='{"x":180,"y":80}' radius="10"></mr-vex-circle-shape>
+        <mr-vex-circle-shape vertex-id="S1" center='{"x":300,"y":180}' radius="10"></mr-vex-circle-shape>
+        <mr-vex-circle-shape vertex-id="S2" center='{"x":360,"y":180}' radius="10"></mr-vex-circle-shape>
+        <mr-vex-circle-shape vertex-id="R" center='{"x":620,"y":320}' radius="10"
+          draggable="false"></mr-vex-circle-shape>
+      </mr-vex-multi-line-shape>
+     
     </mr-draggable>
-
     <mr-draggable>
-      <mr-circle-shape center='{"x":400,"y":200}' radius="30" fill="pink"></mr-circle-shape>
-      <mr-circle-shape center='{"x":700,"y":300}' radius="30" fill="gray"></mr-circle-shape>
+<mr-vex-arrow-shape stroke="#60a5fa" fill="#60a5fa" stroke-width="2">
+        <mr-vex-circle-shape slot="start" center='{"x":100,"y":120}' radius="10" visible="true"></mr-vex-circle-shape>
+        <mr-vex-circle-shape slot="end" center='{"x":240,"y":120}' radius="10"  visible="true"></mr-vex-circle-shape>
+      </mr-vex-arrow-shape>
     </mr-draggable>
-
-    <mr-draggable>
-
-      <mr-vex-line-shape start='{"x":100,"y":300}' end='{"x":200,"y":350}' startRadius="15" endRadius="25" fill="red"
-        stroke="red" strokeWidth="15">
-
-      </mr-vex-line-shape>
-
-    </mr-draggable>
-
+     
   </mr-canvas>
 
   <script type="module" src="./src/index.ts"></script>
