@@ -1,10 +1,12 @@
+// src/types/index.ts
+
 export interface ExampleType {
-    id: string;
-    name: string;
-    description?: string;
+  readonly id: string;
+  readonly name: string;
+  readonly description?: string;
 }
 
-export type ExampleResponse = {
-    success: boolean;
-    data: ExampleType[];
-};
+export interface ExampleResponse {
+  readonly success: boolean;
+  readonly data: readonly ExampleType[];
+}

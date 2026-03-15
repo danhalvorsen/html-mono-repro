@@ -1,6 +1,8 @@
+// src/fixtures/exampleData.ts
+
 import type { ExampleType } from "../types/index.js";
 
-export const exampleData: ExampleType[] = [
+export const exampleData: readonly ExampleType[] = [
   {
     id: "ex-1",
     name: "Primary",

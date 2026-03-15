@@ -37,5 +37,5 @@
         "postinstall": "node ./scripts/ensure-pnpm.js || true",
         "prebuild:win": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if(-not (Test-Path './node_modules/pnpm')) { Write-Error 'ERROR: pnpm binary not found in workspace node_modules. Run `pnpm install` at the repo root.'; exit 1 }\""
     },
-    "packageManager": "pnpm@10.31.0"
+    "packageManager": "pnpm@10.32.1"
 }
