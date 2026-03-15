@@ -4,19 +4,18 @@ import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Vector2 } from "@monorepo/core-math";
 
-import {
-  CtxCirclePrimitiveRenderer,
-  CtxLinePrimitiveRenderer,
-  VexLine,
-  VexLineRenderer,
-  VexVertex,
-  VexVertexRenderer,
-} from "./vertex.code.js";
-import { Vector2CenterConverter } from "../WebComponents/Shapes/Vector2CenterConverter.js";
-import { ShapeType } from "../WebComponents/Shapes/Shape/Shape.js";
+import { VexLineRenderer } from "../Line/VexLineRenderer.js";
+import { VexVertexRenderer } from "../Renderers/VexVertexRenderer.js";
+import { CtxCirclePrimitiveRenderer } from "../Circle/CtxCirclePrimitiveRenderer.js";
+import { CtxLinePrimitiveRenderer } from "../Line/CtxLinePrimitiveRenderer.js";
  
-import type { ICanvasContext } from "../WebComponents/ICanvasContext.js";
-import { VertexShape } from "./VertexShape.js";
+import { VexVertex } from "../VexVertex.js";
+import { Vector2CenterConverter } from "../../WebComponents/Shapes/Vector2CenterConverter.js";
+import { ShapeType } from "../../WebComponents/Shapes/Shape/Shape.js";
+ 
+import type { ICanvasContext } from "../../WebComponents/ICanvasContext.js";
+import { VertexShape } from "../VertexShape.js";
+import { VexLine } from "../Line/VexLine.js";
 
 const startConverter = new Vector2CenterConverter(new Vector2(80, 80));
 const endConverter = new Vector2CenterConverter(new Vector2(220, 160));

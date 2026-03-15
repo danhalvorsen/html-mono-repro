@@ -1,14 +1,13 @@
 // Applications/audio/WebAudio/application-web-audio/tests/Vextex/VexLineShapeFixture.ts
 
 import { Vector2 } from "@monorepo/core-math";
-import {
-  type ICanvasContext,
-  VexLine,
-  VexLineShapeAdapter,
-  VexLineShapeAdapterFactory,
-  VexVertex,
-} from "../../../src/index.js";
+ 
 import { CanvasContextSpy } from "../Spys/CanvasContextSpy.js";
+import { ICanvasContext } from "../../../src/index.js";
+import { VexLine } from "../../../src/lit3/Vertex/Line/VexLine.js";
+import { VexLineShapeAdapter } from "../../../src/lit3/Vertex/Line/VexLineShapeAdapter.js";
+import { VexLineShapeAdapterFactory } from "../../../src/lit3/Vertex/Line/VexLineShapeAdapterFactory.js";
+import { VexVertex } from "../../../src/lit3/Vertex/VexVertex.js";
 
 export type VexLineShapeFixtureOptions = Readonly<{
   start?: Vector2;

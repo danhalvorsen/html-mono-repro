@@ -3,11 +3,11 @@
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { Point, Vector2 } from "@monorepo/core-math";
-import { Vector2CenterConverter } from "../WebComponents/Shapes/Vector2CenterConverter";
-import { Shape, ShapeType } from "../WebComponents/Shapes/Shape/Shape";
-import { VexVertex } from "./vertex.code";
-import { IDraggable } from "../WebComponents/IDraggable";
-import { ICanvasContext } from "../WebComponents/ICanvasContext";
+import { Vector2CenterConverter } from "../../WebComponents/Shapes/Vector2CenterConverter";
+import { Shape, ShapeType } from "../../WebComponents/Shapes/Shape/Shape";
+import { VexVertex } from "../VexVertex";
+import { IDraggable } from "../../WebComponents/IDraggable";
+import { ICanvasContext } from "../../WebComponents/ICanvasContext";
 
 const centerConverter = new Vector2CenterConverter(new Vector2(30, 20));
 
