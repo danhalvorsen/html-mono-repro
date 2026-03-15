@@ -1,23 +1,19 @@
-// ====================================================================================
-// FILE: tests/foo.test.ts
-// ====================================================================================
+// Fix 6: tests/foo.test.ts
+// Update to the class-based fixture API.
 
 import { beforeEach, describe, expect, it } from "vitest";
 
-import {
-  createDragControllerFixture,
-  type DragControllerFixture,
-} from "./fixtures/createDragControllerFixture.js";
+import { DragControllerFixture } from "./Fixtures/DragControllerFixture.js";
 
 describe("DragController", () => {
   let fixture: DragControllerFixture;
 
   beforeEach(() => {
-    fixture = createDragControllerFixture();
+    fixture = new DragControllerFixture();
   });
 
   it("should register itself on the reactive host", () => {
-    expect(fixture.host.addedControllers).toContain(fixture.controller);
+    expect(fixture.host.hasController(fixture.controller)).toBe(true);
   });
 
   it("should activate the last matching draggable on mouse down", () => {

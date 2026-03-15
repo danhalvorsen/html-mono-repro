@@ -4,7 +4,7 @@
 
 import { Vector2 } from "@monorepo/core-math";
 
-import { CircleShape } from "../src/index.js";
+import { CircleShape } from "../../../../src/index.js";
 
 export type CircleShapeFixture = {
   readonly sut: CircleShape;

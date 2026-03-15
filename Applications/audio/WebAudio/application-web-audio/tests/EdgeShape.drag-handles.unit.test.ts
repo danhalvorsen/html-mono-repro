@@ -2,15 +2,14 @@
 
 import { afterEach, describe, expect, it } from "vitest";
 import { Vector2 } from "@monorepo/core-math";
-import { createEdgeShapeDragFixture } from "./fixtures/createEdgeShapeFixture";
-
+import {EdgeShapeDragFixture} from "./fixtures/EdgeShapeDragFixture.js";
 describe("EdgeShape handle dragging through DragController", () => {
   afterEach(() => {
     document.body.innerHTML = "";
   });
 
   it("should drag p0 when pointer starts on the start CircleShape", async () => {
-    const fixture = await createEdgeShapeDragFixture({ debug: true });
+    const fixture = await new EdgeShapeDragFixture({ debug: true });
 
     fixture.pointerDown({ x: 80, y: 80 });
     fixture.pointerMove({ x: 100, y: 95 });
@@ -21,7 +20,7 @@ describe("EdgeShape handle dragging through DragController", () => {
   });
 
   it("should drag p1 when pointer starts on the end CircleShape", async () => {
-    const fixture = await createEdgeShapeDragFixture({ debug: true });
+    const fixture = await new EdgeShapeDragFixture({ debug: true });
 
     fixture.pointerDown({ x: 220, y: 160 });
     fixture.pointerMove({ x: 260, y: 210 });
@@ -32,7 +31,7 @@ describe("EdgeShape handle dragging through DragController", () => {
   });
 
   it("should change edge length when dragging the start CircleShape", async () => {
-    const fixture = await createEdgeShapeDragFixture({ debug: true });
+    const fixture = await new EdgeShapeDragFixture({ debug: true });
     const before = fixture.getLength();
 
     fixture.pointerDown({ x: 80, y: 80 });
@@ -48,7 +47,7 @@ describe("EdgeShape handle dragging through DragController", () => {
   });
 
   it("should change edge length when dragging the end CircleShape", async () => {
-    const fixture = await createEdgeShapeDragFixture({ debug: true });
+    const fixture = await new EdgeShapeDragFixture({ debug: true });
     const before = fixture.getLength();
 
     fixture.pointerDown({ x: 220, y: 160 });
