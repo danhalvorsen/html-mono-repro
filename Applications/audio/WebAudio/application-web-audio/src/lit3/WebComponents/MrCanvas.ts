@@ -15,14 +15,12 @@ export class MrCanvas extends LitElement {
   @query("slot")
   private slotElement!: HTMLSlotElement;
 
-  private readonly shapeController = new ShapeController(
-    this,
-    () => this.getAssignedElements(),
+  private readonly shapeController = new ShapeController(this, () =>
+    this.getAssignedElements(),
   );
 
-  private readonly dragController = new DragController(
-    this,
-    () => this.getAssignedElements(),
+  private readonly dragController = new DragController(this, () =>
+    this.getAssignedElements(),
   );
 
   private readonly mouseController = new MouseController(
@@ -96,7 +94,8 @@ export class MrCanvas extends LitElement {
       return [];
     }
 
-    return this.slotElement.assignedElements({ flatten: true });
+    // IMPORTANT: do NOT flatten
+    return this.slotElement.assignedElements();
   }
 
   private resizeCanvas(): void {

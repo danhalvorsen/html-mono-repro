@@ -1,6 +1,7 @@
 import { Vector2 } from "@monorepo/core-math";
 import type { IShape } from "../../WebComponents/Shapes/Shape/IShape";
 import type { ShapeType } from "../../WebComponents/Shapes/Shape/Shape";
+import { PointInsidePrimitiveController } from "../../Controllers/PointInsidePrimetiveController";
 import { IVexLineRenderer } from "./IVLineRenderer";
  
 import { VexVertex } from "../VexVertex";
@@ -12,6 +13,8 @@ import { VexLine } from "./VexLine";
 // ============================================================================
 
 export class VexLineShapeAdapter implements IShape {
+  private readonly pointInsidePrimitiveController = new PointInsidePrimitiveController();
+
   public constructor(
     private readonly line: VexLine,
     private readonly renderer: IVexLineRenderer,
@@ -120,30 +123,12 @@ export class VexLineShapeAdapter implements IShape {
       return true;
     }
 
-    const s = start.getPosition();
-    const e = end.getPosition();
-
-    const dx = e.x - s.x;
-    const dy = e.y - s.y;
-    const lengthSquared = dx * dx + dy * dy;
-
-    if (lengthSquared === 0) {
-      return false;
-    }
-
-    const t = Math.max(
-      0,
-      Math.min(
-        1,
-        ((point.x - s.x) * dx + (point.y - s.y) * dy) / lengthSquared
-      )
+    return this.pointInsidePrimitiveController.pointNearLineSegment(
+      point,
+      start.getPosition(),
+      end.getPosition(),
+      this.hitTolerance,
     );
-
-    const closestX = s.x + t * dx;
-    const closestY = s.y + t * dy;
-    const distance = Math.hypot(point.x - closestX, point.y - closestY);
-
-    return distance <= this.hitTolerance;
   }
 
   public draw(context: ICanvasContext): void {
@@ -155,12 +140,10 @@ export class VexLineShapeAdapter implements IShape {
       return false;
     }
 
-    const center = vertex.getPosition();
-    const radius = vertex.getRadius();
-
-    const dx = point.x - center.x;
-    const dy = point.y - center.y;
-
-    return dx * dx + dy * dy <= radius * radius;
+    return this.pointInsidePrimitiveController.pointInsideCircle(
+      point,
+      vertex.getPosition(),
+      vertex.getRadius(),
+    );
   }
 }

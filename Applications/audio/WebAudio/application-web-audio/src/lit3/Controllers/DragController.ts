@@ -1,4 +1,4 @@
-// Applications/audio/WebAudio/application-web-audio/src/lit3/Controllers/DragController.ts
+// src/lit3/Controllers/DragController.ts
 
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 
@@ -24,19 +24,15 @@ export class DragController implements ReactiveController {
   }
 
   public onPointerDown(point: Point): void {
-    const draggables = this.resolveDraggables();
+    const target = this.hitTest(point);
 
-    for (const draggable of [...draggables].reverse()) {
-      if (!draggable.containsPoint(point)) {
-        continue;
-      }
-
-      this.active = draggable;
-      this.lastPoint = point;
+    if (target === null) {
+      this.reset();
       return;
     }
 
-    this.reset();
+    this.active = target;
+    this.lastPoint = point;
   }
 
   public onPointerMove(point: Point): void {
@@ -73,8 +69,10 @@ export class DragController implements ReactiveController {
   public hitTest(point: Point): IDraggable | null {
     const draggables = this.resolveDraggables();
 
-    for (const draggable of [...draggables].reverse()) {
-      if (draggable.containsPoint(point)) {
+    for (let index = draggables.length - 1; index >= 0; index--) {
+      const draggable = draggables[index];
+
+      if (draggable !== undefined && draggable.containsPoint(point)) {
         return draggable;
       }
     }
@@ -100,10 +98,19 @@ export class DragController implements ReactiveController {
   private collectDraggables(element: Element, result: IDraggable[]): void {
     if (this.isDraggable(element)) {
       result.push(element);
-      return; // critical: draggable owns its subtree
     }
 
     for (const child of Array.from(element.children)) {
+      this.collectDraggables(child, result);
+    }
+
+    const shadowRoot = (element as Element & { shadowRoot?: ShadowRoot | null }).shadowRoot;
+
+    if (shadowRoot === null || shadowRoot === undefined) {
+      return;
+    }
+
+    for (const child of Array.from(shadowRoot.children)) {
       this.collectDraggables(child, result);
     }
   }

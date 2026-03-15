@@ -1,19 +1,27 @@
-// DRY fix: extract the repeated vertex-derived geometry into a reusable base class.
-
-// Applications/audio/WebAudio/application-web-audio/src/lit3/WebComponents/Shapes/Shape/VertexShape.ts
-
+import { html } from "lit";
+import { queryAssignedElements } from "lit/decorators.js";
 import { Vector2 } from "@monorepo/core-math";
-import { Shape } from "../WebComponents/Shapes/Shape/Shape";
- 
+
+import type { ICanvasContext } from "../WebComponents/ICanvasContext.js";
+import { Shape } from "../WebComponents/Shapes/Shape/Shape.js";
+import { MrVexCircleShape } from "./WebComponents/MrVexCircleShape.js";
+
 export abstract class VertexShape extends Shape {
-  protected abstract getStartPoint(): Vector2;
-  protected abstract getEndPoint(): Vector2;
-  protected abstract setStartPoint(value: Vector2): void;
-  protected abstract setEndPoint(value: Vector2): void;
+  @queryAssignedElements({ slot: "start", flatten: true })
+  protected startSlot!: Element[];
+
+  @queryAssignedElements({ slot: "end", flatten: true })
+  protected endSlot!: Element[];
 
   public override getCenter(): Vector2 {
-    const start = this.getStartPoint();
-    const end = this.getEndPoint();
+    const vertices = this.getVertexPair();
+
+    if (vertices === null) {
+      return new Vector2(0, 0);
+    }
+
+    const start = vertices.start.getCenter();
+    const end = vertices.end.getCenter();
 
     return new Vector2(
       (start.x + end.x) * 0.5,
@@ -22,16 +30,21 @@ export abstract class VertexShape extends Shape {
   }
 
   public override setCenter(center: Vector2): void {
-    const delta = center.subtract(this.getCenter());
+    const current = this.getCenter();
+    const delta = center.subtract(current);
 
-    this.setStartPoint(this.getStartPoint().add(delta));
-    this.setEndPoint(this.getEndPoint().add(delta));
-    this.requestUpdate();
+    this.translateVertices(delta);
   }
 
   public override getPosition(): Vector2 {
-    const start = this.getStartPoint();
-    const end = this.getEndPoint();
+    const vertices = this.getVertexPair();
+
+    if (vertices === null) {
+      return new Vector2(0, 0);
+    }
+
+    const start = vertices.start.getCenter();
+    const end = vertices.end.getCenter();
 
     return new Vector2(
       Math.min(start.x, end.x),
@@ -41,24 +54,32 @@ export abstract class VertexShape extends Shape {
 
   public override setPosistion(position: Vector2): void {
     const delta = position.subtract(this.getPosition());
-
-    this.setStartPoint(this.getStartPoint().add(delta));
-    this.setEndPoint(this.getEndPoint().add(delta));
-    this.requestUpdate();
+    this.translateVertices(delta);
   }
 
   public override getWidth(): number {
-    const start = this.getStartPoint();
-    const end = this.getEndPoint();
+    const vertices = this.getVertexPair();
 
-    return Math.abs(end.x - start.x);
+    if (vertices === null) {
+      return 0;
+    }
+
+    return Math.abs(
+      vertices.end.getCenter().x - vertices.start.getCenter().x,
+    );
   }
 
   public override setWidth(width: number): void {
-    const start = this.getStartPoint();
-    const end = this.getEndPoint();
+    const vertices = this.getVertexPair();
 
-    this.setEndPoint(
+    if (vertices === null) {
+      return;
+    }
+
+    const start = vertices.start.getCenter();
+    const end = vertices.end.getCenter();
+
+    vertices.end.setCenter(
       new Vector2(start.x + Math.max(0, width), end.y),
     );
 
@@ -66,17 +87,28 @@ export abstract class VertexShape extends Shape {
   }
 
   public override getHeight(): number {
-    const start = this.getStartPoint();
-    const end = this.getEndPoint();
+    const vertices = this.getVertexPair();
 
-    return Math.abs(end.y - start.y);
+    if (vertices === null) {
+      return 0;
+    }
+
+    return Math.abs(
+      vertices.end.getCenter().y - vertices.start.getCenter().y,
+    );
   }
 
   public override setHeight(height: number): void {
-    const start = this.getStartPoint();
-    const end = this.getEndPoint();
+    const vertices = this.getVertexPair();
 
-    this.setEndPoint(
+    if (vertices === null) {
+      return;
+    }
+
+    const start = vertices.start.getCenter();
+    const end = vertices.end.getCenter();
+
+    vertices.end.setCenter(
       new Vector2(end.x, start.y + Math.max(0, height)),
     );
 
@@ -84,15 +116,87 @@ export abstract class VertexShape extends Shape {
   }
 
   public override setSize(width: number, height: number): void {
-    const start = this.getStartPoint();
+    const vertices = this.getVertexPair();
 
-    this.setEndPoint(
+    if (vertices === null) {
+      return;
+    }
+
+    const start = vertices.start.getCenter();
+
+    vertices.end.setCenter(
       new Vector2(
         start.x + Math.max(0, width),
         start.y + Math.max(0, height),
       ),
     );
 
+    this.requestUpdate();
+  }
+
+  protected override render() {
+    return html`
+      <slot name="start"></slot>
+      <slot name="end"></slot>
+    `;
+  }
+
+  protected drawVertices(context: ICanvasContext): void {
+    const vertices = this.getVertexPair();
+
+    if (vertices === null) {
+      return;
+    }
+
+    vertices.start.draw(context);
+    vertices.end.draw(context);
+  }
+
+  protected containsVertexPoint(point: Vector2): boolean {
+    const vertices = this.getVertexPair();
+
+    if (vertices === null) {
+      return false;
+    }
+
+    return (
+      vertices.start.pointInsideShape(point, "circle") ||
+      vertices.end.pointInsideShape(point, "circle")
+    );
+  }
+
+  protected getVertexPair():
+    | {
+        start: MrVexCircleShape;
+        end: MrVexCircleShape;
+      }
+    | null {
+    const start = this.startSlot[0];
+    const end = this.endSlot[0];
+
+    if (
+      !(start instanceof MrVexCircleShape) ||
+      !(end instanceof MrVexCircleShape)
+    ) {
+      return null;
+    }
+
+    return { start, end };
+  }
+
+  private translateVertices(delta: Vector2): void {
+    if (delta.x === 0 && delta.y === 0) {
+      return;
+    }
+
+    const vertices = this.getVertexPair();
+
+    if (vertices === null) {
+      return;
+    }
+
+    vertices.start.setCenter(vertices.start.getCenter().add(delta));
+    vertices.end.setCenter(vertices.end.getCenter().add(delta));
     this.requestUpdate();
   }
 }

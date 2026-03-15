@@ -10,8 +10,17 @@ export class VexVertex {
     private position: Vector2,
     private radius: number = 6,
     private visible: boolean = true,
-    private draggable: boolean = true
+    private draggable: boolean = true,
+    private id: string = "id",
   ) { }
+
+  public getId(): string {
+    return this.id;
+  }
+
+  public setId(id: string): void {
+    this.id = id;
+  }
 
   public getPosition(): Vector2 {
     return this.position;

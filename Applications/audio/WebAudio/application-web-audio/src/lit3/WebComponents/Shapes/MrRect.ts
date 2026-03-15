@@ -76,16 +76,11 @@ export class MrRect extends Shape {
   }
 
   public containsPoint(point: Vector2): boolean {
-    const minX = this.position.x;
-    const minY = this.position.y;
-    const maxX = this.position.x + this.dimensions.x;
-    const maxY = this.position.y + this.dimensions.y;
-
-    return (
-      point.x >= minX &&
-      point.x <= maxX &&
-      point.y >= minY &&
-      point.y <= maxY
+    return this.pointInsidePrimitiveController.pointInsideRect(
+      point,
+      this.position,
+      this.dimensions.x,
+      this.dimensions.y,
     );
   }
 
