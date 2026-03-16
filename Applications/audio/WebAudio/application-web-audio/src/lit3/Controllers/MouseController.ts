@@ -1,8 +1,8 @@
 // src/lit3/Controllers/MouseController.ts
 
 import { Vector2 } from "@monorepo/core-math";
-import type { DragController } from "./DragController.js";
-
+import { DragController } from "../../Dragging/DragController";
+ 
 export class MouseController {
 
   private canvas: HTMLCanvasElement | null = null;

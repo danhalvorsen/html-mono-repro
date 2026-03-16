@@ -2,9 +2,7 @@
 // Update to the class-based fixture API.
 
 import { beforeEach, describe, expect, it } from "vitest";
-
-import { DragControllerFixture } from "./Fixtures/DragControllerFixture.js";
-
+import { DragControllerFixture } from "./DragController/DragControllerFixture.js";
 describe("DragController", () => {
   let fixture: DragControllerFixture;
 

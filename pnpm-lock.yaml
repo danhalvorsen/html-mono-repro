@@ -133,11 +133,51 @@ importers:
         specifier: ^7.2.4
         version: 7.3.1(@types/node@24.12.0)(terser@5.46.0)(tsx@4.21.0)
 
-  Applications/audio/WebAudio/application-web-audio:
+  Applications/audio/WebAudio/application-canvas:
     dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../../../../packages/core-design-patterns
+      '@monorepo/core-design-patterns-mediator':
+        specifier: workspace:*
+        version: link:../../../../packages/core-design-patterns-mediator
+      '@monorepo/core-fsm':
+        specifier: workspace:*
+        version: link:../../../../packages/core-fsm
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../../packages/core-math
+      '@monorepo/core-specifications-rules':
+        specifier: workspace:*
+        version: link:../../../../packages/core-specifications-rules
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.12.0)(@vitest/ui@4.0.14)(happy-dom@20.0.11)(jsdom@27.0.0)(terser@5.46.0)(tsx@4.21.0)
+
+  Applications/audio/WebAudio/application-web-audio:
+    dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../../../../packages/core-design-patterns
+      '@monorepo/core-design-patterns-mediator':
+        specifier: workspace:*
+        version: link:../../../../packages/core-design-patterns-mediator
+      '@monorepo/core-fsm':
+        specifier: workspace:*
+        version: link:../../../../packages/core-fsm
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../../packages/core-math
+      '@monorepo/core-specifications-rules':
+        specifier: workspace:*
+        version: link:../../../../packages/core-specifications-rules
       lit:
         specifier: ^3.0.0
         version: 3.3.2
