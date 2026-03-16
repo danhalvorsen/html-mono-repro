@@ -1299,6 +1299,18 @@ importers:
         specifier: workspace:*
         version: link:../core-design-patterns
 
+  packages/core-specifications-rules:
+    dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../core-design-patterns
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../core-specifications
+      '@monorepo/core-template':
+        specifier: workspace:*
+        version: link:../core-template
+
   packages/core-structures:
     dependencies:
       '@monorepo/core-math':

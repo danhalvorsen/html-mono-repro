@@ -37,6 +37,7 @@ describe("Mediator", () => {
     const r = await mediator.send(msg, ctx);
 
     expect(r.isErr()).toBe(true);
+    expect(r.unwrapErr()).toMatchObject({ behavior: "b2", reason: "nope" });
 
     // Pipeline stops at the failing behavior (b3 should not run)
     expect(fx.ctxTrace(ctx)).toEqual(["b1", "b2"]);
@@ -84,6 +85,7 @@ describe("Mediator", () => {
     const r = await mediator.send(msg, ctx);
 
     expect(r.isErr()).toBe(true);
+    expect(r.unwrapErr()).toMatchObject({ behavior: "b1", reason: "bad" });
     expect(recorder.count()).toBe(0);
   });
 });

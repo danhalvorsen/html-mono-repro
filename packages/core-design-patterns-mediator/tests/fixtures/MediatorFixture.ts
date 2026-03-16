@@ -1,9 +1,30 @@
 // packages/core-design-patterns/tests/Fixtures/MediatorFixture.ts
-
 import { Err, Ok, Result } from '@monorepo/core-design-patterns';
 import { INotification, INotificationBase} from '@monorepo/core-design-patterns-cqrs';
-import { Pipeline, EventBus, Mediator , IContextPipeline,type IMessage,type IBehavior,type IBehaviorResult, type IHandler, PipelineContext } 
-    from '../../src/index.js';
+import {
+  EventBus,
+  IBehavior,
+  IBehaviorResult,
+  IContextPipeline,
+  IHandler,
+  IMessage,
+  Mediator,
+  Pipeline,
+  PipelineContext,
+} from '../../src/index.js';
+
+class TaggedBehaviorResult implements IBehaviorResult {
+  public constructor(public readonly behavior: string) {}
+}
+
+class TaggedBehaviorError extends TaggedBehaviorResult {
+  public constructor(
+    behavior: string,
+    public readonly reason: string,
+  ) {
+    super(behavior);
+  }
+}
 
 export class MediatorFixture {
   // ---- deterministic keys
@@ -25,22 +46,28 @@ export class MediatorFixture {
   // ---- behaviors
   public createOkBehavior(tag: string): IBehavior<IMessage, IBehaviorResult, IBehaviorResult> {
     return new (class implements IBehavior<IMessage, IBehaviorResult, IBehaviorResult> {
-      public async execute(ctx: IContextPipeline): Promise<Result<IBehaviorResult, IBehaviorResult>> {
-        const trace = ctx.get<string[]>(thisTraceKey) ?? [];
+      public async execute(
+        ctx: IContextPipeline,
+        _msg: IMessage,
+      ): Promise<Result<IBehaviorResult, IBehaviorResult>> {
+        const trace = ctx.get<string[]>(traceKey) ?? [];
         trace.push(tag);
-        ctx.set(thisTraceKey, trace);
-        return Ok({ behavior: tag });
+        ctx.set(traceKey, trace);
+        return Ok(new TaggedBehaviorResult(tag));
       }
     })();
   }
 
   public createErrBehavior(tag: string, reason = "boom"): IBehavior<IMessage, IBehaviorResult, IBehaviorResult> {
     return new (class implements IBehavior<IMessage, IBehaviorResult, IBehaviorResult> {
-      public async execute(ctx: IContextPipeline): Promise<Result<IBehaviorResult, IBehaviorResult>> {
-        const trace = ctx.get<string[]>(thisTraceKey) ?? [];
+      public async execute(
+        ctx: IContextPipeline,
+        _msg: IMessage,
+      ): Promise<Result<IBehaviorResult, IBehaviorResult>> {
+        const trace = ctx.get<string[]>(traceKey) ?? [];
         trace.push(tag);
-        ctx.set(thisTraceKey, trace);
-        return Err({ behavior: tag, reason } as unknown as IBehaviorResult);
+        ctx.set(traceKey, trace);
+        return Err(new TaggedBehaviorError(tag, reason));
       }
     })();
   }
@@ -48,8 +75,8 @@ export class MediatorFixture {
   // ---- handler
   public createHandler(result: string): IHandler<IMessage, string> {
     return {
-      async handle(ctx: IContextPipeline): Promise<string> {
-        ctx.set(thisTouchedKey, true);
+      async handle(ctx: IContextPipeline, _msg: IMessage): Promise<string> {
+        ctx.set(touchedKey, true);
         return result;
       },
     };
@@ -76,19 +103,11 @@ export class MediatorFixture {
   }
 
   public ctxTrace(ctx: PipelineContext): readonly string[] {
-    return ctx.get<string[]>(thisTraceKey) ?? [];
+    return ctx.get<string[]>(traceKey) ?? [];
   }
 
   public ctxTouched(ctx: PipelineContext): boolean {
-    return ctx.get<boolean>(thisTouchedKey) ?? false;
-  }
-
-  // ---- internal wiring (avoid magic strings outside fixture)
-  private get thisTouchedKey(): symbol {
-    return this.K.touched;
-  }
-  private get thisTraceKey(): symbol {
-    return this.K.trace;
+    return ctx.get<boolean>(touchedKey) ?? false;
   }
 }
 
@@ -108,6 +127,5 @@ class RecordingNotificationHandler {
   }
 }
 
-// Convenience typing used by inner classes above (keeps closure clean).
-const thisTouchedKey = Symbol("fx.__unused__");
-const thisTraceKey = Symbol("fx.__unused__");
+const touchedKey = Symbol("fx.touched");
+const traceKey = Symbol("fx.trace");

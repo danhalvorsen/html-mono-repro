@@ -1,25 +1,31 @@
 // packages/core-design-patterns/tests/mediator-pipeline/fixtures/MediatorPipelineFixture.ts
 import { vi } from "vitest";
-import { Ok, Err, Result } from "@monorepo/core-design-patterns"
+import { Err, Ok, Result } from "@monorepo/core-design-patterns";
 import {
-  IMessage,
+  EventBus,
   IBehavior,
   IBehaviorResult,
-  IHandler,
   IContextPipeline,
-  PipelineContext,
-  Pipeline,
-  CompositePipeline,
-  Mediator,
-  EventBus,
-  ValidationBehavior,
-  PerformanceBehavior,
+  IHandler,
+  IMessage,
   INotificationHandler,
+  Mediator,
+  PerformanceBehavior,
+  Pipeline,
+  PipelineContext,
+  ValidationBehavior,
 } from '../../src/index.js'
 import { INotificationBase, INotification } from "@monorepo/core-design-patterns-cqrs";
 
-type AnyOk = IBehaviorResult & { behavior: "ok" };
-type AnyErr = IBehaviorResult & { behavior: "err"; reason: string };
+class FixtureOkResult implements IBehaviorResult {
+  public readonly behavior = "ok";
+}
+
+class FixtureErrResult implements IBehaviorResult {
+  public readonly behavior = "err";
+
+  public constructor(public readonly reason: string) {}
+}
 
 export class TestMessage implements IMessage {
   public constructor(public readonly name: string) {}
@@ -35,15 +41,24 @@ export class RecordingContext extends PipelineContext {
 }
 
 export class RecordingBehavior<TMsg extends IMessage>
-  implements IBehavior<TMsg, AnyOk, AnyErr>
+  implements IBehavior<TMsg, FixtureOkResult, FixtureErrResult>
 {
   public readonly calls: Array<{ msgName: string }> = [];
   public constructor(private readonly fail?: { reason: string }) {}
 
-  public async execute(_ctx: IContextPipeline, msg: TMsg): Promise<Result<AnyOk, AnyErr>> {
+  public async execute(
+    _ctx: IContextPipeline,
+    msg: TMsg,
+  ): Promise<Result<FixtureOkResult, FixtureErrResult>> {
     this.calls.push({ msgName: msg.name });
-    if (this.fail) return Err<AnyOk, AnyErr>({ behavior: "err", reason: this.fail.reason });
-    return Ok<AnyOk, AnyErr>({ behavior: "ok" });
+
+    if (this.fail) {
+      return Err<FixtureOkResult, FixtureErrResult>(
+        new FixtureErrResult(this.fail.reason),
+      );
+    }
+
+    return Ok<FixtureOkResult, FixtureErrResult>(new FixtureOkResult());
   }
 }
 
@@ -81,6 +96,10 @@ export class MediatorPipelineFixture {
 
   public behavior_fail<TMsg extends IMessage>(reason = "fail"): RecordingBehavior<TMsg> {
     return new RecordingBehavior<TMsg>({ reason });
+  }
+
+  public err(reason: string): IBehaviorResult {
+    return new FixtureErrResult(reason);
   }
 
   public handler_value<TMsg extends IMessage, TResult>(value: TResult): RecordingHandler<TMsg, TResult> {

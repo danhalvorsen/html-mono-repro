@@ -3,7 +3,13 @@ import { describe, it, expect } from "vitest";
 
 import { MediatorPipelineFixture } from "./fixtures/MediatorPipelineFixture.js";
 
-import { CompositePipeline , ValidationBehavior, EventBus, Mediator } from "../src/index.js";
+import {
+  CompositePipeline,
+  EventBus,
+  Mediator,
+  ValidationBehavior,
+  ValidationErr,
+} from "../src/index.js";
 
 describe("mediator-pipeline", () => {
   const fx = new MediatorPipelineFixture();
@@ -44,7 +50,7 @@ describe("mediator-pipeline", () => {
     const r = await pipeline.execute(ctx, msg);
 
     expect(r.isErr()).toBe(true);
-    expect(r.unwrapErr()).toEqual({ behavior: "err", reason: "nope" });
+    expect(r.unwrapErr()).toEqual(fx.err("nope"));
 
     expect(b1.calls.length).toBe(1);
     expect(bFail.calls.length).toBe(1);
@@ -78,7 +84,7 @@ describe("mediator-pipeline", () => {
     const r = await composite.execute(ctx, msg);
 
     expect(r.isErr()).toBe(true);
-    expect(r.unwrapErr()).toEqual({ behavior: "err", reason: "boom" });
+    expect(r.unwrapErr()).toEqual(fx.err("boom"));
   });
 
   it("Mediator publishes event only on Ok when EventBus is provided", async () => {
@@ -139,7 +145,7 @@ describe("mediator-pipeline", () => {
     const r = await pipeline.execute(ctx, msg);
 
     expect(r.isErr()).toBe(true);
-    expect(r.unwrapErr()).toEqual({ behavior: "validation", reason: "Missing name" });
+    expect(r.unwrapErr()).toEqual(new ValidationErr("Missing name"));
   });
 
   it("Integration: PerformanceBehavior sets start then reports ms on subsequent execution (same ctx)", async () => {
