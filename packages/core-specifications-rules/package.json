@@ -1,0 +1,22 @@
+{
+  "name": "@monorepo/core-specifications-rules",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest --config vitest.config.ts"
+  },
+  "dependencies": {
+    "@monorepo/core-design-patterns": "workspace:*",
+    "@monorepo/core-specifications": "workspace:*" ,
+    "@monorepo/core-template": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

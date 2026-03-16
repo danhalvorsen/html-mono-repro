@@ -1,24 +1,29 @@
 import { INotificationBase, INotification } from "@monorepo/core-design-patterns-cqrs";
-import { type Result, Err, NonUndefined, Ok } from "@monorepo/core-design-patterns";
+import { type Result, NonUndefined } from "@monorepo/core-design-patterns";
 import { EventBus } from "../EventBus/EventBus.js";
 import { Pipeline } from "../Pipeline.js";
 import { PipelineContext } from "../Context/PipelineContext.js";
+import { IBehaviorResult } from "../Behaviour/IBehaviorResult.js";
 import { IMessage } from "../Messages/IMessage.js";
 
 /* ============================================================================
  * Mediator (async context propagation + events)
  * ============================================================================ */
 
-export class Mediator<TMsg extends IMessage, TResult> {
+export class Mediator<
+  TMsg extends IMessage,
+  TResult,
+  TBehaviorError extends IBehaviorResult = IBehaviorResult,
+> {
   public constructor(
-    private readonly pipeline: Pipeline<TMsg, TResult>,
-    private readonly events?: EventBus
-  ) { }
+    private readonly pipeline: Pipeline<TMsg, TResult, TBehaviorError>,
+    private readonly events?: EventBus,
+  ) {}
 
   public async send(
     msg: TMsg,
-    ctx: PipelineContext = new PipelineContext()
-  ): Promise<Result<TResult & NonUndefined, NonUndefined>> {
+    ctx: PipelineContext = new PipelineContext(),
+  ): Promise<Result<TResult & NonUndefined, TBehaviorError & NonUndefined>> {
     const result = await this.pipeline.execute(ctx, msg);
 
     if (result.isOk() && this.events) {
@@ -28,6 +33,6 @@ export class Mediator<TMsg extends IMessage, TResult> {
       await this.events.publish(evt);
     }
 
-    return result as unknown as Result<TResult & NonUndefined, NonUndefined>;
+    return result;
   }
 }
