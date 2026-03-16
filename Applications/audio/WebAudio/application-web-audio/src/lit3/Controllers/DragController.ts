@@ -2,7 +2,12 @@
 
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 
-import type { IDraggable, Point } from "../WebComponents/IDraggable.js";
+import type {
+  IDraggable,
+  IHitTestable,
+  IPositionable,
+  Point,
+} from "../WebComponents/IDraggable.js";
 
 export class DragController implements ReactiveController {
   private active: IDraggable | null = null;
@@ -120,7 +125,8 @@ export class DragController implements ReactiveController {
       return false;
     }
 
-    const candidate = value as Partial<IDraggable> & Record<string, unknown>;
+    const candidate = value as Partial<IHitTestable & IPositionable> &
+      Record<string, unknown>;
 
     return (
       typeof candidate.getPosition === "function" &&

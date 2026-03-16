@@ -42,7 +42,7 @@ export class MouseController {
 
     const point = this.getCanvasPoint(event);
 
-    console.log("[MouseController] pointerdown", point);
+    //console.log("[MouseController] pointerdown", point);
 
     // FIX: DragController now resolves the target itself
     this.dragController.onPointerDown(point);

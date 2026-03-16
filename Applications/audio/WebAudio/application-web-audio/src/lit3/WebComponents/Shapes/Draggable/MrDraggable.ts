@@ -4,7 +4,12 @@ import { LitElement, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
 import { Vector2 } from "@monorepo/core-math";
 
-import type { IDraggable, Point } from "../../IDraggable.js";
+import type {
+  IDraggable,
+  IHitTestable,
+  IPositionable,
+  Point,
+} from "../../IDraggable.js";
 import { Shape } from "../Shape/Shape.js";
 
 @customElement("mr-draggable")
@@ -168,7 +173,7 @@ export class MrDraggable extends LitElement implements IDraggable {
       return false;
     }
 
-    const candidate = value as Partial<IDraggable>;
+    const candidate = value as Partial<IHitTestable & IPositionable>;
 
     return (
       value instanceof Shape &&

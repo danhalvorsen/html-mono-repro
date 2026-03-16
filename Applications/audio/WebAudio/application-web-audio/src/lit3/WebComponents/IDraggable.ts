@@ -5,9 +5,15 @@ export type Point = Readonly<{
   y: number;
 }>;
 
-export interface IDraggable {
-  readonly shape: Shape;
+export interface IHitTestable {
+  containsPoint(point: Point): boolean;
+}
+
+export interface IPositionable {
   getPosition(): Point;
   setPosition(position: Point): void;
-  containsPoint(point: Point): boolean;
+}
+
+export interface IDraggable extends IHitTestable, IPositionable {
+  readonly shape: Shape;
 }
