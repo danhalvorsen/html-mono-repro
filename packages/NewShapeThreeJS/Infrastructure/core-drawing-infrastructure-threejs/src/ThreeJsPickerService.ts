@@ -1,11 +1,12 @@
-import { Raycaster, Vector2 } from "three";
+import { Raycaster, Vector2 as ThreeVector2 } from "three";
+import type { Vector2 } from "@monorepo/core-math";
 import type { IPickerService } from "@monorepo/core-drawing-infrastructure-abstract";
 import type { IThreePickContext } from "./IThreePickContext.js";
 import type { IObjectShapeResolver } from "./IObjectShapeResolver.js";
 
 export class ThreeJsPickerService<TShape> implements IPickerService<TShape> {
   private readonly raycaster: Raycaster;
-  private readonly ndc = new Vector2();
+  private readonly ndc = new ThreeVector2();
 
   public constructor(
     private readonly context: IThreePickContext,

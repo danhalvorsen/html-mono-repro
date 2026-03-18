@@ -4,8 +4,8 @@
 // ============================================================================
 
 import { describe, expect, it } from "vitest";
-import { DragPipelineFixture } from "./DragPipelineFixture";
-import { DragOperation, RectangleConstraintsBehaviour } from "../../src";
+import { DragPipelineFixture } from "../DragPipelineFixture";
+import { DragOperation, RectangleConstraintsBehaviour } from "../../../src";
 
 describe("RectangleConstraintsBehaviour", () => {
   const fixture = DragPipelineFixture.create();

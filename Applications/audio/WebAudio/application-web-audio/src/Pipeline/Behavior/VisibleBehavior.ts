@@ -1,39 +1,33 @@
-import { IBehavior, IContextPipeline } from "@monorepo/core-design-patterns-mediator";
-import { IDragStateStore } from "../../Dragging/IDragStateStore";
-import { OnDragMessage } from "../Messages/OnDragMessage";
-import { DragPipelineResult } from "../Results/DragPipelineResult";
-import { Err, Ok, Result } from "@monorepo/core-design-patterns";   
+import { Err, Ok, type Result } from "@monorepo/core-design-patterns";
+import type {
+  IBehavior,
+  IContextPipeline,
+} from "@monorepo/core-design-patterns-mediator";
 
-// ============================================================================
-// src/Pipeline/Behaviors/VisibleBehavior.ts
-// ============================================================================
+import { OnDragMessage } from "../Messages/OnDragMessage.js";
+import { DragPipelineResult } from "../Results/DragPipelineResult.js";
 
 export class VisibleBehavior
-    implements IBehavior<OnDragMessage, DragPipelineResult, DragPipelineResult> {
-    private static readonly behaviorName = "VisibleBehavior";
+  implements IBehavior<OnDragMessage, DragPipelineResult, DragPipelineResult>
+{
+  public async execute(
+    _ctx: IContextPipeline,
+    msg: OnDragMessage,
+  ): Promise<Result<DragPipelineResult, DragPipelineResult>> {
+    const { targetId, target } = msg.payload;
+    const visible = "visible" in target ? target.visible : true;
 
-    public constructor(
-        private readonly stateStore: IDragStateStore
-    ) { }
-
-    public async execute(
-        _ctx: IContextPipeline,
-        msg: OnDragMessage
-    ): Promise<Result<DragPipelineResult, DragPipelineResult>> {
-
-        const { targetId } = msg.payload;
-
-        if (!this.stateStore.isVisible(targetId)) {
-            return Err(
-                DragPipelineResult.fail(
-                    VisibleBehavior.behaviorName,
-                    `Target '${targetId}' is not visible.`
-                )
-            );
-        }
-
-        return Ok(
-            DragPipelineResult.ok(VisibleBehavior.behaviorName)
-        );
+    if (visible !== true) {
+      return Err(
+        DragPipelineResult.fail(
+          this.constructor.name,
+          `Target '${targetId}' is not visible.`,
+        ),
+      );
     }
+
+    return Ok(
+      DragPipelineResult.ok(this.constructor.name),
+    );
+  }
 }

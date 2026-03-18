@@ -1,7 +1,7 @@
 
 import { describe, expect, it } from "vitest";
-import { DragPipelineFixture } from "./DragPipelineFixture";
-import { DraggingEnabledBehavior, DragOperation } from "../../src";
+import { DragPipelineFixture } from "../DragPipelineFixture";
+import { DraggingEnabledBehavior, DragOperation } from "../../../src";
  
 describe("DraggingEnabledBehavior", () => {
   const fixture = DragPipelineFixture.create();

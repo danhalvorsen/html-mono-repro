@@ -1,50 +1,37 @@
-import { IBehavior, IContextPipeline } from "@monorepo/core-design-patterns-mediator";
-import { IDragStateStore } from "../../Dragging/IDragStateStore";
-import { OnDragMessage } from "../Messages/OnDragMessage";
-import { DragPipelineResult } from "../Results/DragPipelineResult";
-import { Err, Ok, Result } from "@monorepo/core-design-patterns";
+import { Err, Ok, type Result } from "@monorepo/core-design-patterns";
+import type {
+  IBehavior,
+  IContextPipeline,
+} from "@monorepo/core-design-patterns-mediator";
 
-// ============================================================================
-// src/Pipeline/Behaviors/RectangleConstraintsBehaviour.ts
-// ============================================================================
+import { OnDragMessage } from "../Messages/OnDragMessage.js";
+import { DragPipelineResult } from "../Results/DragPipelineResult.js";
 
 export class RectangleConstraintsBehaviour
-    implements IBehavior<OnDragMessage, DragPipelineResult, DragPipelineResult> {
-    private static readonly behaviorName = "RectangleConstraintsBehaviour";
+  implements IBehavior<OnDragMessage, DragPipelineResult, DragPipelineResult>
+{
+  public async execute(
+    _ctx: IContextPipeline,
+    msg: OnDragMessage,
+  ): Promise<Result<DragPipelineResult, DragPipelineResult>> {
+    const { targetId, target, x, y } = msg.payload;
+    const bounds = target.getBounds?.() ?? null;
 
-    public constructor(
-        private readonly stateStore: IDragStateStore
-    ) { }
-
-    public async execute(
-        _ctx: IContextPipeline,
-        msg: OnDragMessage
-    ): Promise<Result<DragPipelineResult, DragPipelineResult>> {
-
-        const { targetId, x, y } = msg.payload;
-
-        const bounds = this.stateStore.tryGetBounds(targetId);
-
-        if (bounds === null) {
-            return Ok(
-                DragPipelineResult.ok(RectangleConstraintsBehaviour.behaviorName)
-            );
-        }
-
-        if (x < bounds.minX ||
-            x > bounds.maxX ||
-            y < bounds.minY ||
-            y > bounds.maxY) {
-            return Err(
-                DragPipelineResult.fail(
-                    RectangleConstraintsBehaviour.behaviorName,
-                    `Target '${targetId}' is outside drag bounds.`
-                )
-            );
-        }
-
-        return Ok(
-            DragPipelineResult.ok(RectangleConstraintsBehaviour.behaviorName)
-        );
+    if (
+      bounds !== null &&
+      (x < bounds.minX ||
+        x > bounds.maxX ||
+        y < bounds.minY ||
+        y > bounds.maxY)
+    ) {
+      return Err(
+        DragPipelineResult.fail(
+          this.constructor.name,
+          `Target '${targetId}' is outside drag bounds.`,
+        ),
+      );
     }
+
+    return Ok(DragPipelineResult.ok(this.constructor.name));
+  }
 }

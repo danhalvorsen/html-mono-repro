@@ -1,9 +1,5 @@
+import { Point } from "@monorepo/core-math";
 import { Shape } from "./Shapes/Shape/Shape.js";
-
-export type Point = Readonly<{
-  x: number;
-  y: number;
-}>;
 
 export interface IHitTestable {
   containsPoint(point: Point): boolean;
@@ -16,4 +12,5 @@ export interface IPositionable {
 
 export interface IDraggable extends IHitTestable, IPositionable {
   readonly shape: Shape;
+  
 }

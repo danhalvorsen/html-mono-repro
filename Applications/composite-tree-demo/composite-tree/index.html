@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>composite-tree</title>
+    <script type="module" src="/src/my-element.ts"></script>
+  </head>
+  <body>
+    <shape-canvas x="24" y="24" width="420" height="300">
+      <circle-shape cx="0" cy="0" r="52"></circle-shape>
+    </shape-canvas>
+
+    <shape-canvas x="480" y="24" width="360" height="260">
+      <coordinate-system width="360" height="260" spacing="20"></coordinate-system>
+      <circle-shape cx="-80" cy="40" r="26"></circle-shape>
+      <circle-shape cx="70" cy="-45" r="34"></circle-shape>
+    </shape-canvas>
+
+  </body>
+</html>
