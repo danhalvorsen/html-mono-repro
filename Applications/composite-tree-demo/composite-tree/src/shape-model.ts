@@ -1,47 +1,19 @@
 import type { IStyleReference } from '@monorepo/core-style-system'
-import type { DrawableShape } from './DrawableShape'
-import type { ICoordinateSystemShape } from './ICoordinateSystemShape'
-import type { IEllipseShape } from './IEllipseShape'
-import type { IGridShape } from './IGridShape'
-import type { ILineShape } from './ILineShape'
-import type { IShapeGroup } from './IShapeGroup'
 
-export type ShapeKind = 'group' | 'grid' | 'line' | 'polygon' | 'circle' | 'ellipse' | 'vertex'
+import type { ICoordinateSystemShape } from './Shapes/CoordinateSystem/ICoordinateSystemShape'
+import type { Point } from '@monorepo/core-math'
+import { LineShape } from './Shapes/Line/LineShape'
+import { GridShape } from './Shapes/Grid/GridShape'
+import { CoordinateSystemShape } from './Shapes/CoordinateSystem/CoordinateSystemShape'
+import type { IVertex } from './Shapes/Vertex/IVertex'
+import type { IEdge } from './Shapes/Edge/IEdge'
+import type { IPolygon } from './Shapes/Polygon/IPolygon'
+import type { IShape } from './Shape/IShape'
+import { AxisShape } from './Shapes/CoordinateSystem/Axis/AxisShape'
+ 
+export type ShapeKind = 'group' | 'grid' | 'line' | 'polygon' | 'circle' | 'ellipse' | 'vertex' | 'axis'
 
-export interface IPoint {
-  readonly x: number
-  readonly y: number
-}
-
-export interface IShape {
-  readonly id: string
-  readonly kind: ShapeKind
-  readonly style?: Readonly<IStyleReference>
-}
-
-export interface IVertex extends IShape {
-  readonly kind: 'vertex'
-  readonly point: IPoint
-  readonly marker: 'circle' | 'arrow'
-  readonly size: number
-  readonly rotation?: number
-}
-
-export interface IEdge {
-  readonly id: string
-  readonly from: IVertex
-  readonly to: IVertex
-  readonly style?: Readonly<IStyleReference>
-}
-
-export interface IPolygon extends IShape {
-  readonly kind: 'polygon'
-  readonly vertices: readonly IVertex[]
-  readonly edges: readonly IEdge[]
-  readonly closed: boolean
-}
-
-class ShapeIdGenerator {
+class ShapeIdService {
   private next = 0
 
   public create(prefix: string): string {
@@ -51,17 +23,27 @@ class ShapeIdGenerator {
   }
 }
 
-const ids = new ShapeIdGenerator()
+class StyleReferenceService {
+  public withDefault(
+    style: Readonly<IStyleReference> | undefined,
+    token: string,
+  ): Readonly<IStyleReference> {
+    return {
+      token: style?.token ?? token,
+      ...(style?.overrides !== undefined ? { overrides: style.overrides } : {}),
+    }
+  }
+}
 
-const point = (x: number, y: number): IPoint => ({ x, y })
+class PointFactory {
+  public from(x: number, y: number): Point {
+    return { x, y }
+  }
+}
 
-const withDefaultToken = (
-  style: Readonly<IStyleReference> | undefined,
-  token: string,
-): Readonly<IStyleReference> => ({
-  token: style?.token ?? token,
-  ...(style?.overrides !== undefined ? { overrides: style.overrides } : {}),
-})
+export const ShapeIds = new ShapeIdService()
+export const StyleReferences = new StyleReferenceService()
+export const Points = new PointFactory()
 
 export class VertexShape implements IVertex {
   public readonly id: string
@@ -69,15 +51,15 @@ export class VertexShape implements IVertex {
   public readonly style: Readonly<IStyleReference>
 
   public constructor(
-    public readonly point: IPoint,
+    public readonly point: Point,
     public readonly marker: 'circle' | 'arrow' = 'circle',
     public readonly size = 8,
     public readonly rotation = 0,
     style?: Readonly<IStyleReference>,
     id?: string,
   ) {
-    this.id = id ?? ids.create('vertex')
-    this.style = withDefaultToken(style, 'vertex')
+    this.id = id ?? ShapeIds.create('vertex')
+    this.style = StyleReferences.withDefault(style, 'vertex')
   }
 }
 
@@ -91,8 +73,8 @@ export class Edge implements IEdge {
     style?: Readonly<IStyleReference>,
     id?: string,
   ) {
-    this.id = id ?? ids.create('edge')
-    this.style = withDefaultToken(style, 'line')
+    this.id = id ?? ShapeIds.create('edge')
+    this.style = StyleReferences.withDefault(style, 'line')
   }
 }
 
@@ -108,8 +90,8 @@ export class PolygonShape implements IPolygon {
     style?: Readonly<IStyleReference>,
     id?: string,
   ) {
-    this.id = id ?? ids.create('polygon')
-    this.style = withDefaultToken(style, 'surface')
+    this.id = id ?? ShapeIds.create('polygon')
+    this.style = StyleReferences.withDefault(style, 'surface')
     this.edges = PolygonShape.createEdges(vertices, closed, this.style)
   }
 
@@ -146,9 +128,34 @@ export class PolygonShape implements IPolygon {
   }
 }
 
+export class RectangleShape extends PolygonShape {
+  public constructor(
+    public readonly center: Point,
+    public readonly width: number,
+    public readonly height: number,
+    style?: Readonly<IStyleReference>,
+    id?: string,
+  ) {
+    const halfWidth = width / 2
+    const halfHeight = height / 2
+
+    super(
+      [
+        new VertexShape(Points.from(center.x - halfWidth, center.y - halfHeight)),
+        new VertexShape(Points.from(center.x + halfWidth, center.y - halfHeight)),
+        new VertexShape(Points.from(center.x + halfWidth, center.y + halfHeight)),
+        new VertexShape(Points.from(center.x - halfWidth, center.y + halfHeight)),
+      ],
+      true,
+      StyleReferences.withDefault(style, 'rectangle'),
+      id,
+    )
+  }
+}
+
 export interface ICircleShape extends IShape {
   readonly kind: 'circle'
-  readonly center: IPoint
+  readonly center: Point
   readonly radius: number
 }
 
@@ -158,92 +165,13 @@ export class CircleShape implements ICircleShape {
   public readonly style: Readonly<IStyleReference>
 
   public constructor(
-    public readonly center: IPoint,
+    public readonly center: Point,
     public readonly radius: number,
     style?: Readonly<IStyleReference>,
     id?: string,
   ) {
-    this.id = id ?? ids.create('circle')
-    this.style = withDefaultToken(style, 'circle-primary')
-  }
-}
-
-export class EllipseShape implements IEllipseShape {
-  public readonly id: string
-  public readonly kind = 'ellipse' as const
-  public readonly style: Readonly<IStyleReference>
-
-  public constructor(
-    public readonly center: IPoint,
-    public readonly radiusX: number,
-    public readonly radiusY: number,
-    style?: Readonly<IStyleReference>,
-    id?: string,
-  ) {
-    this.id = id ?? ids.create('ellipse')
-    this.style = withDefaultToken(style, 'surface')
-  }
-}
-
-export class LineShape implements ILineShape {
-  public readonly id: string
-  public readonly kind = 'line' as const
-  public readonly style: Readonly<IStyleReference>
-
-  public constructor(
-    public readonly start: IPoint,
-    public readonly end: IPoint,
-    style?: Readonly<IStyleReference>,
-    public readonly startVertex?: IVertex,
-    public readonly endVertex?: IVertex,
-    id?: string,
-  ) {
-    this.id = id ?? ids.create('line')
-    this.style = withDefaultToken(style, 'line')
-  }
-}
-
-export class GridShape implements IGridShape {
-  public readonly id: string
-  public readonly kind = 'grid' as const
-  public readonly style: Readonly<IStyleReference>
-
-  public constructor(
-    public readonly width: number,
-    public readonly height: number,
-    public readonly spacing: number,
-    public readonly majorEvery: number,
-    style?: Readonly<IStyleReference>,
-    id?: string,
-  ) {
-    this.id = id ?? ids.create('grid')
-    this.style = withDefaultToken(style, 'grid')
-  }
-}
-
-export class ShapeGroup implements IShapeGroup {
-  public readonly id: string
-  public readonly kind = 'group' as const
-  public readonly style: Readonly<IStyleReference>
-
-  public constructor(
-    public readonly shapes: readonly DrawableShape[],
-    style?: Readonly<IStyleReference>,
-    id?: string,
-  ) {
-    this.id = id ?? ids.create('group')
-    this.style = withDefaultToken(style, 'base')
-  }
-}
-
-export class CoordinateSystemShape extends ShapeGroup implements ICoordinateSystemShape {
-  public constructor(
-    public readonly grid: IGridShape,
-    public readonly xAxis: ILineShape,
-    public readonly yAxis: ILineShape,
-    id?: string,
-  ) {
-    super([grid, xAxis, yAxis], { token: 'base' }, id)
+    this.id = id ?? ShapeIds.create('circle')
+    this.style = StyleReferences.withDefault(style, 'circle-primary')
   }
 }
 
@@ -252,7 +180,7 @@ export const createCircleVertex = (
   y: number,
   size = 6,
   style?: Readonly<IStyleReference>,
-): IVertex => new VertexShape(point(x, y), 'circle', size, 0, style)
+): IVertex => new VertexShape(Points.from(x, y), 'circle', size, 0, style)
 
 export const createArrowVertex = (
   x: number,
@@ -260,10 +188,10 @@ export const createArrowVertex = (
   rotation: number,
   size = 12,
   style?: Readonly<IStyleReference>,
-): IVertex => new VertexShape(point(x, y), 'arrow', size, rotation, style)
+): IVertex => new VertexShape(Points.from(x, y), 'arrow', size, rotation, style)
 
 export const createTriangle = (
-  center: IPoint,
+  center: Point,
   side: number,
   style?: Readonly<IStyleReference>,
 ): IPolygon => {
@@ -282,28 +210,14 @@ export const createTriangle = (
 }
 
 export const createRectangle = (
-  center: IPoint,
+  center: Point,
   width: number,
   height: number,
   style?: Readonly<IStyleReference>,
-): IPolygon => {
-  const halfWidth = width / 2
-  const halfHeight = height / 2
-
-  return new PolygonShape(
-    [
-      createCircleVertex(center.x - halfWidth, center.y - halfHeight),
-      createCircleVertex(center.x + halfWidth, center.y - halfHeight),
-      createCircleVertex(center.x + halfWidth, center.y + halfHeight),
-      createCircleVertex(center.x - halfWidth, center.y + halfHeight),
-    ],
-    true,
-    style,
-  )
-}
+): IPolygon => new RectangleShape(center, width, height, style)
 
 export const createSquare = (
-  center: IPoint,
+  center: Point,
   size: number,
   style?: Readonly<IStyleReference>,
 ): IPolygon => createRectangle(center, size, size, style)
@@ -315,91 +229,35 @@ export const createCoordinateSystem = (
 ): ICoordinateSystemShape => {
   const halfWidth = width / 2
   const halfHeight = height / 2
+  const axisMarkerSize = 12
+  const axisInset = axisMarkerSize + 2
+  const xMin = -halfWidth + axisInset
+  const xMax = halfWidth - axisInset
+  const yMin = -halfHeight + axisInset
+  const yMax = halfHeight - axisInset
 
   const grid = new GridShape(width, height, spacing, 5, {
     token: 'grid',
     overrides: { opacity: 0.85 },
   })
 
-  const xAxis = new LineShape(
-    point(-halfWidth, 0),
-    point(halfWidth, 0),
-    { token: 'axis-x' },
-    createArrowVertex(-halfWidth, 0, 180, 12, {
-      token: 'vertex',
-      overrides: { stroke: { color: '#b91c1c' }, fill: { color: '#b91c1c' } },
-    }),
-    createArrowVertex(halfWidth, 0, 0, 12, {
-      token: 'vertex',
-      overrides: { stroke: { color: '#b91c1c' }, fill: { color: '#b91c1c' } },
-    }),
+  const xAxisLine = new LineShape(
+    Points.from(xMin, 0),
+    Points.from(xMax, 0),
+    { token: 'line' },
+    createArrowVertex(xMin, 0, 180, axisMarkerSize, { token: 'vertex' }),
+    createArrowVertex(xMax, 0, 0, axisMarkerSize, { token: 'vertex' }),
   )
+  const xAxis = new AxisShape('x', xAxisLine, { token: 'axis-x' })
 
-  const yAxis = new LineShape(
-    point(0, -halfHeight),
-    point(0, halfHeight),
-    { token: 'axis-y' },
-    createArrowVertex(0, -halfHeight, -90, 12, {
-      token: 'vertex',
-      overrides: { stroke: { color: '#1d4ed8' }, fill: { color: '#1d4ed8' } },
-    }),
-    createArrowVertex(0, halfHeight, 90, 12, {
-      token: 'vertex',
-      overrides: { stroke: { color: '#1d4ed8' }, fill: { color: '#1d4ed8' } },
-    }),
+  const yAxisLine = new LineShape(
+    Points.from(0, yMin),
+    Points.from(0, yMax),
+    { token: 'line' },
+    createArrowVertex(0, yMin, -90, axisMarkerSize, { token: 'vertex' }),
+    createArrowVertex(0, yMax, 90, axisMarkerSize, { token: 'vertex' }),
   )
+  const yAxis = new AxisShape('y', yAxisLine, { token: 'axis-y' })
 
   return new CoordinateSystemShape(grid, xAxis, yAxis)
-}
-
-export const createDemoScene = (): readonly DrawableShape[] => {
-  const coordinateSystem = createCoordinateSystem(760, 520, 28)
-
-  const line = new LineShape(
-    point(-280, -130),
-    point(-120, 40),
-    { token: 'line' },
-    createCircleVertex(-280, -130, 5, {
-      token: 'vertex',
-      overrides: { fill: { color: '#2563eb' }, stroke: { color: '#2563eb' } },
-    }),
-    createArrowVertex(-120, 40, 48, 11, {
-      token: 'vertex',
-      overrides: { fill: { color: '#2563eb' }, stroke: { color: '#2563eb' } },
-    }),
-  )
-
-  return [
-    coordinateSystem,
-    line,
-    new CircleShape(point(-220, 130), 52, { token: 'circle-primary' }),
-    createTriangle(point(-40, 150), 110, {
-      token: 'surface',
-      overrides: {
-        stroke: { color: '#7c3aed', width: 3 },
-        fill: { color: 'rgba(124, 58, 237, 0.18)' },
-      },
-    }),
-    createSquare(point(150, 120), 96, {
-      token: 'surface',
-      overrides: {
-        stroke: { color: '#ea580c', width: 3 },
-        fill: { color: 'rgba(234, 88, 12, 0.16)' },
-      },
-    }),
-    createRectangle(point(265, -55), 150, 84, {
-      token: 'surface',
-      overrides: {
-        stroke: { color: '#b91c1c', width: 3 },
-        fill: { color: 'rgba(185, 28, 28, 0.15)' },
-      },
-    }),
-    new EllipseShape(point(-40, -95), 84, 48, {
-      token: 'surface',
-      overrides: {
-        stroke: { color: '#0891b2', width: 3 },
-        fill: { color: 'rgba(8, 145, 178, 0.15)' },
-      },
-    }),
-  ]
 }

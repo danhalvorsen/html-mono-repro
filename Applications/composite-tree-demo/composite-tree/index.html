@@ -8,15 +8,19 @@
     <script type="module" src="/src/my-element.ts"></script>
   </head>
   <body>
-    <shape-canvas x="24" y="24" width="420" height="300">
-      <circle-shape cx="0" cy="0" r="52"></circle-shape>
-    </shape-canvas>
+    <cartesian-canvas x="24" y="24" width="420" height="300">
+      <circle-primitive cx="0" cy="0" r="52"></circle-primitive>
+    </cartesian-canvas>
 
-    <shape-canvas x="480" y="24" width="360" height="260">
-      <coordinate-system width="360" height="260" spacing="20"></coordinate-system>
-      <circle-shape cx="-80" cy="40" r="26"></circle-shape>
-      <circle-shape cx="70" cy="-45" r="34"></circle-shape>
-    </shape-canvas>
+    <cartesian-canvas x="480" y="24" width="360" height="260">
+      <coordinate-system width="360" height="260" spacing="5"></coordinate-system>
+      <circle-primitive cx="-80" cy="40" r="26"></circle-primitive>
+      <circle-primitive cx="70" cy="-45" r="34"></circle-primitive>
+      <line-primitive x1="-120" y1="-80" x2="120" y2="80">
+        <vertex-primitive slot="p0" marker="circle" size="7"></vertex-primitive>
+        <vertex-primitive slot="p1" marker="arrow" size="11" rotation="45"></vertex-primitive>
+      </line-primitive>
+    </cartesian-canvas>
 
   </body>
 </html>

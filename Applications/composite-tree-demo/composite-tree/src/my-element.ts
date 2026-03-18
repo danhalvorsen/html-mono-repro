@@ -1,22 +1,33 @@
+import type { CartesianCanvas } from './WebComponets/CartesianCanvas.js'
+import type { CoordinateSystem } from './WebComponets/CoordinateSystem.js'
+import type { Axis } from './WebComponets/Axis.js'
+import type { Circle } from './WebComponets/Circle.js'
+import type { Grid } from './Shapes/Grid/Grid.js'
+import type { Line } from './WebComponets/Line.js'
+import type { Rectangle } from './Shapes/Rectangle/Rectangle.js'
+import type { Vertex } from './WebComponets/Vertex.js'
 
-import type { ShapeCartesianCanvasElement } from './ShapeCartesianCanvasElement.js'
-import type { Canvas } from './Canvas.js'
-import type { CoordinateSystemElement } from './CoordinateSystemElement.js'
-import type { CircleShapeElement } from './CircleShapeElement.js'
+import './WebComponets/CartesianCanvas.js'
+import './WebComponets/CoordinateSystem.js'
+import './WebComponets/Axis.js'
+import './WebComponets/Circle.js'
+import './Shapes/Grid/Grid.js'
+import './WebComponets/Line.js'
+import './Shapes/Rectangle/Rectangle.js'
+import './WebComponets/Vertex.js'
+import { appDesignPolicy } from './design-system/AppDesignPolicy'
 
-import './ShapeCartesianCanvasElement.js'
-import './Canvas.js'
-import './CoordinateSystemElement.js'
-import './CircleShapeElement.js'
-import { applyAppGlobalStyle } from './app-global-style'
-
-applyAppGlobalStyle()
+appDesignPolicy.applyGlobalStyle({ token: 'canvas' })
 
 declare global {
   interface HTMLElementTagNameMap {
-    'shape-canvas': Canvas
-    'shape-cartesian-canvas': ShapeCartesianCanvasElement
-    'coordinate-system': CoordinateSystemElement
-    'circle-shape': CircleShapeElement
+    'cartesian-canvas': CartesianCanvas
+    'coordinate-system': CoordinateSystem
+    'axis-primitive': Axis
+    'circle-primitive': Circle
+    'grid-primitive': Grid
+    'line-primitive': Line
+    'rectangle-primitive': Rectangle
+    'vertex-primitive': Vertex
   }
 }

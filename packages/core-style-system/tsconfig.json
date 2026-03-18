@@ -22,6 +22,6 @@
     "types": [],
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "../core-specifications-rules/style-tokens.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["dist", "node_modules", "tests"]
 }
