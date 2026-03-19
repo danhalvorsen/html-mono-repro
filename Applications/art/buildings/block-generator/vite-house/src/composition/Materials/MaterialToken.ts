@@ -15,10 +15,11 @@ export const MaterialToken = {
   RoofLight: "roof-light",
   RoofAccent: "roof-accent",
 
-  WindowGlass: "window-glass",
+WindowGlass: "window-glass",
+  WindowGlassDark: "window-glass-dark",   // NEW
   WindowFrame: "window-frame",
+  
   Balcony: "balcony",
-
   TreeLeaf: "tree-leaf",
   TreeTrunk: "tree-trunk",
 } as const;

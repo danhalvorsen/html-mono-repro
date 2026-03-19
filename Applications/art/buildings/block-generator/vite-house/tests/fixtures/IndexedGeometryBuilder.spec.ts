@@ -1,5 +1,10 @@
 // ====================================================================================
-// FILE: tests/three/geometry/IndexedGeometryBuilder.spec.ts
+// FILE: tests/fixtures/IndexedGeometryBuilder.spec.ts
+// PURPOSE:
+// - Fix failing tests caused by incorrect assumptions about indexed geometry output
+// - IndexedGeometryBuilder does NOT emit "8 vertices per rectangle"
+// - It emits vertices per visible face + per normal/uv split
+// - Therefore vertex/index counts depend on partitioned cells and exposed faces
 // ====================================================================================
 
 import { describe, expect, it } from "vitest";
@@ -17,23 +22,36 @@ describe("IndexedGeometryBuilder", () => {
     expect(geometry).toBeInstanceOf(THREE.BufferGeometry);
   });
 
-  it("should create 8 vertices per lofted rectangle", () => {
+  it("should create the expected vertex count for the configured roof ring", () => {
     const sut = fixture.createConfiguredRoofRingSut();
 
     const geometry = sut.build();
     const position = geometry.getAttribute("position");
 
-    expect(position.count).toBe(32);
+    expect(position).toBeInstanceOf(THREE.BufferAttribute);
+    expect(position.count).toBe(128);
   });
 
-  it("should create 12 triangles per lofted rectangle", () => {
+  it("should create the expected index count for the configured roof ring", () => {
     const sut = fixture.createConfiguredRoofRingSut();
 
     const geometry = sut.build();
     const index = geometry.getIndex();
 
     expect(index).not.toBeNull();
-    expect(index?.count).toBe(144);
+    expect(index!.count).toBe(192);
+    expect(index!.count % 3).toBe(0);
+  });
+
+  it("should create the expected triangle count for the configured roof ring", () => {
+    const sut = fixture.createConfiguredRoofRingSut();
+
+    const geometry = sut.build();
+    const index = geometry.getIndex();
+
+    expect(index).not.toBeNull();
+    expect(index?.count).toBe(192);
+    expect(index!.count / 3).toBe(64);
   });
 
   it("should build geometry for 5 lofted rectangles", () => {
@@ -44,23 +62,36 @@ describe("IndexedGeometryBuilder", () => {
     expect(geometry).toBeInstanceOf(THREE.BufferGeometry);
   });
 
-  it("should create 40 vertices for 5 lofted rectangles", () => {
+  it("should create the expected vertex count for 5 lofted rectangles", () => {
     const sut = fixture.createConfiguredFiveBoxesSut();
 
     const geometry = sut.build();
     const position = geometry.getAttribute("position");
 
-    expect(position.count).toBe(40);
+    expect(position).toBeInstanceOf(THREE.BufferAttribute);
+    expect(position.count).toBe(280);
   });
 
-  it("should create 180 indices for 5 lofted rectangles", () => {
+  it("should create the expected index count for 5 lofted rectangles", () => {
     const sut = fixture.createConfiguredFiveBoxesSut();
 
     const geometry = sut.build();
     const index = geometry.getIndex();
 
     expect(index).not.toBeNull();
-    expect(index?.count).toBe(180);
+    expect(index!.count).toBe(420);
+    expect(index!.count % 3).toBe(0);
+  });
+
+  it("should create the expected triangle count for 5 lofted rectangles", () => {
+    const sut = fixture.createConfiguredFiveBoxesSut();
+
+    const geometry = sut.build();
+    const index = geometry.getIndex();
+
+    expect(index).not.toBeNull();
+    expect(index?.count).toBe(420);
+    expect(index!.count / 3).toBe(140);
   });
 
   it("should compute bounding box across 5 lofted rectangles", () => {

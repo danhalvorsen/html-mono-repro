@@ -4,7 +4,7 @@
 // ============================================================================
 
 import { describe, expect, it } from "vitest";
-import { Vector2Gpu } from "../../src/primitives/Vector2Gpu.js";
+import { Vector2Gpu } from "./Vector2Gpu.js";
 
 class Vector2GpuTestFixture {
   public create(x: number = 0, y: number = 0): Vector2Gpu {

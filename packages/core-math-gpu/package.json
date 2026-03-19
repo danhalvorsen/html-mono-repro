@@ -18,7 +18,7 @@
     "build": "tsc -p tsconfig.json",
     "test": "vitest run"
   },
-  "peerDependencies": {
-    "@monorepo/core-math": "*"
+  "dependencies": {
+    "@monorepo/core-math": "workspace:*"
   }
 }

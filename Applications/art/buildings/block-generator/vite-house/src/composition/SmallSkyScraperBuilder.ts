@@ -8,7 +8,7 @@ import type { MaterialToken } from "./Materials/MaterialToken";
 
 import { MeshBuilder } from "./MeshBuilder";
 import type { ISmallSkyScraperBuilder } from "./ISmallSkyScraperBuilder";
-import { IndexedGeometryBuilder } from "../three/geometry/IndexedGeometryBuilder";
+import { IndexedGeometryBuilder } from "../three/Builders/geometry/IndexedGeometryBuilder";
 
 type SmallSkyScraperState = Readonly<{
   levels: number;
@@ -46,7 +46,7 @@ export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
       position: new THREE.Vector3(0, 0, 0),
       facadeToken: "building-red",
       roofBorderToken: "window-frame",
-      roofTopToken: "building-red",
+      roofTopToken: "roof-accent",
       windowToken: "window-glass",
       balconyToken: "building-red",
     });

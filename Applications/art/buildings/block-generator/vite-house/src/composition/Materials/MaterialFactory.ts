@@ -20,9 +20,9 @@ export class MaterialFactory implements IMaterialFactory {
       case "grass":
         return new THREE.MeshStandardMaterial({ color: 0xb7d77a });
       case "roof-light":
-        return new THREE.MeshStandardMaterial({ color: 0xf7f7f7 });
+        return new THREE.MeshStandardMaterial({ color: 0x0000f7 });
       case "roof-accent":
-        return new THREE.MeshStandardMaterial({ color: 0xf1d54a });
+        return new THREE.MeshStandardMaterial({ color: 0xff00ff });
       case "window-glass":
         return new THREE.MeshStandardMaterial({
           color: 0x7dddf6,
@@ -31,6 +31,15 @@ export class MaterialFactory implements IMaterialFactory {
         });
       case "window-frame":
         return new THREE.MeshStandardMaterial({ color: 0xf4edf7 });
+      case "window-glass-dark": 
+        return new THREE.MeshStandardMaterial({
+          color: 0x1f2a38,
+          emissive: 0x0a1118,
+          roughness: 0.25,
+          metalness: 0.1,
+          transparent: true,
+          opacity: 0.85,
+        });
       case "balcony":
         return new THREE.MeshStandardMaterial({ color: 0xf3eef7 });
       case "tree-leaf":

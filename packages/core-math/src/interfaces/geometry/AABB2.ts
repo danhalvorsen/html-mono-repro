@@ -1,7 +1,7 @@
 import { Vector2 } from "../../implementations/Vector2.js";
 import { IBoundingBox } from "../IBoundingBox.js";
 
-export   class AABB2 implements IBoundingBox {
+export class AABB2 implements IBoundingBox {
   readonly min: Vector2;
   readonly max: Vector2;
 
