@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "lit": "^3.3.1",
-    "@monorepo/core-design-composite": "workspace:*"
+    "@monorepo/core-design-pattern-composite-tree": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~5.9.3",

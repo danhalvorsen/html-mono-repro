@@ -16,8 +16,6 @@
         "clearCache": "pnpm -C .. vitest --clearCache"
     },
     "dependencies": {
-        "inversify": "^6.2.2",
-        "reflect-metadata": "^0.2.2"
     },
     "devDependencies": {
         

@@ -931,14 +931,7 @@ importers:
         specifier: ^0.152.2
         version: 0.152.2
 
-  packages/core-composition-abstract:
-    dependencies:
-      inversify:
-        specifier: ^6.2.2
-        version: 6.2.2(reflect-metadata@0.2.2)
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
+  packages/core-composition-abstract: {}
 
   packages/core-composition-abstract-new: {}
 
