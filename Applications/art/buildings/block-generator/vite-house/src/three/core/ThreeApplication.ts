@@ -15,8 +15,9 @@ import { ThreeRenderer } from "./ThreeRenderer.js";
 import { ThreeScene } from "./ThreeScene.js";
 import { OrbitCameraController } from "./OrbitCameraController.js";
 
-import { MaterialFactory } from "../../composition/Materials/MaterialFactory.js";
+import { MaterialFactory } from "../Materials/MaterialFactory.js";
 import { BuildingPreviewScene } from "./scene/BuildingPreviewScene.js";
+import { FooBuilderPlaygroundScene } from "./scene/playgrounds/FooBuilder.Playground.Scene.js";
 import { WindowBuilderPlaygroundScene } from "./scene/playgrounds/WindowBuilder.Playground.Scene.js";
 import { SceneMenu } from "./scene/SceneMenu.js";
 
@@ -57,6 +58,11 @@ export class ThreeApplication implements IThreeApplication {
     this.menu.register(
       "WindowBuilderPlaygroundScene",
       () => new WindowBuilderPlaygroundScene(scene, materialFactory),
+    );
+
+    this.menu.register(
+      "FooBuilderPlaygroundScene",
+      () => new FooBuilderPlaygroundScene(scene, materialFactory),
     );
 
     this.menu.mount(container);

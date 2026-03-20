@@ -1,8 +1,9 @@
 import { customElement, property } from 'lit/decorators.js'
 import type { IStyleReference } from '@monorepo/core-style-system'
-import { AbstractDrawableElement } from '../../ShapeElement'
+ 
 import { GridShape } from './GridShape'
 import type { IGridShape } from './IGridShape'
+import { AbstractDrawableElement } from '../ShapeElement'
 
 @customElement('grid-primitive')
 export class Grid extends AbstractDrawableElement {

@@ -1,8 +1,9 @@
 import { customElement, property } from 'lit/decorators.js'
 import type { IStyleReference } from '@monorepo/core-style-system'
-import { AbstractDrawableElement } from '../../ShapeElement'
-import { RectangleShape } from '../../shape-model'
+ 
+import { RectangleShape } from '../shape-model'
 import type { IPolygon } from '../Polygon/IPolygon'
+import { AbstractDrawableElement } from '../ShapeElement'
 
 @customElement('rectangle-primitive')
 export class Rectangle extends AbstractDrawableElement {

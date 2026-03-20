@@ -6,9 +6,9 @@ import * as THREE from "three";
 import type { IThreeScene } from "../../IThreeScene.js";
 import { PlaygroundSceneBase } from "../common/PlaygroundSceneBase.js";
  
-import type { IMaterialFactory } from "../../../../composition/Materials/IMaterialFactory.js";
-import { MaterialToken } from "../../../../composition/Materials/MaterialToken.js";
-import { WindowBuilder } from "../../../../composition/IWindowBuilder";
+import { MaterialToken } from "../../../Materials/MaterialToken.js";
+import { WindowBuilder } from "../../../Builders/IWindowBuilder.js";
+import type { IMaterialFactory } from "../../../Materials/IMaterialFactory.js";
 
 export class WindowBuilderPlaygroundScene extends PlaygroundSceneBase {
   public constructor(
@@ -16,7 +16,6 @@ export class WindowBuilderPlaygroundScene extends PlaygroundSceneBase {
     materialFactory: IMaterialFactory,
   ) {
     super(scene, "window-builder-playground-root", materialFactory);
-    this.initialize();
   }
 
   protected createContent(): void {
@@ -44,8 +43,8 @@ export class WindowBuilderPlaygroundScene extends PlaygroundSceneBase {
       builder
         .reset()
         .withFrame(
-          { x: 0, y: 0, width: 0.7, height: 2.2, depth: 0.08 },
-          MaterialToken.WindowFrame,
+          { x: 0, y: 0, width: 0.7, height: 2.2 },
+          MaterialToken.BuildingBlue,
         )
         .withGlass(MaterialToken.WindowGlassDark, 0.08)
         .build();

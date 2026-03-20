@@ -1,6 +1,6 @@
 import type { IStyleReference } from '@monorepo/core-style-system';
 import type { DrawableShape } from '../../DrawableShape';
-import { ShapeIds, StyleReferences } from '../../shape-model';
+import { ShapeIds, StyleReferences } from '../shape-model';
 import type { IShapeGroup } from './IShapeGroup';
 
 export class ShapeGroup implements IShapeGroup {

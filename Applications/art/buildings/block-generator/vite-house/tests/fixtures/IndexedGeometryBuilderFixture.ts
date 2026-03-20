@@ -3,7 +3,7 @@
 // ====================================================================================
 
 import * as THREE from "three";
-import { IndexedGeometryBuilder } from "../../src/three/Builders/geometry/IndexedGeometryBuilder.js";
+import { IndexedGeometryBuilder } from "../../src/three/core/geometry/IndexedGeometryBuilder.js";
 
 export class IndexedGeometryBuilderFixture {
   public createSut(): IndexedGeometryBuilder {

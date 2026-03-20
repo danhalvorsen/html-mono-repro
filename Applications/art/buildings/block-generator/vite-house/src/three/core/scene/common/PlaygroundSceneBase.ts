@@ -9,8 +9,8 @@
 import * as THREE from "three";
 import type { IThreeScene } from "../../IThreeScene.js";
 import { SceneObjectBase } from "./SceneObjectBase.js";
-import type { IMaterialFactory } from "../../../../composition/Materials/IMaterialFactory.js";
-import { MaterialToken } from "../../../../composition/Materials/MaterialToken.js";
+import type { IMaterialFactory } from "../../../Materials/IMaterialFactory.js";
+import { MaterialToken } from "../../../Materials/MaterialToken.js";
 
 export abstract class PlaygroundSceneBase extends SceneObjectBase {
   protected readonly materialFactory: IMaterialFactory;
@@ -22,6 +22,7 @@ export abstract class PlaygroundSceneBase extends SceneObjectBase {
   ) {
     super(scene, rootName);
     this.materialFactory = materialFactory;
+    this.initialize();
   }
 
   protected initialize(): void {
@@ -63,5 +64,7 @@ export abstract class PlaygroundSceneBase extends SceneObjectBase {
     this.addToScene(ground);
   }
 
-  protected abstract createContent(): void;
+  protected createContent(): void {
+    // default no-op so subclasses are not forced to implement content
+  }
 }

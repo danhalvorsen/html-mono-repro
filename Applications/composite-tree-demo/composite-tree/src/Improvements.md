@@ -1,1 +1,0 @@
-The Application is a base for exploring the composite desing pattern, so I dont want, rigth now an sceen graph, thats a  future goal. Right now I want Shape that will be moved (NOT NOW) to a composte three and from there to a composite tree with walkers. etc. The concept 

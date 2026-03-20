@@ -1,5 +1,5 @@
 import type { IStyleReference } from '@monorepo/core-style-system';
-import type { ShapeKind } from '../shape-model';
+import type { ShapeKind } from '../Shapes/shape-model';
 
 export interface IShape {
   readonly id: string;

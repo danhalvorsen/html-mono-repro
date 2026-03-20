@@ -1,5 +1,5 @@
 import type { IStyleReference } from '@monorepo/core-style-system';
-import { ShapeIds, StyleReferences } from '../../shape-model';
+import { ShapeIds, StyleReferences } from '../shape-model';
 import type { IGridShape } from './IGridShape';
 
 

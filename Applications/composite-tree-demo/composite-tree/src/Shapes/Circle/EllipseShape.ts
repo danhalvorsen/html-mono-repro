@@ -1,6 +1,6 @@
 import type { Point } from "@monorepo/core-math";
 import type { IStyleReference } from "@monorepo/core-style-system";
-import { ShapeIds, StyleReferences } from "../../shape-model";
+import { ShapeIds, StyleReferences } from "../shape-model";
 import type { IEllipseShape } from "./IEllipseShape";
 
 export class EllipseShape implements IEllipseShape {

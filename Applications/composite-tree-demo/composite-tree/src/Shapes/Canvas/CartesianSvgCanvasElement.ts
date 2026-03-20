@@ -1,7 +1,7 @@
 import { LitElement, type TemplateResult, html, css } from 'lit'
 import { property } from 'lit/decorators.js'
 
-import { RectangleShape } from '../../shape-model'
+import { RectangleShape } from '../shape-model'
 import type { DrawableShape } from '../../DrawableShape'
 import { ShapeStylePolicy } from '../../rendering/ShapeStylePolicy'
 import { SvgStyleAdapter } from '../../rendering/SvgStyleAdapter'

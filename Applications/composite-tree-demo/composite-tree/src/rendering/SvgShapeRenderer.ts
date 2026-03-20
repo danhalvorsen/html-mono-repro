@@ -3,7 +3,7 @@ import type { Point } from '@monorepo/core-math'
 import type { IStyle, IStyleReference, IStyleResolver } from '@monorepo/core-style-system'
 
 import type { DrawableShape } from '../DrawableShape'
-import type { ICircleShape } from '../shape-model'
+import type { ICircleShape } from '../Shapes/shape-model'
 import type { IEllipseShape } from '../Shapes/Circle/IEllipseShape'
 import type { IGridShape } from '../Shapes/Grid/IGridShape'
 import type { IShapeGroup } from '../Shapes/Group/IShapeGroup'

@@ -1,7 +1,7 @@
 import type { Point } from '@monorepo/core-math';
 import type { IStyleReference } from '@monorepo/core-style-system';
 import type { IVertex } from '../Vertex/IVertex';
-import { ShapeIds, StyleReferences } from '../../shape-model';
+import { ShapeIds, StyleReferences } from '../shape-model';
 import type { ILineShape } from './ILineShape';
  
 export class LineShape implements ILineShape {

@@ -2,7 +2,7 @@ import type { IStyleReference } from '@monorepo/core-style-system'
  
 import type { AxisName, IAxis } from './IAxis'
 import type { ILineShape } from '../../Line/ILineShape'
-import { ShapeIds, StyleReferences } from '../../../shape-model'
+import { ShapeIds, StyleReferences } from '../../shape-model'
 
 export class AxisShape implements IAxis {
   public readonly id: string
