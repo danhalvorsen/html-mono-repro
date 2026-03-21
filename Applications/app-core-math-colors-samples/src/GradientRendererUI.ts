@@ -6,8 +6,6 @@ import { customElement } from "lit/decorators.js";
 import { property } from "lit/decorators.js";
 import type { IGradientRenderer } from "./IGradientRenderer.js";
 
-export interface IGradientRendererElement extends HTMLElement, IGradientRenderer<IGradient> {}
-
 @customElement("mr-gradient-renderer-ui")
 export class GradientRendererUI
   extends LitElement
