@@ -1,5 +1,6 @@
 export * from './Composite.js';
 export * from './IComponent.js';
+export * from './ICompositeNode.js';
 export * from './Leaf.js';
 export * from './Shape/Circle.js';
 export * from './Shape/Demo.js';

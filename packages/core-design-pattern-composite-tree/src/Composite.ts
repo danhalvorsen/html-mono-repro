@@ -1,6 +1,11 @@
-import type { IComponent } from "./IComponent.js";
+// packages/core-design-pattern-composite-tree/src/Composite.ts
 
-export abstract class Composite<TNode> implements IComponent<TNode> {
+import type { IComponent } from "./IComponent.js";
+import type { ICompositeNode } from "./ICompositeNode.js";
+
+export abstract class Composite<TNode>
+  implements ICompositeNode<TNode>
+{
   private readonly children: TNode[] = [];
 
   protected constructor(public readonly name: string) {}

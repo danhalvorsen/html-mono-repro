@@ -9,19 +9,19 @@
         "@types/node": "^20.19.25",
         "@typescript-eslint/eslint-plugin": "8",
         "@typescript-eslint/parser": "8",
-        "@vitest/coverage-v8": "4.0.14",
-        "@vitest/ui": "4.0.14",
+        "@vitest/coverage-v8": "3.2.4",
+        "@vitest/ui": "3.2.4",
         "eslint": "9.39.4",
         "eslint-config-prettier": "10.1.8",
         "eslint-import-resolver-typescript": "4.4.4",
         "eslint-plugin-import": "2.32.0",
         "eslint-plugin-unused-imports": "4",
         "pnpm": "^10.24.0",
-        "rimraf": "^5.0.5",
+        "rimraf": "^6.0.1",
         "tsx": "^4.21.0",
         "typescript": "^5.9.3",
         "vite": "^5.0.0",
-        "vitest": "4.0.14"
+        "vitest": "3.2.4"
     },
     "scripts": {
         "build:packages": "pnpm -r --filter \"./packages/**\" run build",

@@ -14,7 +14,8 @@
     "lit": "^3.3.2",
     "@monorepo/core-math": "workspace:*",
     "@monorepo/core-design-patterns": "workspace:*",
-    "@monorepo/core-style-system": "workspace:*"
+    "@monorepo/core-style-system": "workspace:*",
+    "@monorepo/core-scene-graph": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~5.9.3",
