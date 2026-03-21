@@ -1,6 +1,7 @@
 // packages/core-math-colors-samples/color-math/src/RgbaParser.ts
 
 import { IColor } from "../colors/IColor.js";
+import { Color } from "../colors/Color.js";
 
 export class RgbaParser {
   public static tryParse(input: string): IColor | null {
@@ -41,6 +42,6 @@ export class RgbaParser {
       return null;
     }
 
-    return {red, green, blue, alpha} as IColor;
+    return Color.fromRgbBytes(red, green, blue, alpha);
   }
 }

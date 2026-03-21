@@ -6,15 +6,19 @@
   <title>RGB Gradient Tool</title>
 </head>
 <body>
-<mr-rgba-input>
-  <mr-rgba-list slot="list">
-    <mr-rgb-gradient-bar slot="bar"></mr-rgb-gradient-bar>
-  </mr-rgba-list>
-</mr-rgba-input>
+  <mr-app>
+      <h1>RGB Gradient Tool</h1>
+      <p>Use the inputs below to create a custom RGB gradient.</p>
+      
+  </mr-app>
 
+<script type="module" src="./src/App.ts"></script>
+<script type="module" src="./src/Gradient/NewGradientUI.ts"></script>
+<script type="module" src="./src/Gradient/StraightTriangleUI.ts"></script>
 <script type="module" src="./src/RgbaInput.ts"></script>
 <script type="module" src="./src/RgbaList.ts"></script>
 <script type="module" src="./src/RgbListItem.ts"></script>
 <script type="module" src="./src/RgbGradientBar.ts"></script>
+<script type="module" src="./src/GradientRendererUI.ts"></script>
 </body>
 </html>
