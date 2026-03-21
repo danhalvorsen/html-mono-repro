@@ -1,4 +1,6 @@
-// Applications/app-core-math-colors-samples/src/Gradient/NewGradientUI.ts
+// ====================================================================================
+// FILE: Applications/app-core-math-colors-samples/src/Gradient/NewGradientUI.ts
+// ====================================================================================
 
 import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -9,37 +11,47 @@ export class NewGradientUI extends LitElement {
   @property({ attribute: false })
   public gradient: IGradient | null = null;
 
-  @property({ type: Number }) public height = 42;
-  @property({ type: Number, attribute: "corner-radius" }) public cornerRadius = 9;
+  @property({ type: Number })
+  public height = 42;
+
+  @property({ type: Number, attribute: "corner-radius" })
+  public cornerRadius = 9;
 
   protected override render() {
     return html`
       <div style=${this._style()}>
-        ${this._renderChildren()}
+        ${this._renderGradient()}
       </div>
     `;
   }
 
-  private _renderChildren() {
-    // inject gradient into direct child if it supports it
-    const child = this.firstElementChild as unknown;
+  // ----------------------------------------------------------------------------------
+  // RENDER
+  // ----------------------------------------------------------------------------------
 
-    if (this._isGradientAware(child)) {
-      child.gradient = this.gradient;
-    }
+  private _renderGradient() {
+    if (!this.gradient) return null;
 
-    return html`<slot></slot>`;
+    const stops = this.gradient.getAll();
+
+    const css = stops
+      .map((s) => `${s.color.toCssRgba()} ${s.position * 100}%`)
+      .join(", ");
+
+    return html`
+      <div
+        style="
+          width:100%;
+          height:100%;
+          background: linear-gradient(to right, ${css});
+        "
+      ></div>
+    `;
   }
 
-  private _isGradientAware(
-    value: unknown,
-  ): value is { gradient: IGradient | null } {
-    return (
-      typeof value === "object" &&
-      value !== null &&
-      "gradient" in value
-    );
-  }
+  // ----------------------------------------------------------------------------------
+  // STYLE
+  // ----------------------------------------------------------------------------------
 
   private _style(): string {
     return `

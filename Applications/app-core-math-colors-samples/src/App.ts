@@ -1,14 +1,15 @@
-// Applications/app-core-math-colors-samples/src/App.ts
-
 import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { componentStyles } from "./componentStyles";
 
 import "./RgbaInput";
 import "./RgbaList";
+import "./RgbListItem";
+import "./RgbGradientBar";
+
 import "./GradientRendererUI";
-import "./Gradient/NewGradientUI.js";
-import "./Gradient/FakeGradientDataSource.js"; // ← MISSING
+import "./Gradient/NewGradientUI";
+import "./Gradient/FakeGradientDataSource";
 
 @customElement("mr-app")
 export class App extends LitElement {
@@ -21,11 +22,8 @@ export class App extends LitElement {
           <mr-rgba-list slot="list"></mr-rgba-list>
         </mr-rgba-input>
 
-        <mr-fake-gradient-data-source>
-          <mr-new-gradient-ui>
-            <mr-gradient-renderer-ui></mr-gradient-renderer-ui>
-          </mr-new-gradient-ui>
-        </mr-fake-gradient-data-source>
+        <mr-fake-gradient-data-source></mr-fake-gradient-data-source>
+        <mr-fake-gradient-data-source></mr-fake-gradient-data-source>
       </div>
     `;
   }

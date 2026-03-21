@@ -1,40 +1,47 @@
-// Applications/app-core-math-colors-samples/src/Gradient/FakeGradientDataSource.ts
+// ====================================================================================
+// FILE: FakeGradientDataSource.ts (FIXED)
+// ====================================================================================
 
 import { LitElement, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import type { IGradient } from "@monorepo/core-math-colors";
-import { GradientMapper } from "./GradientMapper.js";
 import gradients from "./data/Gradients.json";
+import { GradientMapper } from "./GradientMapper";
 
 @customElement("mr-fake-gradient-data-source")
 export class FakeGradientDataSource extends LitElement {
   public static override styles = css`
     :host {
-      display: contents;
+      display: block;
     }
   `;
+  constructor() {
+    super();
+    console.log("FakeGradientDataSource INSTANCE CREATED");
+  }
+  private readonly _gradients: readonly IGradient[] = (() => {
+    const source = Array.isArray(gradients)
+      ? gradients
+      : (gradients as any).default;
 
-  private readonly _gradient: IGradient =
-    GradientMapper.fromJson(
-      (gradients as any[]).find(g => g.name === "ocean-calm") ?? gradients[0]
-    );
+    if (!Array.isArray(source)) {
+      throw new Error("Gradients JSON is not an array");
+    }
+    console.log("Loaded gradients:", source.length);
+    return source.map((g) => GradientMapper.fromJson(g));
+  })();
 
   protected override render() {
-    return html`<slot @slotchange=${this._apply}></slot>`;
-  }
+    return html`
+      ${this._gradients.map((g, i) => {
+        console.log("Rendering gradient:", i);
 
-  protected override firstUpdated(): void {
-    this._apply();
-  }
-
-  private _apply(): void {
-    const slot = this.renderRoot.querySelector("slot");
-    if (!(slot instanceof HTMLSlotElement)) return;
-
-    const el = slot.assignedElements({ flatten: true })[0] as any;
-    if (!el) return;
-
-    // KISS: property propagation
-    el.gradient = this._gradient;
+        return html`
+          <mr-new-gradient-ui .gradient=${g}>
+            <mr-gradient-renderer-ui></mr-gradient-renderer-ui>
+          </mr-new-gradient-ui>
+        `;
+      })}
+    `;
   }
 }
