@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import type { IResizeAware } from "./IResizeAware";
+import type { IResizeAware } from "../../events/IResizeAware";
  
 export interface IThreeRenderer extends IResizeAware {
     getRenderer(): THREE.WebGLRenderer;

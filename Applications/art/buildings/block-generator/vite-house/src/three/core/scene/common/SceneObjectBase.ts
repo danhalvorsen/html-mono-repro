@@ -4,7 +4,7 @@
 // ====================================================================================
 
 import * as THREE from "three";
-import type { IThreeScene } from "../../IThreeScene.js";
+import type { IThreeScene } from "../IThreeScene.js";
 import type { IUpdatable } from "../../IUpdatable.js";
 
 export abstract class SceneObjectBase implements IUpdatable {

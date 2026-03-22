@@ -3,23 +3,27 @@
 // ====================================================================================
 
 import type { IThreeApplication } from "./IThreeApplication.js";
-import type { IUpdatable } from "./IUpdatable.js";
+import type { IUpdatable } from "../IUpdatable.js";
 
-import { RenderLoop } from "./RenderLoop.js";
-import { ResizeController } from "./ResizeController.js";
-import { SceneClock } from "./SceneClock.js";
-import { SceneRenderer } from "./SceneRenderer.js";
-import { ThreeCamera } from "./ThreeCamera.js";
-import { ThreeHost } from "./ThreeHost.js";
-import { ThreeRenderer } from "./ThreeRenderer.js";
-import { ThreeScene } from "./ThreeScene.js";
-import { OrbitCameraController } from "./OrbitCameraController.js";
+import { RenderLoop } from "../renderer/RenderLoop.js";
+import { ResizeController } from "../ResizeController.js";
+ 
+import { ThreeCamera } from "../camera/ThreeCamera.js";
+import { ThreeHost } from "../host/ThreeHost.js";
+import { ThreeRenderer } from "../renderer/ThreeRenderer.js";
+ 
+import { MaterialFactory } from "../../Materials/MaterialFactory.js";
+import { BuildingPreviewScene } from "../scene/BuildingPreviewScene.js";
+import { FooBuilderPlaygroundScene } from "../scene/playgrounds/FooBuilder.Playground.Scene.js";
+import { PrimitiveCompositionTreePlaygroundScene } from "../scene/playgrounds/composistionthee.Playground.js";
+import { WindowBuilderPlaygroundScene } from "../scene/playgrounds/WindowBuilder.Playground.Scene.js";
+import { TinyPrimitiveCompositionScene } from "../scene/playgrounds/TinyPrimitiveCompositionScene";
 
-import { MaterialFactory } from "../Materials/MaterialFactory.js";
-import { BuildingPreviewScene } from "./scene/BuildingPreviewScene.js";
-import { FooBuilderPlaygroundScene } from "./scene/playgrounds/FooBuilder.Playground.Scene.js";
-import { WindowBuilderPlaygroundScene } from "./scene/playgrounds/WindowBuilder.Playground.Scene.js";
-import { SceneMenu } from "./scene/SceneMenu.js";
+import { SceneMenu } from "../scene/SceneMenu.js";
+import { OrbitCameraController } from "../camera/OrbitCameraController.js";
+import { SceneClock } from "../scene/SceneClock.js";
+import { SceneRenderer } from "../scene/SceneRenderer.js";
+import { ThreeScene } from "../scene/ThreeScene.js";
 
 type DisposableUpdatable = IUpdatable & {
   dispose?: () => void;
@@ -63,6 +67,16 @@ export class ThreeApplication implements IThreeApplication {
     this.menu.register(
       "FooBuilderPlaygroundScene",
       () => new FooBuilderPlaygroundScene(scene, materialFactory),
+    );
+
+    this.menu.register(
+      "PrimitiveCompositionTreePlaygroundScene",
+      () => new PrimitiveCompositionTreePlaygroundScene(scene, materialFactory),
+    );
+
+        this.menu.register(
+      "TinyPrimitiveCompositionScene",
+      () => new TinyPrimitiveCompositionScene(scene, materialFactory),
     );
 
     this.menu.mount(container);

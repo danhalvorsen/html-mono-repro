@@ -1,6 +1,6 @@
-import type { IFrameRenderer } from "./IFrameRenderer";
-import type { IThreeCamera } from "./IThreeCamera";
-import type { IThreeRenderer } from "./IThreeRenderer";
+import type { IThreeCamera } from "../camera/IThreeCamera";
+import type { IFrameRenderer } from "../renderer/IFrameRenderer";
+import type { IThreeRenderer } from "../renderer/IThreeRenderer";
 import type { IThreeScene } from "./IThreeScene";
 
 export class SceneRenderer implements IFrameRenderer {

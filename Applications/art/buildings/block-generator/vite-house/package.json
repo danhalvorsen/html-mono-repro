@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "three": "^0.183.2",
-    "@monorepo/core-math": "workspace:*"
+    "@monorepo/core-math": "workspace:*",
+    "@monorepo/core-scene-graph": "workspace:*",
+     "@monorepo/core-design-pattern-composite-tree": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~5.9.3",

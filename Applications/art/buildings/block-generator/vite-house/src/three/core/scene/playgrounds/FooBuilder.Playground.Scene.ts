@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { FooBuilder } from "../../../Builders/FooBuilder.js";
-import type { IThreeScene } from "../../IThreeScene.js";
+import type { IThreeScene } from "../IThreeScene.js";
 import { PlaygroundSceneBase } from "../common/PlaygroundSceneBase.js";
 import type { IMaterialFactory } from "../../../Materials/IMaterialFactory.js";
 import { MaterialToken } from "../../../Materials/MaterialToken.js";
