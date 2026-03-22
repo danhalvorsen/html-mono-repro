@@ -3,9 +3,9 @@
 import { LitElement, css, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
 
-import { DragController } from "../Controllers/DragController.js";
 import { MouseController } from "../Controllers/MouseController.js";
 import { ShapeController } from "../Controllers/ShapeController.js";
+import { DragController } from "../../Dragging/DragController.js";
 
 @customElement("mr-canvas")
 export class MrCanvas extends LitElement {

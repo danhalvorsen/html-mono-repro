@@ -9,4 +9,5 @@ export interface IBoundingBox {
   center(): Vector2;
   contains(p: Vector2): boolean;
   intersects(other: IBoundingBox): boolean;
+  containsBox(other: IBoundingBox): boolean;
 }

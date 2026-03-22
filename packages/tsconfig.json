@@ -6,7 +6,7 @@
   "include": [
     "./**/*.ts",
     "./**/*.tsx"
-, "core-fsm/tests/Fixtures/LoggedFsmEngineFixture.ts", "core-design-patterns/tests/NTree", "NewShapeThreeJS/Reactive/Components/core-components.abstract/src/ICanvas.Component.ts", "core-specifications/tests/ValidationResult.test.ts"  ],
+, "core-fsm/tests/Fixtures/LoggedFsmEngineFixture.ts", "core-design-patterns/tests/NTree", "NewShapeThreeJS/Reactive/Components/core-components.abstract/src/ICanvas.Component.ts", "core-specifications/tests/ValidationResult.test.ts", "../vitest.workspace.ts"  ],
   "exclude": [
     "node_modules",
     "dist",

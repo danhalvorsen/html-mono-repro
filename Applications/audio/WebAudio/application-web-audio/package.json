@@ -1,6 +1,6 @@
  
 {
-  "name": "web-audio-builder-factory-sample",
+  "name": "@monorepo/canvas-dragcontroller-specification",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -14,7 +14,11 @@
   },
   "dependencies": {
     "lit": "^3.0.0",
-    "@monorepo/core-math": "workspace:*"  
+    "@monorepo/core-design-patterns-mediator": "workspace:*",
+    "@monorepo/core-math": "workspace:*",
+    "@monorepo/core-fsm": "workspace:*",
+    "@monorepo/core-design-patterns": "workspace:*",
+    "@monorepo/core-specifications-rules": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",

@@ -62,4 +62,12 @@ export class BoundingBox2D implements IBoundingBox {
       this.min.y > other.max.y
     );
   }
+   public containsBox(other: IBoundingBox): boolean {
+    return (
+      other.min.x >= this.min.x &&
+      other.min.y >= this.min.y &&
+      other.max.x <= this.max.x &&
+      other.max.y <= this.max.y
+    );
+  }
 }

@@ -1,0 +1,43 @@
+ 
+{
+  "name": "@monorepo/application-canvas",
+  "version": "1.0.0",
+  "description": "Example module scaffold.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "module",
+    "typescript",
+    "example"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-math": "workspace:*",
+    "@monorepo/core-fsm": "workspace:*",
+    "@monorepo/core-design-patterns": "workspace:*",
+    "@monorepo/core-specifications-rules": "workspace:*",
+    "@monorepo/core-design-patterns-mediator": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

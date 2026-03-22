@@ -1,8 +1,7 @@
 // Applications/audio/WebAudio/application-web-audio/tests/DragController.test.ts
 
 import { beforeEach, describe, expect, it } from "vitest";
-
-import { DragControllerFixture } from "./Fixtures/DragControllerFixture.js";
+import { DragControllerFixture } from "./DragController/DragControllerFixture";
 
 describe("DragController", () => {
   let fixture: DragControllerFixture;

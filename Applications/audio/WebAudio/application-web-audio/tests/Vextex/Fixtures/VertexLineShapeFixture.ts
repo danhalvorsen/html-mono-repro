@@ -3,11 +3,7 @@
 import { Vector2 } from "@monorepo/core-math";
  
 import { CanvasContextSpy } from "../Spys/CanvasContextSpy.js";
-import { ICanvasContext } from "../../../src/index.js";
-import { VexLine } from "../../../src/lit3/Vertex/Line/VexLine.js";
-import { VexLineShapeAdapter } from "../../../src/lit3/Vertex/Line/VexLineShapeAdapter.js";
-import { VexLineShapeAdapterFactory } from "../../../src/lit3/Vertex/Line/VexLineShapeAdapterFactory.js";
-import { VexVertex } from "../../../src/lit3/Vertex/VexVertex.js";
+import { ICanvasContext, VexLine, VexLineShapeAdapter, VexLineShapeAdapterFactory, VexVertex } from "../../../src/index.js";
 
 export type VexLineShapeFixtureOptions = Readonly<{
   start?: Vector2;

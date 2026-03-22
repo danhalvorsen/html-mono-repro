@@ -4,8 +4,7 @@
 import { Vector2 } from "@monorepo/core-math";
 
 import { MrDraggable, type VexVertexVisualShape } from "../../../src/index.js";
-import { DragTestFixtureBase } from "../../Fixtures/DragTestFixtureBase.js";
-
+ import {DragTestFixtureBase} from '../../Fixtures/Common/DragTestFixtureBase.js';
 export class VexVertexVisualShapeDragFixture extends DragTestFixtureBase {
   public readonly draggable: MrDraggable;
   public readonly vertex: VexVertexVisualShape;
