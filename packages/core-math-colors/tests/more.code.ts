@@ -15,9 +15,7 @@
 // ====================================================================================
 
 import { describe, expect, it } from "vitest";
-
-import { Color, type IColor } from "../src/colors/Color.js";
-import { Palette, type IPalette } from "../src/colors/Palette.js";
+ 
 import { Gradient } from "../src/gradients/Gradient.js";
 import { GradientStop } from "../src/gradients/GradientStop.js";
 
@@ -32,6 +30,7 @@ import { RgbColorInterpolationSpace } from "../src/interpolation/RgbColorInterpo
 import type { IColorInterpolator } from "../src/interpolation/IColorInterpolator.js";
 import { PaletteColorInterpolator } from "../src/interpolation/PaletteColorInterpolator.js";
 import { GradientStopInterpolator } from "../src/interpolation/GradientStopInterpolator.js";
+import { Color, IColor, Palette, IPalette } from "../src/index.js";
 
 // ====================================================================================
 // FIXTURE

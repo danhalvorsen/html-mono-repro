@@ -1,10 +1,11 @@
-// ====================================================================================
-// FILE: src/colors/Color.ts
-// ====================================================================================
+// packages/core-math-colors/src/colors/Color.ts
 
 import type { IColor } from "./IColor.js";
 
 export class Color implements IColor {
+  private static readonly BYTE_MAX = 255;
+  private static readonly EPSILON = 1e-10;
+
   public readonly red: number;
   public readonly green: number;
   public readonly blue: number;
@@ -21,10 +22,6 @@ export class Color implements IColor {
     this.blue = Color.ensureNormalized(blue, "blue");
     this.alpha = Color.ensureNormalized(alpha, "alpha");
   }
-
-  // ----------------------------------------------------------------------------------
-  // FACTORIES
-  // ----------------------------------------------------------------------------------
 
   public static fromNormalized(
     red: number,
@@ -75,7 +72,7 @@ export class Color implements IColor {
         parseInt(value.slice(0, 2), 16),
         parseInt(value.slice(2, 4), 16),
         parseInt(value.slice(4, 6), 16),
-        parseInt(value.slice(6, 8), 16) / 255,
+        parseInt(value.slice(6, 8), 16) / Color.BYTE_MAX,
       );
     }
 
@@ -83,10 +80,6 @@ export class Color implements IColor {
       `Invalid hex color '${hex}'. Expected '#RRGGBB' or '#RRGGBBAA'.`,
     );
   }
-
-  // ----------------------------------------------------------------------------------
-  // VALUE SEMANTICS
-  // ----------------------------------------------------------------------------------
 
   public equals(other: IColor): boolean {
     return (
@@ -100,10 +93,6 @@ export class Color implements IColor {
   public clone(): Color {
     return new Color(this.red, this.green, this.blue, this.alpha);
   }
-
-  // ----------------------------------------------------------------------------------
-  // FORMATTERS
-  // ----------------------------------------------------------------------------------
 
   public toHexRgb(): string {
     return `#${Color.toHexByte(this.red)}${Color.toHexByte(this.green)}${Color.toHexByte(this.blue)}`;
@@ -120,10 +109,6 @@ export class Color implements IColor {
   public toCssRgba(): string {
     return `rgb(${Color.toByte(this.red)} ${Color.toByte(this.green)} ${Color.toByte(this.blue)} / ${Color.formatAlpha(this.alpha)})`;
   }
-
-  // ----------------------------------------------------------------------------------
-  // INTERNAL
-  // ----------------------------------------------------------------------------------
 
   private static ensureNormalized(value: number, name: string): number {
     if (!Number.isFinite(value)) {
@@ -142,15 +127,18 @@ export class Color implements IColor {
       throw new Error(`Byte component '${name}' must be finite. Received '${value}'.`);
     }
 
-    if (value < 0 || value > 255) {
+    if (value < 0 || value > Color.BYTE_MAX) {
       throw new Error(`Byte component '${name}' must be in range [0..255]. Received '${value}'.`);
     }
 
-    return value / 255;
+    return value / Color.BYTE_MAX;
   }
 
   private static toByte(value: number): number {
-    return Math.round(value * 255);
+    const stabilized = Color.stabilizeUnitInterval(value);
+    const scaled = stabilized * Color.BYTE_MAX;
+
+    return Math.round(scaled);
   }
 
   private static toHexByte(value: number): string {
@@ -159,5 +147,24 @@ export class Color implements IColor {
 
   private static formatAlpha(value: number): string {
     return Number.parseFloat(value.toFixed(4)).toString();
+  }
+
+  private static stabilizeUnitInterval(value: number): number {
+    if (Math.abs(value) <= Color.EPSILON) {
+      return 0;
+    }
+
+    if (Math.abs(1 - value) <= Color.EPSILON) {
+      return 1;
+    }
+
+    const byteScaled = value * Color.BYTE_MAX;
+    const nearestByte = Math.round(byteScaled);
+
+    if (Math.abs(byteScaled - nearestByte) <= Color.EPSILON) {
+      return nearestByte / Color.BYTE_MAX;
+    }
+
+    return value;
   }
 }

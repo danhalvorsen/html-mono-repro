@@ -1,6 +1,4 @@
-// ====================================================================================
-// FILE: src/interpolation/GradientStopInterpolator.ts
-// ====================================================================================
+// packages/core-math-colors/src/interpolation/GradientStopInterpolator.ts
 
 import { Color } from "../colors/Color.js";
 import { Gradient } from "../gradients/Gradient.js";
@@ -10,6 +8,8 @@ import type { IColorInterpolationSpace } from "./IColorInterpolationSpace.js";
 import type { IColorInterpolator } from "./IColorInterpolator.js";
 
 export class GradientStopInterpolator implements IColorInterpolator {
+  private static readonly EPSILON = 1e-12;
+
   private readonly gradient: Gradient;
   private readonly rangeBehavior: IRangeBehavior;
   private readonly interpolationSpace: IColorInterpolationSpace;
@@ -65,8 +65,26 @@ export class GradientStopInterpolator implements IColorInterpolator {
       return end.color;
     }
 
-    const localAmount = (position - start.position) / range;
+    const localAmount = this.stabilizeUnitInterval(
+      (position - start.position) / range,
+    );
 
     return this.interpolationSpace.interpolate(start.color, end.color, localAmount);
+  }
+
+  private stabilizeUnitInterval(value: number): number {
+    if (Math.abs(value) <= GradientStopInterpolator.EPSILON) {
+      return 0;
+    }
+
+    if (Math.abs(1 - value) <= GradientStopInterpolator.EPSILON) {
+      return 1;
+    }
+
+    if (Math.abs(value - 0.5) <= GradientStopInterpolator.EPSILON) {
+      return 0.5;
+    }
+
+    return value;
   }
 }

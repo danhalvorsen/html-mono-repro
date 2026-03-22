@@ -1,7 +1,4 @@
-// ====================================================================================
-// FILE: src/interpolation/IColorInterpolator.ts
-// ====================================================================================
-
+ 
 import { Color } from  "../colors/Color.js";
 export interface IColorInterpolator {
   sample(position: number): Color;

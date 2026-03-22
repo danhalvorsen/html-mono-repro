@@ -1,7 +1,7 @@
 // Applications/app-core-math-colors-samples/src/renderers/IGradientRenderer.ts
 import { LitElement, html } from "lit";
 
-import type { IGradient } from "@monorepo/core-math-colors";
+import type { IColor, INewGradient } from "@monorepo/core-math-colors";
 import { customElement } from "lit/decorators.js";
 import { property } from "lit/decorators.js";
 import type { IGradientRenderer } from "./IGradientRenderer.js";
@@ -9,10 +9,10 @@ import type { IGradientRenderer } from "./IGradientRenderer.js";
 @customElement("mr-gradient-renderer-ui")
 export class GradientRendererUI
   extends LitElement
-  implements IGradientRenderer<IGradient>
+  implements IGradientRenderer<INewGradient<IColor>>
 {
   @property({ attribute: false })
-  public gradient: IGradient | null = null;
+  public gradient: INewGradient<IColor> | null = null;
 
   protected override render() {
     return html`
@@ -22,7 +22,7 @@ export class GradientRendererUI
     `;
   }
 
-  public buildBackground(gradient: IGradient | null): string {
+  public buildBackground(gradient: INewGradient<IColor> | null): string {
     if (gradient === null || gradient.count === 0) {
       return "transparent";
     }
@@ -62,9 +62,9 @@ export class GradientRendererUI
 @customElement("mr-yellow-gradient-renderer-ui")
 export class YellowGradientRendererUI
   extends LitElement
-  implements IGradientRenderer<IGradient>
+  implements IGradientRenderer<INewGradient<IColor>>
 {
-  public buildBackground(_gradient: IGradient | null): string {
+  public buildBackground(_gradient: INewGradient<IColor> | null): string {
     return "linear-gradient(to right, rgb(255 235 59), rgb(255 235 59))";
   }
 

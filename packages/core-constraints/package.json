@@ -1,8 +1,8 @@
  
 {
-  "name": "@monorepo/core.module.example.web",
+  "name": "@monorepo/core-constraints",
   "version": "1.0.0",
-  "description": "Example module scaffold.",
+  "description": "core-constraints",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -29,9 +29,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@monorepo/core-math": "workspace:*",
-    "@monorepo/core-logging": "workspace:*",
-    "@monorepo/core-specifications-rule": "workspace:*" 
+    "@monorepo/core-specifications-rules": "workspace:*",
+    "@monorepo/core-math": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",

@@ -1,6 +1,4 @@
-// ====================================================================================
-// FILE: src/interpolation/IColorInterpolationSpace.ts
-// ====================================================================================
+
 import { Color } from "../colors/Color.js";
 
 export interface IColorInterpolationSpace {

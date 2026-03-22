@@ -1,15 +1,18 @@
 /* packages/core-math-colors-samples/color-math/src/styles.css */
 
+/* [common] Document */
 :root {
   color-scheme: light;
   background-color: #ffffff;
   color: #1f2937;
 }
 
+/* [common] Reset */
 * {
   box-sizing: border-box;
 }
 
+/* [common] Page */
 body {
   margin: 0;
   display: flex;
@@ -22,19 +25,40 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* [mr-app] Layout */
 .app-shell {
   display: grid;
   gap: 12px;
   width: min(680px, 92vw);
 }
 
+/* [common] Host Blocks */
 mr-rgba-input,
 mr-rgba-list,
-mr-rgb-gradient-bar {
+mr-rgb-gradient-bar,
+mr-palette-ui {
   display: block;
   width: 100%;
 }
 
+/* [mr-palette-ui] Surface */
+mr-palette-ui .palette {
+  display: flex;
+  overflow: hidden;
+  border: 1px solid rgba(17, 24, 39, 0.16);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(17, 24, 39, 0.06);
+}
+
+/* [mr-palette-ui] Sample */
+mr-palette-ui .sample {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+}
+
+/* [common] Panel */
 .panel {
   border: 1px solid #d4d7dd;
   border-radius: 12px;
@@ -43,12 +67,14 @@ mr-rgb-gradient-bar {
   box-shadow: 0 8px 20px rgba(17, 24, 39, 0.06);
 }
 
+/* [common] Row */
 .row {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
+/* [mr-rgba-input] Field */
 .input {
   border: 1px solid #c9cdd6;
   border-radius: 8px;
@@ -58,12 +84,14 @@ mr-rgb-gradient-bar {
   color: #111827;
 }
 
+/* [mr-rgba-input] Text Input */
 .rgba-input {
   flex: 1 1 auto;
   min-width: 0;
   font-family: "Consolas", "Courier New", monospace;
 }
 
+/* [common] Actions */
 .button,
 .icon-button {
   border: 1px solid #111827;
@@ -75,12 +103,14 @@ mr-rgb-gradient-bar {
   font-weight: 600;
 }
 
+/* [common] Disabled */
 .button:disabled,
 .icon-button:disabled {
   cursor: not-allowed;
   opacity: 0.45;
 }
 
+/* [mr-rgba-input] Preview Swatch */
 .preview-swatch {
   width: 42px;
   height: 42px;
@@ -97,6 +127,7 @@ mr-rgb-gradient-bar {
   overflow: hidden;
 }
 
+/* [mr-rgb-gradient-bar] Gradient */
 .gradient-bar {
   width: 100%;
   height: 42px;
@@ -111,6 +142,7 @@ mr-rgb-gradient-bar {
   );
 }
 
+/* [mr-rgba-list] Header */
 .list-header {
   display: flex;
   align-items: center;
@@ -118,10 +150,12 @@ mr-rgb-gradient-bar {
   margin-bottom: 8px;
 }
 
+/* [mr-rgba-list] Title */
 .list-title {
   font-weight: 600;
 }
 
+/* [mr-rgba-list] Collection */
 .list {
   list-style: none;
   margin: 0;
@@ -130,16 +164,19 @@ mr-rgb-gradient-bar {
   gap: 6px;
 }
 
+/* [mr-rgba-list] Collection Item */
 .list > li {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* [mr-rgb-list-item] Host */
 mr-rgb-list-item {
   display: block;
 }
 
+/* [mr-rgb-list-item] Item */
 .item {
   display: grid;
   grid-template-columns: 24px 1fr auto;
@@ -150,10 +187,12 @@ mr-rgb-list-item {
   transition: background 120ms ease;
 }
 
+/* [mr-rgb-list-item] Hover */
 .item:hover {
   background: rgba(0, 0, 0, 0.05);
 }
 
+/* [mr-rgb-list-item] Swatch */
 .swatch {
   width: 24px;
   height: 24px;
@@ -170,11 +209,13 @@ mr-rgb-list-item {
   background-size: 12px 12px;
 }
 
+/* [mr-rgb-list-item] Swatch Fill */
 .swatch-fill {
   width: 100%;
   height: 100%;
 }
 
+/* [mr-rgb-list-item] Text */
 .text {
   font-family: "Consolas", "Courier New", monospace;
   font-size: 13px;

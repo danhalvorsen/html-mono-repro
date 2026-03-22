@@ -3,7 +3,7 @@
 // ====================================================================================
 
 import { Color } from "../colors/Color.js";
-import type { IColorInterpolationSpace } from "./IColorInterpolationSpace.js";
+import type { IColorInterpolationSpace } from "../colors/IColorInterpolationSpace.js";
 
 export class SrgbColorInterpolationSpace implements IColorInterpolationSpace {
  

@@ -4,12 +4,12 @@
 
 import { LitElement, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import type { IGradient } from "@monorepo/core-math-colors";
+import type { IColor, INewGradient } from "@monorepo/core-math-colors";
 import gradients from "./data/Gradients.json";
-import { GradientMapper } from "./GradientMapper";
+import { GradientMapper } from "../GradientMapper";
 
-@customElement("mr-fake-gradient-data-source")
-export class FakeGradientDataSource extends LitElement {
+@customElement("gradients-presenter-ui")
+export class GradientsPresenterUI extends LitElement {
   public static override styles = css`
     :host {
       display: block;
@@ -17,9 +17,9 @@ export class FakeGradientDataSource extends LitElement {
   `;
   constructor() {
     super();
-    console.log("FakeGradientDataSource INSTANCE CREATED");
+    console.log("GradientsPresenter UI INSTANCE CREATED");
   }
-  private readonly _gradients: readonly IGradient[] = (() => {
+  private readonly _gradients: readonly INewGradient<IColor>[] = (() => {
     const source = Array.isArray(gradients)
       ? gradients
       : (gradients as any).default;
@@ -37,9 +37,9 @@ export class FakeGradientDataSource extends LitElement {
         console.log("Rendering gradient:", i);
 
         return html`
-          <mr-new-gradient-ui .gradient=${g}>
+          <gradient-ui .gradient=${g}>
             <mr-gradient-renderer-ui></mr-gradient-renderer-ui>
-          </mr-new-gradient-ui>
+          </gradient-ui>
         `;
       })}
     `;
