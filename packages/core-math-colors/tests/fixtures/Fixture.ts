@@ -1,56 +1,111 @@
-// --- imports from your product code ---
-import { ClampRangeBehavior, Gradient, GradientStop, GradientStopInterpolator, MirrorRangeBehavior, Palette, PaletteColorInterpolator, RgbColorInterpolationSpace, WrapRangeBehavior } from '../../src/index.js';
-import { Color } from '../../src/index.js';
 
-// ====================================================================================
-// FIXTURE
-// ====================================================================================
+import {
+  ClampRangeBehavior,
+  WrapRangeBehavior,
+  MirrorRangeBehavior,
+
+  Color,
+  HslColor,
+
+  NewPalette,
+  NewGradient,
+  NewGradientStop,
+
+  NewPaletteColorInterpolator,
+  NewGradientStopInterpolator,
+  NewHslColorInterpolationSpace,
+
+  RgbToHslColorConverter,
+  HslToRgbColorConverter,
+} from "../../src/index.js";
+
 export class Fixture {
-    public color(hex: string): Color {
-        return Color.fromHex(hex);
-    }
+  private readonly rgbToHsl = new RgbToHslColorConverter();
+  private readonly hslToRgb = new HslToRgbColorConverter();
 
-    public palette(hex: readonly string[]): Palette {
-        return Palette.create(hex.map((h) => Color.fromHex(h)));
-    }
+  // --------------------------------------------------------------------------------
+  // COLOR
+  // --------------------------------------------------------------------------------
 
-    public gradient(stops: ReadonlyArray<readonly [number, string]>): Gradient {
-        return Gradient.create(
-            stops.map(([p, h]) => GradientStop.create(p, Color.fromHex(h)))
-        );
-    }
+  public color(hex: string): Color {
+    return Color.fromHex(hex);
+  }
 
-    public rgbSpace(): RgbColorInterpolationSpace {
-        return new RgbColorInterpolationSpace();
-    }
+  public hsl(hex: string): HslColor {
+    return this.rgbToHsl.convert(this.color(hex));
+  }
 
-    public clamp(): ClampRangeBehavior {
-        return new ClampRangeBehavior();
-    }
+  public toRgb(color: HslColor): Color {
+    return this.hslToRgb.convert(color);
+  }
 
-    public wrap(): WrapRangeBehavior {
-        return new WrapRangeBehavior();
-    }
+  // --------------------------------------------------------------------------------
+  // NEW PALETTE
+  // --------------------------------------------------------------------------------
 
-    public mirror(): MirrorRangeBehavior {
-        return new MirrorRangeBehavior();
-    }
+  public newPalette(hexColors: readonly string[]): NewPalette<HslColor> {
+    return NewPalette.create(
+      hexColors.map((hex) => this.hsl(hex)),
+    );
+  }
 
-    public paletteInterpolator(hex: readonly string[]): PaletteColorInterpolator {
-        return new PaletteColorInterpolator(
-            this.palette(hex),
-            this.clamp(),
-            this.rgbSpace()
-        );
-    }
+  // --------------------------------------------------------------------------------
+  // NEW GRADIENT
+  // --------------------------------------------------------------------------------
 
-    public gradientInterpolator(
-        stops: ReadonlyArray<readonly [number, string]>
-    ): GradientStopInterpolator {
-        return new GradientStopInterpolator(
-            this.gradient(stops),
-            this.clamp(),
-            this.rgbSpace()
-        );
-    }
+  public newGradient(
+    stops: ReadonlyArray<readonly [number, string]>,
+    name: string = "gradient",
+  ): NewGradient<HslColor> {
+    return NewGradient.create(
+      stops.map(([position, hex]) =>
+        NewGradientStop.create(position, this.hsl(hex)),
+      ),
+      name,
+    );
+  }
+
+  // --------------------------------------------------------------------------------
+  // RANGE
+  // --------------------------------------------------------------------------------
+
+  public clamp(): ClampRangeBehavior {
+    return new ClampRangeBehavior();
+  }
+
+  public wrap(): WrapRangeBehavior {
+    return new WrapRangeBehavior();
+  }
+
+  public mirror(): MirrorRangeBehavior {
+    return new MirrorRangeBehavior();
+  }
+
+  // --------------------------------------------------------------------------------
+  // INTERPOLATION
+  // --------------------------------------------------------------------------------
+
+  public hslSpace(): NewHslColorInterpolationSpace {
+    return new NewHslColorInterpolationSpace();
+  }
+
+  public newPaletteInterpolator(
+    hexColors: readonly string[],
+  ): NewPaletteColorInterpolator<HslColor> {
+    return new NewPaletteColorInterpolator(
+      this.newPalette(hexColors),
+      this.clamp(),
+      this.hslSpace(),
+    );
+  }
+
+  public newGradientInterpolator(
+    stops: ReadonlyArray<readonly [number, string]>,
+  ): NewGradientStopInterpolator<HslColor> {
+    return new NewGradientStopInterpolator(
+      this.newGradient(stops),
+      this.clamp(),
+      this.hslSpace(),
+    );
+  }
 }

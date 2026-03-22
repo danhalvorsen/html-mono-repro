@@ -10,28 +10,23 @@ export * from './interpolation/INewColorInterpolationSpace.js';
 export * from './interpolation/INewColorInterpolator.js';
 export * from './colors/INewGradient.js';
 export * from './colors/INewPalette.js';
-export * from './colors/IPalette.js';
+
 export * from './colors/IRgbaColorComponents.js';
 export * from './colors/IRgbColorComponents.js';
 export * from './colors/NewGradient.js';
 export * from './colors/NewGradientStop.js';
-export * from './colors/NewHslGradientStop.js';
-export * from './colors/NewHslPalette.js';
+
 export * from './colors/NewPalette.js';
-export * from './colors/Palette.js';
-export * from './interpolation/SrgbColorInterpolationSpace.js';
+
 export * from './conversion/IColorConverter.js';
 export * from './conversion/RgbToHslColorConverter.js';
-export * from './gradients/Gradient.js';
-export * from './gradients/GradientStop.js';
+
 export * from './css/RgbaParser.js';
-export * from './interpolation/GradientStopInterpolator.js';
-export * from './interpolation/IColorInterpolator.js';
+
 export * from './interpolation/NewGradientStopInterpolator.js';
 export * from './interpolation/NewHslColorInterpolationSpace.js';
 export * from './interpolation/NewPaletteColorInterpolator.js';
-export * from './interpolation/PaletteColorInterpolator.js';
-export * from './interpolation/RgbColorInterpolationSpace.js';
+ 
 export * from './range/ClampRangeBehavior.js';
 export * from './range/IRangeBehavior.js';
 export * from './range/MirrorRangeBehavior.js';

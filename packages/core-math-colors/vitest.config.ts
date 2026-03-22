@@ -5,7 +5,7 @@ import path from "node:path";
 
 export default defineConfig({
   test: {
-    name: "core-scene-graph",
+    name: "core-math-colors",
     globals: true,
     environment: "node",
     include: [

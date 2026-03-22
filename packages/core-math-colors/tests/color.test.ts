@@ -1,21 +1,12 @@
 // ====================================================================================
-// SINGLE FILE: tests/all.spec.ts
+// FILE: tests/color.test.ts
 // PURPOSE:
-// - Full test suite (fixtures + unit tests)
-// - Covers: Color, Palette, Gradient, RangeBehaviors, InterpolationSpace,
-//           PaletteColorInterpolator, GradientStopInterpolator
+// - Aligned with NEW generic pipeline + Color/HSL conversion
 // ====================================================================================
 
 import { describe, expect, it } from "vitest";
-
-// --- imports from your product code ---
-import { Gradient } from "../src/gradients/Gradient.js";
-import { GradientStop } from "../src/gradients/GradientStop.js";
+import { HslColor, NewGradient, NewGradientStop } from "../src/index.js";
 import { Fixture } from "./fixtures/Fixture.js";
-
-// ====================================================================================
-// TESTS
-// ====================================================================================
 
 describe("Color", () => {
   const f = new Fixture();
@@ -40,34 +31,30 @@ describe("Color", () => {
   });
 });
 
-// ------------------------------------------------------------------------------------
-
-describe("Palette", () => {
+describe("NewPalette", () => {
   const f = new Fixture();
 
   it("should return correct count", () => {
-    const p = f.palette(["#FF0000", "#00FF00"]);
+    const p = f.newPalette(["#FF0000", "#00FF00"]);
     expect(p.count).toBe(2);
   });
 
   it("should return item by index", () => {
-    const p = f.palette(["#FF0000", "#00FF00"]);
-    expect(p.getAt(1).toHexRgb()).toBe("#00FF00");
+    const p = f.newPalette(["#FF0000", "#00FF00"]);
+    expect(f.toRgb(p.getAt(1)).toHexRgb()).toBe("#00FF00");
   });
 
   it("should reject invalid index", () => {
-    const p = f.palette(["#FF0000"]);
+    const p = f.newPalette(["#FF0000"]);
     expect(() => p.getAt(2)).toThrow();
   });
 });
 
-// ------------------------------------------------------------------------------------
-
-describe("Gradient", () => {
+describe("NewGradient", () => {
   const f = new Fixture();
 
   it("should sort stops", () => {
-    const g = f.gradient([
+    const g = f.newGradient([
       [1, "#0000FF"],
       [0, "#FF0000"],
     ]);
@@ -77,15 +64,13 @@ describe("Gradient", () => {
 
   it("should reject duplicate positions", () => {
     expect(() =>
-      Gradient.create([
-        GradientStop.create(0.5, f.color("#FF0000")),
-        GradientStop.create(0.5, f.color("#00FF00")),
+      NewGradient.create([
+        NewGradientStop.create(0.5, HslColor.fromNormalized(0, 1, 0.5)),
+        NewGradientStop.create(0.5, HslColor.fromNormalized(0.3, 1, 0.5)),
       ]),
-    ).toThrow();
+    ).toThrow(/duplicate|unique/i);
   });
 });
-
-// ------------------------------------------------------------------------------------
 
 describe("Range behaviors", () => {
   const f = new Fixture();
@@ -106,99 +91,95 @@ describe("Range behaviors", () => {
   });
 });
 
-// ------------------------------------------------------------------------------------
-
-describe("RgbColorInterpolationSpace", () => {
+describe("NewHslColorInterpolationSpace", () => {
   const f = new Fixture();
 
   it("should interpolate midpoint", () => {
-    const c = f.rgbSpace().interpolate(
-      f.color("#000000"),
-      f.color("#FFFFFF"),
+    const c = f.hslSpace().interpolate(
+      f.hsl("#000000"),
+      f.hsl("#FFFFFF"),
       0.5,
     );
 
-    expect(c.toHexRgb()).toBe("#808080");
+    expect(f.toRgb(c).toHexRgb()).toBe("#808080");
   });
 
   it("should interpolate alpha", () => {
-    const c = f.rgbSpace().interpolate(
-      f.color("#FF000000"),
-      f.color("#FF0000FF"),
+    const c = f.hslSpace().interpolate(
+      f.hsl("#FF000000"),
+      f.hsl("#FF0000FF"),
       0.5,
     );
 
-    expect(c.toHexRgba()).toBe("#FF000080");
+    expect(f.toRgb(c).toHexRgba()).toBe("#FF000080");
   });
 });
 
-// ------------------------------------------------------------------------------------
-
-describe("PaletteColorInterpolator", () => {
+describe("NewPaletteColorInterpolator", () => {
   const f = new Fixture();
 
   it("should return first color", () => {
-    const sut = f.paletteInterpolator(["#FF0000", "#00FF00"]);
-    expect(sut.sample(0).toHexRgb()).toBe("#FF0000");
+    const sut = f.newPaletteInterpolator(["#FF0000", "#00FF00"]);
+    expect(f.toRgb(sut.sample(0)).toHexRgb()).toBe("#FF0000");
   });
 
   it("should return last color", () => {
-    const sut = f.paletteInterpolator(["#FF0000", "#00FF00"]);
-    expect(sut.sample(1).toHexRgb()).toBe("#00FF00");
+    const sut = f.newPaletteInterpolator(["#FF0000", "#00FF00"]);
+    expect(f.toRgb(sut.sample(1)).toHexRgb()).toBe("#00FF00");
   });
 
   it("should interpolate inside segment", () => {
-    const sut = f.paletteInterpolator(["#000000", "#FFFFFF"]);
-    expect(sut.sample(0.5).toHexRgb()).toBe("#808080");
+    const sut = f.newPaletteInterpolator(["#000000", "#FFFFFF"]);
+    expect(f.toRgb(sut.sample(0.5)).toHexRgb()).toBe("#808080");
   });
 
   it("should clamp outside range", () => {
-    const sut = f.paletteInterpolator(["#000000", "#FFFFFF"]);
-    expect(sut.sample(-1).toHexRgb()).toBe("#000000");
-    expect(sut.sample(2).toHexRgb()).toBe("#FFFFFF");
+    const sut = f.newPaletteInterpolator(["#000000", "#FFFFFF"]);
+    expect(f.toRgb(sut.sample(-1)).toHexRgb()).toBe("#000000");
+    expect(f.toRgb(sut.sample(2)).toHexRgb()).toBe("#FFFFFF");
   });
 
   it("should sample many", () => {
-    const sut = f.paletteInterpolator(["#000000", "#FFFFFF"]);
+    const sut = f.newPaletteInterpolator(["#000000", "#FFFFFF"]);
 
-    const result = sut.sampleMany([0, 0.5, 1]).map((c: { toHexRgb: () => any; }) => c.toHexRgb());
+    const result = sut
+      .sampleMany([0, 0.5, 1])
+      .map((c) => f.toRgb(c).toHexRgb());
 
     expect(result).toEqual(["#000000", "#808080", "#FFFFFF"]);
   });
 });
 
-// ------------------------------------------------------------------------------------
-
-describe("GradientStopInterpolator", () => {
+describe("NewGradientStopInterpolator", () => {
   const f = new Fixture();
 
   it("should interpolate non-uniform stops", () => {
-    const sut = f.gradientInterpolator([
+    const sut = f.newGradientInterpolator([
       [0, "#FF0000"],
       [0.2, "#00FF00"],
       [1, "#0000FF"],
     ]);
 
-    expect(sut.sample(0.1).toHexRgb()).toBe("#808000");
+    expect(f.toRgb(sut.sample(0.1)).toHexRgb()).toBe("#FFFF00");
   });
 
   it("should use correct segment", () => {
-    const sut = f.gradientInterpolator([
+    const sut = f.newGradientInterpolator([
       [0, "#FF0000"],
       [0.2, "#00FF00"],
       [1, "#0000FF"],
     ]);
 
-    expect(sut.sample(0.6).toHexRgb()).toBe("#008080");
+    expect(f.toRgb(sut.sample(0.6)).toHexRgb()).toBe("#00FFFF");
   });
 
   it("should clamp outside stops", () => {
-    const sut = f.gradientInterpolator([
+    const sut = f.newGradientInterpolator([
       [0.2, "#FF0000"],
       [0.8, "#0000FF"],
     ]);
 
-    expect(sut.sample(0).toHexRgb()).toBe("#FF0000");
-    expect(sut.sample(1).toHexRgb()).toBe("#0000FF");
+    expect(f.toRgb(sut.sample(0)).toHexRgb()).toBe("#FF0000");
+    expect(f.toRgb(sut.sample(1)).toHexRgb()).toBe("#0000FF");
   });
 });
