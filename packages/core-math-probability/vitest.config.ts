@@ -1,19 +1,56 @@
-// vitest.config.ts
+// packages/core-scene-graph/vitest.config.ts
 
-import { defineConfig } from "vitest/config.js";
-
+import { defineConfig } from "vitest/config";
+import path from "node:path";
+ 
 export default defineConfig({
   test: {
+    name: "core-math-probability",
     globals: true,
     environment: "node",
     include: [
       "tests/**/*.test.ts",
       "tests/**/*.spec.ts",
     ],
-    isolate: false,
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/coverage/**",
+      "**/*.d.ts",
+      "**/tests/**/fixtures/**",
+      "**/tests/**/helpers/**",
+      "**/src/**/Sample/**",
+      "**/src/**/Demo.ts",
+      "**/src/**/main.ts",
+    ],
     pool: "threads",
+    isolate: false,
     typecheck: {
       tsconfig: "./tsconfig.test.json",
+    },
+    coverage: {
+      enabled: true,
+      provider: "v8",
+      all: true,
+      include: ["src/**/*.ts"],
+      exclude: [
+        "src/index.ts",
+        "src/**/*.d.ts",
+        "src/**/Sample/**",
+        "src/**/Demo.ts",
+        "src/**/main.ts",
+      ],
+      reporter: ["text", "text-summary", "html", "json-summary", "lcov"],
+      reportsDirectory: path.resolve(__dirname, "./coverage"),
+      clean: true,
+      cleanOnRerun: true,
+      skipFull: false,
+      thresholds: {
+        lines: 95,
+        functions: 95,
+        branches: 95,
+        statements: 95
+      },
     },
   },
 });

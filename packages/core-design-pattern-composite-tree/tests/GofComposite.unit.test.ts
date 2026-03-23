@@ -1,6 +1,6 @@
 
 import { describe, expect, it } from "vitest";
-import { GofCompositeFixture } from "./fixtures/GofCompositeFixture.js";
+import { GofCompositeFixture } from "../src/index.js";
 
 describe("GOF Composite", () => {
   const fixture = new GofCompositeFixture();
