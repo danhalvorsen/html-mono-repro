@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import type { IThreeHost } from "./ThreeHost";
+import type { IThreeHost } from "../host/ThreeHost";
 import type { IThreeRenderer } from "./IThreeRenderer"
 
 export class ThreeRenderer implements IThreeRenderer {

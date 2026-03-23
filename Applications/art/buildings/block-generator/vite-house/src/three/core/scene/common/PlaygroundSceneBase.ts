@@ -7,7 +7,7 @@
 // ====================================================================================
 
 import * as THREE from "three";
-import type { IThreeScene } from "../../IThreeScene.js";
+import type { IThreeScene } from "../IThreeScene.js";
 import { SceneObjectBase } from "./SceneObjectBase.js";
 import type { IMaterialFactory } from "../../../Materials/IMaterialFactory.js";
 import { MaterialToken } from "../../../Materials/MaterialToken.js";

@@ -132,9 +132,15 @@ importers:
 
   Applications/art/buildings/block-generator/vite-house:
     dependencies:
+      '@monorepo/core-design-pattern-composite-tree':
+        specifier: workspace:*
+        version: link:../../../../../packages/core-design-pattern-composite-tree
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../../../packages/core-math
+      '@monorepo/core-scene-graph':
+        specifier: workspace:*
+        version: link:../../../../../packages/core-scene-graph
       three:
         specifier: ^0.183.2
         version: 0.183.2
@@ -1066,6 +1072,22 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/core-constraints-vertex-builders:
+    dependencies:
+      '@monorepo/core-constraints':
+        specifier: workspace:*
+        version: link:../core-constraints
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../core-math
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/core-delegates:
     devDependencies:
       typescript:
@@ -1182,25 +1204,6 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-example:
-    dependencies:
-      '@monorepo/core-logger-abstract':
-        specifier: workspace:*
-        version: link:../core-logger-abstract
-      '@monorepo/core-logger-web':
-        specifier: workspace:*
-        version: link:../core-logger-web
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.2
-      typescript:
-        specifier: ^5.6.0
-        version: 5.9.3
-      vitest:
-        specifier: ^2.0.0
-        version: 2.1.9(@types/node@24.12.0)(@vitest/ui@3.2.4)(happy-dom@20.0.11)(jsdom@27.0.0)(lightningcss@1.32.0)(terser@5.46.0)
-
   packages/core-expressions:
     devDependencies:
       typescript:
@@ -1231,6 +1234,25 @@ importers:
       tsyringe:
         specifier: ^4.8.0
         version: 4.10.0
+
+  packages/core-formatter/core-example:
+    dependencies:
+      '@monorepo/core-logger-abstract':
+        specifier: workspace:*
+        version: link:../../core-logger-abstract
+      '@monorepo/core-logger-web':
+        specifier: workspace:*
+        version: link:../../core-logger-web
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@24.12.0)(@vitest/ui@3.2.4)(happy-dom@20.0.11)(jsdom@27.0.0)(lightningcss@1.32.0)(terser@5.46.0)
 
   packages/core-fsm:
     devDependencies:

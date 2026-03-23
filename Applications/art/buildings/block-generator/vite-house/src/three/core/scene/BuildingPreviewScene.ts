@@ -6,7 +6,7 @@ import * as THREE from "three";
 import { MaterialFactory } from "../../Materials/MaterialFactory.js";
 import { MaterialToken } from "../../Materials/MaterialToken.js";
 import { SmallSkyScraperBuilder } from "../../Builders/SmallSkyScraperBuilder.js";
-import type { IThreeScene } from "../IThreeScene.js";
+import type { IThreeScene } from "./IThreeScene.js";
 import { SceneObjectBase } from "./common/SceneObjectBase.js";
 
 export class BuildingPreviewScene extends SceneObjectBase {

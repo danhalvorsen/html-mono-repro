@@ -1,5 +1,5 @@
-import type { IResizeAware } from "./IResizeAware";
-import type { IResizeController } from "./IResizeController";
+import type { IResizeAware } from "../events/IResizeAware";
+import type { IResizeController } from "./events/IResizeController";
  
 import type { IViewportSource } from "./IViewportSource";
 

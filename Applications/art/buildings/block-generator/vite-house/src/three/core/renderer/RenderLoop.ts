@@ -1,7 +1,7 @@
-import type { IFrameClock } from "./IFrameClock";
+import type { IFrameClock } from "../IFrameClock";
 import type { IFrameRenderer } from "./IFrameRenderer";
 import type { IRenderLoop } from "./IRenderLoop";
-import type { IUpdatable } from "./IUpdatable";
+import type { IUpdatable } from "../IUpdatable";
 
 export class RenderLoop implements IRenderLoop {
     private readonly updatables: IUpdatable[] = [];

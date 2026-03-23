@@ -1,10 +1,11 @@
 // ====================================================================================
 // FILE: OrbitCameraController.ts
 // ====================================================================================
-
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+ 
+import type { IInteractiveCameraController } from "./IInteractiveCameraController";
 import type { IThreeCamera } from "./IThreeCamera";
-import type { IInteractiveCameraController } from "./IInteractiveCameraController.js";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
 export class OrbitCameraController implements IInteractiveCameraController {
   private readonly controls: OrbitControls;
   private readonly domElement: HTMLElement | SVGElement;

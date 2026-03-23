@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import type { ISceneClock } from "./ISceneClock";
+import type { ISceneClock } from "../scene/ISceneClock";
 
 export class SceneClock implements ISceneClock {
     private readonly clock: THREE.Clock;
