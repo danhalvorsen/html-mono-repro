@@ -1,4 +1,3 @@
- 
 {
   "name": "@monorepo/core-scene-graph",
   "version": "1.0.0",
@@ -30,11 +29,10 @@
   "license": "MIT",
   "dependencies": {
     "@monorepo/core-math": "workspace:*",
-    "@monorepo/core-design-pattern-composite-tree": "workspace:*"  
+    "@monorepo/core-design-pattern-composite-tree": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "typescript": "^5.9.3"
   }
 }

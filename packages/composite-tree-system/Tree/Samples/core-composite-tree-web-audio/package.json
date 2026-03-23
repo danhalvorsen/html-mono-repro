@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "@monorepo/core-composite-tree-web-audio",
   "version": "1.0.0",
   "private": true,
@@ -26,7 +26,6 @@
     "@vitest/browser-playwright": "^4.0.14",
     "playwright": "^1.55.0",
     "rimraf": "^6.0.1",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.14"
+    "typescript": "^5.9.3"
   }
 }
