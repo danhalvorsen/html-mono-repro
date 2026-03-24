@@ -1,4 +1,4 @@
-import { IProjectEstimateReport, Mulberry32RandomSource, ProbabilityEstimationCompositionRoot } from "@monorepo/core.math.probability";
+import { IProjectEstimateReport, Mulberry32RandomSource, ProbabilityEstimationCompositionRoot } from "@monorepo/core-math-probability";
 import { IBacklogAnalysisResult, IBacklogCounts, IBacklogDeterministicSummary, IBacklogTaskTypeBreakdown } from "./BacklogAnalysisResult.js";
 import { BacklogJsonProjectAdapter } from "./BacklogJsonProjectAdapter.js";
 import { IBacklogRootJson } from "./json/IBacklogRootJson.js";

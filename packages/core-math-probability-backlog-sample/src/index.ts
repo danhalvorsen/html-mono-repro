@@ -4,6 +4,7 @@ export * from './BacklogJsonProjectAdapter.js';
 export * from './BacklogProbabilityAnalyzer.js';
 export * from './IBacklogTaskShapeMapper.js';
 export * from './IBacklogUserStoryJson.js';
+export * from './app/main.js';
 export * from './json/IBacklogEpicJson.js';
 export * from './json/IBacklogEstimateJson.js';
 export * from './json/IBacklogFeatureJson.js';

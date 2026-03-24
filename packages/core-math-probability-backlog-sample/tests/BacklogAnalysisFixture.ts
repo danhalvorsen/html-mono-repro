@@ -1,6 +1,7 @@
-
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import {
   AsymmetricThreePointShapeMapper,
   BacklogJsonProjectAdapter,
@@ -9,12 +10,16 @@ import {
   type IBacklogRootJson,
 } from "../src/index.js";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 export class BacklogAnalysisFixture {
   public readBacklog(
-    relativePath = "./tests/fixtures/backlog.oscillator-engine-core.json",
+    relativePath = "./backlog.oscillator-engine-core.json",
   ): IBacklogRootJson {
-    const filePath = resolve(process.cwd(), relativePath);
+    const filePath = resolve(__dirname, relativePath);
     const content = readFileSync(filePath, "utf8");
+
     return JSON.parse(content) as IBacklogRootJson;
   }
 
@@ -27,7 +32,7 @@ export class BacklogAnalysisFixture {
   }
 
   public analyze(
-    relativePath = "./tests/fixtures/backlog.oscillator-engine-core.json",
+    relativePath = "./backlog.oscillator-engine-core.json",
     iterations = 6_000,
     seed = 20260323,
   ): IBacklogAnalysisResult {

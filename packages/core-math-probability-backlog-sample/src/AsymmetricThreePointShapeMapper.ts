@@ -1,6 +1,6 @@
 // src/AsymmetricThreePointShapeMapper.ts
 
-import { EstimateShape } from "@monorepo/core.math.probability";
+import { EstimateShape } from "@monorepo/core-math-probability";
 import type { IBacklogTaskShapeMapper } from "./IBacklogTaskShapeMapper.js";
 import type { IBacklogTaskJson } from "./json/IBacklogTaskJson.js";
 

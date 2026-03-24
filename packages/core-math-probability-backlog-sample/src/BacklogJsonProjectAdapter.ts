@@ -1,5 +1,5 @@
 
-import { DistributionKind, EstimateRange, IProjectEstimate } from "@monorepo/core.math.probability";
+import { DistributionKind, EstimateRange, IProjectEstimate } from "@monorepo/core-math-probability";
 import { IBacklogTaskShapeMapper } from "./IBacklogTaskShapeMapper.js";
 import { IBacklogRootJson } from "./json/IBacklogRootJson.js";
 

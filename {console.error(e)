@@ -1,0 +1,3 @@
+undefined
+C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-math-probability-backlog-sample:
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command failed with exit code 1: node -e import('@monorepo/core.math.probability').then(m=,Object.keys(m).length)).catch(e=;process.exit(1)})

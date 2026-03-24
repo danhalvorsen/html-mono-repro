@@ -1,11 +1,9 @@
-// tsconfig.json
-
 {
   "compilerOptions": {
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "lib": ["DOM", "ES2022"],
+    "lib": ["ES2022"],
 
     "rootDir": "./src",
     "outDir": "./dist",
@@ -19,9 +17,9 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
-    "types": [],
+    "types": ["node"],
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "", "tests/code.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["dist", "node_modules", "tests"]
 }

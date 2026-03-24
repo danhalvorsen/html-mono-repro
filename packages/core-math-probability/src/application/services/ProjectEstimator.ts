@@ -1,177 +1,200 @@
- 
 // =====================================================================================
-// APPLICATION — PROJECT ESTIMATOR
+// FILE: src/application/services/ProjectEstimator.ts
+// PURPOSE:
+// - Fix incorrect upper-level aggregation
+// - Preserve true Monte Carlo samples through task → story → feature → project
+// - Stop reconstructing pseudo-samples from summary statistics
 // =====================================================================================
 
 import { IProjectEstimator } from "../../domain/contracts/IProjectEstimator.js";
 import { IEstimateReportBuilder } from "../../domain/reports/IEstimateReportBuilder.js";
-import { IEstimateStatistics } from "../../domain/reports/IEstimateStatistics.js";
 import { IFeatureEstimateReport } from "../../domain/reports/IFeatureEstimateReport.js";
 import { IProjectEstimateReport } from "../../domain/reports/IProjectEstimateReport.js";
 import { ITaskEstimateReport } from "../../domain/reports/ITaskEstimateReport.js";
 import { IUserStoryEstimateReport } from "../../domain/reports/IUserStoryEstimateReport.js";
-import { IEstimateDistributionFactory, IProjectEstimate, IRandomSource, IFeatureEstimate, IUserStoryEstimate, Sample } from "../../domain/value-objects/Probability.js";
+import {
+  IEstimateDistributionFactory,
+  IFeatureEstimate,
+  IProjectEstimate,
+  IRandomSource,
+  IUserStoryEstimate,
+  Sample,
+} from "../../domain/value-objects/Probability.js";
 import { TriangularDistribution } from "../../infrastructure/distributions/TriangularDistribution.js";
 
+interface ITaskSimulation {
+  readonly report: ITaskEstimateReport;
+  readonly sample: Sample;
+}
+
+interface IUserStorySimulation {
+  readonly report: IUserStoryEstimateReport;
+  readonly sample: Sample;
+}
+
+interface IFeatureSimulation {
+  readonly report: IFeatureEstimateReport;
+  readonly sample: Sample;
+}
+
 export class ProjectEstimator implements IProjectEstimator {
-    public constructor(
-        private readonly distributionFactory: IEstimateDistributionFactory,
-        private readonly reportBuilder: IEstimateReportBuilder
-    ) { }
+  public constructor(
+    private readonly distributionFactory: IEstimateDistributionFactory,
+    private readonly reportBuilder: IEstimateReportBuilder,
+  ) {}
 
-    public estimate(
-        project: IProjectEstimate,
-        iterations: number,
-        random: IRandomSource
-    ): IProjectEstimateReport {
-        if (!Number.isInteger(iterations) || iterations <= 0) {
-            throw new RangeError("iterations must be a positive integer.");
-        }
+  public estimate(
+    project: IProjectEstimate,
+    iterations: number,
+    random: IRandomSource,
+  ): IProjectEstimateReport {
+    this.ensurePositiveIterations(iterations);
 
-        const featureReports: IFeatureEstimateReport[] = [];
+    const featureSimulations: IFeatureSimulation[] = project.features.map((feature) =>
+      this.estimateFeature(feature, iterations, random),
+    );
 
-        for (const feature of project.features) {
-            featureReports.push(this.estimateFeature(feature, iterations, random));
-        }
+    const projectSample = this.aggregateSamples(
+      featureSimulations.map((feature) => feature.sample),
+    );
 
-        const totalProjectSample = this.aggregateFeatureReports(featureReports);
-        const projectDistribution = new TriangularDistribution(
-            Math.min(...totalProjectSample.values),
-            this.computeMedian(totalProjectSample),
-            Math.max(...totalProjectSample.values)
-        );
+    return {
+      id: project.id,
+      name: project.name,
+      estimate: this.reportBuilder.build(
+        this.createSummaryDistribution(projectSample),
+        projectSample,
+      ),
+      features: featureSimulations.map((feature) => feature.report),
+    };
+  }
 
-        return {
-            id: project.id,
-            name: project.name,
-            estimate: this.reportBuilder.build(projectDistribution, totalProjectSample),
-            features: featureReports,
-        };
+  private estimateFeature(
+    feature: IFeatureEstimate,
+    iterations: number,
+    random: IRandomSource,
+  ): IFeatureSimulation {
+    const storySimulations: IUserStorySimulation[] = feature.stories.map((story) =>
+      this.estimateStory(story, iterations, random),
+    );
+
+    const featureSample = this.aggregateSamples(
+      storySimulations.map((story) => story.sample),
+    );
+
+    return {
+      sample: featureSample,
+      report: {
+        id: feature.id,
+        name: feature.name,
+        estimate: this.reportBuilder.build(
+          this.createSummaryDistribution(featureSample),
+          featureSample,
+        ),
+        stories: storySimulations.map((story) => story.report),
+      },
+    };
+  }
+
+  private estimateStory(
+    story: IUserStoryEstimate,
+    iterations: number,
+    random: IRandomSource,
+  ): IUserStorySimulation {
+    const taskSimulations: ITaskSimulation[] = story.tasks.map((task) => {
+      const distribution = this.distributionFactory.create({
+        range: task.range,
+        shape: task.shape,
+        kind: task.distributionKind,
+      });
+
+      const taskValues: number[] = new Array<number>(iterations);
+
+      for (let index = 0; index < iterations; index += 1) {
+        taskValues[index] = distribution.sample(random);
+      }
+
+      const taskSample = new Sample(taskValues);
+
+      return {
+        sample: taskSample,
+        report: {
+          id: task.id,
+          name: task.name,
+          estimate: this.reportBuilder.build(distribution, taskSample),
+        },
+      };
+    });
+
+    const storySample = this.aggregateSamples(
+      taskSimulations.map((task) => task.sample),
+    );
+
+    return {
+      sample: storySample,
+      report: {
+        id: story.id,
+        name: story.name,
+        estimate: this.reportBuilder.build(
+          this.createSummaryDistribution(storySample),
+          storySample,
+        ),
+        tasks: taskSimulations.map((task) => task.report),
+      },
+    };
+  }
+
+  private aggregateSamples(samples: readonly Sample[]): Sample {
+  if (samples.length === 0) {
+    throw new RangeError("At least one sample is required for aggregation.");
+  }
+
+  const first = samples[0]!; // safe after guard
+  const iterationCount = first.values.length;
+
+  for (const sample of samples) {
+    if (sample.values.length !== iterationCount) {
+      throw new RangeError("All aggregated samples must have identical iteration counts.");
+    }
+  }
+
+  const aggregatedValues = new Array<number>(iterationCount);
+
+  for (let iteration = 0; iteration < iterationCount; iteration += 1) {
+    let total = 0;
+
+    for (const sample of samples) {
+      total += sample.values[iteration]!; // safe due to same length guarantee
     }
 
-    private estimateFeature(
-        feature: IFeatureEstimate,
-        iterations: number,
-        random: IRandomSource
-    ): IFeatureEstimateReport {
-        const storyReports: IUserStoryEstimateReport[] = [];
+    aggregatedValues[iteration] = total;
+  }
 
-        for (const story of feature.stories) {
-            storyReports.push(this.estimateStory(story, iterations, random));
-        }
+  return new Sample(aggregatedValues);
+}
 
-        const featureSample = this.aggregateStoryReports(storyReports);
-        const featureDistribution = new TriangularDistribution(
-            Math.min(...featureSample.values),
-            this.computeMedian(featureSample),
-            Math.max(...featureSample.values)
-        );
+  private createSummaryDistribution(sample: Sample): TriangularDistribution {
+    const minimum = Math.min(...sample.values);
+    const maximum = Math.max(...sample.values);
+    const median = this.computeMedian(sample);
 
-        return {
-            id: feature.id,
-            name: feature.name,
-            estimate: this.reportBuilder.build(featureDistribution, featureSample),
-            stories: storyReports,
-        };
+    return new TriangularDistribution(minimum, median, maximum);
+  }
+
+  private computeMedian(sample: Sample): number {
+    const sorted = [...sample.values].sort((left, right) => left - right);
+    const middle = Math.floor(sorted.length / 2);
+
+    if (sorted.length % 2 === 0) {
+      return (sorted[middle - 1]! + sorted[middle]!) / 2;
     }
 
-    private estimateStory(
-        story: IUserStoryEstimate,
-        iterations: number,
-        random: IRandomSource
-    ): IUserStoryEstimateReport {
-        const taskReports: ITaskEstimateReport[] = [];
+    return sorted[middle]!;
+  }
 
-        for (const task of story.tasks) {
-            const distribution = this.distributionFactory.create({
-                range: task.range,
-                shape: task.shape,
-                kind: task.distributionKind,
-            });
-
-            const taskValues: number[] = [];
-
-            for (let index = 0; index < iterations; index += 1) {
-                taskValues.push(distribution.sample(random));
-            }
-
-            const taskSample = new Sample(taskValues);
-
-            taskReports.push({
-                id: task.id,
-                name: task.name,
-                estimate: this.reportBuilder.build(distribution, taskSample),
-            });
-        }
-
-        const storySample = this.aggregateTaskReports(taskReports);
-        const storyDistribution = new TriangularDistribution(
-            Math.min(...storySample.values),
-            this.computeMedian(storySample),
-            Math.max(...storySample.values)
-        );
-
-        return {
-            id: story.id,
-            name: story.name,
-            estimate: this.reportBuilder.build(storyDistribution, storySample),
-            tasks: taskReports,
-        };
+  private ensurePositiveIterations(iterations: number): void {
+    if (!Number.isInteger(iterations) || iterations <= 0) {
+      throw new RangeError("iterations must be a positive integer.");
     }
-
-    private aggregateTaskReports(taskReports: readonly ITaskEstimateReport[]): Sample {
-        return this.aggregateReports(taskReports.map((task) => task.estimate.statistics));
-    }
-
-    private aggregateStoryReports(storyReports: readonly IUserStoryEstimateReport[]): Sample {
-        return this.aggregateReports(storyReports.map((story) => story.estimate.statistics));
-    }
-
-    private aggregateFeatureReports(featureReports: readonly IFeatureEstimateReport[]): Sample {
-        return this.aggregateReports(featureReports.map((feature) => feature.estimate.statistics));
-    }
-
-    private aggregateReports(
-        inputs: readonly IEstimateStatistics[]
-    ): Sample {
-        // Compact aggregate when only report summaries are available:
-        // reconstruct a representative sample envelope using P50/P80/P95 anchors.
-        // This preserves distribution-agnostic reporting in this single-slice implementation.
-        const values: number[] = [];
-
-        for (let index = 0; index < 1000; index += 1) {
-            let total = 0;
-
-            for (const input of inputs) {
-                const cycle = index % 5;
-
-                switch (cycle) {
-                    case 0:
-                        total += input.percentile50;
-                        break;
-                    case 1:
-                        total += input.percentile80;
-                        break;
-                    case 2:
-                        total += input.percentile90;
-                        break;
-                    case 3:
-                        total += input.percentile95;
-                        break;
-                    default:
-                        total += input.mean;
-                        break;
-                }
-            }
-
-            values.push(total);
-        }
-
-        return new Sample(values);
-    }
-
-    private computeMedian(sample: Sample): number {
-        const sorted = [...sample.values].sort((left, right) => left - right);
-        return sorted[Math.floor(sorted.length / 2)]!;
-    }
+  }
 }

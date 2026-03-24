@@ -1,4 +1,4 @@
-import { IProjectEstimate, IProjectEstimateReport } from "@monorepo/core.math.probability";
+import { IProjectEstimate, IProjectEstimateReport } from "@monorepo/core-math-probability";
 
 export interface IBacklogCounts {
   readonly epicCount: number;
