@@ -1,4 +1,3 @@
- 
 {
   "name": "@monorepo/core-math-constraints",
   "version": "1.0.0",
@@ -29,12 +28,11 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-   "@monorepo/core-math": "workspace:*",
-   "@monorepo/core-specifications": "workspace:*"
+    "@monorepo/core-math": "workspace:*",
+    "@monorepo/core-specifications": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "typescript": "^5.9.3"
   }
 }

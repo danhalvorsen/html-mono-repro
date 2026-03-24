@@ -1,0 +1,220 @@
+{
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Oscillator Engine Core",
+      "features": [
+        {
+          "id": "F-1",
+          "title": "Basic Waveform Generation",
+          "userStories": [
+            {
+              "id": "US-1.1",
+              "title": "Generate sine waveform",
+              "tasks": [
+                {
+                  "id": "DEV-1.1.1",
+                  "type": "DEV",
+                  "title": "Implement phase accumulator core",
+                  "estimate": { "optimistic": 3, "mostLikely": 5, "pessimistic": 8 }
+                },
+                {
+                  "id": "DEV-1.1.2",
+                  "type": "DEV",
+                  "title": "Implement sine calculation (lookup / fallback)",
+                  "estimate": { "optimistic": 2, "mostLikely": 4, "pessimistic": 7 }
+                },
+                {
+                  "id": "UX-1.1.1",
+                  "type": "UX",
+                  "title": "Design waveform selector interaction states",
+                  "estimate": { "optimistic": 2, "mostLikely": 3, "pessimistic": 5 }
+                },
+                {
+                  "id": "UX-1.1.2",
+                  "type": "UX",
+                  "title": "Implement sine waveform preview component",
+                  "estimate": { "optimistic": 3, "mostLikely": 5, "pessimistic": 8 }
+                }
+              ]
+            },
+            {
+              "id": "US-1.2",
+              "title": "Generate square waveform",
+              "tasks": [
+                {
+                  "id": "DEV-1.2.1",
+                  "type": "DEV",
+                  "title": "Implement square waveform generator",
+                  "estimate": { "optimistic": 3, "mostLikely": 5, "pessimistic": 9 }
+                },
+                {
+                  "id": "DEV-1.2.2",
+                  "type": "DEV",
+                  "title": "Add duty cycle parameter handling",
+                  "estimate": { "optimistic": 4, "mostLikely": 7, "pessimistic": 12 }
+                },
+                {
+                  "id": "UX-1.2.1",
+                  "type": "UX",
+                  "title": "Design duty cycle control (knob/slider)",
+                  "estimate": { "optimistic": 3, "mostLikely": 5, "pessimistic": 8 }
+                },
+                {
+                  "id": "UX-1.2.2",
+                  "type": "UX",
+                  "title": "Render square waveform preview",
+                  "estimate": { "optimistic": 2, "mostLikely": 4, "pessimistic": 7 }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "F-2",
+          "title": "Frequency & Pitch Control",
+          "userStories": [
+            {
+              "id": "US-2.1",
+              "title": "Set frequency in Hz",
+              "tasks": [
+                {
+                  "id": "DEV-2.1.1",
+                  "type": "DEV",
+                  "title": "Implement frequency setter API",
+                  "estimate": { "optimistic": 2, "mostLikely": 4, "pessimistic": 6 }
+                },
+                {
+                  "id": "DEV-2.1.2",
+                  "type": "DEV",
+                  "title": "Add frequency validation and clamping",
+                  "estimate": { "optimistic": 2, "mostLikely": 3, "pessimistic": 5 }
+                },
+                {
+                  "id": "UX-2.1.1",
+                  "type": "UX",
+                  "title": "Implement numeric frequency input field",
+                  "estimate": { "optimistic": 2, "mostLikely": 3, "pessimistic": 5 }
+                },
+                {
+                  "id": "UX-2.1.2",
+                  "type": "UX",
+                  "title": "Implement frequency knob interaction",
+                  "estimate": { "optimistic": 3, "mostLikely": 5, "pessimistic": 9 }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "F-3",
+          "title": "Phase & Sync Handling",
+          "userStories": [
+            {
+              "id": "US-3.1",
+              "title": "Implement phase accumulator",
+              "tasks": [
+                {
+                  "id": "DEV-3.1.1",
+                  "type": "DEV",
+                  "title": "Implement phase accumulator update loop",
+                  "estimate": { "optimistic": 5, "mostLikely": 9, "pessimistic": 15 }
+                },
+                {
+                  "id": "DEV-3.1.2",
+                  "type": "DEV",
+                  "title": "Handle phase wrap-around precision",
+                  "estimate": { "optimistic": 3, "mostLikely": 6, "pessimistic": 10 }
+                },
+                {
+                  "id": "UX-3.1.1",
+                  "type": "UX",
+                  "title": "Implement phase visualization (debug scope)",
+                  "estimate": { "optimistic": 4, "mostLikely": 7, "pessimistic": 12 }
+                },
+                {
+                  "id": "UX-3.1.2",
+                  "type": "UX",
+                  "title": "Add phase reset toggle control",
+                  "estimate": { "optimistic": 2, "mostLikely": 3, "pessimistic": 5 }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "F-4",
+          "title": "Modulation Support",
+          "userStories": [
+            {
+              "id": "US-4.1",
+              "title": "Apply LFO to frequency",
+              "tasks": [
+                {
+                  "id": "DEV-4.1.1",
+                  "type": "DEV",
+                  "title": "Implement LFO oscillator module",
+                  "estimate": { "optimistic": 6, "mostLikely": 10, "pessimistic": 18 }
+                },
+                {
+                  "id": "DEV-4.1.2",
+                  "type": "DEV",
+                  "title": "Implement modulation routing system",
+                  "estimate": { "optimistic": 6, "mostLikely": 11, "pessimistic": 20 }
+                },
+                {
+                  "id": "UX-4.1.1",
+                  "type": "UX",
+                  "title": "Implement LFO rate and depth controls",
+                  "estimate": { "optimistic": 3, "mostLikely": 6, "pessimistic": 10 }
+                },
+                {
+                  "id": "UX-4.1.2",
+                  "type": "UX",
+                  "title": "Render modulation visualization overlay",
+                  "estimate": { "optimistic": 5, "mostLikely": 9, "pessimistic": 15 }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "F-5",
+          "title": "Performance & Audio Quality",
+          "userStories": [
+            {
+              "id": "US-5.1",
+              "title": "Anti-aliasing (band-limited)",
+              "tasks": [
+                {
+                  "id": "DEV-5.1.1",
+                  "type": "DEV",
+                  "title": "Implement PolyBLEP correction",
+                  "estimate": { "optimistic": 12, "mostLikely": 20, "pessimistic": 36 }
+                },
+                {
+                  "id": "DEV-5.1.2",
+                  "type": "DEV",
+                  "title": "Integrate anti-aliasing into waveform pipeline",
+                  "estimate": { "optimistic": 8, "mostLikely": 14, "pessimistic": 24 }
+                },
+                {
+                  "id": "UX-5.1.1",
+                  "type": "UX",
+                  "title": "Implement quality mode selector",
+                  "estimate": { "optimistic": 2, "mostLikely": 4, "pessimistic": 6 }
+                },
+                {
+                  "id": "UX-5.1.2",
+                  "type": "UX",
+                  "title": "Implement CPU usage indicator",
+                  "estimate": { "optimistic": 3, "mostLikely": 6, "pessimistic": 10 }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

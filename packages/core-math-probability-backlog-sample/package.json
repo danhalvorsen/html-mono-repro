@@ -1,0 +1,48 @@
+{
+  "name": "@monorepo/core-math-probability-backlog-sample",
+  "version": "1.0.0",
+  "description": "core-math-probability-backlog-sample",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "pnpm --workspace-root vitest run --root packages/core-math-probability-backlog-sample --config vitest.config.ts",
+    "test:typecheck": "pnpm --workspace-root vitest run --typecheck --root packages/core-math-probability-backlog-sample --config vitest.config.ts",
+    "start:sample": "node ./dist/app/main.js",
+    "dev:sample1": "tsx src/app/sample1/main.ts",
+    "dev:sample2": "tsx src/app/sample2/main.sample2.ts"
+  },
+  "keywords": [
+    "node",
+    "typescript",
+    "probability",
+    "monte-carlo",
+    "backlog"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-math-probability": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

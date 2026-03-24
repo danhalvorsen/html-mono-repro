@@ -1,8 +1,8 @@
  
 {
-  "name": "@monorepo/core.math.probability",
+  "name": "@monorepo/core-math-probability",
   "version": "1.0.0",
-  "description": "core.math.probability",
+  "description": "core-math-probability",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -18,8 +18,8 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc -p tsconfig.json",
-    "test": "vitest run",
-    "test:typecheck": "vitest run --typecheck"
+    "test": "pnpm --workspace-root vitest run --root packages/core-math-probability --config vitest.config.ts",
+    "test:typecheck": "pnpm --workspace-root vitest run --typecheck --root packages/core-math-probability --config vitest.config.ts"
   },
   "keywords": [
     "module",
@@ -31,7 +31,6 @@
   "dependencies": {},
   "devDependencies": {
     "rimraf": "^6.0.1",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "typescript": "^5.9.3"
   }
 }

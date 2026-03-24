@@ -3,7 +3,7 @@
 // app side
 // ====================================================================================
 
-import type { ISceneNode, ShapeNode } from "@monorepo/core-scene-graph";
+import type { ISceneNode, ISceneProjector, ShapeNode } from "@monorepo/core-scene-graph";
 import type { DrawableShape } from "../DrawableShape.js";
 import { CircleShape, RectangleShape } from "../Shapes/shape-model.js";
 import { Vector2 } from "@monorepo/core-math";
