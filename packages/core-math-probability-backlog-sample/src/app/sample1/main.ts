@@ -3,14 +3,14 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { SampleBacklogAnalysisRunner } from "./SampleBacklogAnalysisRunner.js";
-import type { IBacklogRootJson } from "../json/IBacklogRootJson.js";
+import type { IBacklogRootJson } from "../../json/IBacklogRootJson.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const filePath = resolve(
   __dirname,
-  "../../tests/backlog.oscillator-engine-core.json",
+  "../../../tests/backlog.oscillator-engine-core.json",
 );
 
 const backlog = JSON.parse(

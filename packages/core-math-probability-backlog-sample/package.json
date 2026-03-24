@@ -20,7 +20,8 @@
     "test": "pnpm --workspace-root vitest run --root packages/core-math-probability-backlog-sample --config vitest.config.ts",
     "test:typecheck": "pnpm --workspace-root vitest run --typecheck --root packages/core-math-probability-backlog-sample --config vitest.config.ts",
     "start:sample": "node ./dist/app/main.js",
-    "dev:sample1": "tsx src/app/main.ts"
+    "dev:sample1": "tsx src/app/sample1/main.ts",
+    "dev:sample2": "tsx src/app/sample2/main.sample2.ts"
   },
   "keywords": [
     "node",
