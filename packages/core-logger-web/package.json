@@ -1,29 +1,36 @@
 {
   "name": "@monorepo/core-logger-web",
   "version": "1.0.0",
-  "private": true,
+  "description": "Core logger for web",
   "type": "module",
-  "main": "./dist/code.js",
-  "types": "./dist/types/code.d.ts",
-  "scripts": {
-    "clean": "rimraf dist",
-    "build": "tsc -p tsconfig.json",
-    "test": "vitest run",
-    "typecheck": "tsc -p tsconfig.test.json --noEmit"
-  },
-  "dependencies": {
-    "@monorepo/core-logger-abstract": "workspace:*",
-    "chalk": "^5.0.0"
-  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/code.js",
-      "types": "./dist/types/code.d.ts"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "files": [
     "dist"
   ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "module",
+    "typescript",
+    "example"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-logger-abstract": "workspace:*",
+    "chalk": "^5.0.0"
+  },
   "devDependencies": {
     "rimraf": "^6.0.1",
     "typescript": "^5.9.3"

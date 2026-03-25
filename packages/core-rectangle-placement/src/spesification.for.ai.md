@@ -207,7 +207,7 @@ Use only when justified by the problem.
 - narrow types explicitly
 - use discriminated unions where useful
 - keep exported surface intentional
-
+- prefer interfaeces vs types based on use case (interfaces for contracts, types for unions and mapped types)
 ### Modules
 - keep files cohesive
 - export only what is required
@@ -267,6 +267,14 @@ Examples:
 Use where composition or infrastructure contracts matter.
 
 ---
+## 10. Task Interpretation Rules
+If the task is ambiguous, prefer the simplest interpretation that satisfies the requirements.
+
+Do not assume missing context—ask for clarification instead of guessing.
+
+Do not infer domain concepts not explicitly stated.
+
+Do not generate examples unless explicitly requested.
 
 ## 11. BDD Test Conventions
 

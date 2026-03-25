@@ -6,11 +6,10 @@ import { PlaygroundSceneBase } from "../common/PlaygroundSceneBase.js";
 import type { IMaterialFactory } from "../../../Materials/IMaterialFactory.js";
 import { MaterialToken } from "../../../Materials/MaterialToken.js";
 
-import { PrimitiveFactoryComposition } from "../../../Factories/PrimitiveFactoryComposition.js";
-
 import { PrimitiveType } from "../../../Factories/composite-tree-primetives/PrimitiveType.js";
-import { type IPrimitiveNode } from "../../../Factories/composite-tree-primetives/IPrimitiveNode.js";
+import type { IPrimitiveNode } from "../../../Factories/composite-tree-primetives/IPrimitiveNode.js";
 import { PrimitiveNodeFactory } from "../../../Factories/composite-tree-primetives/PrimitiveNodeFactory.js";
+import { ThreePrimitiveFactory } from "../../../Factories/composite-tree-primetives/ThreePrimitiveFactory.js";
 
 export class TinyPrimitiveCompositionScene extends PlaygroundSceneBase {
   private _factory?: PrimitiveNodeFactory;
@@ -24,9 +23,7 @@ export class TinyPrimitiveCompositionScene extends PlaygroundSceneBase {
 
   private get factory(): PrimitiveNodeFactory {
     if (this._factory === undefined) {
-      this._factory = new PrimitiveNodeFactory(
-        PrimitiveFactoryComposition.create(),
-      );
+      this._factory = new PrimitiveNodeFactory(new ThreePrimitiveFactory());
     }
 
     return this._factory;
@@ -94,8 +91,12 @@ class PositionedPrimitiveNode implements IPrimitiveNode {
     private readonly scale: THREE.Vector3 = new THREE.Vector3(1, 1, 1),
   ) {}
 
+  public operation(): void {
+    this.inner.operation();
+  }
+
   public getChildren(): readonly IPrimitiveNode[] {
-    return this.inner.getChildren();
+    return [this.inner];
   }
 
   public instantiate(): THREE.Object3D {

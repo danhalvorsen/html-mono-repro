@@ -1,6 +1,6 @@
 
 {
-  "name": "@monorepo/math-core-gpu",
+  "name": "@monorepo/core-math-gpu",
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.js",

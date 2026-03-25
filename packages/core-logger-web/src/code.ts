@@ -1,24 +1,24 @@
-// ============================================================================
-// packages/core-logger.web/src/code.ts
-// ============================================================================
+// packages/core-logger-web/src/code.ts
 
 import chalk from "chalk";
 import {
-  type IClock,
-  type IDispatcher,
-  type IEntryFactory,
-  type IFormatter,
-  type IInterpolator,
-  type ILogEntry,
-  type ILoggingStyle,
-  type ILoggingWriter,
-  type ILogParams,
-  type IStyleResolver,
-  type IWriterResolver,
-  type IWriterStrategy,
-  ILogger,
   LogLevel,
   LogStyleBase,
+} from "@monorepo/core-logger-abstract";
+import type {
+  IClock,
+  IDispatcher,
+  IEntryFactory,
+  IFormatter,
+  IInterpolator,
+  ILogEntry,
+  ILogger,
+  ILoggingStyle,
+  ILoggingWriter,
+  ILogParams,
+  IStyleResolver,
+  IWriterResolver,
+  IWriterStrategy,
 } from "@monorepo/core-logger-abstract";
 
 /* ============================= INTERPOLATION ============================= */
@@ -155,6 +155,7 @@ export class DefaultStyle extends LogStyleBase {
   public format(level: LogLevel, message: string, category: string, timestamp: string): string {
     const header = chalk.gray(`[${timestamp}] [${category}] [${this.toUpper(level)}]`);
     const body = chalk.white(message);
+
     return boxText(`${header}\n${body}`, { borderChar: "─" });
   }
 }
@@ -241,7 +242,9 @@ class LoggingConfigWriterResolver implements IWriterResolver {
 }
 
 class DefaultFormatter implements IFormatter {
-  public constructor(private readonly styleResolver: IStyleResolver) {}
+  public constructor(
+    private readonly styleResolver: IStyleResolver,
+  ) {}
 
   public format(entry: ILogEntry): string {
     const style = this.styleResolver.getStyle();
@@ -419,3 +422,25 @@ export class BrowserConsoleWriter {
     };
   }
 }
+
+/* ============================= ABSTRACT CONTRACT RE-EXPORTS ============================= */
+
+export { LogLevel, LogStyleBase };
+
+export type {
+  IClock,
+  IDispatcher,
+  IEntryFactory,
+  IFormatter,
+  IInterpolator,
+  ILogEntry,
+  ILogger,
+  ILoggingStyle,
+  ILoggingWriter,
+  ILogErrorMethod,
+  ILogMethod,
+  ILogParams,
+  IStyleResolver,
+  IWriterResolver,
+  IWriterStrategy,
+} from "@monorepo/core-logger-abstract";

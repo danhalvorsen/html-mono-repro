@@ -1,4 +1,5 @@
-import { PrimitiveRequest } from "./PrimitiveRequest";
+ 
+import type { PrimitiveRequest } from "./PrimitiveRequest";
 import { PrimitiveType } from "./PrimitiveType";
 
 // =====================================================================================

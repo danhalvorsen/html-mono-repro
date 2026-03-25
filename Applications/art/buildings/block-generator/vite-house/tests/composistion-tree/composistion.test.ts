@@ -7,13 +7,8 @@ import { describe, expect, it } from "vitest";
 
 import { PrimitiveFactoryComposition } from "../../src/three/Factories/PrimitiveFactoryComposition.js";
 import { PrimitiveType } from "../../src/three/Factories/PrimitiveType.js";
-import {
-  PrimitiveComposite,
-  PrimitiveNodeFactory,
-  PrimitiveTreeSearch,
-  type IPrimitiveNode,
-} from "../../src/three/Factories/composite-tree-primetives/code.js";
-
+import { IPrimitiveNode, PrimitiveNodeFactory, PrimitiveTreeSearch} from "./../../src/index.js"
+import { PrimitiveComposite } from "../../src/three/core/scene/playgrounds/composistionthee.Playground.js";
 export interface IPrimitiveCompositionFixture {
   readonly scene: THREE.Scene;
   readonly nodeFactory: PrimitiveNodeFactory;

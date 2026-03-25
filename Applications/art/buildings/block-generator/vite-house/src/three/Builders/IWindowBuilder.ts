@@ -3,7 +3,7 @@ import * as THREE from "three";
 
 import type { IMaterialFactory } from "../Materials/IMaterialFactory.js";
 import type { MaterialToken } from "../Materials/MaterialToken.js";
-import { type Rectangle, type Rectangle2 } from '@monorepo/core-math';
+import { type Rectangle2 } from '@monorepo/core-math';
 
 export interface IWindowBuilder {
   reset(): void;
@@ -18,7 +18,7 @@ export interface IWindowBuilder {
 
 type State = Readonly<{
   frame: {
-    rect: Rectangle;
+    rect: Rectangle2;
     material: MaterialToken;
   } | null;
 
@@ -52,7 +52,7 @@ export class WindowBuilder implements IWindowBuilder {
     });
   }
 
-  public withFrame(rect: Rectangle, material: MaterialToken): WindowBuilder {
+  public withFrame(rect: Rectangle2, material: MaterialToken): WindowBuilder {
     return new WindowBuilder(this.materialFactory, {
       ...this.state,
       frame: { rect, material },

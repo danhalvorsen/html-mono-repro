@@ -1,16 +1,19 @@
+// vitest.config.ts
+
 import { defineConfig } from "vitest/config";
-import path from "path";
 
 export default defineConfig({
   test: {
     globals: true,
     environment: "node",
-    include: ["tests/**/*.test.ts"]
+    include: [
+      "tests/**/*.test.ts",
+      "tests/**/*.spec.ts",
+    ],
+    isolate: false,
+    pool: "threads",
+    typecheck: {
+      tsconfig: "./tsconfig.test.json",
+    },
   },
-
-  resolve: {
-    alias: {
-      "@my-graphics/core-logger": path.resolve(__dirname, "src")
-    }
-  }
 });

@@ -1,16 +1,12 @@
 import * as THREE from "three";
-
-import type { IPrimitiveFactory } from "../IPrimitiveFactory.js";
-import type { IPrimitiveRequest } from "../IPrimitiveRequest.js";
-import { PrimitiveType } from "../PrimitiveType.js";
-
+import { PrimitiveType, type IPrimitiveRequest, type IPrimitiveFactory } from "../../../Factories";
+ 
 // =====================================================================================
 // SHARED CONTRACTS
 // - Reuse the existing app-level PrimitiveType / IPrimitiveRequest / IPrimitiveFactory
 // - Do NOT redefine parallel versions here
 // =====================================================================================
 
-export { PrimitiveType };
 export type PrimitiveRequest = IPrimitiveRequest;
 
 export interface ITransform {

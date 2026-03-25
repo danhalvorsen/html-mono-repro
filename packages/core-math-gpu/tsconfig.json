@@ -22,6 +22,6 @@
     "types": [],
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "tests/Vector3Gpu.spec.ts", "tests/GpuMeshAlgorithms.spec.ts"],
+  "include": ["src/**/*.ts", "tests/Vector3Gpu.spec.ts", "tests/GpuMeshAlgorithms.spec.ts", "tests/Vector2Gpu.spec.ts"],
   "exclude": ["dist", "node_modules", "tests"]
 }

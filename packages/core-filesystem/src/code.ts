@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import nodePath from "node:path";
 import type { ILogger } from "@monorepo/core-logger-abstract";
-import { LoggerProvider, nullLogger } from "@monorepo/core-logger-nodejs";
+import { LoggerProvider, nullLogger } from "@monorepo/core-logger-abstract"
  
 // ============================================================================
 // Event Model

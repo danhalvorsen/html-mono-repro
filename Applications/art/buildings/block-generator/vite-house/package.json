@@ -13,7 +13,10 @@
     "three": "^0.183.2",
     "@monorepo/core-math": "workspace:*",
     "@monorepo/core-scene-graph": "workspace:*",
-     "@monorepo/core-design-pattern-composite-tree": "workspace:*"
+    "@monorepo/core-math-rectangle": "workspace:*",
+     "@monorepo/core-design-pattern-composite-tree": "workspace:*",
+     "@monorepo/core-rectangle-placement": "workspace:*",
+     "@monorepo/core-math-gpu": "workspace:*" 
   },
   "devDependencies": {
     "typescript": "~5.9.3",
