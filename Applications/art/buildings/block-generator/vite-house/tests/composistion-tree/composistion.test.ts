@@ -5,27 +5,37 @@
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
 
-import { PrimitiveFactoryComposition } from "../../src/three/Factories/PrimitiveFactoryComposition.js";
-import { PrimitiveType } from "../../src/three/Factories/PrimitiveType.js";
-import { IPrimitiveNode, PrimitiveNodeFactory, PrimitiveTreeSearch} from "./../../src/index.js"
-import { PrimitiveComposite } from "../../src/three/core/scene/playgrounds/composistionthee.Playground.js";
+import type { IPrimitiveNode } from "../../src/three/Factories/composite-tree-primetives/IPrimitiveNode.js";
+import type { IPrimitiveCompositeNode } from "../../src/three/Factories/composite-tree-primetives/IPrimitiveCompositeNode.js";
+import { PrimitiveNodeFactory } from "../../src/three/Factories/composite-tree-primetives/PrimitiveNodeFactory.js";
+import { PrimitiveTreeSearch } from "../../src/three/Factories/composite-tree-primetives/PrimitiveTreeSearch.js";
+import { PrimitiveType } from "../../src/three/Factories/composite-tree-primetives/PrimitiveType.js";
+import { ThreePrimitiveFactory } from "../../src/three/Factories/composite-tree-primetives/ThreePrimitiveFactory.js";
+
 export interface IPrimitiveCompositionFixture {
   readonly scene: THREE.Scene;
   readonly nodeFactory: PrimitiveNodeFactory;
-  readonly library: PrimitiveComposite;
-  readonly templates: PrimitiveComposite;
-  readonly primitives: PrimitiveComposite;
+  readonly library: IPrimitiveCompositeNode;
+  readonly templates: IPrimitiveCompositeNode;
+  readonly primitives: IPrimitiveCompositeNode;
+}
+export interface IPrimitiveCompositionFixture {
+  readonly scene: THREE.Scene;
+  readonly nodeFactory: PrimitiveNodeFactory;
+  readonly library: IPrimitiveCompositeNode;
+  readonly templates: IPrimitiveCompositeNode;
+  readonly primitives: IPrimitiveCompositeNode;
 }
 
 export class PrimitiveCompositionFixture implements IPrimitiveCompositionFixture {
   public readonly scene: THREE.Scene;
   public readonly nodeFactory: PrimitiveNodeFactory;
-  public readonly library: PrimitiveComposite;
-  public readonly templates: PrimitiveComposite;
-  public readonly primitives: PrimitiveComposite;
+  public readonly library: IPrimitiveCompositeNode;
+  public readonly templates: IPrimitiveCompositeNode;
+  public readonly primitives: IPrimitiveCompositeNode;
 
   public constructor() {
-    const primitiveFactory = PrimitiveFactoryComposition.create();
+    const primitiveFactory = new ThreePrimitiveFactory();
 
     this.scene = new THREE.Scene();
     this.nodeFactory = new PrimitiveNodeFactory(primitiveFactory);
@@ -41,7 +51,7 @@ export class PrimitiveCompositionFixture implements IPrimitiveCompositionFixture
     this.library.add(this.templates);
   }
 
-  public createSceneRoot(name: string = "SceneRoot"): PrimitiveComposite {
+  public createSceneRoot(name: string = "SceneRoot"): IPrimitiveCompositeNode {
     return this.nodeFactory.createGroup(name);
   }
 
@@ -59,8 +69,8 @@ export class PrimitiveCompositionFixture implements IPrimitiveCompositionFixture
       depth: 1,
     }));
 
-    this.primitives.add(this.nodeFactory.createPrimitive("Sphere.Small", {
-      type: PrimitiveType.Sphere,
+    this.primitives.add(this.nodeFactory.createPrimitive("HalfSphere.Small", {
+      type: PrimitiveType.HalfSphere,
       radius: 0.5,
       segments: 16,
     }));
@@ -72,10 +82,11 @@ export class PrimitiveCompositionFixture implements IPrimitiveCompositionFixture
       segments: 16,
     }));
 
-    this.primitives.add(this.nodeFactory.createPrimitive("Roof.Pyramid", {
-      type: PrimitiveType.Pyramid,
-      radius: 1,
+    this.primitives.add(this.nodeFactory.createPrimitive("Roof.Block", {
+      type: PrimitiveType.Box,
+      width: 2,
       height: 1,
+      depth: 2,
     }));
   }
 
@@ -90,9 +101,10 @@ export class PrimitiveCompositionFixture implements IPrimitiveCompositionFixture
     }));
 
     house.add(this.nodeFactory.createPrimitive("Roof", {
-      type: PrimitiveType.Pyramid,
-      radius: 2.8,
+      type: PrimitiveType.Box,
+      width: 4.5,
       height: 1.5,
+      depth: 3.5,
     }));
 
     const tower = this.nodeFactory.createGroup("Template.Tower");
@@ -121,11 +133,7 @@ export class PrimitiveCompositionFixture implements IPrimitiveCompositionFixture
     this.templates.add(block);
   }
 }
-
-// ====================================================================================
-// FILE: tests/integration/primitive-composition-tree.integration.spec.ts
-// ====================================================================================
-
+ 
 describe("Primitive composition tree integration", () => {
   it("should build a reusable primitive library and find a template by name", () => {
     const fixture = new PrimitiveCompositionFixture();

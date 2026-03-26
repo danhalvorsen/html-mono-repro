@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "tests/fixtures/IndexedGeometryBuilderFixture.ts"]
+  "include": ["src", "tests/fixtures/IndexedGeometryBuilderFixture.ts", "src/three/Builders/builder1"]
 }

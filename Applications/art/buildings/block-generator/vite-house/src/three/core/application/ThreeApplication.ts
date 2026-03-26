@@ -17,13 +17,14 @@ import { BuildingPreviewScene } from "../scene/BuildingPreviewScene.js";
 import { FooBuilderPlaygroundScene } from "../scene/playgrounds/FooBuilder.Playground.Scene.js";
 
 import { WindowBuilderPlaygroundScene } from "../scene/playgrounds/WindowBuilder.Playground.Scene.js";
-import { TinyPrimitiveCompositionScene } from "../scene/playgrounds/TinyPrimitiveCompositionScene";
-
+import { TinyPrimitiveCompositionScene } from "../scene/playgrounds/compositions/simple/TinyPrimitiveCompositionScene.js";
+import {PlacementScene } from "../scene/playgrounds/Placement/Placement.Platground.Scene.js";
 import { SceneMenu } from "../scene/SceneMenu.js";
 import { OrbitCameraController } from "../camera/OrbitCameraController.js";
 import { SceneClock } from "../scene/SceneClock.js";
 import { SceneRenderer } from "../scene/SceneRenderer.js";
 import { ThreeScene } from "../scene/ThreeScene.js";
+import { TreeTrunkPlaygroundScene } from "../../index.js";
 
 type DisposableUpdatable = IUpdatable & {
   dispose?: () => void;
@@ -73,6 +74,14 @@ export class ThreeApplication implements IThreeApplication {
       "TinyPrimitiveCompositionScene",
       () => new TinyPrimitiveCompositionScene(scene, materialFactory),
     );
+
+    this.menu.register(
+      "Placement.Playground.Scene",
+      () => new PlacementScene(scene, materialFactory));
+
+      this.menu.register(
+      "TreeTrunkPlaygroundScene",
+      () => new TreeTrunkPlaygroundScene(scene, materialFactory));
 
     this.menu.mount(container);
     this.menu.activate(0);

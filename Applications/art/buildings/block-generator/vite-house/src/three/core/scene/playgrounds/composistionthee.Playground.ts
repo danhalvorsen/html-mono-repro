@@ -1,13 +1,13 @@
 import * as THREE from "three";
-import { PrimitiveType, type IPrimitiveRequest, type IPrimitiveFactory } from "../../../Factories";
+import { PrimitiveType } from "../../../Factories/composite-tree-primetives/PrimitiveType.js";
+import type { IPrimitiveFactory } from "../../../Factories/composite-tree-primetives/IPrimitiveFactory.js";
+import type { PrimitiveRequest } from "../../../Factories/composite-tree-primetives/PrimitiveRequest.js";
  
 // =====================================================================================
 // SHARED CONTRACTS
 // - Reuse the existing app-level PrimitiveType / IPrimitiveRequest / IPrimitiveFactory
 // - Do NOT redefine parallel versions here
 // =====================================================================================
-
-export type PrimitiveRequest = IPrimitiveRequest;
 
 export interface ITransform {
   readonly position?: THREE.Vector3;
@@ -34,7 +34,7 @@ export interface IPrimitiveCompositeNode extends IPrimitiveNode {
 export class PrimitiveLeafNode implements IPrimitiveNode {
   public constructor(
     public readonly name: string,
-    private readonly request: IPrimitiveRequest,
+    private readonly request: PrimitiveRequest,
     private readonly primitiveFactory: IPrimitiveFactory,
   ) {}
 
@@ -188,7 +188,7 @@ export class PrimitiveNodeFactory {
 
   public createPrimitive(
     name: string,
-    request: IPrimitiveRequest,
+    request: PrimitiveRequest,
   ): IPrimitiveNode {
     return new PrimitiveLeafNode(name, request, this.primitiveFactory);
   }
@@ -256,7 +256,7 @@ export { PrimitiveCompositeNode as PrimitiveComposite };
 // HELPERS
 // =====================================================================================
 
-function clonePrimitiveRequest(request: IPrimitiveRequest): IPrimitiveRequest {
+function clonePrimitiveRequest(request: PrimitiveRequest): PrimitiveRequest {
   switch (request.type) {
     case PrimitiveType.Box:
       return {

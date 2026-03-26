@@ -16,7 +16,8 @@
     "@monorepo/core-math-rectangle": "workspace:*",
      "@monorepo/core-design-pattern-composite-tree": "workspace:*",
      "@monorepo/core-rectangle-placement": "workspace:*",
-     "@monorepo/core-math-gpu": "workspace:*" 
+     "@monorepo/core-math-gpu": "workspace:*",
+     "@monorepo/core-math-probability": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~5.9.3",

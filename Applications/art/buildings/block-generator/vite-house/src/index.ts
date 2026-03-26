@@ -1,5 +1,8 @@
 export * from './counter';
 export * from './main';
+export * from './Tree/core.tree/core.tree';
+export * from './Tree/three.tree.renderer/three.tree.renderer';
+export * from './Tree/three.tree.renderer/TreeMeshFactory';
 export * from './three/Builders/FooBuilder';
 export * from './three/Builders/GroundBuilder';
 export * from './three/Builders/IMeshBuilder';
@@ -8,11 +11,11 @@ export * from './three/Builders/ITokenMaterialMeshBuilder';
 export * from './three/Builders/IWindowBuilder';
 export * from './three/Builders/MeshBuilder';
 export * from './three/Builders/SmallSkyScraperBuilder';
+export * from './three/events/IResizeAware';
 export * from './three/core/IFrameClock';
 export * from './three/core/IUpdatable';
 export * from './three/core/IViewportSource';
 export * from './three/core/ResizeController';
-export * from './three/events/IResizeAware';
 export * from './three/Factories/BoxBuilder';
 export * from './three/Factories/CylinderBuilder';
 export * from './three/Factories/defaultMaterial';
@@ -29,24 +32,24 @@ export * from './three/Factories/PrimitiveFactoryComposition';
 export * from './three/Factories/PrimitiveType';
 export * from './three/Factories/PyramidBuilder';
 export * from './three/Factories/SphereBuilder';
+export * from './three/geometry/Rectangle';
 export * from './three/Materials/BuildingPalette';
 export * from './three/Materials/IMaterialFactory';
 export * from './three/Materials/MaterialFactory';
 export * from './three/Materials/MaterialToken';
-export * from './three/geometry/Rectangle';
-
+ 
 export * from './three/core/application/IThreeApplication';
 export * from './three/core/application/ThreeApplication';
 export * from './three/core/camera/IInteractiveCameraController';
 export * from './three/core/camera/IThreeCamera';
 export * from './three/core/camera/OrbitCameraController';
 export * from './three/core/camera/ThreeCamera';
-export * from './three/core/events/IResizeController';
 export * from './three/core/geometry/IIndexedGeometryBuilder';
 export * from './three/core/geometry/IndexedGeometryBuilder';
 export * from './three/core/geometry/State';
+export * from './three/core/events/IResizeController';
 export * from './three/core/host/IThreeHost';
-
+ 
 export * from './three/core/renderer/IFrameRenderer';
 export * from './three/core/renderer/IRenderLoop';
 export * from './three/core/renderer/IThreeRenderer';
@@ -68,7 +71,7 @@ export * from './three/Factories/composite-tree-primetives/IBoxPrimitiveRequest'
 export * from './three/Factories/composite-tree-primetives/ICylinderPrimitiveRequest';
 export * from './three/Factories/composite-tree-primetives/IHalfSpherePrimitiveRequest';
 export * from './three/Factories/composite-tree-primetives/IPrimitiveCompositeNode';
-
+ 
 export * from './three/Factories/composite-tree-primetives/IPrimitiveNode';
 export * from './three/Factories/composite-tree-primetives/IPrimitiveNodeFactory';
 export * from './three/Factories/composite-tree-primetives/ITransform';
@@ -79,7 +82,7 @@ export * from './three/Factories/composite-tree-primetives/PrimitiveLeafNode';
 export * from './three/Factories/composite-tree-primetives/PrimitiveNodeFactory';
 export * from './three/Factories/composite-tree-primetives/PrimitiveRequest';
 export * from './three/Factories/composite-tree-primetives/PrimitiveTreeSearch';
-
+ 
 export * from './three/Factories/composite-tree-primetives/ThreePrimitiveFactory';
 export * from './three/Factories/composite-tree-primetives/TowerTemplateBuilder';
 export * from './three/Factories/composite-tree-primetives/TransformNode';
@@ -91,8 +94,9 @@ export * from './three/Builders/Materials/providers/WallMaterialProvider';
 export * from './three/Builders/Materials/providers/WindowGlassMaterialProvider';
 export * from './three/core/scene/common/PlaygroundSceneBase';
 export * from './three/core/scene/common/SceneObjectBase';
-
+ 
 export * from './three/core/scene/playgrounds/FooBuilder.Playground.Scene';
-export * from './three/core/scene/playgrounds/Placement.Platground.Scene';
-export * from './three/core/scene/playgrounds/TinyPrimitiveCompositionScene';
+export * from './three/core/scene/playgrounds/Placement/Placement.Platground.Scene';
+export * from './three/core/scene/playgrounds/compositions/simple/TinyPrimitiveCompositionScene';
+export * from './three/core/scene/playgrounds/TreeTrunk.Playground.Scene';
 export * from './three/core/scene/playgrounds/WindowBuilder.Playground.Scene';

@@ -141,6 +141,9 @@ importers:
       '@monorepo/core-math-gpu':
         specifier: workspace:*
         version: link:../../../../../packages/core-math-gpu
+      '@monorepo/core-math-probability':
+        specifier: workspace:*
+        version: link:../../../../../packages/core-math-probability
       '@monorepo/core-math-rectangle':
         specifier: workspace:*
         version: link:../../../../../packages/core-math-rectangle
