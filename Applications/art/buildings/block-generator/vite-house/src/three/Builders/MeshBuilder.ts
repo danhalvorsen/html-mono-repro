@@ -4,8 +4,8 @@
 
 import * as THREE from "three";
 import type { ITokenMaterialMeshBuilder } from "./ITokenMaterialMeshBuilder";
-import type { IMaterialFactory } from "../Materials/IMaterialFactory";
-import type { MaterialToken } from "../Materials/MaterialToken";
+import type { IMaterialFactory } from "../../../core-threejs-app-framework/src/Materials/IMaterialFactory";
+import type { MaterialToken } from "../../../core-threejs-app-framework/src/Materials/MaterialToken";
  
 type MeshBuilderState = Readonly<{
   geometry: THREE.BufferGeometry;

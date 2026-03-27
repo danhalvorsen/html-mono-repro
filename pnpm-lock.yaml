@@ -135,6 +135,12 @@ importers:
       '@monorepo/core-design-pattern-composite-tree':
         specifier: workspace:*
         version: link:../../../../../packages/core-design-pattern-composite-tree
+      '@monorepo/core-design-pattern-composite-tree-threejs':
+        specifier: workspace:*
+        version: link:../../../../../packages/core-design-pattern-composite-tree-threejs
+      '@monorepo/core-design-patterns-cqrs':
+        specifier: workspace:*
+        version: link:../../../../../packages/core-design-patterns-cqrs
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../../../packages/core-math
@@ -153,10 +159,16 @@ importers:
       '@monorepo/core-scene-graph':
         specifier: workspace:*
         version: link:../../../../../packages/core-scene-graph
+      '@monorepo/core-threejs-app-framework':
+        specifier: workspace:*
+        version: link:../../../../../packages/core-threejs-app-framework
       three:
         specifier: ^0.183.2
         version: 0.183.2
     devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -1121,6 +1133,15 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/core-design-pattern-composite-tree-threejs:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/core-design-patterns:
     devDependencies:
       rimraf:
@@ -1665,6 +1686,19 @@ importers:
       rimraf:
         specifier: ^6.0.1
         version: 6.1.2
+
+  packages/core-threejs-app-framework:
+    dependencies:
+      three:
+        specifier: ^0.183.2
+        version: 0.183.2
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/core-tools-code:
     dependencies:

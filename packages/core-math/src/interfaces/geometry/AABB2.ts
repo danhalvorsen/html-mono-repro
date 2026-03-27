@@ -9,6 +9,14 @@ export class AABB2 implements IBoundingBox {
     this.min = min;
     this.max = max;
   }
+  public containsBox(other: IBoundingBox): boolean {
+    return (
+      other.min.x >= this.min.x &&
+      other.max.x <= this.max.x &&
+      other.min.y >= this.min.y &&
+      other.max.y <= this.max.y
+    );
+  }
 
   width(): number {
     return this.max.x - this.min.x;
@@ -19,13 +27,18 @@ export class AABB2 implements IBoundingBox {
   }
 
   center(): Vector2 {
-    return new Vector2((this.min.x + this.max.x) * 0.5, (this.min.y + this.max.y) * 0.5);
+    return new Vector2(
+      (this.min.x + this.max.x) * 0.5,
+      (this.min.y + this.max.y) * 0.5,
+    );
   }
 
   contains(p: Vector2): boolean {
     return (
-      p.x >= this.min.x && p.x <= this.max.x &&
-      p.y >= this.min.y && p.y <= this.max.y
+      p.x >= this.min.x &&
+      p.x <= this.max.x &&
+      p.y >= this.min.y &&
+      p.y <= this.max.y
     );
   }
 

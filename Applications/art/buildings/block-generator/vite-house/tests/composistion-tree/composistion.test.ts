@@ -5,12 +5,13 @@
 import * as THREE from "three";
 import { describe, expect, it } from "vitest";
 
-import type { IPrimitiveNode } from "../../src/three/Factories/composite-tree-primetives/IPrimitiveNode.js";
-import type { IPrimitiveCompositeNode } from "../../src/three/Factories/composite-tree-primetives/IPrimitiveCompositeNode.js";
-import { PrimitiveNodeFactory } from "../../src/three/Factories/composite-tree-primetives/PrimitiveNodeFactory.js";
-import { PrimitiveTreeSearch } from "../../src/three/Factories/composite-tree-primetives/PrimitiveTreeSearch.js";
-import { PrimitiveType } from "../../src/three/Factories/composite-tree-primetives/PrimitiveType.js";
-import { ThreePrimitiveFactory } from "../../src/three/Factories/composite-tree-primetives/ThreePrimitiveFactory.js";
+import type { IPrimitiveNode } from "../../../../../../../packages/core-design-pattern-composite-tree-threejs/src/IPrimitiveNode.js";
+import type { IPrimitiveCompositeNode } from "../../../../../../../packages/core-design-pattern-composite-tree-threejs/src/IPrimitiveCompositeNode.js";
+import { PrimitiveTreeSearch } from "../../../../../../../packages/core-design-pattern-composite-tree-threejs/src/PrimitiveTreeSearch.js";
+import { PrimitiveNodeFactory } from "../../src/three/PrimitiveNodeFactory.js";
+import { Box } from "../../src/three/Builders/Box/box.js";
+import { Cylinder } from "../../src/three/Builders/Cylinder/Cylinder.js";
+import { HalfSphere } from "../../src/three/Builders/HalfSphere/HalfSphere.js";
 
 export interface IPrimitiveCompositionFixture {
   readonly scene: THREE.Scene;
@@ -35,10 +36,8 @@ export class PrimitiveCompositionFixture implements IPrimitiveCompositionFixture
   public readonly primitives: IPrimitiveCompositeNode;
 
   public constructor() {
-    const primitiveFactory = new ThreePrimitiveFactory();
-
     this.scene = new THREE.Scene();
-    this.nodeFactory = new PrimitiveNodeFactory(primitiveFactory);
+    this.nodeFactory = new PrimitiveNodeFactory();
 
     this.library = this.nodeFactory.createGroup("Library");
     this.primitives = this.nodeFactory.createGroup("Primitives");
@@ -62,65 +61,22 @@ export class PrimitiveCompositionFixture implements IPrimitiveCompositionFixture
   }
 
   private buildPrimitiveLibrary(): void {
-    this.primitives.add(this.nodeFactory.createPrimitive("Box.Small", {
-      type: PrimitiveType.Box,
-      width: 1,
-      height: 1,
-      depth: 1,
-    }));
-
-    this.primitives.add(this.nodeFactory.createPrimitive("HalfSphere.Small", {
-      type: PrimitiveType.HalfSphere,
-      radius: 0.5,
-      segments: 16,
-    }));
-
-    this.primitives.add(this.nodeFactory.createPrimitive("Cylinder.Column", {
-      type: PrimitiveType.Cylinder,
-      radius: 0.25,
-      height: 2,
-      segments: 16,
-    }));
-
-    this.primitives.add(this.nodeFactory.createPrimitive("Roof.Block", {
-      type: PrimitiveType.Box,
-      width: 2,
-      height: 1,
-      depth: 2,
-    }));
+    this.primitives.add(this.nodeFactory.box("Box.Small", new Box(1, 1, 1)));
+    this.primitives.add(this.nodeFactory.halfSphere("HalfSphere.Small", new HalfSphere(0.5, 16)));
+    this.primitives.add(this.nodeFactory.cylinder("Cylinder.Column", new Cylinder(0.25, 0.25, 2, 16)));
+    this.primitives.add(this.nodeFactory.box("Roof.Block", new Box(2, 1, 2)));
   }
 
   private buildTemplates(): void {
     const house = this.nodeFactory.createGroup("Template.House");
 
-    house.add(this.nodeFactory.createPrimitive("Body", {
-      type: PrimitiveType.Box,
-      width: 4,
-      height: 2,
-      depth: 3,
-    }));
-
-    house.add(this.nodeFactory.createPrimitive("Roof", {
-      type: PrimitiveType.Box,
-      width: 4.5,
-      height: 1.5,
-      depth: 3.5,
-    }));
+    house.add(this.nodeFactory.box("Body", new Box(4, 2, 3)));
+    house.add(this.nodeFactory.box("Roof", new Box(4.5, 1.5, 3.5)));
 
     const tower = this.nodeFactory.createGroup("Template.Tower");
 
-    tower.add(this.nodeFactory.createPrimitive("Core", {
-      type: PrimitiveType.Cylinder,
-      radius: 0.75,
-      height: 5,
-      segments: 20,
-    }));
-
-    tower.add(this.nodeFactory.createPrimitive("Cap", {
-      type: PrimitiveType.HalfSphere,
-      radius: 0.9,
-      segments: 20,
-    }));
+    tower.add(this.nodeFactory.cylinder("Core", new Cylinder(0.75, 0.75, 5, 20)));
+    tower.add(this.nodeFactory.halfSphere("Cap", new HalfSphere(0.9, 20)));
 
     const block = this.nodeFactory.createGroup("Template.Block");
 

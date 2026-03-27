@@ -1,82 +1,98 @@
 
 import * as THREE from "three";
 
-import type { IMaterialFactory } from "../Materials/IMaterialFactory.js";
-import type { MaterialToken } from "../Materials/MaterialToken.js";
+import type { IMaterialFactory } from "../../../core-threejs-app-framework/src/Materials/IMaterialFactory.js";
+import type { MaterialToken } from "../../../core-threejs-app-framework/src/Materials/MaterialToken.js";
 import { type Rectangle2 } from '@monorepo/core-math';
 
 export interface IWindowBuilder {
-  reset(): void;
-  withFrame(rect: Rectangle2, material: MaterialToken): IWindowBuilder;
-  withGlass(material: MaterialToken, inset?: number): IWindowBuilder;
-  build(): THREE.Object3D;
+  build(configuration: IWindow): THREE.Object3D;
 }
 
 // ====================================================================================
 // FILE: composition/WindowBuilder.ts
 // ====================================================================================
 
-type State = Readonly<{
-  frame: {
-    rect: Rectangle2;
-    material: MaterialToken;
-  } | null;
+export interface IWindowFrame {
+  readonly rect: Rectangle2;
+  readonly material: MaterialToken;
+}
 
-  glass: {
-    material: MaterialToken;
-    inset: number;
-  } | null;
-}>;
+export interface IWindowGlass {
+  readonly material: MaterialToken;
+  readonly inset: number;
+}
 
-export class WindowBuilder implements IWindowBuilder {
-  private readonly state: State;
+export interface IWindow {
+  readonly frame: IWindowFrame;
+  readonly glass?: IWindowGlass;
+}
 
-  private constructor(
-    private readonly materialFactory: IMaterialFactory,
-    state: State,
+export class Window implements IWindow {
+  public readonly frame: IWindowFrame;
+  public readonly glass?: IWindowGlass;
+
+  public constructor(
+    frame: IWindowFrame,
+    glass?: Partial<IWindowGlass> & Pick<IWindowGlass, "material">,
   ) {
-    this.state = state;
-  }
+    this.assertRect(frame.rect);
 
-  public static create(materialFactory: IMaterialFactory): WindowBuilder {
-    return new WindowBuilder(materialFactory, {
-      frame: null,
-      glass: null,
+    const normalizedFrame = Object.freeze({
+      rect: Object.freeze({
+        x: frame.rect.x,
+        y: frame.rect.y,
+        width: frame.rect.width,
+        height: frame.rect.height,
+      }) as Rectangle2,
+      material: frame.material,
     });
-  }
 
-  public reset(): WindowBuilder {
-    return new WindowBuilder(this.materialFactory, {
-      frame: null,
-      glass: null,
-    });
-  }
+    const normalizedGlass = glass
+      ? Object.freeze({
+          material: glass.material,
+          inset: glass.inset ?? 0.05,
+        })
+      : undefined;
 
-  public withFrame(rect: Rectangle2, material: MaterialToken): WindowBuilder {
-    return new WindowBuilder(this.materialFactory, {
-      ...this.state,
-      frame: { rect, material },
-    });
-  }
-
-  public withGlass(material: MaterialToken, inset = 0.05): WindowBuilder {
-    return new WindowBuilder(this.materialFactory, {
-      ...this.state,
-      glass: { material, inset },
-    });
-  }
-
-  public build(): THREE.Group {
-    if (!this.state.frame) {
-      throw new Error("Frame must be defined.");
+    if (normalizedGlass && (!Number.isFinite(normalizedGlass.inset) || normalizedGlass.inset < 0)) {
+      throw new Error("glass inset must be >= 0");
     }
 
+    this.frame = normalizedFrame;
+    this.glass = normalizedGlass;
+
+    Object.freeze(this);
+  }
+
+  private assertRect(rect: Rectangle2): void {
+    if (!Number.isFinite(rect.x) || !Number.isFinite(rect.y)) {
+      throw new Error("frame rect position must be finite");
+    }
+
+    if (!Number.isFinite(rect.width) || rect.width <= 0) {
+      throw new Error("frame rect width must be > 0");
+    }
+
+    if (!Number.isFinite(rect.height) || rect.height <= 0) {
+      throw new Error("frame rect height must be > 0");
+    }
+  }
+}
+
+export class WindowBuilder implements IWindowBuilder {
+  public constructor(
+    private readonly materialFactory: IMaterialFactory,
+  ) {
+  }
+
+  public build(configuration: IWindow): THREE.Group {
     const group = new THREE.Group();
     group.name = "window";
 
-    const { rect, material: frameToken } = this.state.frame;
+    const { rect, material: frameToken } = configuration.frame;
     const frameDepth = 0.1;
-    const requestedInset = this.state.glass?.inset ?? Math.min(rect.width, rect.height) * 0.12;
+    const requestedInset = configuration.glass?.inset ?? Math.min(rect.width, rect.height) * 0.12;
     const frameThickness = Math.max(0.04, Math.min(requestedInset, Math.min(rect.width, rect.height) * 0.45));
 
     // Frame
@@ -110,8 +126,8 @@ export class WindowBuilder implements IWindowBuilder {
     group.add(top, bottom, left, right);
 
     // Glass
-    if (this.state.glass) {
-      const { material: glassToken } = this.state.glass;
+    if (configuration.glass) {
+      const { material: glassToken } = configuration.glass;
 
       const glassMaterial = this.materialFactory.create(glassToken);
 

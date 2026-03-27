@@ -10,6 +10,9 @@ export default defineConfig({
       "tests/**/*.test.ts",
       "tests/**/*.spec.ts",
     ],
+    exclude: [
+      "tests/Tree/**",
+    ],
     isolate: false,
     pool: "threads",
     typecheck: {

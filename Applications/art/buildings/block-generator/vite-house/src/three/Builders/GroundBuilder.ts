@@ -1,4 +1,3 @@
-import type { MaterialFactory } from "../Materials/MaterialFactory";
 
 export interface IGroundBuilder{
 

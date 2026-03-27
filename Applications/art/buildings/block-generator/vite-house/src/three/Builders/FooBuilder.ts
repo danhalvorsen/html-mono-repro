@@ -1,57 +1,67 @@
 import * as THREE from "three";
-import type { IBuilder } from "./GroundBuilder";
-import type { MaterialFactory } from "../Materials/MaterialFactory";
-export class FooBuilder implements IBuilder<THREE.Object3D> {
-  private materialFactory: MaterialFactory | null = null;
-  private material: THREE.Material = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-  });
-  private position: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
-  private dimensions: { width: number; height: number; depth: number } = {
-    width: 1,
-    height: 1,
-    depth: 1,
-  };
+export interface IFoo {
+  readonly width: number;
+  readonly height: number;
+  readonly depth: number;
+  readonly position: THREE.Vector3;
+}
 
-  buildExampleResponse(): THREE.Object3D<THREE.Object3DEventMap> {
-    return this.withBox(1, 1, 1).build();
+export interface IFooOptions {
+  readonly position?: THREE.Vector3;
+}
+
+export class Foo implements IFoo {
+  public readonly position: THREE.Vector3;
+
+  public constructor(
+    public readonly width: number = 1,
+    public readonly height: number = 1,
+    public readonly depth: number = 1,
+    options: IFooOptions = {},
+  ) {
+    this.ensurePositive(width, "width");
+    this.ensurePositive(height, "height");
+    this.ensurePositive(depth, "depth");
+
+    const position = options.position ?? new THREE.Vector3(0, 0, 0);
+
+    if (
+      !Number.isFinite(position.x) ||
+      !Number.isFinite(position.y) ||
+      !Number.isFinite(position.z)
+    ) {
+      throw new Error("position must be finite");
+    }
+
+    this.position = position.clone();
+    Object.freeze(this);
   }
 
-  withMaterial(materialFactory: MaterialFactory): this {
-    this.materialFactory = materialFactory;
-    this.material = materialFactory.create("building-white");
-    return this;
+  private ensurePositive(value: number, name: string): void {
+    if (!Number.isFinite(value) || value <= 0) {
+      throw new Error(`${name} must be > 0`);
+    }
+  }
+}
+
+export class FooBuilder {
+  public buildExampleResponse(): THREE.Object3D<THREE.Object3DEventMap> {
+    return this.build(new Foo(1, 1, 1));
   }
 
-  withPosition(x: number, y: number, z: number): this {
-    this.position.set(x, y, z);
-    return this;
-  }
-
-  withDimensions(width: number, height: number, depth: number): this {
-    this.dimensions = { width, height, depth };
-    return this;
-  }
-
-  withBox(width: number, height: number, depth: number): this {
-    return this.withDimensions(width, height, depth);
-  }
-
-  build(): THREE.Object3D {
+  public build(configuration: IFoo): THREE.Object3D {
     const geometry = new THREE.BoxGeometry(
-      this.dimensions.width,
-      this.dimensions.height,
-      this.dimensions.depth,
+      configuration.width,
+      configuration.height,
+      configuration.depth,
     );
 
-    const material = this.materialFactory
-      ? this.material
-      : new THREE.MeshStandardMaterial({ color: 0xffffff });
-
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.copy(this.position);
+    const mesh = new THREE.Mesh(
+      geometry,
+      new THREE.MeshStandardMaterial({ color: 0xffffff }),
+    );
+    mesh.position.copy(configuration.position);
 
     return mesh;
-
   }
 }

@@ -1,0 +1,1 @@
+{"version":3,"file":"PyramidBuilder.d.ts","sourceRoot":"","sources":["PyramidBuilder.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,KAAK,MAAM,OAAO,CAAC;AAE/B,OAAO,KAAK,EAAE,QAAQ,EAAE,MAAM,cAAc,CAAC;AAE7C,qBAAa,cAAc;IAClB,KAAK,CAAC,aAAa,EAAE,QAAQ,GAAG,KAAK,CAAC,QAAQ;CAUtD"}

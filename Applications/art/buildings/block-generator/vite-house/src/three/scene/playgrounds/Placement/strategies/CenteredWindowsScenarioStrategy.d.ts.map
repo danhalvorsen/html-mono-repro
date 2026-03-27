@@ -1,0 +1,1 @@
+{"version":3,"file":"CenteredWindowsScenarioStrategy.d.ts","sourceRoot":"","sources":["CenteredWindowsScenarioStrategy.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,+BAA+B,CAAC;AAChE,OAAO,KAAK,EAAE,sBAAsB,EAAE,MAAM,kCAAkC,CAAC;AAC/E,OAAO,EAAE,iCAAiC,EAAE,MAAM,wCAAwC,CAAC;AAE3F,qBAAa,+BAAgC,SAAQ,iCAAiC;gBACjE,SAAS,EAAE,UAAU;IAIxB,cAAc,IAAI,sBAAsB;CAgBzD"}

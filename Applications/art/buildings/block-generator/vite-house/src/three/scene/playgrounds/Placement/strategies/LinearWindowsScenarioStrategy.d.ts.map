@@ -1,0 +1,1 @@
+{"version":3,"file":"LinearWindowsScenarioStrategy.d.ts","sourceRoot":"","sources":["LinearWindowsScenarioStrategy.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,+BAA+B,CAAC;AAChE,OAAO,EAAE,KAAK,sBAAsB,EAAgD,MAAM,kCAAkC,CAAC;AAC7H,OAAO,EAAE,iCAAiC,EAAE,MAAM,wCAAwC,CAAC;AAE3F,qBAAa,6BAA8B,SAAQ,iCAAiC;gBAC/D,SAAS,EAAE,UAAU;IAIxB,cAAc,IAAI,sBAAsB;CAgCzD"}
