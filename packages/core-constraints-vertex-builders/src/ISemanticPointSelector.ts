@@ -1,4 +1,4 @@
-import type { RectBuilder } from "./RectBuilder";
+import type { RectBuilder } from "./RectBuilder.js";
 
 export interface ISemanticPointSelector {
   Left(): RectBuilder;

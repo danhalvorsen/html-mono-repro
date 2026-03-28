@@ -1,4 +1,4 @@
-import { type RectSemanticPoint } from './RectSemanticPoint';
+import { type RectSemanticPoint } from './RectSemanticPoint.js';
 
 export interface IPointPlacementOperation {
   readonly kind: "PointPlacement";

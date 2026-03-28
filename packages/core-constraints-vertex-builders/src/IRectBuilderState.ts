@@ -1,6 +1,6 @@
-import type { IRectSize } from "./IRectSize";
-import type { IRectState } from "./IRectState";
-import type { RectOperation } from "./RectOperation";
+import type { IRectSize } from "./IRectSize.js";
+import type { IRectState } from "./IRectState.js";
+import type { RectOperation } from "./RectOperation.js";
 
 export interface IRectBuilderState {
   readonly rects: ReadonlyArray<IRectState>;

@@ -1,154 +1,12 @@
 import * as THREE from "three";
 import { RectSemantic } from "./RectSemantic.js";
 import type { RectSemanticPoint } from "./RectSemanticPoint.js";
-
-type RectMode = "EdgeLocked" | "PivotAnchored";
-type Direction = "Left" | "Right" | "Top" | "Bottom";
-
-interface IRectSize {
-  readonly width: number;
-  readonly height: number;
-  readonly depth: number;
-}
-
-interface IRectState {
-  readonly centerX: number;
-  readonly centerY: number;
-  readonly centerZ: number;
-  readonly size: IRectSize;
-  readonly rotationDegrees: number;
-  readonly mode: RectMode;
-  readonly pivot?: RectSemanticPoint;
-}
-
-interface IRectBuilderInternal {
-  addPointPlacement(point: RectSemanticPoint): RectBuilder;
-}
-
-interface ISemanticPointSelector {
-  Left(): RectBuilder;
-  Mid(): RectBuilder;
-  Right(): RectBuilder;
-  Start(): RectBuilder;
-  End(): RectBuilder;
-}
-
-interface ISemanticSelectorRoot {
-  readonly Top: ISemanticPointSelector;
-  readonly Right: ISemanticPointSelector;
-  readonly Bottom: ISemanticPointSelector;
-  readonly Left: ISemanticPointSelector;
-}
-
-class TopSemanticSelector implements ISemanticPointSelector {
-  public constructor(private readonly owner: IRectBuilderInternal) {}
-
-  public Left(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Top.Left);
-  }
-
-  public Mid(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Top.Mid);
-  }
-
-  public Right(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Top.Right);
-  }
-
-  public Start(): RectBuilder {
-    throw new Error("Top.Start is not supported. Use Top.Left.");
-  }
-
-  public End(): RectBuilder {
-    throw new Error("Top.End is not supported. Use Top.Right.");
-  }
-}
-
-class RightSemanticSelector implements ISemanticPointSelector {
-  public constructor(private readonly owner: IRectBuilderInternal) {}
-
-  public Left(): RectBuilder {
-    throw new Error("Right.Left is not supported. Use Right.Start.");
-  }
-
-  public Mid(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Right.Mid);
-  }
-
-  public Right(): RectBuilder {
-    throw new Error("Right.Right is not supported. Use Right.End.");
-  }
-
-  public Start(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Right.Start);
-  }
-
-  public End(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Right.End);
-  }
-}
-
-class BottomSemanticSelector implements ISemanticPointSelector {
-  public constructor(private readonly owner: IRectBuilderInternal) {}
-
-  public Left(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Bottom.Left);
-  }
-
-  public Mid(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Bottom.Mid);
-  }
-
-  public Right(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Bottom.Right);
-  }
-
-  public Start(): RectBuilder {
-    throw new Error("Bottom.Start is not supported. Use Bottom.Left.");
-  }
-
-  public End(): RectBuilder {
-    throw new Error("Bottom.End is not supported. Use Bottom.Right.");
-  }
-}
-
-class LeftSemanticSelector implements ISemanticPointSelector {
-  public constructor(private readonly owner: IRectBuilderInternal) {}
-
-  public Left(): RectBuilder {
-    throw new Error("Left.Left is not supported. Use Left.Start.");
-  }
-
-  public Mid(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Left.Mid);
-  }
-
-  public Right(): RectBuilder {
-    throw new Error("Left.Right is not supported. Use Left.End.");
-  }
-
-  public Start(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Left.Start);
-  }
-
-  public End(): RectBuilder {
-    return this.owner.addPointPlacement(RectSemantic.Left.End);
-  }
-}
-
-class SemanticSelectorRoot implements ISemanticSelectorRoot {
-  public readonly Top: ISemanticPointSelector;
-  public readonly Right: ISemanticPointSelector;
-  public readonly Bottom: ISemanticPointSelector;
-  public readonly Left: ISemanticPointSelector;
-
-  public constructor(owner: IRectBuilderInternal) {
-    this.Top = new TopSemanticSelector(owner);
-    this.Right = new RightSemanticSelector(owner);
-    this.Bottom = new BottomSemanticSelector(owner);
-    this.Left = new LeftSemanticSelector(owner);
-  }
-}
+import { IRectBuilderInternal } from "./IRectBuilderInternal.js";
+import { IRectState } from "./IRectState.js";
+import { ISemanticSelectorRoot, SemanticSelectorRoot } from "./SemanticSelectorRoot.js";
+ 
+import { IRectSize } from "./IRectSize.js";
+import { Direction } from "./Direction.js";
 
 export class RectBuilder implements IRectBuilderInternal {
   private readonly rects: ReadonlyArray<IRectState>;
@@ -222,8 +80,8 @@ export class RectBuilder implements IRectBuilderInternal {
     }
 
     const rects = [...this.rects];
-    const current = rects[rects.length - 2];
-    const next = rects[rects.length - 1];
+    const current = rects.at(-2)!;
+    const next = rects.at(-1)!;
 
     const targetPoint = this.getWorldSemanticPoint(current, point);
     const sourcePoint = this.getOppositeWorldSemanticPoint(next, point);

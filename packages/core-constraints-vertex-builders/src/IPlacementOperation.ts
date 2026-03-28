@@ -1,4 +1,4 @@
-import type { Direction } from "./Direction";
+import type { Direction } from "./Direction.js";
 
 export interface IPlacementOperation {
   readonly kind: "Placement";

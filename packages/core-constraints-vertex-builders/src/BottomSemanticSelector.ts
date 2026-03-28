@@ -1,7 +1,7 @@
-import type { IRectBuilderInternal } from "./IRectBuilderInternal";
-import type { ISemanticPointSelector } from "./ISemanticPointSelector";
-import type { RectBuilder } from "./RectBuilder";
-import { RectSemantic } from "./RectSemantic";
+import type { IRectBuilderInternal } from "./IRectBuilderInternal.js";
+import type { ISemanticPointSelector } from "./ISemanticPointSelector.js";
+import type { RectBuilder } from "./RectBuilder.js";
+import { RectSemantic } from "./RectSemantic.js";
 
 export class BottomSemanticSelector implements ISemanticPointSelector {
   public constructor(
