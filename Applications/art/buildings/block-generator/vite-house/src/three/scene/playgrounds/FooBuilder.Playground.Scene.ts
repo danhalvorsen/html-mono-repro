@@ -14,13 +14,13 @@ export class FooBuilderPlaygroundScene extends PlaygroundSceneBase {
 	}
 
 	protected createContent(): void {
-		const boxCount = this.randomInt(0, 10);
+		const boxCount = this.randomInt(0, 100);
 		let currentY = 0;
 
 		for (let i = 0; i < boxCount; i += 1) {
 			const width = this.randomFloat(0.5, 2.0);
-			const height = this.randomFloat(0.35, 1.5);
-			const depth = this.randomFloat(0.5, 2.0);
+			const height = this.randomFloat(0.35, 12.5);
+			const depth = this.randomFloat(0.5, 23.0);
 
 			const mesh = new FooBuilder().build(
 				new Foo(width, height, depth, {

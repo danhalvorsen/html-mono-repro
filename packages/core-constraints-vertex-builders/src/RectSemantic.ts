@@ -1,7 +1,3 @@
-// ============================================================================
-// FILE: src/RectSemantic.ts
-// ============================================================================
-
 export class RectSemantic {
   public static readonly Top = Object.freeze({
     Left: "Top.Left",
