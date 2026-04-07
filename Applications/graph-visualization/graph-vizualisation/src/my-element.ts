@@ -2,6 +2,16 @@ import { LitElement, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { registerCoreGraphVisualizerElement } from "@monorepo/core-graph-visualisation/lit";
+import type { IGraph } from "@monorepo/core-graph";
+import {
+  GraphSvgSceneFactory,
+  type BoxConstraints,
+  type GraphCanvasConstraints,
+  type GraphConstraintModel,
+  type IGraphConstraintEngine,
+  type IGraphLayoutStrategy,
+} from "@monorepo/core-graph-visualisation";
+import { D3ForceGraphLayoutStrategy } from "@monorepo/core-graph-visualization-d3";
 import "./components/DagStateWebComponent.js";
 
 import {
@@ -11,15 +21,73 @@ import {
 
 registerCoreGraphVisualizerElement();
 
+class LayoutStrategyConstraintEngineAdapter implements IGraphConstraintEngine {
+  constructor(private readonly layoutStrategy: IGraphLayoutStrategy) {}
+
+  createConstraints(
+    graph: IGraph,
+    canvas: GraphCanvasConstraints,
+    box: BoxConstraints,
+  ): GraphConstraintModel {
+    return this.layoutStrategy.createLayout({ graph, canvas, box });
+  }
+}
+
 @customElement("graph-visualization-app")
 export class GraphVisualizationApp extends LitElement {
   private readonly application: GraphVisualizationApplicationModel;
+  private readonly layoutStrategy = new D3ForceGraphLayoutStrategy();
+  private readonly sceneFactory = new GraphSvgSceneFactory(
+    new LayoutStrategyConstraintEngineAdapter(this.layoutStrategy),
+  );
+  private visualizerWidth = 960;
+  private visualizerHeight = 640;
+  private resizeObserver: ResizeObserver | undefined;
 
   constructor(
     compositionRoot: GraphVisualizationCompositionRoot = new GraphVisualizationCompositionRoot(),
   ) {
     super();
     this.application = compositionRoot.compose();
+  }
+
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+
+      if (entry === undefined) {
+        return;
+      }
+
+      const nextWidth = Math.max(360, Math.floor(entry.contentRect.width - 4));
+      const nextHeight = Math.max(320, Math.floor(entry.contentRect.height - 4));
+
+      if (nextWidth !== this.visualizerWidth || nextHeight !== this.visualizerHeight) {
+        this.visualizerWidth = nextWidth;
+        this.visualizerHeight = nextHeight;
+        this.requestUpdate();
+      }
+    });
+  }
+
+  override disconnectedCallback(): void {
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = undefined;
+    super.disconnectedCallback();
+  }
+
+  override firstUpdated(): void {
+    const canvas = this.renderRoot.querySelector("main.canvas");
+
+    if (canvas instanceof HTMLElement) {
+      this.resizeObserver?.observe(canvas);
+      const width = Math.max(360, Math.floor(canvas.clientWidth - 4));
+      const height = Math.max(320, Math.floor(canvas.clientHeight - 4));
+      this.visualizerWidth = width;
+      this.visualizerHeight = height;
+      this.requestUpdate();
+    }
   }
 
   override render() {
@@ -38,13 +106,15 @@ export class GraphVisualizationApp extends LitElement {
           .graph=${this.application.graph}
           .selectionState=${this.application.selectionState}
           .activityState=${this.application.activityState}
+          .layoutAlgorithm=${this.layoutStrategy.name}
         >
           <main class="canvas" slot="outer-box">
             <mr-core-graph-visualizer
               .graph=${this.application.graph}
+              .sceneFactory=${this.sceneFactory}
               .controllers=${this.application.controllers}
-              .width=${960}
-              .height=${640}
+              .width=${this.visualizerWidth}
+              .height=${this.visualizerHeight}
               .padding=${96}
               .boxWidth=${150}
               .boxHeight=${64}
@@ -111,12 +181,17 @@ export class GraphVisualizationApp extends LitElement {
       box-shadow: 0 24px 50px rgba(46, 78, 109, 0.12);
       backdrop-filter: blur(10px);
       padding: 20px;
-      overflow: auto;
+      width: 100%;
+      height: clamp(420px, 68vh, 860px);
+      overflow: hidden;
+      box-sizing: border-box;
     }
 
     mr-core-graph-visualizer {
       display: block;
-      min-width: 960px;
+      width: 100%;
+      height: 100%;
+      min-width: 0;
     }
 
     code {

@@ -7,6 +7,7 @@ import type {
   GraphSvgNodeBoxShape,
   GraphSvgNodeShapeObject,
 } from "./features/node/NodeSvgShape.js";
+import type { GraphSvgConnector } from "./layout/GraphGeometry.js";
 import { SvgCartesianCoordinateMapper } from "./CoordinateMapper.js";
 import type {
   BoxConstraints,
@@ -15,11 +16,6 @@ import type {
   GraphNodeAnchor,
   IGraphConstraintEngine,
 } from "./GraphConstraints.js";
-
-export interface GraphSvgConnector {
-  readonly x: number;
-  readonly y: number;
-}
 
 export interface GraphSvgScene {
   readonly width: number;
@@ -210,3 +206,4 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
 
 export * from "./features/node/NodeSvgShape.js";
 export * from "./features/edge/EdgeSvgShape.js";
+export type { GraphSvgConnector } from "./layout/GraphGeometry.js";

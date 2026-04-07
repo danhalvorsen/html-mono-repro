@@ -1,5 +1,5 @@
 import type { IGraphElementController, GraphElementControllerHost } from "../../GraphElementControllers.js";
-import { GraphEdgeClickDetail } from "./EdgeControllers.js";
+import type { GraphEdgeClickDetail } from "./EdgeControllers.js";
 
 
 export class OnEdgeClickHighlightController implements IGraphElementController {

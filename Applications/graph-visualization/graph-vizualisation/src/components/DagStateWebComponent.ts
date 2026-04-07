@@ -16,6 +16,9 @@ export class DagStateWebComponent extends LitElement {
   @property({ attribute: false })
   activityState!: IControllerActivityState;
 
+  @property({ type: String })
+  layoutAlgorithm = "unknown";
+
   private observedElement: HTMLElement | undefined;
 
   override render() {
@@ -29,6 +32,7 @@ export class DagStateWebComponent extends LitElement {
           <p>Last clicked node: <strong>${this.selectionState.selectedNodeId}</strong></p>
           <p>Active controller: <strong>${this.activityState.activeControllerName}</strong></p>
           <p>Controller activity: <strong>${this.activityState.activityMessage}</strong></p>
+          <p>Layout algorithm: <strong>${this.layoutAlgorithm}</strong></p>
           <p class="hint">
             Click a node to show its connection points. Click an edge to highlight the line and its
             start/end connection points. Drag from one connection point to another to create an edge.
@@ -50,7 +54,8 @@ export class DagStateWebComponent extends LitElement {
       display: grid;
       grid-template-columns: 280px minmax(0, 1fr);
       gap: 20px;
-      align-items: start;
+      align-items: stretch;
+      width: 100%;
     }
 
     .panel {
@@ -79,6 +84,9 @@ export class DagStateWebComponent extends LitElement {
 
     ::slotted([slot="outer-box"]) {
       display: block;
+      width: 100%;
+      height: 100%;
+      min-width: 0;
     }
 
     @media (max-width: 900px) {

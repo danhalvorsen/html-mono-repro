@@ -1,4 +1,4 @@
-import type { GraphSvgConnector } from "../../GraphSvgScene.js";
+import type { GraphSvgConnector } from "../../layout/GraphGeometry.js";
 
 export interface GraphSvgEdgeEndShape {
   readonly nodeId: string;

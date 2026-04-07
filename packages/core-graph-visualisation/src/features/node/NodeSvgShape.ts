@@ -1,4 +1,4 @@
-import type { GraphSvgConnector } from "../../GraphSvgScene.js";
+import type { GraphSvgConnector } from "../../layout/GraphGeometry.js";
 
 export interface GraphSvgConnectionPointShape {
   readonly id: string;
@@ -12,10 +12,10 @@ export interface GraphSvgNodeBoxShape {
   readonly height: number;
 }
 
-export interface GraphSvgNodeShapeObject {
+export interface GraphSvgNodeShapeObject<TPayload = unknown> {
   readonly id: string;
   readonly label: string;
-  readonly payload: unknown;
+  readonly payload: TPayload;
   readonly center: GraphSvgConnector;
   readonly box: GraphSvgNodeBoxShape;
   readonly connectionPoints: readonly GraphSvgConnectionPointShape[];

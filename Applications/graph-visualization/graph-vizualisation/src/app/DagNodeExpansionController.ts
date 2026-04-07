@@ -32,10 +32,12 @@ export class DagNodeExpansionController implements IGraphElementController {
   }
 
   onConnectionPointRightClick(detail: GraphConnectionPointRightClickDetail): void {
+    this.selectionState.setDefaultConnectorRole(detail.box.id, detail.connectionPoint.role);
     this.attachChildNode(detail.box.id, detail.connectionPoint.role);
   }
 
   private attachChildNode(parentNodeId: string, connectorRole?: string): void {
+    const resolvedConnectorRole = connectorRole ?? this.selectionState.getDefaultConnectorRole(parentNodeId);
     const parentNode = this.graph.nodes.find((candidate) => candidate.id === parentNodeId);
 
     if (parentNode === undefined) {
@@ -47,9 +49,9 @@ export class DagNodeExpansionController implements IGraphElementController {
     this.selectionState.select(childNode.id);
     this.activityState.setActive(
       "DagNodeExpansionController",
-      connectorRole === undefined
+      resolvedConnectorRole === undefined
         ? `Added child node ${childNode.id} to ${parentNode.id}.`
-        : `Added child node ${childNode.id} from ${parentNode.id}.${connectorRole}.`,
+        : `Added child node ${childNode.id} from ${parentNode.id}.${resolvedConnectorRole}.`,
     );
     this.host?.requestGraphUpdate();
   }

@@ -1,5 +1,6 @@
 import type {
   GraphBoxClickDetail,
+  GraphConnectionPointClickDetail,
   GraphElementControllerHost,
   IGraphElementController,
 } from "@monorepo/core-graph-visualisation";
@@ -28,6 +29,15 @@ export class GraphSelectionController implements IGraphElementController {
     this.activityState.setActive(
       "GraphSelectionController",
       `Selected node ${detail.box.id}.`,
+    );
+    this.host?.requestGraphUpdate();
+  }
+
+  onConnectionPointClick(detail: GraphConnectionPointClickDetail): void {
+    this.selectionState.setDefaultConnectorRole(detail.box.id, detail.connectionPoint.role);
+    this.activityState.setActive(
+      "GraphSelectionController",
+      `Selected connector ${detail.box.id}.${detail.connectionPoint.role}.`,
     );
     this.host?.requestGraphUpdate();
   }

@@ -38,9 +38,32 @@ const DEFAULT_PADDING = 48;
 const DEFAULT_NODE_WIDTH = 112;
 const DEFAULT_NODE_HEIGHT = 56;
 
+interface GraphNodeHierarchy {
+  readonly level: number;
+  readonly subLevel: number;
+  readonly levelSize: number;
+  readonly maxLevel: number;
+  readonly subgraphIndex: number;
+}
+
+interface GraphNodeVisualStyle {
+  readonly fill: string;
+  readonly stroke: string;
+  readonly text: string;
+  readonly width: number;
+  readonly height: number;
+  readonly topLeftX: number;
+  readonly topLeftY: number;
+}
+
+interface GraphAutoScaleMetrics {
+  readonly nodeScale: number;
+}
+
 export class CoreGraphVisualizerElement extends LitElement implements GraphElementControllerHost {
   static override properties = {
     graph: { attribute: false },
+    sceneFactory: { attribute: false },
     width: { type: Number },
     height: { type: Number },
     padding: { type: Number },
@@ -133,7 +156,7 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #f8fbff;
+      color: var(--node-label-color, #f8fbff);
       font-family: "Segoe UI", sans-serif;
       font-size: 12px;
       text-align: center;
@@ -162,7 +185,7 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
   boxHeight = DEFAULT_NODE_HEIGHT;
   controllers: readonly IGraphElementController[] = [];
 
-  private readonly sceneFactory: IGraphSvgSceneFactory;
+  sceneFactory: IGraphSvgSceneFactory;
   private readonly controllerRegistry: GraphElementControllerRegistry;
   private readonly graphBoxClickController = new GraphBoxClickController();
   private readonly graphBoxRightClickController = new GraphBoxRightClickController();
@@ -200,7 +223,7 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
     const baseScene = this.graph === undefined
       ? this.createEmptyScene()
       : this.sceneFactory.createScene(this.graph, this.createSceneOptions());
-    const scene = this.applyNodePositionOverrides(baseScene);
+    const scene = this.applyResponsiveNodeStyles(this.applyNodePositionOverrides(baseScene));
     this.currentScene = scene;
 
     return html`${this.renderSvg(scene)}`;
@@ -217,6 +240,7 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
   }
 
   private renderSvg(scene: GraphSvgScene): TemplateResult {
+    const hierarchyByNodeId = this.createHierarchyByNodeId();
     const normalEdges = scene.edges.filter((edge) => edge.id !== this.highlightedEdgeId);
     const highlightedEdge = scene.edges.find((edge) => edge.id === this.highlightedEdgeId);
     const draftEdgePath = this.connectionPointEdgeDraft === undefined
@@ -239,10 +263,16 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
           height=${scene.boundary.height}
         ></rect>
         ${normalEdges.map((edge) => this.renderEdge(edge, false))}
-        ${scene.nodes.map((node) => svg`
+        ${scene.nodes.map((node) => {
+          const hierarchy = hierarchyByNodeId.get(node.id);
+          const visual = this.createNodeColorStyle(hierarchy);
+          const isHighlighted = node.id === this.highlightedNodeId;
+
+          return svg`
           <g>
             <rect
-              class=${node.id === this.highlightedNodeId ? "node node--highlighted" : "node"}
+              class=${isHighlighted ? "node node--highlighted" : "node"}
+              style=${isHighlighted ? "" : `fill: ${visual.fill}; stroke: ${visual.stroke};`}
               x=${node.box.topLeft.x}
               y=${node.box.topLeft.y}
               width=${node.box.width}
@@ -260,7 +290,11 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
               @contextmenu=${(event: MouseEvent) => this.onBoxRightClick(node.id, event)}
               @pointerdown=${(event: PointerEvent) => this.onNodePointerDown(node.id, event)}
             >
-              <div xmlns="http://www.w3.org/1999/xhtml" class="node-slot-shell">
+              <div
+                xmlns="http://www.w3.org/1999/xhtml"
+                class="node-slot-shell"
+                style=${`--node-label-color: ${visual.text};`}
+              >
                 <slot
                   name=${this.getNodeSlotName(node.id)}
                   data-node-slot=${node.id}
@@ -290,7 +324,8 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
               `)
               : null}
           </g>
-        `)}
+        `;
+        })}
         ${highlightedEdge === undefined ? null : this.renderEdge(highlightedEdge, true)}
         ${draftEdgePath === undefined ? null : svg`
           <path class="edge edge--draft" d=${draftEdgePath}></path>
@@ -352,6 +387,352 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
       },
       nodes: [],
       edges: [],
+    };
+  }
+
+  private createHierarchyByNodeId(): Map<string, GraphNodeHierarchy> {
+    const hierarchyByNodeId = new Map<string, GraphNodeHierarchy>();
+
+    if (this.graph === undefined || this.graph.nodes.length === 0) {
+      return hierarchyByNodeId;
+    }
+
+    const inDegree = new Map<string, number>();
+    const outEdges = new Map<string, string[]>();
+    const undirectedAdjacency = new Map<string, Set<string>>();
+
+    this.graph.nodes.forEach((node) => {
+      inDegree.set(node.id, 0);
+      outEdges.set(node.id, []);
+      undirectedAdjacency.set(node.id, new Set<string>());
+    });
+
+    this.graph.edges.forEach((edge) => {
+      const sourceId = edge.source.id;
+      const targetId = edge.target.id;
+      outEdges.get(sourceId)?.push(targetId);
+      inDegree.set(targetId, (inDegree.get(targetId) ?? 0) + 1);
+      undirectedAdjacency.get(sourceId)?.add(targetId);
+      undirectedAdjacency.get(targetId)?.add(sourceId);
+    });
+
+    const subgraphByNodeId = new Map<string, number>();
+    let nextSubgraphIndex = 0;
+    const sortedNodeIds = this.graph.nodes.map((node) => node.id).sort((left, right) => left.localeCompare(right));
+
+    sortedNodeIds.forEach((startId) => {
+      if (subgraphByNodeId.has(startId)) {
+        return;
+      }
+
+      const stack = [startId];
+      subgraphByNodeId.set(startId, nextSubgraphIndex);
+
+      while (stack.length > 0) {
+        const current = stack.pop();
+
+        if (current === undefined) {
+          continue;
+        }
+
+        (undirectedAdjacency.get(current) ?? []).forEach((adjacent) => {
+          if (subgraphByNodeId.has(adjacent)) {
+            return;
+          }
+
+          subgraphByNodeId.set(adjacent, nextSubgraphIndex);
+          stack.push(adjacent);
+        });
+      }
+
+      nextSubgraphIndex += 1;
+    });
+
+    const roots = this.graph.nodes
+      .map((node) => node.id)
+      .filter((id) => (inDegree.get(id) ?? 0) === 0)
+      .sort((left, right) => left.localeCompare(right));
+    const queue = [...roots];
+    const levelByNodeId = new Map<string, number>();
+
+    roots.forEach((rootId) => {
+      levelByNodeId.set(rootId, 0);
+    });
+
+    while (queue.length > 0) {
+      const current = queue.shift();
+
+      if (current === undefined) {
+        continue;
+      }
+
+      const currentLevel = levelByNodeId.get(current) ?? 0;
+
+      (outEdges.get(current) ?? []).forEach((targetId) => {
+        const nextLevel = Math.max(levelByNodeId.get(targetId) ?? 0, currentLevel + 1);
+        levelByNodeId.set(targetId, nextLevel);
+
+        const remaining = (inDegree.get(targetId) ?? 0) - 1;
+        inDegree.set(targetId, remaining);
+
+        if (remaining === 0) {
+          queue.push(targetId);
+        }
+      });
+    }
+
+    this.graph.nodes.forEach((node) => {
+      if (!levelByNodeId.has(node.id)) {
+        levelByNodeId.set(node.id, 0);
+      }
+    });
+
+    const nodesByLevel = new Map<number, string[]>();
+    levelByNodeId.forEach((level, nodeId) => {
+      const nodes = nodesByLevel.get(level) ?? [];
+      nodes.push(nodeId);
+      nodesByLevel.set(level, nodes);
+    });
+
+    nodesByLevel.forEach((nodes) => {
+      nodes.sort((left, right) => left.localeCompare(right));
+    });
+
+    const maxLevel = Math.max(...Array.from(levelByNodeId.values()));
+
+    levelByNodeId.forEach((level, nodeId) => {
+      const nodes = nodesByLevel.get(level) ?? [nodeId];
+      hierarchyByNodeId.set(nodeId, {
+        level,
+        subLevel: nodes.indexOf(nodeId),
+        levelSize: nodes.length,
+        maxLevel,
+        subgraphIndex: subgraphByNodeId.get(nodeId) ?? 0,
+      });
+    });
+
+    return hierarchyByNodeId;
+  }
+
+  private applyResponsiveNodeStyles(scene: GraphSvgScene): GraphSvgScene {
+    const hierarchyByNodeId = this.createHierarchyByNodeId();
+    const autoScaleMetrics = this.createAutoScaleMetrics(scene, hierarchyByNodeId);
+
+    const nodes = scene.nodes.map((node) => {
+      const hierarchy = hierarchyByNodeId.get(node.id);
+      const visual = this.createNodeVisualStyle(node, hierarchy, autoScaleMetrics);
+
+      return {
+        ...node,
+        box: {
+          topLeft: {
+            x: visual.topLeftX,
+            y: visual.topLeftY,
+          },
+          width: visual.width,
+          height: visual.height,
+        },
+        connectionPoints: node.connectionPoints.map((connectionPoint) => ({
+          ...connectionPoint,
+          connector: this.createConnectionPointConnector(node.center, visual.width, visual.height, connectionPoint.role),
+        })),
+      };
+    });
+
+    const nodeLookup = new Map(nodes.map((node) => [node.id, node]));
+
+    const edges = scene.edges.map((edge) => {
+      const source = nodeLookup.get(edge.start.nodeId);
+      const target = nodeLookup.get(edge.end.nodeId);
+
+      if (source === undefined || target === undefined) {
+        return edge;
+      }
+
+      const startConnector = this.createEdgeConnector(source, target);
+      const endConnector = this.createEdgeConnector(target, source);
+
+      return {
+        ...edge,
+        start: {
+          ...edge.start,
+          connector: startConnector,
+        },
+        end: {
+          ...edge.end,
+          connector: endConnector,
+        },
+        edge: {
+          ...edge.edge,
+          path: this.createStraightPath(startConnector, endConnector),
+        },
+      };
+    });
+
+    return {
+      ...scene,
+      nodes,
+      edges,
+    };
+  }
+
+  private createEdgeConnector(
+    from: GraphSvgScene["nodes"][number],
+    to: GraphSvgScene["nodes"][number],
+  ): GraphSvgConnector {
+    const deltaX = to.center.x - from.center.x;
+    const deltaY = to.center.y - from.center.y;
+    const halfWidth = from.box.width / 2;
+    const halfHeight = from.box.height / 2;
+
+    if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+      return {
+        x: from.center.x + (deltaX >= 0 ? halfWidth : -halfWidth),
+        y: from.center.y,
+      };
+    }
+
+    return {
+      x: from.center.x,
+      y: from.center.y + (deltaY >= 0 ? halfHeight : -halfHeight),
+    };
+  }
+
+  private createStraightPath(from: GraphSvgConnector, to: GraphSvgConnector): string {
+    return `M ${from.x} ${from.y} L ${to.x} ${to.y}`;
+  }
+
+  private createConnectionPointConnector(
+    center: GraphSvgConnector,
+    width: number,
+    height: number,
+    role: "top" | "right" | "bottom" | "left",
+  ): GraphSvgConnector {
+    const halfWidth = width / 2;
+    const halfHeight = height / 2;
+
+    switch (role) {
+      case "top":
+        return { x: center.x, y: center.y - halfHeight };
+      case "right":
+        return { x: center.x + halfWidth, y: center.y };
+      case "bottom":
+        return { x: center.x, y: center.y + halfHeight };
+      case "left":
+        return { x: center.x - halfWidth, y: center.y };
+      default:
+        return center;
+    }
+  }
+
+  private createNodeVisualStyle(
+    node: GraphSvgScene["nodes"][number],
+    hierarchy: GraphNodeHierarchy | undefined,
+    autoScaleMetrics: GraphAutoScaleMetrics,
+  ): GraphNodeVisualStyle {
+    const level = hierarchy?.level ?? 0;
+    const maxLevel = hierarchy?.maxLevel ?? 0;
+    const subLevel = hierarchy?.subLevel ?? 0;
+    const levelSize = hierarchy?.levelSize ?? 1;
+    const subgraphIndex = hierarchy?.subgraphIndex ?? 0;
+
+    const depthRatio = maxLevel === 0 ? 0 : (level / maxLevel);
+    const levelScale = Math.max(0.84, Math.min(1.12, 1.08 - (depthRatio * 0.22)));
+    const sizeScale = levelScale * autoScaleMetrics.nodeScale;
+    const width = node.box.width * sizeScale;
+    const height = node.box.height * sizeScale;
+    const topLeftX = node.center.x - (width / 2);
+    const topLeftY = node.center.y - (height / 2);
+
+    const hue = this.getPaletteHueForNode(level, subgraphIndex);
+    const baseLightness = 31 + ((level % 3) * 3);
+    const subLevelRatio = levelSize <= 1 ? 0 : (subLevel / (levelSize - 1));
+    const shadeOffset = (subLevelRatio - 0.5) * 10;
+    const fillLightness = Math.max(25, Math.min(47, baseLightness + shadeOffset));
+    const strokeLightness = Math.max(18, fillLightness - 9);
+    const textLightness = Math.min(98, fillLightness + 56);
+
+    return {
+      fill: `hsl(${hue} 52% ${fillLightness}%)`,
+      stroke: `hsl(${hue} 56% ${strokeLightness}%)`,
+      text: `hsl(${hue} 42% ${textLightness}%)`,
+      width,
+      height,
+      topLeftX,
+      topLeftY,
+    };
+  }
+
+  private createNodeColorStyle(
+    hierarchy: GraphNodeHierarchy | undefined,
+  ): Pick<GraphNodeVisualStyle, "fill" | "stroke" | "text"> {
+    const level = hierarchy?.level ?? 0;
+    const subLevel = hierarchy?.subLevel ?? 0;
+    const levelSize = hierarchy?.levelSize ?? 1;
+    const subgraphIndex = hierarchy?.subgraphIndex ?? 0;
+    const hue = this.getPaletteHueForNode(level, subgraphIndex);
+    const baseLightness = 31 + ((level % 3) * 3);
+    const subLevelRatio = levelSize <= 1 ? 0 : (subLevel / (levelSize - 1));
+    const shadeOffset = (subLevelRatio - 0.5) * 10;
+    const fillLightness = Math.max(25, Math.min(47, baseLightness + shadeOffset));
+    const strokeLightness = Math.max(18, fillLightness - 9);
+    const textLightness = Math.min(98, fillLightness + 56);
+
+    return {
+      fill: `hsl(${hue} 52% ${fillLightness}%)`,
+      stroke: `hsl(${hue} 56% ${strokeLightness}%)`,
+      text: `hsl(${hue} 42% ${textLightness}%)`,
+    };
+  }
+
+  private getPaletteHueForNode(level: number, subgraphIndex: number): number {
+    const subgraphPalettes: readonly (readonly number[])[] = [
+      [148, 156, 164, 172, 180],
+      [214, 206, 198, 190, 182],
+      [28, 34, 40, 46, 52],
+      [286, 278, 270, 262, 254],
+      [346, 338, 330, 322, 314],
+      [186, 178, 170, 162, 154],
+    ];
+    const defaultPalette: readonly number[] = [148, 156, 164, 172, 180];
+    const palette = subgraphPalettes[subgraphIndex % subgraphPalettes.length] ?? defaultPalette;
+
+    return palette[level % palette.length] ?? palette[0] ?? 148;
+  }
+
+  private createAutoScaleMetrics(
+    scene: GraphSvgScene,
+    hierarchyByNodeId: ReadonlyMap<string, GraphNodeHierarchy>,
+  ): GraphAutoScaleMetrics {
+    if (scene.nodes.length === 0) {
+      return { nodeScale: 1 };
+    }
+
+    let maxLevel = 0;
+    const levelNodeCounts = new Map<number, number>();
+
+    hierarchyByNodeId.forEach((hierarchy) => {
+      maxLevel = Math.max(maxLevel, hierarchy.level);
+      levelNodeCounts.set(hierarchy.level, (levelNodeCounts.get(hierarchy.level) ?? 0) + 1);
+    });
+
+    const maxNodesInAnyLevel = Math.max(1, ...Array.from(levelNodeCounts.values()));
+    const levelCount = Math.max(1, maxLevel + 1);
+    const availableWidth = Math.max(1, scene.boundary.width - 28);
+    const availableHeight = Math.max(1, scene.boundary.height - 28);
+    const widthPerNode = availableWidth / (maxNodesInAnyLevel + 0.35);
+    const heightPerLevel = availableHeight / (levelCount + 0.4);
+    const widthScale = widthPerNode / this.boxWidth;
+    const heightScale = heightPerLevel / this.boxHeight;
+
+    const targetCoverage = 0.2;
+    const densityScale = Math.sqrt(
+      (availableWidth * availableHeight * targetCoverage)
+        / Math.max(1, scene.nodes.length * this.boxWidth * this.boxHeight),
+    );
+
+    return {
+      nodeScale: Math.max(0.52, Math.min(1.28, Math.min(widthScale, heightScale, densityScale))),
     };
   }
 
