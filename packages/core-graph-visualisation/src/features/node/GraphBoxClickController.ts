@@ -1,5 +1,5 @@
-import type { IGraphElementController, GraphElementControllerHost } from "src/GraphElementControllers.js";
-import { GraphBoxClickDetail } from "./GraphBoxClickDetail.js";
+import type { IGraphElementController, GraphElementControllerHost } from "../../GraphElementControllers.js";
+import type { GraphBoxClickDetail } from "./GraphBoxClickDetail.js";
 
 
 export class GraphBoxClickController implements IGraphElementController {

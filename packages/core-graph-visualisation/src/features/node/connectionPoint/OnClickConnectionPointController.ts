@@ -1,5 +1,5 @@
-import type { IGraphElementController, GraphElementControllerHost } from "src/GraphElementControllers.js";
-import { GraphConnectionPointClickDetail } from "./GraphConnectionPointClickDetail.js";
+import type { IGraphElementController, GraphElementControllerHost } from "../../../GraphElementControllers.js";
+import type { GraphConnectionPointClickDetail } from "../GraphConnectionPointClickDetail.js";
 
 
 export class OnClickConnectionPointController implements IGraphElementController {

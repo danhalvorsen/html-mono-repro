@@ -1,5 +1,5 @@
-import type { GraphSvgScene } from "src/GraphSvgScene.js";
-import type { GraphSvgNodeShapeObject, GraphSvgConnectionPointShape } from "./NodeSvgShape.js";
+import type { GraphSvgScene } from "../../../GraphSvgScene.js";
+import type { GraphSvgNodeShapeObject, GraphSvgConnectionPointShape } from "../NodeSvgShape.js";
 
 
 export interface GraphConnectionPointRightClickDetail {

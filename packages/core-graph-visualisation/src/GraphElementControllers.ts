@@ -1,7 +1,7 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 import type { GraphSvgScene } from "./GraphSvgScene.js";
 import type { GraphEdgeClickDetail } from "./features/edge/EdgeControllers.js";
-import type { GraphConnectionPointRightClickDetail } from "./features/node/GraphConnectionPointRightClickDetail.js";
+import type { GraphConnectionPointRightClickDetail } from "./features/node/connectionPoint/GraphConnectionPointRightClickDetail.js";
 import type { GraphConnectionPointClickDetail } from "./features/node/GraphConnectionPointClickDetail.js";
 import type { GraphBoxRightClickDetail } from "./features/node/GraphBoxRightClickDetail.js";
 import type { GraphBoxClickDetail } from "./features/node/GraphBoxClickDetail.js";
@@ -62,4 +62,21 @@ export class GraphElementControllerRegistry {
 }
 
 export * from "./features/node/NodeControllers.js";
+export * from "./features/node/GraphBoxClickController.js";
+export * from "./features/node/GraphBoxClickDetail.js";
+export * from "./features/node/GraphBoxRightClickController.js";
+export * from "./features/node/GraphBoxRightClickDetail.js";
+export * from "./features/node/GraphConnectionPointClickController.js";
+export * from "./features/node/GraphConnectionPointClickDetail.js";
+export * from "./features/node/GraphConnectionPointConnectDetail.js";
+export * from "./features/node/GraphConnectionPointEdgeDraft.js";
+export * from "./features/node/OnClickNodeController.js";
+export * from "./features/node/OnDragNodeController.js";
+export * from "./features/node/connectionPoint/GraphConnectionPointDragController.js";
+export * from "./features/node/connectionPoint/GraphConnectionPointRightClickController.js";
+export * from "./features/node/connectionPoint/GraphConnectionPointRightClickDetail.js";
+export * from "./features/node/connectionPoint/OnClickConnectionPointController.js";
 export * from "./features/edge/EdgeControllers.js";
+export * from "./features/edge/GraphEdgeClickController.js";
+export * from "./features/edge/OnClickEdgeController.js";
+export * from "./features/edge/OnEdgeClickHighlightController.js";

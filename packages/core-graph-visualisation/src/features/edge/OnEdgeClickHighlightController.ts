@@ -1,4 +1,4 @@
-import type { IGraphElementController, GraphElementControllerHost } from "src/GraphElementControllers.js";
+import type { IGraphElementController, GraphElementControllerHost } from "../../GraphElementControllers.js";
 import { GraphEdgeClickDetail } from "./EdgeControllers.js";
 
 

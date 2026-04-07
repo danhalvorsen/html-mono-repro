@@ -1,5 +1,5 @@
 import type { GraphElementControllerHost } from "../../GraphElementControllers.js";
-import { GraphConnectionPointClickDetail } from "./GraphConnectionPointClickDetail.js";
+import type { GraphConnectionPointClickDetail } from "./GraphConnectionPointClickDetail.js";
 
 export function resolveConnectionPointDetail(
   host: GraphElementControllerHost,

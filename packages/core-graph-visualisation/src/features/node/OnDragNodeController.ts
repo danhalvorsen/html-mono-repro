@@ -1,5 +1,5 @@
-import type { IGraphElementController, GraphElementControllerHost } from "src/GraphElementControllers.js";
-import { PointerEventBindingTarget } from "./PointerEventBindingTarget.js";
+import type { IGraphElementController, GraphElementControllerHost } from "../../GraphElementControllers.js";
+import type { PointerEventBindingTarget } from "./PointerEventBindingTarget.js";
 
 
 export class OnDragNodeController implements IGraphElementController {
