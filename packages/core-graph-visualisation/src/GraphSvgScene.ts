@@ -1,11 +1,23 @@
 import type { IGraph } from "@monorepo/core-graph";
+import {
+  SceneGraph,
+  SceneNode,
+  SceneProjector,
+  ShapeNode,
+  type ISceneNode,
+  type ISceneProjector,
+} from "@monorepo/core-scene-graph";
 
 import type { SvgPoint } from "./CoordinateMapper.js";
 import type { GraphSvgEdgeShapeObject } from "./features/edge/EdgeSvgShape.js";
 import type {
+  GraphNodeVisualRepresentation,
+  GraphSvgCircleConnectorDefinition,
   GraphSvgConnectionPointShape,
   GraphSvgNodeBoxShape,
+  GraphSvgNodeCircleShape,
   GraphSvgNodeShapeObject,
+  GraphSvgNodeVisualDefinition,
 } from "./features/node/NodeSvgShape.js";
 import type { GraphSvgConnector } from "./layout/GraphGeometry.js";
 import { SvgCartesianCoordinateMapper } from "./CoordinateMapper.js";
@@ -31,11 +43,18 @@ export interface GraphSceneOptions {
   readonly padding: number;
   readonly boxWidth: number;
   readonly boxHeight: number;
+  readonly nodeRepresentation?: GraphNodeVisualRepresentation;
+  readonly circleConnectors?: GraphSvgCircleConnectorDefinition;
 }
 
 export interface IGraphSvgSceneFactory {
   createScene(graph: IGraph, options: GraphSceneOptions): GraphSvgScene;
 }
+
+type GraphSvgNodeScenePayload = Readonly<{
+  anchor: GraphNodeAnchor;
+  visual: GraphSvgNodeVisualDefinition;
+}>;
 
 export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
   constructor(private readonly constraintEngine: IGraphConstraintEngine) {}
@@ -55,11 +74,9 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
       width: constraints.canvas.width,
       height: constraints.canvas.height,
     });
+    const nodeShapes = this.createNodeShapes(constraints, mapper, options);
     const nodeLookup = new Map<string, GraphSvgNodeShapeObject>(
-      constraints.nodeAnchors.map((nodeAnchor) => {
-        const nodeShape = this.createNodeShape(nodeAnchor, constraints, mapper);
-        return [nodeShape.id, nodeShape];
-      }),
+      nodeShapes.map((nodeShape) => [nodeShape.id, nodeShape]),
     );
 
     return {
@@ -100,31 +117,81 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
     };
   }
 
-  private createNodeShape(
-    nodeAnchor: GraphNodeAnchor,
+  private createNodeShapes(
     constraints: GraphConstraintModel,
     mapper: SvgCartesianCoordinateMapper,
-  ): GraphSvgNodeShapeObject {
-    const center = mapper.toSvg({
-      x: nodeAnchor.centerX,
-      y: nodeAnchor.centerY,
-    });
+    options: GraphSceneOptions,
+  ): readonly GraphSvgNodeShapeObject[] {
+    const root = new SceneNode("graph-root");
 
-    return {
-      id: nodeAnchor.id,
-      label: nodeAnchor.id,
-      payload: nodeAnchor.payload,
-      center,
-      box: {
-        topLeft: {
-          x: center.x - (constraints.box.width / 2),
-          y: center.y - (constraints.box.height / 2),
+    for (const nodeAnchor of constraints.nodeAnchors) {
+      const center = mapper.toSvg({
+        x: nodeAnchor.centerX,
+        y: nodeAnchor.centerY,
+      });
+      const visual = this.resolveNodeVisualDefinition(nodeAnchor.payload, options);
+      const sceneNode = new ShapeNode<GraphSvgNodeScenePayload>(
+        nodeAnchor.id,
+        {
+          anchor: nodeAnchor,
+          visual,
         },
-        width: constraints.box.width,
-        height: constraints.box.height,
+      );
+
+      sceneNode.translate(center.x, center.y);
+      root.add(sceneNode);
+    }
+
+    const sceneGraph = new SceneGraph(root);
+    sceneGraph.update();
+
+    const nodeProjector: ISceneProjector<GraphSvgNodeShapeObject> = {
+      project: (node: ISceneNode): readonly GraphSvgNodeShapeObject[] => {
+        if (!(node instanceof ShapeNode)) {
+          return [];
+        }
+
+        const shapeNode = node as ShapeNode<GraphSvgNodeScenePayload>;
+        const world = shapeNode.world.toFloat32Array();
+        const center = {
+          x: world[2] ?? 0,
+          y: world[5] ?? 0,
+        };
+        const representation = shapeNode.payload.visual.representation ?? "box";
+        const circle = representation === "circle"
+          ? { radius: Math.min(constraints.box.width, constraints.box.height) / 2 }
+          : undefined;
+
+        return [
+          {
+            id: shapeNode.payload.anchor.id,
+            label: shapeNode.payload.anchor.id,
+            payload: shapeNode.payload.anchor.payload,
+            center,
+            representation,
+            box: {
+              topLeft: {
+                x: center.x - (constraints.box.width / 2),
+                y: center.y - (constraints.box.height / 2),
+              },
+              width: constraints.box.width,
+              height: constraints.box.height,
+            },
+            circle,
+            connectionPoints: this.createConnectionPoints(
+              shapeNode.payload.anchor.id,
+              center,
+              constraints.box,
+              representation,
+              circle,
+              shapeNode.payload.visual.circleConnectors,
+            ),
+          },
+        ];
       },
-      connectionPoints: this.createConnectionPoints(nodeAnchor.id, center, constraints.box),
     };
+
+    return new SceneProjector(nodeProjector).project(sceneGraph);
   }
 
   private createBoundaryBox(
@@ -146,6 +213,21 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
     from: GraphSvgNodeShapeObject,
     to: GraphSvgNodeShapeObject,
   ): SvgPoint {
+    const snappedConnector = this.findNearestConnectionPointConnector(from, to);
+
+    if (snappedConnector !== undefined) {
+      return snappedConnector;
+    }
+
+    if (from.representation === "circle" && from.circle !== undefined) {
+      const angle = Math.atan2(to.center.y - from.center.y, to.center.x - from.center.x);
+
+      return {
+        x: from.center.x + (Math.cos(angle) * from.circle.radius),
+        y: from.center.y + (Math.sin(angle) * from.circle.radius),
+      };
+    }
+
     const deltaX = to.center.x - from.center.x;
     const deltaY = to.center.y - from.center.y;
     const halfWidth = from.box.width / 2;
@@ -164,6 +246,31 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
     };
   }
 
+  private findNearestConnectionPointConnector(
+    from: GraphSvgNodeShapeObject,
+    to: GraphSvgNodeShapeObject,
+  ): SvgPoint | undefined {
+    if (from.connectionPoints.length === 0) {
+      return undefined;
+    }
+
+    let nearest = from.connectionPoints[0]?.connector;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+
+    for (const connectionPoint of from.connectionPoints) {
+      const deltaX = to.center.x - connectionPoint.connector.x;
+      const deltaY = to.center.y - connectionPoint.connector.y;
+      const distanceSquared = (deltaX * deltaX) + (deltaY * deltaY);
+
+      if (distanceSquared < nearestDistance) {
+        nearestDistance = distanceSquared;
+        nearest = connectionPoint.connector;
+      }
+    }
+
+    return nearest;
+  }
+
   private createStraightPath(
     from: GraphSvgConnector,
     to: GraphSvgConnector,
@@ -175,7 +282,27 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
     nodeId: string,
     center: GraphSvgConnector,
     box: BoxConstraints,
+    representation: GraphNodeVisualRepresentation,
+    circle: GraphSvgNodeCircleShape | undefined,
+    circleConnectors: GraphSvgCircleConnectorDefinition | undefined,
   ): readonly GraphSvgConnectionPointShape[] {
+    if (representation === "circle" && circle !== undefined) {
+      return this.resolveCircleConnectorAngles(circleConnectors).map((angleDegrees) => {
+        const radians = (angleDegrees * Math.PI) / 180;
+        const role = this.resolveCircleConnectorRole(angleDegrees, circleConnectors);
+
+        return {
+          id: `${nodeId}-angle-${angleDegrees}`,
+          role,
+          angleDegrees,
+          connector: {
+            x: center.x + (Math.cos(radians) * circle.radius),
+            y: center.y + (Math.sin(radians) * circle.radius),
+          },
+        };
+      });
+    }
+
     const halfWidth = box.width / 2;
     const halfHeight = box.height / 2;
 
@@ -201,6 +328,103 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
         connector: { x: center.x - halfWidth, y: center.y },
       },
     ];
+  }
+
+  private resolveNodeVisualDefinition(
+    payload: unknown,
+    options: GraphSceneOptions,
+  ): GraphSvgNodeVisualDefinition {
+    const payloadVisual = this.readNodeVisualDefinition(payload);
+
+    return {
+      representation: payloadVisual.representation ?? options.nodeRepresentation ?? "box",
+      circleConnectors: payloadVisual.circleConnectors ?? options.circleConnectors,
+    };
+  }
+
+  private readNodeVisualDefinition(payload: unknown): GraphSvgNodeVisualDefinition {
+    if (payload === null || typeof payload !== "object") {
+      return {};
+    }
+
+    const visual = (payload as Record<string, unknown>).visual;
+
+    if (visual === null || typeof visual !== "object") {
+      return {};
+    }
+
+    const record = visual as Record<string, unknown>;
+    const representation = record.representation === "circle" || record.representation === "box"
+      ? record.representation
+      : undefined;
+    const circleConnectors = this.readCircleConnectorDefinition(record.circleConnectors);
+
+    return {
+      representation,
+      circleConnectors,
+    };
+  }
+
+  private readCircleConnectorDefinition(value: unknown): GraphSvgCircleConnectorDefinition | undefined {
+    if (value === null || typeof value !== "object") {
+      return undefined;
+    }
+
+    const record = value as Record<string, unknown>;
+    const mode = record.mode === "fixed" || record.mode === "equal" ? record.mode : undefined;
+    const angles = Array.isArray(record.angles)
+      ? record.angles.filter((candidate): candidate is number => typeof candidate === "number")
+      : undefined;
+    const count = typeof record.count === "number" && Number.isFinite(record.count)
+      ? Math.max(1, Math.round(record.count))
+      : undefined;
+
+    return {
+      mode,
+      angles,
+      count,
+    };
+  }
+
+  private resolveCircleConnectorAngles(
+    definition: GraphSvgCircleConnectorDefinition | undefined,
+  ): readonly number[] {
+    if (definition?.angles !== undefined && definition.angles.length > 0) {
+      return definition.angles;
+    }
+
+    if (definition === undefined) {
+      return [270, 0, 90, 180];
+    }
+
+    const count = definition?.count ?? 4;
+    const safeCount = Math.max(1, count);
+
+    return Array.from({ length: safeCount }, (_value, index) => Math.round((360 / safeCount) * index));
+  }
+
+  private resolveCircleConnectorRole(
+    angleDegrees: number,
+    definition: GraphSvgCircleConnectorDefinition | undefined,
+  ): string {
+    if (definition?.mode === "fixed" || (definition?.angles !== undefined && definition.angles.length > 0)) {
+      return `angle-${angleDegrees}`;
+    }
+
+    const normalized = ((Math.round(angleDegrees) % 360) + 360) % 360;
+
+    switch (normalized) {
+      case 0:
+        return "right";
+      case 90:
+        return "bottom";
+      case 180:
+        return "left";
+      case 270:
+        return "top";
+      default:
+        return `angle-${angleDegrees}`;
+    }
   }
 }
 

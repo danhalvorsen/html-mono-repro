@@ -39,6 +39,7 @@
   "license": "MIT",
   "dependencies": {
     "@monorepo/core-graph": "workspace:*",
+    "@monorepo/core-scene-graph": "workspace:*",
     "lit": "^3.3.1"
   },
   "devDependencies": {

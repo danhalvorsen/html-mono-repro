@@ -24,6 +24,7 @@ import type { IGraphConstraintEngine } from "./GraphConstraints.js";
 import {
   type GraphSvgConnector,
   GraphSvgSceneFactory,
+  type GraphNodeVisualRepresentation,
   type GraphSceneOptions,
   type GraphSvgScene,
   type IGraphSvgSceneFactory,
@@ -69,6 +70,7 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
     padding: { type: Number },
     boxWidth: { type: Number, attribute: "box-width" },
     boxHeight: { type: Number, attribute: "box-height" },
+    nodeRepresentation: { type: String, attribute: "node-representation" },
     controllers: { attribute: false },
   };
 
@@ -183,6 +185,7 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
   padding = DEFAULT_PADDING;
   boxWidth = DEFAULT_NODE_WIDTH;
   boxHeight = DEFAULT_NODE_HEIGHT;
+  nodeRepresentation: GraphNodeVisualRepresentation = "box";
   controllers: readonly IGraphElementController[] = [];
 
   sceneFactory: IGraphSvgSceneFactory;
@@ -270,17 +273,32 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
 
           return svg`
           <g>
-            <rect
-              class=${isHighlighted ? "node node--highlighted" : "node"}
-              style=${isHighlighted ? "" : `fill: ${visual.fill}; stroke: ${visual.stroke};`}
-              x=${node.box.topLeft.x}
-              y=${node.box.topLeft.y}
-              width=${node.box.width}
-              height=${node.box.height}
-              @click=${(event: MouseEvent) => this.onBoxClick(node.id, event)}
-              @contextmenu=${(event: MouseEvent) => this.onBoxRightClick(node.id, event)}
-              @pointerdown=${(event: PointerEvent) => this.onNodePointerDown(node.id, event)}
-            ></rect>
+            ${node.representation === "circle" && node.circle !== undefined
+              ? svg`
+                <circle
+                  class=${isHighlighted ? "node node--highlighted" : "node"}
+                  style=${isHighlighted ? "" : `fill: ${visual.fill}; stroke: ${visual.stroke};`}
+                  cx=${node.center.x}
+                  cy=${node.center.y}
+                  r=${node.circle.radius}
+                  @click=${(event: MouseEvent) => this.onBoxClick(node.id, event)}
+                  @contextmenu=${(event: MouseEvent) => this.onBoxRightClick(node.id, event)}
+                  @pointerdown=${(event: PointerEvent) => this.onNodePointerDown(node.id, event)}
+                ></circle>
+              `
+              : svg`
+                <rect
+                  class=${isHighlighted ? "node node--highlighted" : "node"}
+                  style=${isHighlighted ? "" : `fill: ${visual.fill}; stroke: ${visual.stroke};`}
+                  x=${node.box.topLeft.x}
+                  y=${node.box.topLeft.y}
+                  width=${node.box.width}
+                  height=${node.box.height}
+                  @click=${(event: MouseEvent) => this.onBoxClick(node.id, event)}
+                  @contextmenu=${(event: MouseEvent) => this.onBoxRightClick(node.id, event)}
+                  @pointerdown=${(event: PointerEvent) => this.onNodePointerDown(node.id, event)}
+                ></rect>
+              `}
             <foreignObject
               x=${node.box.topLeft.x}
               y=${node.box.topLeft.y}
@@ -370,6 +388,7 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
       padding: this.padding,
       boxWidth: this.boxWidth,
       boxHeight: this.boxHeight,
+      nodeRepresentation: this.nodeRepresentation,
     };
   }
 
@@ -534,7 +553,14 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
         },
         connectionPoints: node.connectionPoints.map((connectionPoint) => ({
           ...connectionPoint,
-          connector: this.createConnectionPointConnector(node.center, visual.width, visual.height, connectionPoint.role),
+          connector: this.createConnectionPointConnector(
+            node.center,
+            visual.width,
+            visual.height,
+            connectionPoint.role,
+            node.circle?.radius,
+            connectionPoint.angleDegrees,
+          ),
         })),
       };
     });
@@ -580,8 +606,24 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
     from: GraphSvgScene["nodes"][number],
     to: GraphSvgScene["nodes"][number],
   ): GraphSvgConnector {
+    const snappedConnector = this.findNearestConnectionPointConnector(from, to);
+
+    if (snappedConnector !== undefined) {
+      return snappedConnector;
+    }
+
     const deltaX = to.center.x - from.center.x;
     const deltaY = to.center.y - from.center.y;
+
+    if (from.representation === "circle" && from.circle !== undefined) {
+      const angle = Math.atan2(deltaY, deltaX);
+
+      return {
+        x: from.center.x + (Math.cos(angle) * from.circle.radius),
+        y: from.center.y + (Math.sin(angle) * from.circle.radius),
+      };
+    }
+
     const halfWidth = from.box.width / 2;
     const halfHeight = from.box.height / 2;
 
@@ -598,6 +640,31 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
     };
   }
 
+  private findNearestConnectionPointConnector(
+    from: GraphSvgScene["nodes"][number],
+    to: GraphSvgScene["nodes"][number],
+  ): GraphSvgConnector | undefined {
+    if (from.connectionPoints.length === 0) {
+      return undefined;
+    }
+
+    let nearest = from.connectionPoints[0]?.connector;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+
+    for (const connectionPoint of from.connectionPoints) {
+      const deltaX = to.center.x - connectionPoint.connector.x;
+      const deltaY = to.center.y - connectionPoint.connector.y;
+      const distanceSquared = (deltaX * deltaX) + (deltaY * deltaY);
+
+      if (distanceSquared < nearestDistance) {
+        nearestDistance = distanceSquared;
+        nearest = connectionPoint.connector;
+      }
+    }
+
+    return nearest;
+  }
+
   private createStraightPath(from: GraphSvgConnector, to: GraphSvgConnector): string {
     return `M ${from.x} ${from.y} L ${to.x} ${to.y}`;
   }
@@ -606,8 +673,19 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
     center: GraphSvgConnector,
     width: number,
     height: number,
-    role: "top" | "right" | "bottom" | "left",
+    role: string,
+    circleRadius?: number,
+    angleDegrees?: number,
   ): GraphSvgConnector {
+    if (circleRadius !== undefined) {
+      const radians = ((angleDegrees ?? this.getDefaultAngleForRole(role)) * Math.PI) / 180;
+
+      return {
+        x: center.x + (Math.cos(radians) * circleRadius),
+        y: center.y + (Math.sin(radians) * circleRadius),
+      };
+    }
+
     const halfWidth = width / 2;
     const halfHeight = height / 2;
 
@@ -622,6 +700,25 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
         return { x: center.x - halfWidth, y: center.y };
       default:
         return center;
+    }
+  }
+
+  private getDefaultAngleForRole(role: string): number {
+    switch (role) {
+      case "right":
+        return 0;
+      case "bottom":
+        return 90;
+      case "left":
+        return 180;
+      case "top":
+        return 270;
+      default:
+        if (role.startsWith("angle-")) {
+          return Number(role.slice("angle-".length)) || 0;
+        }
+
+        return 0;
     }
   }
 
@@ -997,7 +1094,12 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
         },
         connectionPoints: node.connectionPoints.map((connectionPoint) => ({
           ...connectionPoint,
-          connector: this.repositionConnectionPoint(node, overrideCenter, connectionPoint.role),
+          connector: this.repositionConnectionPoint(
+            node,
+            overrideCenter,
+            connectionPoint.role,
+            connectionPoint.angleDegrees,
+          ),
         })),
       };
     });
@@ -1041,8 +1143,24 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
     from: GraphSvgScene["nodes"][number],
     to: GraphSvgScene["nodes"][number],
   ): GraphSvgConnector {
+    const snappedConnector = this.findNearestConnectionPointConnector(from, to);
+
+    if (snappedConnector !== undefined) {
+      return snappedConnector;
+    }
+
     const deltaX = to.center.x - from.center.x;
     const deltaY = to.center.y - from.center.y;
+
+    if (from.representation === "circle" && from.circle !== undefined) {
+      const angle = Math.atan2(deltaY, deltaX);
+
+      return {
+        x: from.center.x + (Math.cos(angle) * from.circle.radius),
+        y: from.center.y + (Math.sin(angle) * from.circle.radius),
+      };
+    }
+
     const halfWidth = from.box.width / 2;
     const halfHeight = from.box.height / 2;
 
@@ -1063,7 +1181,19 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
     node: GraphSvgScene["nodes"][number],
     center: GraphSvgConnector,
     role: GraphSvgScene["nodes"][number]["connectionPoints"][number]["role"],
+    angleDegrees?: number,
   ): GraphSvgConnector {
+    if (node.representation === "circle" && node.circle !== undefined) {
+      return this.createConnectionPointConnector(
+        center,
+        node.box.width,
+        node.box.height,
+        role,
+        node.circle.radius,
+        angleDegrees,
+      );
+    }
+
     const halfWidth = node.box.width / 2;
     const halfHeight = node.box.height / 2;
 
@@ -1076,6 +1206,8 @@ export class CoreGraphVisualizerElement extends LitElement implements GraphEleme
         return { x: center.x, y: center.y + halfHeight };
       case "left":
         return { x: center.x - halfWidth, y: center.y };
+      default:
+        return center;
     }
   }
 

@@ -1342,6 +1342,9 @@ importers:
       '@monorepo/core-graph':
         specifier: workspace:*
         version: link:../core-graph
+      '@monorepo/core-scene-graph':
+        specifier: workspace:*
+        version: link:../core-scene-graph
       lit:
         specifier: ^3.3.1
         version: 3.3.2

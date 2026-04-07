@@ -11,6 +11,7 @@ import {
   type GraphConstraintModel,
   type IGraphConstraintEngine,
   type IGraphLayoutStrategy,
+  type GraphNodeVisualRepresentation,
   type IGraphSvgSceneFactory,
 } from "@monorepo/core-graph-visualisation";
 import { D3ForceGraphLayoutStrategy } from "@monorepo/core-graph-visualization-d3";
@@ -47,6 +48,8 @@ interface LayoutOption {
   readonly algorithmName: string;
   readonly sceneFactory: IGraphSvgSceneFactory;
 }
+
+type NodeRepresentationOption = GraphNodeVisualRepresentation;
 
 @customElement("graph-visualization-app")
 export class GraphVisualizationApp extends LitElement {
@@ -87,6 +90,7 @@ export class GraphVisualizationApp extends LitElement {
     },
   ];
   private selectedLayoutId: LayoutOptionId = "d3-force";
+  private selectedNodeRepresentation: NodeRepresentationOption = "box";
   private visualizerWidth = 960;
   private visualizerHeight = 640;
   private resizeObserver: ResizeObserver | undefined;
@@ -161,6 +165,17 @@ export class GraphVisualizationApp extends LitElement {
               `)}
             </select>
           </label>
+          <label class="layout-picker" for="node-representation-picker">
+            <span>Node shape</span>
+            <select
+              id="node-representation-picker"
+              @change=${this.onNodeRepresentationChanged}
+              .value=${this.selectedNodeRepresentation}
+            >
+              <option value="box">Box</option>
+              <option value="circle">Circle</option>
+            </select>
+          </label>
         </header>
 
         <dag-state-web-component
@@ -179,6 +194,7 @@ export class GraphVisualizationApp extends LitElement {
               .padding=${96}
               .boxWidth=${150}
               .boxHeight=${64}
+              .nodeRepresentation=${this.selectedNodeRepresentation}
             >
               <span slot="node-Ingest">Ingest</span>
               <span slot="node-Validate">Validate</span>
@@ -321,6 +337,19 @@ export class GraphVisualizationApp extends LitElement {
       || select.value === "dgml-force"
     ) {
       this.selectedLayoutId = select.value;
+      this.requestUpdate();
+    }
+  };
+
+  private onNodeRepresentationChanged = (event: Event): void => {
+    const select = event.target;
+
+    if (!(select instanceof HTMLSelectElement)) {
+      return;
+    }
+
+    if (select.value === "box" || select.value === "circle") {
+      this.selectedNodeRepresentation = select.value;
       this.requestUpdate();
     }
   };
