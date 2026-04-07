@@ -5,13 +5,19 @@ import { registerCoreGraphVisualizerElement } from "@monorepo/core-graph-visuali
 import type { IGraph } from "@monorepo/core-graph";
 import {
   GraphSvgSceneFactory,
+  GridGraphConstraintEngine,
   type BoxConstraints,
   type GraphCanvasConstraints,
   type GraphConstraintModel,
   type IGraphConstraintEngine,
   type IGraphLayoutStrategy,
+  type IGraphSvgSceneFactory,
 } from "@monorepo/core-graph-visualisation";
 import { D3ForceGraphLayoutStrategy } from "@monorepo/core-graph-visualization-d3";
+import {
+  DGMLForceDirectedLayoutStrategy,
+  DGMLLayeredLayoutStrategy,
+} from "@monorepo/core-graph-visualization-dgml";
 import "./components/DagStateWebComponent.js";
 
 import {
@@ -33,13 +39,54 @@ class LayoutStrategyConstraintEngineAdapter implements IGraphConstraintEngine {
   }
 }
 
+type LayoutOptionId = "d3-force" | "grid" | "dgml-layered" | "dgml-force";
+
+interface LayoutOption {
+  readonly id: LayoutOptionId;
+  readonly label: string;
+  readonly algorithmName: string;
+  readonly sceneFactory: IGraphSvgSceneFactory;
+}
+
 @customElement("graph-visualization-app")
 export class GraphVisualizationApp extends LitElement {
   private readonly application: GraphVisualizationApplicationModel;
-  private readonly layoutStrategy = new D3ForceGraphLayoutStrategy();
-  private readonly sceneFactory = new GraphSvgSceneFactory(
-    new LayoutStrategyConstraintEngineAdapter(this.layoutStrategy),
-  );
+  private readonly d3LayoutStrategy = new D3ForceGraphLayoutStrategy();
+  private readonly dgmlLayeredStrategy = new DGMLLayeredLayoutStrategy();
+  private readonly dgmlForceStrategy = new DGMLForceDirectedLayoutStrategy();
+  private readonly layoutOptions: readonly LayoutOption[] = [
+    {
+      id: "d3-force",
+      label: "D3 Force",
+      algorithmName: this.d3LayoutStrategy.name,
+      sceneFactory: new GraphSvgSceneFactory(
+        new LayoutStrategyConstraintEngineAdapter(this.d3LayoutStrategy),
+      ),
+    },
+    {
+      id: "grid",
+      label: "Grid",
+      algorithmName: "GridGraphConstraintEngine",
+      sceneFactory: new GraphSvgSceneFactory(new GridGraphConstraintEngine()),
+    },
+    {
+      id: "dgml-layered",
+      label: "DGML Layered (Sugiyama)",
+      algorithmName: this.dgmlLayeredStrategy.name,
+      sceneFactory: new GraphSvgSceneFactory(
+        new LayoutStrategyConstraintEngineAdapter(this.dgmlLayeredStrategy),
+      ),
+    },
+    {
+      id: "dgml-force",
+      label: "DGML Force-Directed",
+      algorithmName: this.dgmlForceStrategy.name,
+      sceneFactory: new GraphSvgSceneFactory(
+        new LayoutStrategyConstraintEngineAdapter(this.dgmlForceStrategy),
+      ),
+    },
+  ];
+  private selectedLayoutId: LayoutOptionId = "d3-force";
   private visualizerWidth = 960;
   private visualizerHeight = 640;
   private resizeObserver: ResizeObserver | undefined;
@@ -91,6 +138,8 @@ export class GraphVisualizationApp extends LitElement {
   }
 
   override render() {
+    const selectedLayout = this.getSelectedLayout();
+
     return html`
       <section class="shell">
         <header class="masthead">
@@ -100,18 +149,30 @@ export class GraphVisualizationApp extends LitElement {
             The app composes <code>DagGraph</code> from <code>@monorepo/core-graph</code> with the
             Lit 3 visualisation library through explicit contracts and Reactive Controllers.
           </p>
+          <label class="layout-picker" for="layout-picker">
+            <span>Visualisation layout</span>
+            <select
+              id="layout-picker"
+              @change=${this.onLayoutSelectionChanged}
+              .value=${this.selectedLayoutId}
+            >
+              ${this.layoutOptions.map((option) => html`
+                <option value=${option.id}>${option.label}</option>
+              `)}
+            </select>
+          </label>
         </header>
 
         <dag-state-web-component
           .graph=${this.application.graph}
           .selectionState=${this.application.selectionState}
           .activityState=${this.application.activityState}
-          .layoutAlgorithm=${this.layoutStrategy.name}
+          .layoutAlgorithm=${selectedLayout.algorithmName}
         >
           <main class="canvas" slot="outer-box">
             <mr-core-graph-visualizer
               .graph=${this.application.graph}
-              .sceneFactory=${this.sceneFactory}
+              .sceneFactory=${selectedLayout.sceneFactory}
               .controllers=${this.application.controllers}
               .width=${this.visualizerWidth}
               .height=${this.visualizerHeight}
@@ -174,6 +235,30 @@ export class GraphVisualizationApp extends LitElement {
       color: #2d4969;
     }
 
+    .layout-picker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      font-size: 0.95rem;
+      color: #24476f;
+    }
+
+    .layout-picker span {
+      font-weight: 600;
+    }
+
+    .layout-picker select {
+      appearance: none;
+      border: 1px solid rgba(76, 107, 143, 0.4);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(235, 244, 252, 0.95) 100%);
+      color: #18385a;
+      font: inherit;
+      padding: 8px 30px 8px 10px;
+      cursor: pointer;
+    }
+
     .canvas {
       border: 1px solid rgba(76, 107, 143, 0.24);
       border-radius: 24px;
@@ -203,9 +288,40 @@ export class GraphVisualizationApp extends LitElement {
     }
 
     @media (max-width: 900px) {
+      .layout-picker {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .layout-picker select {
+        width: min(220px, 62%);
+      }
+
       mr-core-graph-visualizer {
         min-width: 100%;
       }
     }
   `;
+
+  private getSelectedLayout(): LayoutOption {
+    return this.layoutOptions.find((option) => option.id === this.selectedLayoutId) ?? this.layoutOptions[0]!;
+  }
+
+  private onLayoutSelectionChanged = (event: Event): void => {
+    const select = event.target;
+
+    if (!(select instanceof HTMLSelectElement)) {
+      return;
+    }
+
+    if (
+      select.value === "d3-force"
+      || select.value === "grid"
+      || select.value === "dgml-layered"
+      || select.value === "dgml-force"
+    ) {
+      this.selectedLayoutId = select.value;
+      this.requestUpdate();
+    }
+  };
 }

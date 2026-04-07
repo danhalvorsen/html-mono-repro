@@ -431,6 +431,9 @@ importers:
       '@monorepo/core-graph-visualization-d3':
         specifier: workspace:*
         version: link:../../../packages/core-graph-visualization-d3
+      '@monorepo/core-graph-visualization-dgml':
+        specifier: workspace:*
+        version: link:../../../packages/core-graph-visualization-DGML
       lit:
         specifier: ^3.3.2
         version: 3.3.2
@@ -1343,6 +1346,22 @@ importers:
         specifier: ^3.3.1
         version: 3.3.2
     devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/core-graph-visualization-DGML:
+    dependencies:
+      '@monorepo/core-graph-visualisation':
+        specifier: workspace:*
+        version: link:../core-graph-visualisation
+    devDependencies:
+      '@monorepo/core-graph':
+        specifier: workspace:*
+        version: link:../core-graph
       rimraf:
         specifier: ^6.0.1
         version: 6.1.2
