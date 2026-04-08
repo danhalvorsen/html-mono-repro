@@ -15,6 +15,7 @@ import {
   type IControllerActivityState,
 } from "./ControllerActivityState.js";
 import { DagConnectionPointEdgeController } from "./DagConnectionPointEdgeController.js";
+import { DeleteSelectedEdgeController } from "./DeleteSelectedEdgeController.js";
 import { DagNodeExpansionController } from "./DagNodeExpansionController.js";
 import { GraphSelectionController } from "./GraphSelectionController.js";
 import { NodeSelectionState, type INodeSelectionState } from "./NodeSelectionState.js";
@@ -49,6 +50,7 @@ export class GraphVisualizationCompositionRoot {
         new DagConnectionPointEdgeController(graph, this.selectionState, this.activityState),
         new DagNodeExpansionController(graph, this.selectionState, this.activityState),
         new OnEdgeClickHighlightController(this.activityState),
+        new DeleteSelectedEdgeController(graph, this.activityState),
       ],
     };
   }

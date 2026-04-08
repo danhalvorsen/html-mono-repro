@@ -1,11 +1,13 @@
 import type { IGraphElementController, GraphElementControllerHost } from "../../GraphElementControllers.js";
-import type { PointerEventBindingTarget } from "./PointerEventBindingTarget.js";
 
+const NODE_DRAG_OWNER_ID = "node-drag";
 
 export class OnDragNodeController implements IGraphElementController {
   private host: GraphElementControllerHost | undefined;
   private activeNodeId: string | undefined;
   private dragPointerId: number | undefined;
+  private detachMoveSubscription: (() => void) | undefined;
+  private detachUpSubscription: (() => void) | undefined;
   private dragOrigin: {
     readonly pointerX: number;
     readonly pointerY: number;
@@ -16,10 +18,6 @@ export class OnDragNodeController implements IGraphElementController {
 
   private readonly moveHandler = (event: PointerEvent) => this.onPointerMove(event);
   private readonly upHandler = (event: PointerEvent) => this.onPointerUp(event);
-
-  constructor(
-    private readonly pointerEventTarget: PointerEventBindingTarget = window
-  ) { }
 
   bind(host: GraphElementControllerHost): void {
     this.host = host;
@@ -42,6 +40,10 @@ export class OnDragNodeController implements IGraphElementController {
       throw new Error(`Graph node '${nodeId}' was not found in the current scene.`);
     }
 
+    if (!this.host.tryAcquireDragOwner(NODE_DRAG_OWNER_ID)) {
+      return;
+    }
+
     event.preventDefault();
     this.activeNodeId = nodeId;
     this.dragPointerId = event.pointerId;
@@ -54,8 +56,8 @@ export class OnDragNodeController implements IGraphElementController {
     this.host.setHighlightedNodeId(nodeId);
     this.host.setHighlightedConnectionPointId(undefined);
     this.host.setHighlightedEdgeId(undefined);
-    this.pointerEventTarget.addEventListener("pointermove", this.moveHandler as EventListener);
-    this.pointerEventTarget.addEventListener("pointerup", this.upHandler as EventListener);
+    this.detachMoveSubscription = this.host.subscribePointerMove(this.moveHandler);
+    this.detachUpSubscription = this.host.subscribePointerUp(this.upHandler);
   }
 
   private onPointerMove(event: PointerEvent): void {
@@ -85,8 +87,11 @@ export class OnDragNodeController implements IGraphElementController {
   }
 
   private detachPointerListeners(): void {
-    this.pointerEventTarget.removeEventListener("pointermove", this.moveHandler as EventListener);
-    this.pointerEventTarget.removeEventListener("pointerup", this.upHandler as EventListener);
+    this.detachMoveSubscription?.();
+    this.detachUpSubscription?.();
+    this.detachMoveSubscription = undefined;
+    this.detachUpSubscription = undefined;
+    this.host?.releaseDragOwner(NODE_DRAG_OWNER_ID);
     this.activeNodeId = undefined;
     this.dragPointerId = undefined;
     this.dragOrigin = undefined;

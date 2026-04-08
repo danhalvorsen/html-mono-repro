@@ -38,6 +38,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@monorepo/core-fsm": "workspace:*",
     "@monorepo/core-graph": "workspace:*",
     "@monorepo/core-scene-graph": "workspace:*",
     "lit": "^3.3.1"

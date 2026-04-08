@@ -157,9 +157,8 @@ describe("OnClickConnectionPointController", () => {
 
 describe("GraphConnectionPointDragController", () => {
   it("should create a connection request when a draft ends on another connection point", () => {
-    const pointerTarget = createPointerTarget();
     const host = createHost();
-    const controller = new GraphConnectionPointDragController(pointerTarget);
+    const controller = new GraphConnectionPointDragController();
 
     controller.bind(host);
     controller.beginConnectionPointDrag("node-a", "node-a-right", {
@@ -167,7 +166,7 @@ describe("GraphConnectionPointDragController", () => {
       pointerId: 7,
     } as PointerEvent);
     controller.handleConnectionPointPointerEnter("node-b-left");
-    pointerTarget.pointerUp?.({
+    host.emitPointerUp({
       pointerId: 7,
     } as PointerEvent);
 
@@ -200,9 +199,14 @@ describe("OnClickEdgeController", () => {
 function createHost(): GraphElementControllerHost & {
   addController: ReturnType<typeof vi.fn>;
   dispatchEvent: ReturnType<typeof vi.fn>;
+  emitPointerMove: (event: PointerEvent) => void;
+  emitPointerUp: (event: PointerEvent) => void;
 } {
   let hoveredConnectionPointId: string | undefined;
   let connectionPointEdgeDraft: unknown;
+  let activeDragOwnerId: string | undefined;
+  const pointerMoveListeners = new Set<(event: PointerEvent) => void>();
+  const pointerUpListeners = new Set<(event: PointerEvent) => void>();
   const scene: GraphSvgScene = {
     width: 100,
     height: 100,
@@ -289,33 +293,55 @@ function createHost(): GraphElementControllerHost & {
     setConnectionPointEdgeDraft: vi.fn((value: unknown) => {
       connectionPointEdgeDraft = value;
     }),
+    subscribePointerMove: vi.fn((listener: (event: PointerEvent) => void) => {
+      pointerMoveListeners.add(listener);
+      return () => {
+        pointerMoveListeners.delete(listener);
+      };
+    }),
+    subscribePointerUp: vi.fn((listener: (event: PointerEvent) => void) => {
+      pointerUpListeners.add(listener);
+      return () => {
+        pointerUpListeners.delete(listener);
+      };
+    }),
+    dispatchInteraction: vi.fn(async () => []),
+    getInteractionContext: vi.fn(() => ({
+      highlightedNodeId: undefined,
+      highlightedEdgeId: undefined,
+      highlightedConnectionPointId: undefined,
+      activeDragOwnerId,
+      draggingNodeId: undefined,
+      draftEdge: undefined,
+      hoveredConnectionPointId,
+      hoveredConnectionPointNodeId: undefined,
+      lastReleasedNodeId: undefined,
+      lastConnectionRequest: undefined,
+    })),
+    tryAcquireDragOwner: vi.fn((ownerId: string) => {
+      if (activeDragOwnerId !== undefined && activeDragOwnerId !== ownerId) {
+        return false;
+      }
+
+      activeDragOwnerId = ownerId;
+      return true;
+    }),
+    releaseDragOwner: vi.fn((ownerId: string) => {
+      if (activeDragOwnerId === ownerId) {
+        activeDragOwnerId = undefined;
+      }
+    }),
     notifyBoxClick: vi.fn(),
     notifyBoxRightClick: vi.fn(),
     notifyConnectionPointClick: vi.fn(),
     notifyConnectionPointRightClick: vi.fn(),
     notifyConnectionPointConnect: vi.fn(),
     notifyEdgeClick: vi.fn(),
-  };
-}
-
-function createPointerTarget(): PointerTargetMock {
-  return {
-    addEventListener(type, listener) {
-      if (type === "pointermove") {
-        this.pointerMove = listener as (event: PointerEvent) => void;
-      }
-
-      if (type === "pointerup") {
-        this.pointerUp = listener as (event: PointerEvent) => void;
-      }
+    emitPointerMove: (event: PointerEvent) => {
+      pointerMoveListeners.forEach((listener) => listener(event));
     },
-    removeEventListener() {},
+    emitPointerUp: (event: PointerEvent) => {
+      pointerUpListeners.forEach((listener) => listener(event));
+    },
   };
-}
-
-interface PointerTargetMock {
-  pointerMove?: (event: PointerEvent) => void;
-  pointerUp?: (event: PointerEvent) => void;
-  addEventListener(type: string, listener: EventListenerOrEventListenerObject): void;
-  removeEventListener(type: string, listener: EventListenerOrEventListenerObject): void;
 }

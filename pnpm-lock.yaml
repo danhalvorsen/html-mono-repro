@@ -1339,6 +1339,9 @@ importers:
 
   packages/core-graph-visualisation:
     dependencies:
+      '@monorepo/core-fsm':
+        specifier: workspace:*
+        version: link:../core-fsm
       '@monorepo/core-graph':
         specifier: workspace:*
         version: link:../core-graph

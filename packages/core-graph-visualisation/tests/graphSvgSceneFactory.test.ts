@@ -142,4 +142,33 @@ describe("GraphSvgSceneFactory", () => {
       `M ${edge?.start.connector.x} ${edge?.start.connector.y} L ${edge?.end.connector.x} ${edge?.end.connector.y}`,
     );
   });
+
+  it("Given selected top and bottom CP roles when a connection is created then edge endpoints should use top->bottom connectors", () => {
+    const graph = fixture.createEmptyGraph();
+    const source = graph.addNode("source", {
+      interaction: {
+        selectedConnectionPointRole: "top",
+      },
+    });
+    const target = graph.addNode("target", {
+      interaction: {
+        selectedConnectionPointRole: "bottom",
+      },
+    });
+    graph.addEdge(source, target);
+    const factory = fixture.createFactory();
+
+    const scene = factory.createScene(graph, fixture.createSceneOptions());
+    const sourceNode = scene.nodes.find((node) => node.id === "source");
+    const targetNode = scene.nodes.find((node) => node.id === "target");
+    const edge = scene.edges[0];
+
+    const sourceTop = sourceNode?.connectionPoints.find((point) => point.role === "top")?.connector;
+    const targetBottom = targetNode?.connectionPoints.find((point) => point.role === "bottom")?.connector;
+
+    expect(sourceTop).toBeDefined();
+    expect(targetBottom).toBeDefined();
+    expect(edge?.start.connector).toEqual(sourceTop);
+    expect(edge?.end.connector).toEqual(targetBottom);
+  });
 });

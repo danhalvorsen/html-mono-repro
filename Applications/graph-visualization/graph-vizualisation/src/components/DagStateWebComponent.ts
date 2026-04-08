@@ -35,7 +35,9 @@ export class DagStateWebComponent extends LitElement {
           <p>Layout algorithm: <strong>${this.layoutAlgorithm}</strong></p>
           <p class="hint">
             Click a node to show its connection points. Click an edge to highlight the line and its
-            start/end connection points. Drag from one connection point to another to create an edge.
+            start/end connection points.after(() => {
+              
+            }); Drag from one connection point to another to create an edge.
             Right-click a node to add a child.
           </p>
         </aside>
@@ -52,8 +54,8 @@ export class DagStateWebComponent extends LitElement {
 
     .workspace {
       display: grid;
-      grid-template-columns: 280px minmax(0, 1fr);
-      gap: 20px;
+      grid-template-columns: clamp(190px, 18vw, 230px) minmax(0, 1fr);
+      gap: 12px;
       align-items: stretch;
       width: 100%;
     }
@@ -64,7 +66,7 @@ export class DagStateWebComponent extends LitElement {
       background: rgba(255, 255, 255, 0.72);
       box-shadow: 0 24px 50px rgba(46, 78, 109, 0.12);
       backdrop-filter: blur(10px);
-      padding: 20px;
+      padding: 12px;
     }
 
     .panel h2 {
@@ -73,8 +75,8 @@ export class DagStateWebComponent extends LitElement {
     }
 
     .panel p {
-      margin: 0 0 10px;
-      line-height: 1.5;
+      margin: 0 0 8px;
+      line-height: 1.35;
     }
 
     .hint {

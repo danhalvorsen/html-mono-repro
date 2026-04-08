@@ -32,7 +32,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@monorepo/core-graph-visualisation": "workspace:*"
+    "@monorepo/core-graph-visualisation": "workspace:*",
+    "lit": "^3.3.2"
   },
   "devDependencies": {
     "@monorepo/core-graph": "workspace:*",

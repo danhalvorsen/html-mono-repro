@@ -8,12 +8,9 @@ This document defines the mandatory engineering standards for all generated or m
 
 Any AI-assisted contribution must treat this file as the primary implementation contract unless the task explicitly overrides a rule in writing.
 
----
-
 ## 1. Core Delivery Expectations
 
 All delivered code must be:
-
 - production-grade
 - deterministic
 - testable
@@ -33,7 +30,6 @@ Do not generate:
 - framework-driven implicit behavior when explicit composition is possible
 
 Prefer correctness and maintainability over brevity.
-
 ---
 
 ## 2. Architectural Principles
@@ -41,7 +37,6 @@ Prefer correctness and maintainability over brevity.
 ### 2.1 SOLID is mandatory
 
 All code must follow SOLID.
-
 #### Single Responsibility Principle
 - each type must have one reason to change
 - separate orchestration, domain logic, infrastructure, and mapping concerns
@@ -56,7 +51,6 @@ All code must follow SOLID.
   - decorators
   - composition
 - do not extend behavior by editing stable core logic unless unavoidable
-
 #### Liskov Substitution Principle
 - derived or implementing types must honor the contract
 - do not weaken preconditions
@@ -345,5 +339,3 @@ Do not generate:
 - speculative abstractions with no consumer
 - test code without assertions
 - random examples without domain relevance
-
----

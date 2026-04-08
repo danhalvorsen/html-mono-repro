@@ -1,0 +1,42 @@
+ 
+{
+  "name": "@monorepo/core-graph-visualization-routing-edges",
+  "version": "1.0.0",
+  "description": "DGML/MSAGL-inspired graph layout strategies for monorepo visualisation.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },"activationEvents": [],
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "graph",
+    "layout",
+    "dgml",
+    "msagl",
+    "sugiyama",
+    "force-directed"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-graph-visualisation": "workspace:*"
+  },
+  "devDependencies": {
+    "@monorepo/core-graph": "workspace:*",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}

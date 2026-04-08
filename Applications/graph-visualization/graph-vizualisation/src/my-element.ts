@@ -2,21 +2,19 @@ import { LitElement, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { registerCoreGraphVisualizerElement } from "@monorepo/core-graph-visualisation/lit";
-import type { IGraph } from "@monorepo/core-graph";
 import {
   GraphSvgSceneFactory,
   GridGraphConstraintEngine,
-  type BoxConstraints,
-  type GraphCanvasConstraints,
-  type GraphConstraintModel,
-  type IGraphConstraintEngine,
-  type IGraphLayoutStrategy,
   type GraphNodeVisualRepresentation,
   type IGraphSvgSceneFactory,
 } from "@monorepo/core-graph-visualisation";
-import { D3ForceGraphLayoutStrategy } from "@monorepo/core-graph-visualization-d3";
+import {
+  D3ForceLayoutReactiveController,
+  D3SpringLayoutReactiveController,
+} from "@monorepo/core-graph-visualization-d3";
 import {
   DGMLForceDirectedLayoutStrategy,
+  DGMLLayoutReactiveController,
   DGMLLayeredLayoutStrategy,
 } from "@monorepo/core-graph-visualization-dgml";
 import "./components/DagStateWebComponent.js";
@@ -28,19 +26,16 @@ import {
 
 registerCoreGraphVisualizerElement();
 
-class LayoutStrategyConstraintEngineAdapter implements IGraphConstraintEngine {
-  constructor(private readonly layoutStrategy: IGraphLayoutStrategy) {}
-
-  createConstraints(
-    graph: IGraph,
-    canvas: GraphCanvasConstraints,
-    box: BoxConstraints,
-  ): GraphConstraintModel {
-    return this.layoutStrategy.createLayout({ graph, canvas, box });
-  }
-}
-
-type LayoutOptionId = "d3-force" | "grid" | "dgml-layered" | "dgml-force";
+type LayoutOptionId =
+  | "d3-force"
+  | "d3-spring-simulation"
+  | "grid"
+  | "dgml-layered-top-to-bottom"
+  | "dgml-layered-bottom-to-top"
+  | "dgml-layered-left-to-right"
+  | "dgml-layered-right-to-left"
+  | "dgml-clustered"
+  | "dgml-force";
 
 interface LayoutOption {
   readonly id: LayoutOptionId;
@@ -54,17 +49,47 @@ type NodeRepresentationOption = GraphNodeVisualRepresentation;
 @customElement("graph-visualization-app")
 export class GraphVisualizationApp extends LitElement {
   private readonly application: GraphVisualizationApplicationModel;
-  private readonly d3LayoutStrategy = new D3ForceGraphLayoutStrategy();
-  private readonly dgmlLayeredStrategy = new DGMLLayeredLayoutStrategy();
-  private readonly dgmlForceStrategy = new DGMLForceDirectedLayoutStrategy();
+  private readonly d3ForceController = new D3ForceLayoutReactiveController(this);
+  private readonly d3SpringController = new D3SpringLayoutReactiveController(this, {
+    onAnimationFrame: () => this.requestVisualizerFrameUpdate(),
+  });
+  private readonly dgmlTopToBottomController = new DGMLLayoutReactiveController(
+    this,
+    new DGMLLayeredLayoutStrategy({ direction: "top-to-bottom" }),
+  );
+  private readonly dgmlBottomToTopController = new DGMLLayoutReactiveController(
+    this,
+    new DGMLLayeredLayoutStrategy({ direction: "bottom-to-top" }),
+  );
+  private readonly dgmlLeftToRightController = new DGMLLayoutReactiveController(
+    this,
+    new DGMLLayeredLayoutStrategy({ direction: "left-to-right" }),
+  );
+  private readonly dgmlRightToLeftController = new DGMLLayoutReactiveController(
+    this,
+    new DGMLLayeredLayoutStrategy({ direction: "right-to-left" }),
+  );
+  private readonly dgmlClusteredController = new DGMLLayoutReactiveController(
+    this,
+    new DGMLLayeredLayoutStrategy({
+      direction: "top-to-bottom",
+      clusterByWeaklyConnectedComponents: true,
+      clusterGap: 80,
+    }),
+  );
+  private readonly dgmlForceController = new DGMLLayoutReactiveController(this, new DGMLForceDirectedLayoutStrategy());
   private readonly layoutOptions: readonly LayoutOption[] = [
     {
       id: "d3-force",
       label: "D3 Force",
-      algorithmName: this.d3LayoutStrategy.name,
-      sceneFactory: new GraphSvgSceneFactory(
-        new LayoutStrategyConstraintEngineAdapter(this.d3LayoutStrategy),
-      ),
+      algorithmName: this.d3ForceController.algorithmName,
+      sceneFactory: this.d3ForceController.sceneFactory,
+    },
+    {
+      id: "d3-spring-simulation",
+      label: "D3 Spring Simulation",
+      algorithmName: this.d3SpringController.algorithmName,
+      sceneFactory: this.d3SpringController.sceneFactory,
     },
     {
       id: "grid",
@@ -73,20 +98,40 @@ export class GraphVisualizationApp extends LitElement {
       sceneFactory: new GraphSvgSceneFactory(new GridGraphConstraintEngine()),
     },
     {
-      id: "dgml-layered",
-      label: "DGML Layered (Sugiyama)",
-      algorithmName: this.dgmlLayeredStrategy.name,
-      sceneFactory: new GraphSvgSceneFactory(
-        new LayoutStrategyConstraintEngineAdapter(this.dgmlLayeredStrategy),
-      ),
+      id: "dgml-layered-top-to-bottom",
+      label: "DGML Top to Bottom",
+      algorithmName: this.dgmlTopToBottomController.algorithmName,
+      sceneFactory: this.dgmlTopToBottomController.sceneFactory,
+    },
+    {
+      id: "dgml-layered-bottom-to-top",
+      label: "DGML Bottom to Top",
+      algorithmName: this.dgmlBottomToTopController.algorithmName,
+      sceneFactory: this.dgmlBottomToTopController.sceneFactory,
+    },
+    {
+      id: "dgml-layered-left-to-right",
+      label: "DGML Left to Right",
+      algorithmName: this.dgmlLeftToRightController.algorithmName,
+      sceneFactory: this.dgmlLeftToRightController.sceneFactory,
+    },
+    {
+      id: "dgml-layered-right-to-left",
+      label: "DGML Right to Left",
+      algorithmName: this.dgmlRightToLeftController.algorithmName,
+      sceneFactory: this.dgmlRightToLeftController.sceneFactory,
+    },
+    {
+      id: "dgml-clustered",
+      label: "DGML Clustered",
+      algorithmName: this.dgmlClusteredController.algorithmName,
+      sceneFactory: this.dgmlClusteredController.sceneFactory,
     },
     {
       id: "dgml-force",
       label: "DGML Force-Directed",
-      algorithmName: this.dgmlForceStrategy.name,
-      sceneFactory: new GraphSvgSceneFactory(
-        new LayoutStrategyConstraintEngineAdapter(this.dgmlForceStrategy),
-      ),
+      algorithmName: this.dgmlForceController.algorithmName,
+      sceneFactory: this.dgmlForceController.sceneFactory,
     },
   ];
   private selectedLayoutId: LayoutOptionId = "d3-force";
@@ -120,11 +165,13 @@ export class GraphVisualizationApp extends LitElement {
         this.requestUpdate();
       }
     });
+    this.syncLayoutControllerActivity();
   }
 
   override disconnectedCallback(): void {
     this.resizeObserver?.disconnect();
     this.resizeObserver = undefined;
+    this.d3SpringController.setActive(false);
     super.disconnectedCallback();
   }
 
@@ -221,18 +268,28 @@ export class GraphVisualizationApp extends LitElement {
     }
 
     .shell {
-      width: min(1200px, calc(100vw - 32px));
+      width: calc(100vw - 8px);
+      max-width: none;
       margin: 0 auto;
-      padding: 32px 0 48px;
+      padding: 8px 0 10px;
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 8px;
     }
 
     .masthead {
-      margin-bottom: 24px;
+      margin-bottom: 0;
+      padding: 8px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(76, 107, 143, 0.2);
+      backdrop-filter: blur(8px);
     }
 
     .eyebrow {
-      margin: 0 0 8px;
-      font-size: 12px;
+      margin: 0 0 2px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -241,13 +298,14 @@ export class GraphVisualizationApp extends LitElement {
 
     h1 {
       margin: 0;
-      font-size: clamp(2.4rem, 4vw, 4rem);
-      line-height: 1;
+      font-size: clamp(1.5rem, 2.4vw, 2.4rem);
+      line-height: 1.05;
     }
 
     .lede {
-      max-width: 56rem;
-      margin: 12px 0 0;
+      max-width: 72rem;
+      margin: 6px 0 0;
+      font-size: 0.92rem;
       color: #2d4969;
     }
 
@@ -255,8 +313,9 @@ export class GraphVisualizationApp extends LitElement {
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      margin-top: 14px;
-      font-size: 0.95rem;
+      margin-top: 8px;
+      margin-right: 10px;
+      font-size: 0.9rem;
       color: #24476f;
     }
 
@@ -281,9 +340,9 @@ export class GraphVisualizationApp extends LitElement {
       background: rgba(255, 255, 255, 0.72);
       box-shadow: 0 24px 50px rgba(46, 78, 109, 0.12);
       backdrop-filter: blur(10px);
-      padding: 20px;
+      padding: 10px;
       width: 100%;
-      height: clamp(420px, 68vh, 860px);
+      height: clamp(620px, 86svh, 1400px);
       overflow: hidden;
       box-sizing: border-box;
     }
@@ -304,17 +363,36 @@ export class GraphVisualizationApp extends LitElement {
     }
 
     @media (max-width: 900px) {
+      .shell {
+        width: calc(100vw - 6px);
+        padding: 8px 0 10px;
+      }
+
+      .masthead {
+        padding: 8px;
+      }
+
+      .lede {
+        display: none;
+      }
+
       .layout-picker {
         width: 100%;
         justify-content: space-between;
+        margin-right: 0;
       }
 
       .layout-picker select {
-        width: min(220px, 62%);
+        width: min(250px, 65%);
       }
 
       mr-core-graph-visualizer {
         min-width: 100%;
+      }
+
+      .canvas {
+        padding: 8px;
+        height: clamp(500px, 86svh, 980px);
       }
     }
   `;
@@ -332,11 +410,17 @@ export class GraphVisualizationApp extends LitElement {
 
     if (
       select.value === "d3-force"
+      || select.value === "d3-spring-simulation"
       || select.value === "grid"
-      || select.value === "dgml-layered"
+      || select.value === "dgml-layered-top-to-bottom"
+      || select.value === "dgml-layered-bottom-to-top"
+      || select.value === "dgml-layered-left-to-right"
+      || select.value === "dgml-layered-right-to-left"
+      || select.value === "dgml-clustered"
       || select.value === "dgml-force"
     ) {
       this.selectedLayoutId = select.value;
+      this.syncLayoutControllerActivity();
       this.requestUpdate();
     }
   };
@@ -353,4 +437,16 @@ export class GraphVisualizationApp extends LitElement {
       this.requestUpdate();
     }
   };
+
+  private syncLayoutControllerActivity(): void {
+    this.d3SpringController.setActive(this.selectedLayoutId === "d3-spring-simulation");
+  }
+
+  private requestVisualizerFrameUpdate(): void {
+    const visualizer = this.renderRoot.querySelector("mr-core-graph-visualizer") as
+      | { requestUpdate?: () => void }
+      | null;
+
+    visualizer?.requestUpdate?.();
+  }
 }

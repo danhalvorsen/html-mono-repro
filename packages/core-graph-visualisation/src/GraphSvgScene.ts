@@ -96,8 +96,16 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
           throw new Error(`Missing target node '${edgeConstraint.targetNodeId}' in graph constraints.`);
         }
 
-        const start = this.createConnector(sourceNode, targetNode);
-        const end = this.createConnector(targetNode, sourceNode);
+        const start = this.createConnector(
+          sourceNode,
+          targetNode,
+          this.readSelectedConnectionPointRole(sourceNode.payload),
+        );
+        const end = this.createConnector(
+          targetNode,
+          sourceNode,
+          this.readSelectedConnectionPointRole(targetNode.payload),
+        );
 
         return {
           id: `edge-${index}-${edgeConstraint.sourceNodeId}-${edgeConstraint.targetNodeId}`,
@@ -212,7 +220,16 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
   private createConnector(
     from: GraphSvgNodeShapeObject,
     to: GraphSvgNodeShapeObject,
+    preferredRole?: string,
   ): SvgPoint {
+    if (preferredRole !== undefined) {
+      const connectorByRole = from.connectionPoints.find((point) => point.role === preferredRole)?.connector;
+
+      if (connectorByRole !== undefined) {
+        return connectorByRole;
+      }
+    }
+
     const snappedConnector = this.findNearestConnectionPointConnector(from, to);
 
     if (snappedConnector !== undefined) {
@@ -348,7 +365,6 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
     }
 
     const visual = (payload as Record<string, unknown>).visual;
-
     if (visual === null || typeof visual !== "object") {
       return {};
     }
@@ -363,6 +379,22 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
       representation,
       circleConnectors,
     };
+  }
+
+  private readSelectedConnectionPointRole(payload: unknown): string | undefined {
+    if (payload === null || typeof payload !== "object") {
+      return undefined;
+    }
+
+    const interaction = (payload as Record<string, unknown>).interaction;
+
+    if (interaction === null || typeof interaction !== "object") {
+      return undefined;
+    }
+
+    const selectedConnectionPointRole = (interaction as Record<string, unknown>).selectedConnectionPointRole;
+
+    return typeof selectedConnectionPointRole === "string" ? selectedConnectionPointRole : undefined;
   }
 
   private readCircleConnectorDefinition(value: unknown): GraphSvgCircleConnectorDefinition | undefined {

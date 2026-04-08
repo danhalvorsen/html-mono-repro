@@ -1,21 +1,19 @@
 import type { IGraphElementController, GraphElementControllerHost } from "../../../GraphElementControllers.js";
 import { resolveConnectionPointDetail, resolveConnectionPointDetailByConnectionPointId } from "../NodeControllers.js";
 import type { GraphConnectionPointConnectDetail } from "../GraphConnectionPointConnectDetail.js";
-import type { PointerEventBindingTarget } from "../PointerEventBindingTarget.js";
 
+const CONNECTION_POINT_DRAG_OWNER_ID = "connection-point-drag";
 
 export class GraphConnectionPointDragController implements IGraphElementController {
   private host: GraphElementControllerHost | undefined;
   private activeSourceBoxId: string | undefined;
   private activeSourceConnectionPointId: string | undefined;
   private dragPointerId: number | undefined;
+  private detachMoveSubscription: (() => void) | undefined;
+  private detachUpSubscription: (() => void) | undefined;
 
   private readonly moveHandler = (event: PointerEvent) => this.onPointerMove(event);
   private readonly upHandler = (event: PointerEvent) => this.onPointerUp(event);
-
-  constructor(
-    private readonly pointerEventTarget: PointerEventBindingTarget = window
-  ) { }
 
   bind(host: GraphElementControllerHost): void {
     this.host = host;
@@ -44,6 +42,10 @@ export class GraphConnectionPointDragController implements IGraphElementControll
 
     const detail = resolveConnectionPointDetail(this.host, boxId, connectionPointId, originalEvent);
 
+    if (!this.host.tryAcquireDragOwner(CONNECTION_POINT_DRAG_OWNER_ID)) {
+      return;
+    }
+
     this.activeSourceBoxId = boxId;
     this.activeSourceConnectionPointId = connectionPointId;
     this.dragPointerId = originalEvent.pointerId;
@@ -57,8 +59,8 @@ export class GraphConnectionPointDragController implements IGraphElementControll
       sourceConnector: detail.connectionPoint.connector,
       currentConnector: detail.connectionPoint.connector,
     });
-    this.pointerEventTarget.addEventListener("pointermove", this.moveHandler as EventListener);
-    this.pointerEventTarget.addEventListener("pointerup", this.upHandler as EventListener);
+    this.detachMoveSubscription = this.host.subscribePointerMove(this.moveHandler);
+    this.detachUpSubscription = this.host.subscribePointerUp(this.upHandler);
     this.host.requestGraphUpdate();
   }
 
@@ -147,8 +149,11 @@ export class GraphConnectionPointDragController implements IGraphElementControll
   }
 
   private stopDragging(): void {
-    this.pointerEventTarget.removeEventListener("pointermove", this.moveHandler as EventListener);
-    this.pointerEventTarget.removeEventListener("pointerup", this.upHandler as EventListener);
+    this.detachMoveSubscription?.();
+    this.detachUpSubscription?.();
+    this.detachMoveSubscription = undefined;
+    this.detachUpSubscription = undefined;
+    this.host?.releaseDragOwner(CONNECTION_POINT_DRAG_OWNER_ID);
     this.host?.setConnectionPointEdgeDraft(undefined);
     this.host?.setHoveredConnectionPointId(undefined);
     this.activeSourceBoxId = undefined;

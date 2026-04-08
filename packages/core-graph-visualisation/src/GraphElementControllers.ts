@@ -8,6 +8,8 @@ import type { GraphBoxClickDetail } from "./features/node/GraphBoxClickDetail.js
 import type { GraphConnectionPointConnectDetail } from "./features/node/GraphConnectionPointConnectDetail.js";
 import type { GraphConnectionPointEdgeDraft } from "./features/node/GraphConnectionPointEdgeDraft.js";
 
+export type GraphPointerListener = (event: PointerEvent) => void;
+
 export interface GraphElementControllerHost extends ReactiveControllerHost, EventTarget {
   getScene(): GraphSvgScene;
   requestGraphUpdate(): void;
@@ -23,6 +25,10 @@ export interface GraphElementControllerHost extends ReactiveControllerHost, Even
   setHighlightedEdgeId(edgeId: string | undefined): void;
   getConnectionPointEdgeDraft(): GraphConnectionPointEdgeDraft | undefined;
   setConnectionPointEdgeDraft(draft: GraphConnectionPointEdgeDraft | undefined): void;
+  subscribePointerMove(listener: GraphPointerListener): () => void;
+  subscribePointerUp(listener: GraphPointerListener): () => void;
+  tryAcquireDragOwner(ownerId: string): boolean;
+  releaseDragOwner(ownerId: string): void;
   notifyBoxClick(detail: GraphBoxClickDetail): void;
   notifyBoxRightClick(detail: GraphBoxRightClickDetail): void;
   notifyConnectionPointClick(detail: GraphConnectionPointClickDetail): void;
