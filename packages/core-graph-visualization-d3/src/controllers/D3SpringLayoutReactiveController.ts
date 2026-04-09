@@ -19,6 +19,7 @@ type GraphInput = Parameters<IGraphConstraintEngine["createConstraints"]>[0];
 export interface D3SpringLayoutReactiveControllerOptions {
   readonly strategy?: SimulationD3SpringSimulation;
   readonly onAnimationFrame?: () => void;
+  readonly requestHostUpdate?: () => void;
 }
 
 class SpringSimulationConstraintEngineAdapter implements IGraphConstraintEngine {
@@ -97,6 +98,7 @@ export class D3SpringLayoutReactiveController implements ReactiveController {
   private readonly host: ReactiveControllerHost;
   private readonly constraintEngine: SpringSimulationConstraintEngineAdapter;
   private readonly onAnimationFrame: (() => void) | undefined;
+  private readonly requestHostUpdate: () => void;
   private animationFrameId: number | undefined;
   private animationTimerId: ReturnType<typeof setTimeout> | undefined;
   private active = false;
@@ -117,6 +119,7 @@ export class D3SpringLayoutReactiveController implements ReactiveController {
     this.constraintEngine = new SpringSimulationConstraintEngineAdapter(strategy);
     this.sceneFactory = new GraphSvgSceneFactory(this.constraintEngine);
     this.onAnimationFrame = options.onAnimationFrame;
+    this.requestHostUpdate = options.requestHostUpdate ?? (() => this.host.requestUpdate());
     host.addController(this);
   }
 
@@ -159,7 +162,7 @@ export class D3SpringLayoutReactiveController implements ReactiveController {
       }
 
       this.onAnimationFrame?.();
-      this.host.requestUpdate();
+      this.requestHostUpdate();
       this.scheduleNextFrame(tick);
     };
 

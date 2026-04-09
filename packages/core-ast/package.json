@@ -1,0 +1,36 @@
+{
+  "name": "@monorepo/core-ast",
+  "version": "1.0.0",
+  "description": "Abstract Syntax Tree (AST) representation for graph data structures in the monorepo.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {"install": "",
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "ast"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-graph": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

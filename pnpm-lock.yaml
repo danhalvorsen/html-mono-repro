@@ -425,6 +425,9 @@ importers:
       '@monorepo/core-graph':
         specifier: workspace:*
         version: link:../../../packages/core-graph
+      '@monorepo/core-graph-json':
+        specifier: workspace:*
+        version: link:../../../packages/core-graph-json
       '@monorepo/core-graph-visualisation':
         specifier: workspace:*
         version: link:../../../packages/core-graph-visualisation
@@ -444,6 +447,9 @@ importers:
       vite:
         specifier: ^8.0.4
         version: 8.0.7(@types/node@24.12.0)(esbuild@0.27.2)(terser@5.46.0)(tsx@4.21.0)
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.12.0)(@vitest/ui@3.2.4)(happy-dom@20.0.11)(jsdom@27.0.0)(lightningcss@1.32.0)(terser@5.46.0)(tsx@4.21.0)
 
   Applications/vector-field:
     dependencies:
@@ -512,6 +518,18 @@ importers:
         specifier: workspace:*
         version: link:../music-note-sheet-abstract
 
+  packages/Audio/music-core-midi:
+    dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../core-specifications
+
+  packages/Audio/music-core-midi-playback:
+    dependencies:
+      '@monorepo/music-core-midi':
+        specifier: workspace:*
+        version: link:../music-core-midi
+
   packages/Audio/music-note-sheet-abstract: {}
 
   packages/Audio/music-note-sheet-dom: {}
@@ -524,6 +542,28 @@ importers:
       three:
         specifier: ^0.160.0
         version: 0.160.1
+
+  packages/Audio/music-poc-applications/sequencer/demo/vite-project:
+    dependencies:
+      '@monorepo/music-core-midi':
+        specifier: workspace:*
+        version: link:../../../../music-core-midi
+      '@monorepo/music-core-midi-playback':
+        specifier: workspace:*
+        version: link:../../../../music-core-midi-playback
+      '@monorepo/music-ui-components':
+        specifier: workspace:*
+        version: link:../../../../music-ui-components
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.2
+      vite:
+        specifier: ^8.0.4
+        version: 8.0.7(@types/node@24.12.0)(esbuild@0.27.2)(terser@5.46.0)(tsx@4.21.0)
 
   packages/Audio/music-ui-components:
     dependencies:
@@ -947,6 +987,22 @@ importers:
         specifier: workspace:*
         version: link:../core-filesystem
 
+  packages/core-ast:
+    dependencies:
+      '@monorepo/core-graph':
+        specifier: workspace:*
+        version: link:../core-graph
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.12.0)(@vitest/ui@3.2.4)(happy-dom@20.0.11)(jsdom@27.0.0)(lightningcss@1.32.0)(terser@5.46.0)(tsx@4.21.0)
+
   packages/core-behavior:
     dependencies:
       '@monorepo/core-filesystem':
@@ -1337,6 +1393,22 @@ importers:
         specifier: ^0.2.x
         version: 0.2.2
 
+  packages/core-graph-json:
+    dependencies:
+      '@monorepo/core-graph':
+        specifier: workspace:*
+        version: link:../core-graph
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.12.0)(@vitest/ui@3.2.4)(happy-dom@20.0.11)(jsdom@27.0.0)(lightningcss@1.32.0)(terser@5.46.0)(tsx@4.21.0)
+
   packages/core-graph-visualisation:
     dependencies:
       '@monorepo/core-fsm':
@@ -1364,6 +1436,9 @@ importers:
       '@monorepo/core-graph-visualisation':
         specifier: workspace:*
         version: link:../core-graph-visualisation
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
     devDependencies:
       '@monorepo/core-graph':
         specifier: workspace:*
@@ -1383,7 +1458,26 @@ importers:
       d3-force-3d:
         specifier: 3.0.6
         version: 3.0.6
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
     devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/core-graph-visualization-routing-egdes:
+    dependencies:
+      '@monorepo/core-graph-visualisation':
+        specifier: workspace:*
+        version: link:../core-graph-visualisation
+    devDependencies:
+      '@monorepo/core-graph':
+        specifier: workspace:*
+        version: link:../core-graph
       rimraf:
         specifier: ^6.0.1
         version: 6.1.2

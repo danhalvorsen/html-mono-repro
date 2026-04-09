@@ -16,7 +16,7 @@ This document is a normative, testable contract.
 1. Unit tests verify deterministic domain and strategy behavior.
 2. Integration tests verify host/controller adaptation and life cycle behavior.
 3. For any failing scenario, release readiness is blocked until remediation or approved contract update.
-
+@attr attrName: attrType = value;
 ---
 
 # Core Graph Visualization — Consolidated Behavioral Specification
@@ -35,22 +35,21 @@ Covers:
 # 1. Selection & Highlighting
 
 ### Scenario S-001: Node selection
-
+@attr attrName: attrType = value;
 **Acceptance Criteria**
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a rendered node
 **When** the user left-clicks the node body
 **Then** the node becomes the highlighted node
 **And** any highlighted edge is cleared
 
----
+--<slot></slot>
 
 ### Scenario S-002: Connection point selection
-
+@attr attrName: attrType = value;
 **Acceptance Criteria**
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
@@ -72,7 +71,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a rendered edge
 **When** the user left-clicks the edge
 **Then** the edge becomes the highlighted edge
@@ -89,7 +87,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a rendered node
 **When** the user presses and drags the node
 **Then** the node position follows the pointer using a temporary position override
@@ -104,7 +101,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** an active drag interaction
 **When** another drag interaction attempts to start
 **Then** it is ignored until the current drag is released
@@ -117,7 +113,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** no active drag owner
 **When** drag starts
@@ -140,7 +135,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a node with connection point CP1
 **When** the user presses and holds on CP1
 **Then** the owning node becomes highlighted
@@ -152,13 +146,12 @@ Covers:
 ---
 
 ### Scenario S-008: Draft edge rendering
-
+@attr attrName: attrType = value;
 **Acceptance Criteria**
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
-
+@attr attrName: attrType = value;
 **Given** an active draft edge from CP1
 **When** the pointer moves
 **Then** the draft edge endpoint follows the pointer
@@ -172,7 +165,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** an active draft edge
 **When** the pointer enters CP2
@@ -188,7 +180,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a draft edge from CP1
 **And** the pointer is hovering CP2
 **When** the pointer is released
@@ -203,7 +194,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a node with selected connection point CP1
 **And** the user drags a connection from CP1 to another node connection point CP2
@@ -221,7 +211,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a draft edge
 **When** pointer is released outside a valid target
 **Then** no connection request is emitted
@@ -235,7 +224,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a draft edge from CP1
 **When** pointer is released on CP1
@@ -253,7 +241,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a connection request from node A (CP1) to node B (CP2)
 **When** A ≠ B
 **And** no identical edge exists
@@ -269,7 +256,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a connection request from node A to node A
 **When** processed
 **Then** no edge is created
@@ -282,7 +268,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** an existing edge A → B
 **When** a duplicate request occurs
@@ -299,7 +284,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a node with a default connection point
 **When** the user right-clicks the node
 **Then** a new child node is created
@@ -313,7 +297,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a node with connection point CP1
 **When** the user right-clicks CP1
@@ -329,7 +312,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a highlighted node exists
 **When** a right-click occurs
@@ -347,7 +329,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a node has a stored default connection point
 **And** another connection point is currently highlighted
 **When** creating a child node
@@ -361,7 +342,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a parent node and connector role
 **When** a child node is created
@@ -379,7 +359,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a graph scene
 **When** rendered
 **Then** an SVG with boundary is produced
@@ -392,7 +371,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a node
 **When** rendered
@@ -410,7 +388,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a node
 **When** rendered
 **Then** a label is rendered inside a foreignObject slot
@@ -423,7 +400,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** edges
 **When** rendered
@@ -438,7 +414,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a highlighted edge
 **When** rendered
 **Then** highlighted styling and endpoint markers are applied
@@ -451,7 +426,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a node
 **When** node is highlighted or draft is active
@@ -466,7 +440,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a draft edge
 **When** rendered
@@ -483,7 +456,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a node with connection points
 **When** computing edge connector
 **Then** the nearest connection point to target is used
@@ -496,7 +468,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a circular node without connection points
 **When** computing connector
@@ -511,7 +482,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a rectangular node without connection points
 **When** computing connector
 **Then** connector is placed on dominant axis edge
@@ -525,7 +495,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** two connectors
 **When** generating path
 **Then** path is `M x1 y1 L x2 y2`
@@ -538,7 +507,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a node and role
 **When** placing connection point
@@ -555,7 +523,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** no graph or no nodes
 **When** analyzed
 **Then** empty result is returned
@@ -568,7 +535,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** disconnected graph
 **When** analyzed
@@ -583,7 +549,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** nodes with no incoming edges
 **When** analyzed
 **Then** they are roots
@@ -596,7 +561,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** graph with roots
 **When** analyzed
@@ -615,7 +579,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** unreachable node
 **When** analyzed
 **Then** level = 0
@@ -629,7 +592,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** nodes in same level
 **When** grouped
 **Then** sorted by id and indexed
@@ -642,7 +604,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** node processed
 **Then** it contains:
@@ -664,7 +625,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** node and hierarchy
 **When** styling
 **Then** size and color derived from hierarchy
@@ -678,7 +638,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** missing hierarchy
 **When** styling
 **Then** defaults are used
@@ -691,7 +650,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** scene
 **When** computing scale
@@ -712,7 +670,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** listeners
 **When** pointer moves
 **Then** all listeners are notified
@@ -726,7 +683,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** listeners
 **When** pointer up occurs
 **Then** all listeners are notified
@@ -739,7 +695,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a listener
 **When** unsubscribed
@@ -755,7 +710,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a rendered edge between two nodes
 **And** that edge is selected
@@ -773,7 +727,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a graph with multiple edges
 **And** one edge is selected
 **When** the user presses the Delete key
@@ -790,7 +743,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a graph with one or more edges
 **And** no edge is selected
 **When** the user presses the Delete key
@@ -805,7 +757,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a rendered edge between two nodes
 **And** that edge is selected
@@ -822,7 +773,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a node is selected
 **And** no edge is selected
 **When** the user presses the Delete key
@@ -838,7 +788,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a selected edge from node A to node B
 **When** the user presses the Delete key
 **Then** the relation from node A to node B is removed
@@ -852,7 +801,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a selected edge between two nodes
 **When** the user presses the Delete key
@@ -869,7 +817,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** an edge is highlighted
 **And** another edge is not highlighted
 **When** the user presses the Delete key
@@ -884,7 +831,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a selected edge with a rendered line path between node A and node B
 **When** the user presses the Delete key
@@ -902,7 +848,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** the visualizer supports multiple layout algorithms
 **When** layout constraints are requested
 **Then** the host depends on a layout strategy abstraction
@@ -917,7 +862,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a snapshot layout strategy
 **When** the same graph and canvas constraints are provided repeatedly
 **Then** the strategy returns deterministic node anchors and edge constraints
@@ -931,7 +875,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** an animated spring layout strategy is active
 **When** animation frames progress
@@ -948,7 +891,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** an active spring simulation session
 **When** graph topology changes (node or edge membership)
 **Then** the existing simulation session is disposed
@@ -962,7 +904,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** an active spring simulation session
 **When** canvas dimensions, padding, or node box constraints change
@@ -978,7 +919,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a spring animation session exists
 **When** the selected layout changes to a non-animated strategy
 **Then** animation frame updates are stopped
@@ -993,7 +933,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a spring animation session exists
 **When** the visualization host is disconnected
 **Then** animation frame updates are stopped
@@ -1007,7 +946,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** the `core-graph-visualisation` module defines a layout interface contract  
 **And** the contract describes the required layout behavior independently of any UI framework  
@@ -1025,7 +963,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a layout strategy computes node positions and related layout data  
 **When** the layout strategy is implemented  
 **Then** its layout logic must be framework-agnostic  
@@ -1040,7 +977,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a layout strategy implementation exists and conforms to the core layout contract  
 **When** the strategy is exposed to a Lit-based UI  
@@ -1057,7 +993,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a Lit reactive controller wraps a layout strategy  
 **When** the host requests layout execution or layout updates  
 **Then** the controller must delegate layout computation to the encapsulated strategy  
@@ -1072,7 +1007,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** multiple layout strategies exist in the system  
 **When** they are made available to Lit-based consumers  
@@ -1089,7 +1023,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a Lit host uses a reactive controller that encapsulates a layout strategy  
 **When** the current layout strategy is replaced by another strategy implementing the same core contract  
 **Then** the Lit host integration model must remain unchanged  
@@ -1104,7 +1037,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a layout strategy implements the core layout interface  
 **When** unit tests are written for the strategy  
@@ -1121,7 +1053,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** the system uses Lit for reactive UI composition  
 **When** layout changes must trigger host updates or rendering reactions  
 **Then** the Lit reactive controller must manage those Lit-specific concerns  
@@ -1137,7 +1068,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a Lit reactive controller adapts a layout strategy
 **When** the controller is consumed by a host
 **Then** the controller must expose explicit lifecycle operations for start, stop, and dispose
@@ -1152,7 +1082,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** a layout strategy supports animation
 **When** the strategy is executed in snapshot mode
@@ -1171,7 +1100,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a layout execution returns invalid anchors or edge constraints
 **When** validation fails at the controller boundary
 **Then** the host must keep the last known valid layout or use a deterministic fallback layout
@@ -1185,7 +1113,6 @@ Covers:
 - The scenario has at least one automated test mapped to this scenario ID.
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
-
 
 **Given** animated layout updates are active
 **When** layout recomputation is requested repeatedly for unchanged input
@@ -1202,7 +1129,6 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** a Lit host consumes layout through a controller abstraction
 **When** one strategy is replaced with another implementing the same core contract
 **Then** host integration APIs must remain unchanged
@@ -1218,12 +1144,227 @@ Covers:
 - The test name follows Given/When/Then behavior phrasing.
 - Every Then/And outcome in this scenario is asserted by tests.
 
-
 **Given** layout functionality is delivered through strategy plus reactive controller
 **When** tests are authored
 **Then** strategy unit tests must verify deterministic layout behavior without Lit dependencies
 **And** controller integration tests must verify lifecycle, scheduling, disposal, and adaptation behavior
 **And** tests must not duplicate algorithm math assertions inside controller-only tests
+
+---
+
+# 13. Graph Visualization Coordinator Orchestration
+
+### Scenario S-077: App delegates visual orchestration to GraphVisualizationCoordinator
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** a Lit app hosts the graph visualizer
+**When** visual graph behavior is required
+**Then** the app delegates orchestration to `GraphVisualizationCoordinator`
+**And** the app does not resolve layout scene factories directly
+**And** the app does not manage layout controller activation/deactivation directly
+
+---
+
+### Scenario S-078: Coordinator lifecycle state model is explicit and deterministic
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** a coordinator with states `Uninitialized`, `Ready`, `Active`, and `Disconnected`
+**When** lifecycle operations are invoked
+**Then** only allowed transitions are permitted:
+
+* `Uninitialized -> Ready`
+* `Ready -> Active`
+* `Active -> Active` on resize
+* `Active -> Active` on layout switch
+* `Ready -> Disconnected`
+* `Active -> Disconnected`
+
+**And** disallowed transitions are rejected or ignored deterministically
+
+---
+
+### Scenario S-079: Coordinator rejects unknown layout identifiers
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** a coordinator with known layout options
+**When** an unknown layout id is requested
+**Then** the active layout remains unchanged
+**And** no controller activation occurs for unknown layout ids
+
+---
+
+### Scenario S-080: Coordinator handles invalid and equivalent bounds safely
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** a coordinator receives resize requests
+**When** width or height is zero or negative
+**Then** invalid bounds are clamped or rejected deterministically
+**And** the coordinator never publishes invalid visualizer dimensions
+
+**When** equivalent effective bounds are applied repeatedly
+**Then** no duplicate dimension publish occurs
+
+---
+
+### Scenario S-081: Coordinator avoids redundant activation for repeated same-layout selection
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** a layout is already active
+**When** the same layout is selected again
+**Then** no additional activation occurs
+**And** no unnecessary recomputation is triggered
+
+---
+
+### Scenario S-082: Coordinator processes rapid layout switch sequences deterministically
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** a rapid sequence of layout selections
+**When** multiple selections occur within the same update window
+**Then** only the final selected layout remains active
+**And** previously activated controllers are deactivated in deterministic order
+
+---
+
+### Scenario S-083: Coordinator disposes animated resources on disconnect
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** an animated layout controller is active
+**When** host disconnect occurs
+**Then** animation scheduling is stopped
+**And** animated controller resources are disposed
+**And** no frame requests are scheduled after disconnect
+
+---
+
+### Scenario S-084: Coordinator tolerates missing frame update surface
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** an animated layout requests frame updates
+**When** no host frame surface is available
+**Then** the coordinator handles the condition without throwing
+**And** layout/controller state remains consistent
+
+---
+
+### Scenario S-085: Animation cadence is bounded to one host update request per frame
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** animated layout updates are active
+**When** multiple update triggers occur in a single animation frame
+**Then** at most one host update request is published for that frame
+
+---
+
+### Scenario S-086: Coordinator coalesces recomputation for unchanged layout signatures
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** the active layout id, graph topology signature, and effective bounds are unchanged
+**When** layout update is requested repeatedly
+**Then** duplicate recomputation is avoided
+**And** recompute counters or equivalent observables remain stable
+
+---
+
+### Scenario S-087: App must not instantiate concrete layout controllers
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** the graph visualization app composition is created
+**When** the app is instantiated
+**Then** the app depends on coordinator abstraction only
+**And** concrete layout controller construction does not exist in the app component
+
+---
+
+### Scenario S-088: New layouts are registered without modifying coordinator consumers
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** a new layout strategy is introduced through controller registry and coordinator mapping
+**When** the layout is registered
+**Then** consumers of coordinator output require no behavioral changes
+**And** app integration remains the same coordinator binding surface
+
+---
+
+### Scenario S-089: Strategy and controller substitution remain contract-compatible
+
+**Acceptance Criteria**
+- The scenario has at least one automated test mapped to this scenario ID.
+- The test name follows Given/When/Then behavior phrasing.
+- Every Then/And outcome in this scenario is asserted by tests.
+
+**Given** a strategy or controller implementation is replaced with another implementation of the same contract
+**When** substitution is performed
+**Then** coordinator behavior remains contract-compatible
+**And** host integration APIs remain unchanged
+
+---
+
+## Scenario Traceability Matrix
+
+| Scenario ID | Test File | Test Name |
+|-------------|-----------|-----------|
+| S-077 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationAppArchitecture.test.ts | Given GraphVisualizationApp source When orchestration bindings are inspected Then orchestration is delegated to GraphVisualizationCoordinator |
+| S-078 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationCoordinator.test.ts | Given disconnected coordinator When layout and resize are invoked Then no host update is requested |
+| S-079 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationCoordinator.test.ts | Given coordinator When unknown layout id is selected Then active layout remains unchanged |
+| S-080 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationCoordinator.test.ts | Given invalid resize input When width and height are non-positive Then dimensions are clamped |
+| S-081 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationCoordinator.test.ts | Given coordinator When same layout is selected again Then no additional host update is requested |
+| S-082 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationCoordinator.test.ts | Given rapid layout switch sequence When selections are processed Then final selected layout remains active |
+| S-083 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationCoordinator.test.ts | Given connected coordinator When host disconnects Then all layouts are deactivated |
+| S-084 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationCoordinator.test.ts | Given missing host frame surface When animation update publish throws Then coordinator keeps state consistent |
+| S-085 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationCoordinator.test.ts | Given animated updates When multiple update triggers occur in a single frame Then at most one host update request is published for that frame |
+| S-086 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationCoordinator.test.ts | Given equivalent effective bounds When resize is repeated Then no duplicate host update is requested |
+| S-087 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationAppArchitecture.test.ts | Given GraphVisualizationApp source When concrete layout controller construction is inspected Then no concrete layout controllers are instantiated in app component |
+| S-088 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationCoordinator.test.ts | Given a new registry layout When the layout is selected Then coordinator consumers require no behavioral changes |
+| S-089 | Applications/graph-visualization/graph-vizualisation/tests/GraphVisualizationCoordinator.test.ts | Given replacement registries with the same contract When coordinator uses either registry Then host integration surface remains unchanged |
 ---
 
 ## Contract Completion Criteria
@@ -1231,6 +1372,4 @@ Covers:
 1. Every implemented behavior has a matching scenario in this document.
 2. Every affected scenario is covered by automated tests.
 3. No implementation is accepted if it violates scenario outcomes.
-
-
 

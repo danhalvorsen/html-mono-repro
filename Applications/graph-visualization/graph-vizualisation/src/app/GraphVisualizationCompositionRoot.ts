@@ -35,8 +35,8 @@ export class GraphVisualizationCompositionRoot {
     private readonly activityState: IControllerActivityState = new ControllerActivityState(),
   ) {}
 
-  compose(): GraphVisualizationApplicationModel {
-    const graph = this.graphFactory.createGraph();
+  compose(graphOverride?: IDagGraph): GraphVisualizationApplicationModel {
+    const graph = graphOverride ?? this.graphFactory.createGraph();
 
     return {
       graph,

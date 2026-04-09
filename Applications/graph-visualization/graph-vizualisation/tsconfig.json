@@ -7,6 +7,7 @@
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
     "skipLibCheck": true,
+    "resolveJsonModule": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -18,6 +19,7 @@
     "baseUrl": ".",
     "paths": {
       "@monorepo/core-graph": ["../../../packages/core-graph/src/index.ts"],
+      "@monorepo/core-graph-json": ["../../../packages/core-graph-json/src/index.ts"],
       "@monorepo/core-graph-visualisation": ["../../../packages/core-graph-visualisation/src/index.ts"],
       "@monorepo/core-graph-visualisation/lit": ["../../../packages/core-graph-visualisation/src/lit.ts"]
     },
