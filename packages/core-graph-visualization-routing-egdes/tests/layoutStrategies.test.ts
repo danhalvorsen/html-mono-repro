@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { Graph } from "@monorepo/core-graph";
 
 import {
   DGMLForceDirectedLayoutStrategy,
@@ -7,7 +8,18 @@ import {
   MSAGLExternalEngineStrategy,
   createDirectEdgeRoutingConstraints,
 } from "../dist/index.js";
-import { box, buildGraph, canvas } from "./fixtures/layoutFixture.js";
+import { box, canvas } from "./fixtures/layoutFixture.js";
+
+const buildGraph = (nodeCount: number, edges: [number, number][] = []) => {
+  const graph = new Graph();
+  const nodes = Array.from({ length: nodeCount }, (_, i) => graph.addNode(`node-${i}`, null));
+
+  for (const [sourceIndex, targetIndex] of edges) {
+    graph.addEdge(nodes[sourceIndex]!, nodes[targetIndex]!);
+  }
+
+  return graph;
+};
 
 describe("createDirectEdgeRoutingConstraints", () => {
   it("maps all graph edges to source/target route constraints", () => {

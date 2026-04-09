@@ -1319,35 +1319,7 @@ Covers:
 **And** concrete layout controller construction does not exist in the app component
 
 ---
-
-### Scenario S-088: New layouts are registered without modifying coordinator consumers
-
-**Acceptance Criteria**
-- The scenario has at least one automated test mapped to this scenario ID.
-- The test name follows Given/When/Then behavior phrasing.
-- Every Then/And outcome in this scenario is asserted by tests.
-
-**Given** a new layout strategy is introduced through controller registry and coordinator mapping
-**When** the layout is registered
-**Then** consumers of coordinator output require no behavioral changes
-**And** app integration remains the same coordinator binding surface
-
----
-
-### Scenario S-089: Strategy and controller substitution remain contract-compatible
-
-**Acceptance Criteria**
-- The scenario has at least one automated test mapped to this scenario ID.
-- The test name follows Given/When/Then behavior phrasing.
-- Every Then/And outcome in this scenario is asserted by tests.
-
-**Given** a strategy or controller implementation is replaced with another implementation of the same contract
-**When** substitution is performed
-**Then** coordinator behavior remains contract-compatible
-**And** host integration APIs remain unchanged
-
----
-
+C
 ## Scenario Traceability Matrix
 
 | Scenario ID | Test File | Test Name |

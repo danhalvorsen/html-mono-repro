@@ -7,7 +7,7 @@
     "moduleResolution": "NodeNext",
     "lib": ["DOM", "ES2022"],
     "useDefineForClassFields": false,
-    "baseUrl": ".",
+ 
     "paths": {
       "@monorepo/core-graph": [
         "../core-graph/dist/index.d.ts"

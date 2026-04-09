@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "lit": "^3.3.2",
+    "@monorepo/core.module.example.web": "workspace:*",
     "@monorepo/music-ui-components": "workspace:*",
     "@monorepo/music-core-midi": "workspace:*",
     "@monorepo/music-core-midi-playback": "workspace:*"   

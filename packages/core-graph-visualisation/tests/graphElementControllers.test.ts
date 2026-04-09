@@ -221,6 +221,7 @@ function createHost(): GraphElementControllerHost & {
         label: "node-a",
         payload: undefined,
         center: { x: 50, y: 50 },
+        representation: "box",
         box: {
           topLeft: { x: 40, y: 40 },
           width: 20,
@@ -238,6 +239,7 @@ function createHost(): GraphElementControllerHost & {
         label: "node-b",
         payload: undefined,
         center: { x: 90, y: 50 },
+        representation: "box",
         box: {
           topLeft: { x: 80, y: 40 },
           width: 20,

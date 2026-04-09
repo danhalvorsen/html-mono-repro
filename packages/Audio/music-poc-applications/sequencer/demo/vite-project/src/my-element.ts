@@ -2,6 +2,7 @@
 
 import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import '../../../../../core.sequencer.ui.resources/src/index.ts';
 
 import {
   MidiStringParser,
@@ -114,6 +115,7 @@ export class MyElement extends LitElement {
   private sequenceLabel = 'MIDI File';
   private notesText: MidiString = '';
   private currentStepIndex = -1;
+  private galleryOnDigit = 1;
   private isPlaying = false;
   private errorText = '';
 
@@ -129,6 +131,43 @@ export class MyElement extends LitElement {
     return html`
       <div class="container">
         <h2>Multi-Song MIDI Sequencer</h2>
+
+        <section class="gallery" aria-label="UI component gallery">
+          <div class="gallery-header">
+            <strong>UI Component Gallery</strong>
+            <span>SVG Web Components from core.sequencer.ui.resources</span>
+          </div>
+
+          <div class="gallery-preview" aria-label="single digit SVG web component preview">
+            <sequencer-digit-button
+              .digit=${this.galleryOnDigit}
+              .width=${88}
+              .height=${88}
+              ?on=${true}
+              label-prefix="On"
+            ></sequencer-digit-button>
+
+            <sequencer-digit-button
+              .digit=${this.galleryOnDigit}
+              .width=${88}
+              .height=${88}
+              ?on=${false}
+              label-prefix="Off"
+            ></sequencer-digit-button>
+          </div>
+
+          <div class="gallery-scroll">
+            <sequencer-digit-button-row
+              .onDigit=${this.galleryOnDigit}
+              .buttonWidth=${88}
+              .buttonHeight=${88}
+              .gap=${8}
+              @on-digit-change=${this.onGalleryDigitChange}
+            ></sequencer-digit-button-row>
+          </div>
+
+          <div class="gallery-state">On digit: ${this.galleryOnDigit >= 0 ? this.galleryOnDigit : 'none'}</div>
+        </section>
 
         <label class="field-label" for="notes-input">Source</label>
         <div class="source-name">${SOURCE_MIDI_FILE_NAME}</div>
@@ -206,6 +245,16 @@ export class MyElement extends LitElement {
 
   private getPlayLabel(): string {
     return this.sequenceLabel;
+  }
+
+  private onGalleryDigitChange(event: Event): void {
+    const customEvent = event as CustomEvent<{ digit: number }>;
+    const digit = customEvent.detail?.digit;
+
+    if (typeof digit === 'number') {
+      this.galleryOnDigit = digit;
+      this.requestUpdate();
+    }
   }
 
   private async loadMidiFromDataFolder(): Promise<void> {
@@ -373,6 +422,43 @@ export class MyElement extends LitElement {
     .field-label {
       font-size: 0.84rem;
       color: #aab7d3;
+    }
+
+    .gallery {
+      display: grid;
+      gap: 10px;
+      border: 1px solid #2f3c56;
+      border-radius: 10px;
+      background: #0f1420;
+      padding: 12px;
+    }
+
+    .gallery-preview {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 4px 0;
+    }
+
+    .gallery-scroll {
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 2px;
+    }
+
+    .gallery-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      color: #d8e0f2;
+      font-size: 0.86rem;
+    }
+
+    .gallery-state {
+      color: #9fb4e2;
+      font-size: 0.84rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
 
     .source-name {
