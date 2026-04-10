@@ -1,18 +1,23 @@
+import type { IRectangleShape } from "@monorepo/core-semantic-model-shapes";
 import {
   createButtonSvg,
   type IButtonSvgResource,
   type IButtonWithTextSvgStyle,
+  type IButtonVisualStyle,
 } from "./svgButton.js";
 import {
-  resolveTokenStyle,
-  getDesignSystemFontFamily,
-  styleColorOr,
-  styleNumberOr,
-} from "./styleSystem.js";
+  createButtonRectangleShape,
+  type IButtonRectangleShapeFactory,
+} from "./button-rectangle-shape.js";
+import { controlStyles } from "./styleSystem.js";
 
 export type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
-export interface IDigitButtonStyle extends IButtonWithTextSvgStyle {
+/**
+ * Visual style properties for digit buttons.
+ * All properties are driven by @monorepo/core-style-system tokens.
+ */
+export interface IDigitButtonSvgStyle extends IButtonVisualStyle {
   readonly shellFill: string;
   readonly faceFill: string;
   readonly onFrameColor: string;
@@ -21,11 +26,6 @@ export interface IDigitButtonStyle extends IButtonWithTextSvgStyle {
   readonly offInnerFrameColor: string;
   readonly onAccentColor: string;
   readonly offAccentColor: string;
-  readonly rimWidth: number;
-  readonly innerFrameWidth: number;
-  readonly edgeInset: number;
-  readonly faceInset: number;
-  readonly numberVerticalOffset: number;
   readonly onFill: string;
   readonly onStroke: string;
   readonly onTextColor: string;
@@ -33,12 +33,32 @@ export interface IDigitButtonStyle extends IButtonWithTextSvgStyle {
   readonly offStroke: string;
   readonly offTextColor: string;
   readonly accentColor: string;
+}
+
+/**
+ * Geometric properties for digit button layout.
+ * Component-specific, not tokenized.
+ */
+export interface IDigitButtonGeometry {
+  readonly borderRadius: number;
+  readonly rimWidth: number;
+  readonly innerFrameWidth: number;
+  readonly edgeInset: number;
+  readonly faceInset: number;
+  readonly numberVerticalOffset: number;
   readonly accentHeight: number;
   readonly accentInsetX: number;
   readonly accentInsetBottom: number;
 }
 
+/**
+ * Complete digit button configuration.
+ * @deprecated Separate style and geometry concerns; use IDigitButtonSvgStyle + IDigitButtonGeometry.
+ */
+export type IDigitButtonStyle = IDigitButtonSvgStyle & IDigitButtonGeometry;
+
 export interface ICreateDigitButtonSvgInput {
+  readonly shape: IRectangleShape;
   readonly id: string;
   readonly x: number;
   readonly y: number;
@@ -59,6 +79,7 @@ export interface IDigitButtonSvgResource extends IButtonSvgResource {
 }
 
 export interface ICreateDigitButtonsSvgInput {
+  readonly shapeFactory: IButtonRectangleShapeFactory;
   readonly idPrefix: string;
   readonly startX: number;
   readonly startY: number;
@@ -73,43 +94,12 @@ export interface ICreateDigitButtonsSvgInput {
   readonly style?: Partial<IDigitButtonStyle>;
 }
 
-const surfaceStyle = resolveTokenStyle({ token: "surface" });
-const axisStyle = resolveTokenStyle({ token: "axis" });
-const lineStyle = resolveTokenStyle({ token: "line" });
-
-const defaultDigitButtonStyle: IDigitButtonStyle = Object.freeze({
-  fill: styleColorOr(surfaceStyle.fill?.color, "#202734"),
-  stroke: styleColorOr(surfaceStyle.stroke?.color, "#dff0ff"),
-  strokeWidth: styleNumberOr(surfaceStyle.stroke?.width, 2.6),
-  borderRadius: 11,
-  textColor: "#f5fbff",
-  shellFill: styleColorOr(axisStyle.stroke?.color, "#252c37"),
-  faceFill: "#1a202b",
-  onFrameColor: styleColorOr(surfaceStyle.stroke?.color, "#ecf4ff"),
-  offFrameColor: "#7a8499",
-  onInnerFrameColor: styleColorOr(lineStyle.stroke?.color, "#9edcff"),
-  offInnerFrameColor: "#556179",
-  onAccentColor: styleColorOr(lineStyle.stroke?.color, "#19d8ff"),
-  offAccentColor: "#4d6778",
-  rimWidth: 2.6,
-  innerFrameWidth: 1.8,
-  edgeInset: 2,
-  faceInset: 9,
-  numberVerticalOffset: -2,
-  onFill: "#202734",
-  onStroke: styleColorOr(surfaceStyle.stroke?.color, "#ecf4ff"),
-  onTextColor: "#f7fbff",
-  offFill: "#181e28",
-  offStroke: "#6f788d",
-  offTextColor: "#8b95a8",
-  fontFamily: getDesignSystemFontFamily(),
-  fontSize: 34,
-  fontWeight: 600,
-  accentColor: styleColorOr(lineStyle.stroke?.color, "#19d8ff"),
-  accentHeight: 4,
-  accentInsetX: 14,
-  accentInsetBottom: 12,
-});
+/**
+ * Default digit button configuration.
+ * Visual properties (colors, text) are driven by style tokens.
+ * Geometric properties (insets, widths) are component-specific and not tokenized.
+ */
+const defaultDigitButtonStyle = controlStyles.digitButton.create();
 
 const digits: readonly Digit[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
@@ -140,6 +130,7 @@ export function createDigitButtonSvg(
       };
 
   const button = createButtonSvg({
+    shape: input.shape,
     id: input.id,
     x: input.x,
     y: input.y,
@@ -169,6 +160,13 @@ export function createDigitButtonsSvg(
   const gap = input.gap ?? 8;
   const resources = digits.map((digit) =>
     createDigitButtonSvg({
+      shape: createButtonRectangleShape(input.shapeFactory, {
+        id: `${input.idPrefix}-${digit}`,
+        x: input.startX + digit * (input.buttonWidth + gap),
+        y: input.startY,
+        width: input.buttonWidth,
+        height: input.buttonHeight,
+      }),
       id: `${input.idPrefix}-${digit}`,
       digit,
       x: input.startX + digit * (input.buttonWidth + gap),

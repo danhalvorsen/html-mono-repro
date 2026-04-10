@@ -1,15 +1,30 @@
-export interface IRgbButtonStyle {
-  readonly borderRadius: number;
-  readonly borderWidth: number;
+import { controlStyles } from "./styleSystem.js";
+
+/**
+ * Visual style properties for RGB buttons.
+ * All properties are driven by @monorepo/core-style-system tokens.
+ */
+export interface IRgbButtonSvgStyle {
   readonly shellFill: string;
   readonly offOpacity: number;
 }
 
-import {
-  resolveTokenStyle,
-  styleColorOr,
-  styleNumberOr,
-} from "./styleSystem.js";
+/**
+ * Geometric properties for RGB button layout.
+ * Component-specific, not tokenized.
+ */
+export interface IRgbButtonGeometry {
+  readonly borderRadius: number;
+  readonly borderWidth: number;
+}
+
+/**
+ * Complete RGB button configuration.
+ * @deprecated Separate style and geometry concerns; use IRgbButtonSvgStyle + IRgbButtonGeometry.
+ */
+export interface IRgbButtonStyle
+  extends IRgbButtonSvgStyle,
+    IRgbButtonGeometry {}
 
 export interface ICreateRgbButtonSvgInput {
   readonly id: string;
@@ -29,14 +44,12 @@ export interface IRgbButtonSvgResource {
   readonly svg: string;
 }
 
-const axisStyle = resolveTokenStyle({ token: "axis" });
-
-const defaultStyle: IRgbButtonStyle = Object.freeze({
-  borderRadius: 12,
-  borderWidth: styleNumberOr(axisStyle.stroke?.width, 2),
-  shellFill: styleColorOr(axisStyle.stroke?.color, "#161c24"),
-  offOpacity: 0.35,
-});
+/**
+ * Default RGB button style configuration.
+ * Visual properties (shellFill, offOpacity) are driven by style tokens.
+ * Geometric properties (borderRadius, borderWidth) are component-specific and not tokenized.
+ */
+const defaultStyle = controlStyles.rgbButton.create();
 
 export function createRgbButtonSvg(
   input: ICreateRgbButtonSvgInput,

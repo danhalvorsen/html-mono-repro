@@ -1,4 +1,3 @@
- 
 {
   "compilerOptions": {
     "target": "ES2022",
@@ -17,6 +16,9 @@
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
 
     "types": [],
     "skipLibCheck": true

@@ -48,14 +48,14 @@ describe("STYLE_TOKENS", () => {
 
     expect(actual).toEqual({
       stroke: {
-        color: "#0f766e",
-        width: 2,
+        color: "#00ADB5",
+        width: 2.75,
         dash: [],
       },
       fill: {
-        color: "rgba(15, 118, 110, 0.18)",
+        color: "rgba(0, 173, 181, 0.2)",
       },
-      opacity: 1,
+      opacity: 0.97,
     });
   });
 
@@ -68,12 +68,12 @@ describe("STYLE_TOKENS", () => {
 
     expect(actual).toEqual({
       stroke: {
-        color: "#0f172a",
-        width: 1,
+        color: "#222831",
+        width: 1.25,
         dash: [],
       },
       fill: {
-        color: "#0f172a",
+        color: "#00ADB5",
       },
       opacity: 1,
     });

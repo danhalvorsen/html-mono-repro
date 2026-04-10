@@ -143,7 +143,7 @@ export class MyElement extends LitElement {
               .digit=${this.galleryOnDigit}
               .width=${88}
               .height=${88}
-              ?on=${true}
+              ?selected=${true}
               label-prefix="On"
             ></sequencer-digit-button>
 
@@ -151,19 +151,36 @@ export class MyElement extends LitElement {
               .digit=${this.galleryOnDigit}
               .width=${88}
               .height=${88}
-              ?on=${false}
+              ?selected=${false}
               label-prefix="Off"
             ></sequencer-digit-button>
           </div>
 
           <div class="gallery-scroll">
             <sequencer-digit-button-row
-              .onDigit=${this.galleryOnDigit}
+              .selectedDigit=${this.galleryOnDigit}
               .buttonWidth=${88}
               .buttonHeight=${88}
               .gap=${8}
-              @on-digit-change=${this.onGalleryDigitChange}
+              @digit-selection-change=${this.onGalleryDigitChange}
             ></sequencer-digit-button-row>
+          </div>
+
+          <div class="gallery-scroll">
+            <sequencer-transport-row
+              .buttonWidth=${88}
+              .buttonHeight=${56}
+              .gap=${8}
+            ></sequencer-transport-row>
+          </div>
+
+          <div class="gallery-scroll">
+            <sequencer-transport-row
+              layout="transport-shift"
+              .buttonWidth=${88}
+              .buttonHeight=${56}
+              .gap=${8}
+            ></sequencer-transport-row>
           </div>
 
           <div class="gallery-state">On digit: ${this.galleryOnDigit >= 0 ? this.galleryOnDigit : 'none'}</div>
@@ -248,8 +265,8 @@ export class MyElement extends LitElement {
   }
 
   private onGalleryDigitChange(event: Event): void {
-    const customEvent = event as CustomEvent<{ digit: number }>;
-    const digit = customEvent.detail?.digit;
+    const customEvent = event as CustomEvent<{ selectedDigit: number }>;
+    const digit = customEvent.detail?.selectedDigit;
 
     if (typeof digit === 'number') {
       this.galleryOnDigit = digit;

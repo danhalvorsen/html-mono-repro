@@ -1,14 +1,13 @@
-import {
-  SemanticShapesComposition,
-  type IRectangleShape,
-} from "@monorepo/core-semantic-model-shapes";
-import { getDesignSystemFontFamily } from "./styleSystem.js";
+import { type IRectangleShape } from "@monorepo/core-semantic-model-shapes";
 
+/**
+ * Visual style properties for button frame and text.
+ * All properties are driven by @monorepo/core-style-system tokens.
+ */
 export interface IButtonFrameSvgStyle {
   readonly fill: string;
   readonly stroke: string;
   readonly strokeWidth: number;
-  readonly borderRadius: number;
 }
 
 export interface IButtonTextSvgStyle {
@@ -18,9 +17,25 @@ export interface IButtonTextSvgStyle {
   readonly fontWeight: number;
 }
 
-export interface IButtonWithTextSvgStyle
+export interface IButtonVisualStyle
   extends IButtonFrameSvgStyle,
     IButtonTextSvgStyle {}
+
+/**
+ * Geometric properties for button layout.
+ * Component-specific, not tokenized.
+ */
+export interface IButtonGeometry {
+  readonly borderRadius: number;
+}
+
+/**
+ * Complete button configuration.
+ * @deprecated Separate style and geometry concerns; use IButtonVisualStyle + IButtonGeometry.
+ */
+export interface IButtonWithTextSvgStyle
+  extends IButtonVisualStyle,
+    IButtonGeometry {}
 
 /**
  * @deprecated Use IButtonFrameSvgStyle, IButtonTextSvgStyle, or IButtonWithTextSvgStyle.
@@ -28,6 +43,7 @@ export interface IButtonWithTextSvgStyle
 export type IButtonSvgStyle = IButtonWithTextSvgStyle;
 
 export interface ICreateButtonSvgInput {
+  readonly shape: IRectangleShape;
   readonly id: string;
   readonly x: number;
   readonly y: number;
@@ -43,31 +59,26 @@ export interface IButtonSvgResource {
   readonly svg: string;
 }
 
+/**
+ * Default button style configuration.
+ * Visual properties (colors, text) are driven by style tokens.
+ * Geometric properties (borderRadius) are component-specific and not tokenized.
+ */
 const defaultButtonStyle: IButtonWithTextSvgStyle = Object.freeze({
   fill: "#0b6cff",
   stroke: "#084cc0",
   strokeWidth: 1.5,
   borderRadius: 8,
   textColor: "#ffffff",
-  fontFamily: getDesignSystemFontFamily(),
+  fontFamily: "Verdana, Geneva, sans-serif",
   fontSize: 14,
   fontWeight: 600,
 });
-
-const shapes = new SemanticShapesComposition();
 
 export function createButtonSvg(
   input: ICreateButtonSvgInput,
 ): IButtonSvgResource {
   validateInput(input);
-
-  const shape = shapes.rectangleFactory.create({
-    id: input.id,
-    x: input.x,
-    y: input.y,
-    width: input.width,
-    height: input.height,
-  });
 
   const style = {
     ...defaultButtonStyle,
@@ -89,7 +100,7 @@ export function createButtonSvg(
   ].join("\n");
 
   return Object.freeze({
-    shape,
+    shape: input.shape,
     svg,
   });
 }

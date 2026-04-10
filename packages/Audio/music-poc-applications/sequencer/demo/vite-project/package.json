@@ -13,7 +13,8 @@
     "@monorepo/core.module.example.web": "workspace:*",
     "@monorepo/music-ui-components": "workspace:*",
     "@monorepo/music-core-midi": "workspace:*",
-    "@monorepo/music-core-midi-playback": "workspace:*"   
+    "@monorepo/music-core-midi-playback": "workspace:*"
+
   },
   "devDependencies": {
     "typescript": "~6.0.2",

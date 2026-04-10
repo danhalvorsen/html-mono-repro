@@ -1,7 +1,16 @@
-import { LitElement, css, html } from "lit";
+import { SemanticShapesComposition } from "@monorepo/core-semantic-model-shapes";
+import { LitElement, html } from "lit";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 
+import { styleMap } from "lit/directives/style-map.js";
+import { createButtonRectangleShape } from "./button-rectangle-shape.js";
 import { createDigitButtonSvg, type Digit } from "./digitButton.js";
+import {
+  DigitButtonEvents,
+  type IDigitButtonPressedDetail,
+} from "./events.js";
+
+const rectangleFactory = new SemanticShapesComposition().rectangleFactory;
 
 export class SequencerDigitButtonElement extends LitElement {
   public static readonly tagName = "sequencer-digit-button";
@@ -10,52 +19,14 @@ export class SequencerDigitButtonElement extends LitElement {
 
   public static override properties = {
     digit: { type: Number, reflect: true },
-    on: { type: Boolean, reflect: true },
-    active: { type: Boolean, reflect: true },
+    selected: { type: Boolean, reflect: true },
     width: { type: Number, reflect: true },
     height: { type: Number, reflect: true },
     labelPrefix: { type: String, attribute: "label-prefix" },
   } as const;
 
-  public static override styles = css`
-    :host {
-      display: inline-block;
-      inline-size: var(--digit-button-width, 88px);
-      block-size: var(--digit-button-height, 88px);
-      cursor: pointer;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    button {
-      display: block;
-      inline-size: 100%;
-      block-size: 100%;
-      border: 0;
-      background: transparent;
-      margin: 0;
-      padding: 0;
-      cursor: inherit;
-    }
-
-    svg {
-      inline-size: 100%;
-      block-size: 100%;
-      display: block;
-    }
-
-    :host([active]) {
-      filter: drop-shadow(0 4px 10px rgba(23, 215, 255, 0.35));
-    }
-
-    :host([on]) {
-      filter: drop-shadow(0 4px 10px rgba(23, 215, 255, 0.35));
-    }
-  `;
-
   declare public digit: number;
-  declare public on: boolean;
-  declare public active: boolean;
+  declare public selected: boolean;
   declare public width: number;
   declare public height: number;
   declare public labelPrefix: string;
@@ -63,8 +34,7 @@ export class SequencerDigitButtonElement extends LitElement {
   public constructor() {
     super();
     this.digit = 0;
-    this.on = false;
-    this.active = false;
+    this.selected = false;
     this.width = 88;
     this.height = 88;
     this.labelPrefix = "Digit";
@@ -72,37 +42,56 @@ export class SequencerDigitButtonElement extends LitElement {
 
   public override render() {
     const digit = this.clampDigit(this.digit);
-    const on = this.on || this.active;
 
     const resource = createDigitButtonSvg({
+      shape: createButtonRectangleShape(rectangleFactory, {
+        id: `${SequencerDigitButtonElement.tagName}-${digit}`,
+        x: 0,
+        y: 0,
+        width: this.width,
+        height: this.height,
+      }),
       id: `${SequencerDigitButtonElement.tagName}-${digit}`,
       digit,
       x: 0,
       y: 0,
       width: this.width,
       height: this.height,
-      on,
+      on: this.selected,
     });
 
     return html`
       <button
         type="button"
-        .ariaPressed=${on ? "true" : "false"}
+        aria-pressed=${this.selected ? "true" : "false"}
         aria-label="${this.labelPrefix} ${digit}"
+        style=${styleMap({
+          display: "inline-block",
+          inlineSize: `${this.width}px`,
+          blockSize: `${this.height}px`,
+          border: "0",
+          background: "transparent",
+          margin: "0",
+          padding: "0",
+          cursor: "pointer",
+          userSelect: "none",
+          WebkitTapHighlightColor: "transparent",
+        })}
         @click=${this.handleClick}
       >
-        ${unsafeSVG(resource.svg)}
+        <div style=${styleMap({ display: "block", inlineSize: "100%", blockSize: "100%" })}>${unsafeSVG(resource.svg)}</div>
       </button>
     `;
   }
 
   private readonly handleClick = (): void => {
-    this.on = !(this.on || this.active);
-    this.active = this.on;
+    const detail: IDigitButtonPressedDetail = {
+      digit: this.clampDigit(this.digit),
+    };
 
     this.dispatchEvent(
-      new CustomEvent("digit-press", {
-        detail: { digit: this.clampDigit(this.digit), on: this.on },
+      new CustomEvent<IDigitButtonPressedDetail>(DigitButtonEvents.pressed, {
+        detail,
         bubbles: true,
         composed: true,
       }),

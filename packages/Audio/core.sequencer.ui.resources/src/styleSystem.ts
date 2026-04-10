@@ -1,33 +1,8 @@
-import {
-  STYLE_TOKENS,
-  TYPOGRAPHY_TOKENS,
-  StyleLibrary,
-  StyleResolver,
-  type IStyle,
-  type IStyleReference,
-} from "@monorepo/core-style-system";
+export * from './style-resolver.js';
+export * from './style-helpers.js';
+export * from './control-styles.js';
 
-const styleLibrary = new StyleLibrary(STYLE_TOKENS);
-const styleResolver = new StyleResolver([styleLibrary]);
+import { SequencerStyleTokenResolver } from './style-resolver.js';
+import { ControlStyleComposer } from './control-styles.js';
 
-export function resolveTokenStyle(reference: Readonly<IStyleReference>): IStyle {
-  return styleResolver.resolve(reference);
-}
-
-export function styleColorOr(
-  value: string | undefined,
-  fallback: string,
-): string {
-  return value ?? fallback;
-}
-
-export function styleNumberOr(
-  value: number | undefined,
-  fallback: number,
-): number {
-  return value ?? fallback;
-}
-
-export function getDesignSystemFontFamily(): string {
-  return TYPOGRAPHY_TOKENS.fontFamily.ui;
-}
+export const controlStyles = new ControlStyleComposer().compose(new SequencerStyleTokenResolver());

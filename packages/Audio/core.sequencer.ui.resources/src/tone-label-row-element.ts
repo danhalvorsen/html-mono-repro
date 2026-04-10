@@ -1,4 +1,5 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, html } from "lit";
+import { styleMap } from "lit/directives/style-map.js";
 
 import { TONE_SCALE } from "./toneLabel.js";
 import "./tone-label-element.js";
@@ -12,20 +13,6 @@ export class SequencerToneLabelRowElement extends LitElement {
     gap: { type: Number, reflect: true },
   } as const;
 
-  public static override styles = css`
-    :host {
-      display: inline-block;
-    }
-
-    .row {
-      display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: min-content;
-      gap: var(--tone-label-gap, 8px);
-      align-items: center;
-    }
-  `;
-
   declare public buttonWidth: number;
   declare public buttonHeight: number;
   declare public gap: number;
@@ -38,10 +25,19 @@ export class SequencerToneLabelRowElement extends LitElement {
   }
 
   public override render() {
-    this.style.setProperty("--tone-label-gap", `${this.gap}px`);
-
     return html`
-      <div class="row" role="group" aria-label="Tone scale labels">
+      <div
+        class="row"
+        role="group"
+        aria-label="Tone scale labels"
+        style=${styleMap({
+          display: "grid",
+          gridAutoFlow: "column",
+          gridAutoColumns: "min-content",
+          alignItems: "center",
+          gap: `${this.gap}px`,
+        })}
+      >
         ${TONE_SCALE.map(
           (tone) => html`
             <sequencer-tone-label

@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { SemanticShapesComposition } from "@monorepo/core-semantic-model-shapes";
 
 import { createButtonSvg } from "../src/svgButton.js";
 import { createDigitButtonSvg, createDigitButtonsSvg } from "../src/digitButton.js";
 import { createRgbButtonSvg } from "../src/rgbButton.js";
-import { createKnobButtonSvg } from "../src/knobButton.js";
+import { KnobButtonSvgFactory } from "../src/knobButton.js";
 import {
   TONE_SCALE,
   createToneLabelSvg,
@@ -17,6 +18,9 @@ import {
   createRgbInput,
   createToneInput,
 } from "./fixtures/textFixtures.js";
+
+const rectangleFactory = new SemanticShapesComposition().rectangleFactory;
+const knobButtonSvgFactory = new KnobButtonSvgFactory();
 
 describe("svg resources", () => {
   describe("createButtonSvg", () => {
@@ -65,6 +69,7 @@ describe("svg resources", () => {
   describe("createDigitButtonsSvg", () => {
     it("should return ten buttons and set one active digit", () => {
       const resources = createDigitButtonsSvg({
+        shapeFactory: rectangleFactory,
         idPrefix: FIXTURE_TEXT.digitPrefix,
         startX: 0,
         startY: 0,
@@ -92,12 +97,12 @@ describe("svg resources", () => {
     });
   });
 
-  describe("createKnobButtonSvg", () => {
+  describe("KnobButtonSvgFactory", () => {
     it("should create all knob variants", () => {
       const variants = ["matte", "glossy", "ribbed", "beveled"] as const;
 
       for (const variant of variants) {
-        const resource = createKnobButtonSvg(createKnobInput(variant, true));
+        const resource = knobButtonSvgFactory.create(createKnobInput(variant, true));
         expect(resource.variant).toBe(variant);
         expect(resource.on).toBe(true);
         expect(resource.svg).toContain(`Knob button ${variant} on`);
@@ -106,7 +111,7 @@ describe("svg resources", () => {
 
     it("should throw when id is empty", () => {
       expect(() =>
-        createKnobButtonSvg({
+        knobButtonSvgFactory.create({
           ...createKnobInput("matte"),
           id: "",
         })

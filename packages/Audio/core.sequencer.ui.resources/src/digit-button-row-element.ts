@@ -1,6 +1,14 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, html } from "lit";
+
+import { styleMap } from "lit/directives/style-map.js";
 
 import type { Digit } from "./digitButton.js";
+import {
+  DigitButtonEvents,
+  DigitButtonRowEvents,
+  type IDigitButtonPressedDetail,
+  type IDigitButtonRowSelectionChangedDetail,
+} from "./events.js";
 import "./digit-button-element.js";
 
 export class SequencerDigitButtonRowElement extends LitElement {
@@ -8,30 +16,14 @@ export class SequencerDigitButtonRowElement extends LitElement {
   private static readonly digits: readonly Digit[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   public static override properties = {
-    onDigit: { type: Number, attribute: "on-digit", reflect: true },
-    activeDigit: { type: Number, attribute: "active-digit", reflect: true },
+    selectedDigit: { type: Number, attribute: "selected-digit", reflect: true },
     buttonWidth: { type: Number, attribute: "button-width" },
     buttonHeight: { type: Number, attribute: "button-height" },
     gap: { type: Number },
     labelPrefix: { type: String, attribute: "label-prefix" },
   } as const;
 
-  public static override styles = css`
-    :host {
-      display: inline-block;
-    }
-
-    .row {
-      display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: min-content;
-      gap: var(--digit-button-gap, 8px);
-      align-items: center;
-    }
-  `;
-
-  declare public onDigit: number;
-  declare public activeDigit: number;
+  declare public selectedDigit: number;
   declare public buttonWidth: number;
   declare public buttonHeight: number;
   declare public gap: number;
@@ -39,8 +31,7 @@ export class SequencerDigitButtonRowElement extends LitElement {
 
   public constructor() {
     super();
-    this.onDigit = -1;
-    this.activeDigit = -1;
+    this.selectedDigit = -1;
     this.buttonWidth = 88;
     this.buttonHeight = 88;
     this.gap = 8;
@@ -48,20 +39,28 @@ export class SequencerDigitButtonRowElement extends LitElement {
   }
 
   public override render() {
-    this.style.setProperty("--digit-button-gap", `${this.gap}px`);
-    const onDigit = this.onDigit >= 0 ? this.onDigit : this.activeDigit;
-
     return html`
-      <div class="row" role="group" aria-label="Digit buttons 0 to 9">
+      <div
+        class="row"
+        role="group"
+        aria-label="Digit buttons 0 to 9"
+        style=${styleMap({
+          display: "grid",
+          gridAutoFlow: "column",
+          gridAutoColumns: "min-content",
+          alignItems: "center",
+          gap: `${this.gap}px`,
+        })}
+      >
         ${SequencerDigitButtonRowElement.digits.map(
           (digit) => html`
             <sequencer-digit-button
               .digit=${digit}
-              ?on=${digit === onDigit}
+              ?selected=${digit === this.selectedDigit}
               .width=${this.buttonWidth}
               .height=${this.buttonHeight}
               .labelPrefix=${this.labelPrefix}
-              @digit-press=${this.handleDigitPress}
+              @${DigitButtonEvents.pressed}=${this.handleDigitPressed}
             ></sequencer-digit-button>
           `,
         )}
@@ -69,33 +68,28 @@ export class SequencerDigitButtonRowElement extends LitElement {
     `;
   }
 
-  private readonly handleDigitPress = (event: Event): void => {
-    const customEvent = event as CustomEvent<{ digit: Digit; on?: boolean }>;
-    const digit = customEvent.detail?.digit;
-    const on = customEvent.detail?.on ?? true;
+  private readonly handleDigitPressed = (
+    event: CustomEvent<IDigitButtonPressedDetail>,
+  ): void => {
+    const digit = event.detail?.digit;
 
-    if (typeof digit !== "number") {
+    if (digit === undefined) {
       return;
     }
 
-    const nextOnDigit = on ? digit : -1;
-    this.onDigit = nextOnDigit;
-    this.activeDigit = nextOnDigit;
+    const nextSelected: IDigitButtonRowSelectionChangedDetail["selectedDigit"] =
+      digit === this.selectedDigit ? -1 : digit;
+    this.selectedDigit = nextSelected;
+
+    const detail: IDigitButtonRowSelectionChangedDetail = {
+      selectedDigit: nextSelected,
+    };
 
     this.dispatchEvent(
-      new CustomEvent("on-digit-change", {
-        detail: { digit: nextOnDigit },
-        bubbles: true,
-        composed: true,
-      }),
-    );
-
-    this.dispatchEvent(
-      new CustomEvent("active-digit-change", {
-        detail: { digit: nextOnDigit },
-        bubbles: true,
-        composed: true,
-      }),
+      new CustomEvent<IDigitButtonRowSelectionChangedDetail>(
+        DigitButtonRowEvents.selectionChanged,
+        { detail, bubbles: true, composed: true },
+      ),
     );
   };
 }

@@ -1,6 +1,9 @@
+import { SemanticShapesComposition } from "@monorepo/core-semantic-model-shapes";
 import type { Digit } from "../../src/digitButton.js";
 import type { KnobVariant } from "../../src/knobButton.js";
 import type { ToneLabel } from "../../src/toneLabel.js";
+
+const rectangleFactory = new SemanticShapesComposition().rectangleFactory;
 
 export const FIXTURE_TEXT = Object.freeze({
   buttonLabel: "Play",
@@ -24,6 +27,13 @@ export const FIXTURE_NUMBERS = Object.freeze({
 
 export function createBaseButtonInput() {
   return {
+    shape: rectangleFactory.create({
+      id: FIXTURE_TEXT.buttonId,
+      x: FIXTURE_NUMBERS.x,
+      y: FIXTURE_NUMBERS.y,
+      width: FIXTURE_NUMBERS.width,
+      height: FIXTURE_NUMBERS.height,
+    }),
     id: FIXTURE_TEXT.buttonId,
     x: FIXTURE_NUMBERS.x,
     y: FIXTURE_NUMBERS.y,
@@ -35,6 +45,13 @@ export function createBaseButtonInput() {
 
 export function createDigitInput(digit: Digit, on = true) {
   return {
+    shape: rectangleFactory.create({
+      id: `${FIXTURE_TEXT.digitId}-${digit}`,
+      x: FIXTURE_NUMBERS.x,
+      y: FIXTURE_NUMBERS.y,
+      width: FIXTURE_NUMBERS.width,
+      height: FIXTURE_NUMBERS.height,
+    }),
     id: `${FIXTURE_TEXT.digitId}-${digit}`,
     x: FIXTURE_NUMBERS.x,
     y: FIXTURE_NUMBERS.y,

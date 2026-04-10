@@ -1,6 +1,4 @@
-import {
-  getDesignSystemFontFamily,
-} from "./styleSystem.js";
+import { controlStyles } from "./styleSystem.js";
 
 export const TONE_SCALE = [
   "C",
@@ -19,10 +17,26 @@ export const TONE_SCALE = [
 
 export type ToneLabel = (typeof TONE_SCALE)[number];
 
-export interface IToneLabelStyle {
-  /**
-   * CSS-like percentage shorthand: "a%", "a% b%", "a% b% c%", "a% b% c% d%"
-   */
+/**
+ * Visual style properties for tone labels.
+ * All properties are driven by @monorepo/core-style-system tokens.
+ */
+export interface IToneLabelSvgStyle {
+  readonly fillColor: string;
+  readonly textColor: string;
+  readonly strokeColor: string;
+  readonly strokeWidth: number;
+  readonly fontFamily: string;
+  readonly fontSize: number;
+  readonly fontWeight: number;
+}
+
+/**
+ * Geometric properties for tone label layout.
+ * Component-specific, not tokenized.
+ */
+export interface IToneLabelGeometry {
+  readonly borderRadius: number;
   readonly margin: string;
   /**
    * @deprecated Use margin.
@@ -32,15 +46,15 @@ export interface IToneLabelStyle {
    * @deprecated Use margin.
    */
   readonly marginPercentY?: number;
-  readonly borderRadius: number;
-  readonly fillColor: string;
-  readonly textColor: string;
-  readonly strokeColor: string;
-  readonly strokeWidth: number;
-  readonly fontFamily: string;
-  readonly fontSize: number;
-  readonly fontWeight: number;
 }
+
+/**
+ * Complete tone label configuration.
+ * @deprecated Separate style and geometry concerns; use IToneLabelSvgStyle + IToneLabelGeometry.
+ */
+export interface IToneLabelStyle
+  extends IToneLabelSvgStyle,
+    IToneLabelGeometry {}
 
 export interface ICreateToneLabelSvgInput {
   readonly id: string;
@@ -69,17 +83,12 @@ export interface ICreateToneScaleLabelsSvgInput {
   readonly tones?: readonly ToneLabel[];
 }
 
-const defaultStyle: IToneLabelStyle = Object.freeze({
-  margin: "12% 6%",
-  borderRadius: 7,
-  fillColor: "#12161f",
-  textColor: "#f1efe6",
-  strokeColor: "#d8d3c4",
-  strokeWidth: 0,
-  fontFamily: getDesignSystemFontFamily(),
-  fontSize: 12,
-  fontWeight: 700,
-});
+/**
+ * Default tone label style configuration.
+ * Visual properties (colors, fonts) are driven by style tokens.
+ * Geometric properties (borderRadius, margin) are component-specific and not tokenized.
+ */
+const defaultStyle = controlStyles.toneLabel.create();
 
 export function createToneLabelSvg(
   input: ICreateToneLabelSvgInput,

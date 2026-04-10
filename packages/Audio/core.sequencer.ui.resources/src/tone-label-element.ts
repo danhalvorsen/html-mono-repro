@@ -1,7 +1,14 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, html } from "lit";
+import { styleMap } from "lit/directives/style-map.js";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 
-import { createToneLabelSvg, type ToneLabel } from "./toneLabel.js";
+import {
+  createToneLabelSvg,
+  TONE_SCALE,
+  type ToneLabel,
+} from "./toneLabel.js";
+
+const toneSet = new Set<string>(TONE_SCALE);
 
 export class SequencerToneLabelElement extends LitElement {
   public static readonly tagName = "sequencer-tone-label";
@@ -11,20 +18,6 @@ export class SequencerToneLabelElement extends LitElement {
     buttonWidth: { type: Number, attribute: "button-width", reflect: true },
     buttonHeight: { type: Number, attribute: "button-height", reflect: true },
   } as const;
-
-  public static override styles = css`
-    :host {
-      display: inline-block;
-      inline-size: var(--tone-label-width, 88px);
-      block-size: var(--tone-label-height, 17.6px);
-    }
-
-    svg {
-      inline-size: 100%;
-      block-size: 100%;
-      display: block;
-    }
-  `;
 
   declare public tone: ToneLabel;
   declare public buttonWidth: number;
@@ -48,30 +41,20 @@ export class SequencerToneLabelElement extends LitElement {
       tone,
     });
 
-    this.style.setProperty("--tone-label-width", `${resource.labelWidth}px`);
-    this.style.setProperty("--tone-label-height", `${resource.labelHeight}px`);
-
-    return html`${unsafeSVG(resource.svg)}`;
+    return html`
+      <div style=${styleMap({
+        "inline-size": `${resource.labelWidth}px`,
+        "block-size": `${resource.labelHeight}px`,
+        "display": "block",
+      })}>
+        ${unsafeSVG(resource.svg)}
+      </div>
+    `;
   }
 }
 
 function normalizeTone(value: string): ToneLabel {
-  const tones = new Set([
-    "C",
-    "C#",
-    "D",
-    "D#",
-    "E",
-    "F",
-    "F#",
-    "G",
-    "G#",
-    "A",
-    "A#",
-    "B",
-  ]);
-
-  return (tones.has(value) ? value : "C") as ToneLabel;
+  return (toneSet.has(value) ? value : "C") as ToneLabel;
 }
 
 if (!customElements.get(SequencerToneLabelElement.tagName)) {

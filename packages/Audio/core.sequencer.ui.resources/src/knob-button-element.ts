@@ -1,7 +1,13 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, html } from "lit";
+import { styleMap } from "lit/directives/style-map.js";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 
-import { createKnobButtonSvg, type KnobVariant } from "./knobButton.js";
+import { KnobButtonSvgFactory, type KnobVariant } from "./knobButton.js";
+import {
+  KnobButtonEvents,
+  type IKnobButtonToggleRequestedDetail,
+} from "./events.js";
+import { normalizeKnobVariant } from "./variant-normalization.js";
 
 export class SequencerKnobButtonElement extends LitElement {
   public static readonly tagName = "sequencer-knob-button";
@@ -13,38 +19,12 @@ export class SequencerKnobButtonElement extends LitElement {
     height: { type: Number, reflect: true },
   } as const;
 
-  public static override styles = css`
-    :host {
-      display: inline-block;
-      inline-size: var(--knob-button-width, 88px);
-      block-size: var(--knob-button-height, 88px);
-      cursor: pointer;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    button {
-      display: block;
-      inline-size: 100%;
-      block-size: 100%;
-      border: 0;
-      background: transparent;
-      margin: 0;
-      padding: 0;
-      cursor: inherit;
-    }
-
-    svg {
-      inline-size: 100%;
-      block-size: 100%;
-      display: block;
-    }
-  `;
-
   declare public variant: KnobVariant;
   declare public on: boolean;
   declare public width: number;
   declare public height: number;
+
+  private static readonly svgFactory = new KnobButtonSvgFactory();
 
   public constructor() {
     super();
@@ -55,8 +35,8 @@ export class SequencerKnobButtonElement extends LitElement {
   }
 
   public override render() {
-    const variant = normalizeVariant(this.variant);
-    const resource = createKnobButtonSvg({
+    const variant = normalizeKnobVariant(this.variant);
+    const resource = SequencerKnobButtonElement.svgFactory.create({
       id: `${SequencerKnobButtonElement.tagName}-${variant}`,
       x: 0,
       y: 0,
@@ -69,39 +49,46 @@ export class SequencerKnobButtonElement extends LitElement {
     return html`
       <button
         type="button"
-        .ariaPressed=${this.on ? "true" : "false"}
+        aria-pressed=${this.on ? "true" : "false"}
         aria-label="Knob ${variant}"
+        style=${styleMap({
+          display: "inline-block",
+          inlineSize: `${this.width}px`,
+          blockSize: `${this.height}px`,
+          border: "0",
+          background: "transparent",
+          margin: "0",
+          padding: "0",
+          cursor: "pointer",
+          userSelect: "none",
+          WebkitTapHighlightColor: "transparent",
+        })}
         @click=${this.handleClick}
       >
-        ${unsafeSVG(resource.svg)}
+        <div style=${styleMap({ display: "block", inlineSize: "100%", blockSize: "100%" })}>${unsafeSVG(resource.svg)}</div>
       </button>
     `;
   }
 
   private readonly handleClick = (): void => {
-    this.on = !this.on;
+    const variant = normalizeKnobVariant(this.variant);
+
+    const detail: IKnobButtonToggleRequestedDetail = {
+      variant,
+      on: !this.on,
+    };
 
     this.dispatchEvent(
-      new CustomEvent("knob-toggle", {
-        detail: { variant: this.variant, on: this.on },
-        bubbles: true,
-        composed: true,
-      }),
+      new CustomEvent<IKnobButtonToggleRequestedDetail>(
+        KnobButtonEvents.toggleRequested,
+        {
+          detail,
+          bubbles: true,
+          composed: true,
+        },
+      ),
     );
   };
-}
-
-function normalizeVariant(value: string): KnobVariant {
-  if (
-    value === "matte"
-    || value === "glossy"
-    || value === "ribbed"
-    || value === "beveled"
-  ) {
-    return value;
-  }
-
-  return "matte";
 }
 
 if (!customElements.get(SequencerKnobButtonElement.tagName)) {

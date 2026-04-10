@@ -1,7 +1,12 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, html } from "lit";
+import { styleMap } from "lit/directives/style-map.js";
 import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 
 import { createRgbButtonSvg } from "./rgbButton.js";
+import {
+  RgbButtonEvents,
+  type IRgbButtonToggleRequestedDetail,
+} from "./events.js";
 
 export class SequencerRgbButtonElement extends LitElement {
   public static readonly tagName = "sequencer-rgb-button";
@@ -14,34 +19,6 @@ export class SequencerRgbButtonElement extends LitElement {
     width: { type: Number, reflect: true },
     height: { type: Number, reflect: true },
   } as const;
-
-  public static override styles = css`
-    :host {
-      display: inline-block;
-      inline-size: var(--rgb-button-width, 88px);
-      block-size: var(--rgb-button-height, 88px);
-      cursor: pointer;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    button {
-      display: block;
-      inline-size: 100%;
-      block-size: 100%;
-      border: 0;
-      background: transparent;
-      margin: 0;
-      padding: 0;
-      cursor: inherit;
-    }
-
-    svg {
-      inline-size: 100%;
-      block-size: 100%;
-      display: block;
-    }
-  `;
 
   declare public r: number;
   declare public g: number;
@@ -76,29 +53,44 @@ export class SequencerRgbButtonElement extends LitElement {
     return html`
       <button
         type="button"
-        .ariaPressed=${this.on ? "true" : "false"}
+        aria-pressed=${this.on ? "true" : "false"}
         aria-label="RGB ${this.r}, ${this.g}, ${this.b}"
+        style=${styleMap({
+          display: "inline-block",
+          inlineSize: `${this.width}px`,
+          blockSize: `${this.height}px`,
+          border: "0",
+          background: "transparent",
+          margin: "0",
+          padding: "0",
+          cursor: "pointer",
+          userSelect: "none",
+          WebkitTapHighlightColor: "transparent",
+        })}
         @click=${this.handleClick}
       >
-        ${unsafeSVG(resource.svg)}
+        <div style=${styleMap({ display: "block", inlineSize: "100%", blockSize: "100%" })}>${unsafeSVG(resource.svg)}</div>
       </button>
     `;
   }
 
   private readonly handleClick = (): void => {
-    this.on = !this.on;
+    const detail: IRgbButtonToggleRequestedDetail = {
+      r: this.r,
+      g: this.g,
+      b: this.b,
+      on: !this.on,
+    };
 
     this.dispatchEvent(
-      new CustomEvent("rgb-button-toggle", {
-        detail: {
-          r: this.r,
-          g: this.g,
-          b: this.b,
-          on: this.on,
+      new CustomEvent<IRgbButtonToggleRequestedDetail>(
+        RgbButtonEvents.toggleRequested,
+        {
+          detail,
+          bubbles: true,
+          composed: true,
         },
-        bubbles: true,
-        composed: true,
-      }),
+      ),
     );
   };
 }
