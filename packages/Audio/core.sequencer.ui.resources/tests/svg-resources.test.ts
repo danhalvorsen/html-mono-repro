@@ -10,6 +10,7 @@ import {
   createToneLabelSvg,
   createToneScaleLabelsSvg,
 } from "../src/toneLabel.js";
+import { createSvgLabelSvg } from "../src/svgLabel.js";
 import {
   FIXTURE_TEXT,
   createBaseButtonInput,
@@ -105,8 +106,25 @@ describe("svg resources", () => {
         const resource = knobButtonSvgFactory.create(createKnobInput(variant, true));
         expect(resource.variant).toBe(variant);
         expect(resource.on).toBe(true);
+        expect(resource.angle).toBe(90);
         expect(resource.svg).toContain(`Knob button ${variant} on`);
       }
+    });
+
+    it("should rotate the indicator when angle changes", () => {
+      const upright = knobButtonSvgFactory.create({
+        ...createKnobInput("matte", true),
+        angle: 0,
+      });
+      const rotated = knobButtonSvgFactory.create({
+        ...createKnobInput("matte", true),
+        angle: 90,
+      });
+
+      expect(upright.svg).not.toBe(rotated.svg);
+      expect(rotated.angle).toBe(90);
+      expect(rotated.svg).toContain('L 44 16.7');
+      expect(upright.svg).toContain('L 71.3 44');
     });
 
     it("should throw when id is empty", () => {
@@ -156,6 +174,32 @@ describe("svg resources", () => {
           buttonHeight: 88,
         })
       ).toThrow(/id/i);
+    });
+  });
+
+  describe("createSvgLabelSvg", () => {
+    it("should apply a default proportional margin so the label field stays inside its bounds", () => {
+      const resource = createSvgLabelSvg({
+        id: "svg-label-default-margin",
+        x: 0,
+        y: 0,
+        buttonWidth: 88,
+        buttonHeight: 88,
+        label: "FILTER",
+      });
+
+      const rectMatch = /<rect x="([^"]+)" y="([^"]+)" width="([^"]+)" height="([^"]+)"/.exec(resource.svg);
+      expect(rectMatch).not.toBeNull();
+
+      const rectX = Number(rectMatch?.[1]);
+      const rectY = Number(rectMatch?.[2]);
+      const rectWidth = Number(rectMatch?.[3]);
+      const rectHeight = Number(rectMatch?.[4]);
+
+      expect(rectX).toBeGreaterThan(0);
+      expect(rectY).toBeGreaterThan(0);
+      expect(rectWidth).toBeLessThan(resource.labelWidth);
+      expect(rectHeight).toBeLessThan(resource.labelHeight);
     });
   });
 });

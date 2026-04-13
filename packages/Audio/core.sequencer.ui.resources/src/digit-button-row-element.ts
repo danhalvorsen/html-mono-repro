@@ -4,7 +4,6 @@ import { styleMap } from "lit/directives/style-map.js";
 
 import type { Digit } from "./digitButton.js";
 import {
-  DigitButtonEvents,
   DigitButtonRowEvents,
   type IDigitButtonPressedDetail,
   type IDigitButtonRowSelectionChangedDetail,
@@ -60,7 +59,7 @@ export class SequencerDigitButtonRowElement extends LitElement {
               .width=${this.buttonWidth}
               .height=${this.buttonHeight}
               .labelPrefix=${this.labelPrefix}
-              @${DigitButtonEvents.pressed}=${this.handleDigitPressed}
+              @digit-press=${this.handleDigitPressed}
             ></sequencer-digit-button>
           `,
         )}

@@ -236,11 +236,11 @@ Properties:
 
 Variants: `matte` | `glossy` | `ribbed` | `beveled`
 
-### `<sequencer-tone-label>` & `<sequencer-tone-label-row>`
+### `<svg-label>` & `<svg-label-tones>`
 
 ```html
-<sequencer-tone-label tone="C#" button-width="88" button-height="88"></sequencer-tone-label>
-<sequencer-tone-label-row button-width="88" button-height="88"></sequencer-tone-label-row>
+<svg-label tone="C#" button-width="88" button-height="88"></svg-label>
+<svg-label-tones button-width="88" button-height="88"></svg-label-tones>
 ```
 
 ---

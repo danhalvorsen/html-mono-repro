@@ -85,6 +85,7 @@ export function createKnobInput(variant: KnobVariant, on = true) {
     height: FIXTURE_NUMBERS.height,
     variant,
     on,
+    angle: 90,
   } as const;
 }
 

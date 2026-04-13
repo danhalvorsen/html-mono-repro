@@ -1,4 +1,5 @@
 export type KnobVariant = "matte" | "glossy" | "ribbed" | "beveled";
+export type KnobRotationMode = "free" | "stepped" | "sector";
 
 import { controlStyles } from "./styleSystem.js";
 
@@ -10,11 +11,13 @@ export interface ICreateKnobButtonSvgInput {
   readonly height: number;
   readonly on?: boolean;
   readonly variant?: KnobVariant;
+  readonly angle?: number;
 }
 
 export interface IKnobButtonSvgResource {
   readonly on: boolean;
   readonly variant: KnobVariant;
+  readonly angle: number;
   readonly svg: string;
 }
 
@@ -24,6 +27,7 @@ export class KnobButtonSvgFactory {
 
     const on = input.on ?? true;
     const variant = input.variant ?? "matte";
+    const angle = this.normalizeAngular(input.angle ?? 90);
 
     const cx = input.x + input.width / 2;
     const cy = input.y + input.height / 2;
@@ -65,8 +69,20 @@ export class KnobButtonSvgFactory {
       `  <ellipse cx="${cx - bodyRadius * 0.2}" cy="${cy - bodyRadius * 0.24}" rx="${bodyRadius * 0.55}" ry="${bodyRadius * 0.36}" fill="#7e8aa2" fill-opacity="${on ? 0.08 : 0.03}"/>`,
     ];
 
+    const indicatorStart = this.resolveIndicatorPoint(
+      cx,
+      cy,
+      bodyRadius * 0.28,
+      angle,
+    );
+    const indicatorEnd = this.resolveIndicatorPoint(
+      cx,
+      cy,
+      bodyRadius * 0.78,
+      angle,
+    );
     const indicator = [
-      `  <path d="M ${cx + bodyRadius * 0.12} ${cy - bodyRadius * 0.72} L ${cx + bodyRadius * 0.48} ${cy - bodyRadius * 0.34}" stroke="${on ? palette.indicatorStrokeOn : palette.indicatorStrokeOff}" stroke-opacity="${on ? 0.86 : 0.48}" stroke-width="2" stroke-linecap="round"/>`,
+      `  <path d="M ${indicatorStart.x} ${indicatorStart.y} L ${indicatorEnd.x} ${indicatorEnd.y}" stroke="${on ? palette.indicatorStrokeOn : palette.indicatorStrokeOff}" stroke-opacity="${on ? 0.86 : 0.48}" stroke-width="2" stroke-linecap="round"/>`,
     ];
 
     const variantLayer = this.buildVariantLayer(variant, cx, cy, bodyRadius, on);
@@ -85,7 +101,30 @@ export class KnobButtonSvgFactory {
       `</svg>`,
     ].join("\n");
 
-    return Object.freeze({ on, variant, svg });
+    return Object.freeze({ on, variant, angle, svg });
+  }
+
+  private resolveIndicatorPoint(
+    cx: number,
+    cy: number,
+    radius: number,
+    angle: number,
+  ): { readonly x: number; readonly y: number } {
+    const angleRadians = (angle * Math.PI) / 180;
+
+    return Object.freeze({
+      x: cx + (Math.cos(angleRadians) * radius),
+      y: cy - (Math.sin(angleRadians) * radius),
+    });
+  }
+
+  private normalizeAngular(value: number): number {
+    if (!Number.isFinite(value)) {
+      return 90;
+    }
+
+    const normalized = value % 360;
+    return normalized >= 0 ? normalized : normalized + 360;
   }
 
   private buildVariantLayer(

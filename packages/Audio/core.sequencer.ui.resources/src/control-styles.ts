@@ -53,7 +53,11 @@ export interface IShiftButtonStyleFactory {
  */
 
 export class DigitButtonStyleFactory implements IDigitButtonStyleFactory {
-  public constructor(private readonly resolver: IStyleTokenResolver) {}
+  private readonly resolver: IStyleTokenResolver;
+
+  public constructor(resolver: IStyleTokenResolver) {
+    this.resolver = resolver;
+  }
 
   public create(): IDigitButtonStyle {
     const surface = this.resolver.resolve({ token: SequencerUiTokenKeys.SURFACE });
@@ -97,7 +101,11 @@ export class DigitButtonStyleFactory implements IDigitButtonStyleFactory {
 }
 
 export class RgbButtonStyleFactory implements IRgbButtonStyleFactory {
-  public constructor(private readonly resolver: IStyleTokenResolver) {}
+  private readonly resolver: IStyleTokenResolver;
+
+  public constructor(resolver: IStyleTokenResolver) {
+    this.resolver = resolver;
+  }
 
   public create(): IRgbButtonStyle {
     const shell = this.resolver.resolve({ token: SequencerUiTokenKeys.RGB_BUTTON_SHELL });
@@ -113,7 +121,11 @@ export class RgbButtonStyleFactory implements IRgbButtonStyleFactory {
 }
 
 export class KnobButtonPaletteFactory implements IKnobButtonPaletteFactory {
-  public constructor(private readonly resolver: IStyleTokenResolver) {}
+  private readonly resolver: IStyleTokenResolver;
+
+  public constructor(resolver: IStyleTokenResolver) {
+    this.resolver = resolver;
+  }
 
   public create(): IKnobButtonPalette {
     const ringOn = this.resolver.resolve({ token: SequencerUiTokenKeys.KNOB_BUTTON_RING });
@@ -138,7 +150,11 @@ export class KnobButtonPaletteFactory implements IKnobButtonPaletteFactory {
 }
 
 export class ToneLabelStyleFactory implements IToneLabelStyleFactory {
-  public constructor(private readonly resolver: IStyleTokenResolver) {}
+  private readonly resolver: IStyleTokenResolver;
+
+  public constructor(resolver: IStyleTokenResolver) {
+    this.resolver = resolver;
+  }
 
   public create(): IToneLabelStyle {
     const background = this.resolver.resolve({ token: SequencerUiTokenKeys.TONE_LABEL_BACKGROUND });
@@ -160,7 +176,11 @@ export class ToneLabelStyleFactory implements IToneLabelStyleFactory {
 }
 
 export class TransportButtonStyleFactory implements ITransportButtonStyleFactory {
-  public constructor(private readonly resolver: IStyleTokenResolver) {}
+  private readonly resolver: IStyleTokenResolver;
+
+  public constructor(resolver: IStyleTokenResolver) {
+    this.resolver = resolver;
+  }
 
   public create(): ITransportButtonStyle {
     const shell = this.resolver.resolve({ token: SequencerUiTokenKeys.TRANSPORT_BUTTON_SHELL });
@@ -183,7 +203,11 @@ export class TransportButtonStyleFactory implements ITransportButtonStyleFactory
 }
 
 export class ShiftButtonStyleFactory implements IShiftButtonStyleFactory {
-  public constructor(private readonly resolver: IStyleTokenResolver) {}
+  private readonly resolver: IStyleTokenResolver;
+
+  public constructor(resolver: IStyleTokenResolver) {
+    this.resolver = resolver;
+  }
 
   public create(): IShiftButtonStyle {
     const face = this.resolver.resolve({ token: SequencerUiTokenKeys.SHIFT_BUTTON_FACE });
@@ -217,14 +241,28 @@ export interface IControlStyleFactories {
 }
 
 export class ControlStyleComposition implements IControlStyleFactories {
+  public readonly digitButton: IDigitButtonStyleFactory;
+  public readonly rgbButton: IRgbButtonStyleFactory;
+  public readonly knobButton: IKnobButtonPaletteFactory;
+  public readonly toneLabel: IToneLabelStyleFactory;
+  public readonly transportButton: ITransportButtonStyleFactory;
+  public readonly shiftButton: IShiftButtonStyleFactory;
+
   public constructor(
-    public readonly digitButton: IDigitButtonStyleFactory,
-    public readonly rgbButton: IRgbButtonStyleFactory,
-    public readonly knobButton: IKnobButtonPaletteFactory,
-    public readonly toneLabel: IToneLabelStyleFactory,
-    public readonly transportButton: ITransportButtonStyleFactory,
-    public readonly shiftButton: IShiftButtonStyleFactory,
-  ) {}
+    digitButton: IDigitButtonStyleFactory,
+    rgbButton: IRgbButtonStyleFactory,
+    knobButton: IKnobButtonPaletteFactory,
+    toneLabel: IToneLabelStyleFactory,
+    transportButton: ITransportButtonStyleFactory,
+    shiftButton: IShiftButtonStyleFactory,
+  ) {
+    this.digitButton = digitButton;
+    this.rgbButton = rgbButton;
+    this.knobButton = knobButton;
+    this.toneLabel = toneLabel;
+    this.transportButton = transportButton;
+    this.shiftButton = shiftButton;
+  }
 }
 
 export class ControlStyleComposer {
@@ -239,4 +277,3 @@ export class ControlStyleComposer {
     );
   }
 }
-

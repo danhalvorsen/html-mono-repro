@@ -1,12 +1,9 @@
-import { type IRectangleShape } from "@monorepo/core-semantic-model-shapes";
+import {
+  type IRectangleInput,
+  type IRectangleShape,
+} from "@monorepo/core-semantic-model-shapes";
 
-export interface ICreateButtonRectangleShapeInput {
-  readonly id: string;
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-}
+export interface ICreateButtonRectangleShapeInput extends IRectangleInput {}
 
 export interface IButtonRectangleShapeFactory {
   create(input: ICreateButtonRectangleShapeInput): IRectangleShape;

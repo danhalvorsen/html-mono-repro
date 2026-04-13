@@ -13,7 +13,7 @@ import {
 import { normalizeTransportButtonVariant } from "./variant-normalization.js";
 
 export class SequencerTransportButtonElement extends LitElement {
-  public static readonly tagName = "sequencer-transport-button";
+  public static readonly tagName = "play-button";
 
   public static override properties = {
     variant: { type: String, reflect: true },

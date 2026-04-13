@@ -43,25 +43,25 @@ export class SequencerTransportRowElement extends LitElement {
           gap: `${this.gap}px`,
         })}
       >
-        <sequencer-transport-button
+        <play-button
           variant="stop"
           label="sync"
           .width=${this.buttonWidth}
           .height=${this.buttonHeight}
-        ></sequencer-transport-button>
+        ></play-button>
 
-        <sequencer-transport-button
+        <play-button
           variant="record"
           .width=${this.buttonWidth}
           .height=${this.buttonHeight}
-        ></sequencer-transport-button>
+        ></play-button>
 
-        <sequencer-transport-button
+        <play-button
           variant="play"
           label="tap"
           .width=${this.buttonWidth}
           .height=${this.buttonHeight}
-        ></sequencer-transport-button>
+        ></play-button>
 
         ${this.layout === "transport-shift"
           ? html`

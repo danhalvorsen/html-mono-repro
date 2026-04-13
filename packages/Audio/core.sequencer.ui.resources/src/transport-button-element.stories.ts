@@ -11,15 +11,15 @@ interface ISequencerTransportButtonStoryArgs {
 }
 
 const meta = {
-  title: "Sequencer/Transport Button",
+  title: "Sequencer/Play Button",
   tags: ["autodocs"],
   render: (args: ISequencerTransportButtonStoryArgs) => html`
-    <sequencer-transport-button
+    <play-button
       .variant=${args.variant}
       .label=${args.label}
       .width=${args.width}
       .height=${args.height}
-    ></sequencer-transport-button>
+    ></play-button>
   `,
   args: {
     variant: "play",

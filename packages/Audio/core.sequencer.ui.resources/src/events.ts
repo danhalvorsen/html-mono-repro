@@ -1,4 +1,5 @@
 import type { Digit } from "./digitButton.js";
+import type { ICircularDragSample } from "./Controllers/OnCircularDragging.js";
 import type { KnobVariant } from "./knobButton.js";
 import type { TransportButtonVariant } from "./transportButton.js";
 
@@ -33,7 +34,7 @@ export interface IDigitButtonRowSelectionChangedDetail {
 
 export const TransportButtonEvents = {
   /**
-   * Emitted by sequencer-transport-button when pressed.
+   * Emitted by play-button when pressed.
    */
   pressed: "transport-press",
 } as const;
@@ -48,11 +49,21 @@ export const KnobButtonEvents = {
    * Parent owns the on/off state.
    */
   toggleRequested: "knob-toggle",
+  /**
+   * Emitted by sequencer-knob-button while circular dragging is active.
+   */
+  circularDraggingChanged: "knob-circular-drag",
 } as const;
 
 export interface IKnobButtonToggleRequestedDetail {
   readonly variant: KnobVariant;
   readonly on: boolean;
+}
+
+export interface IKnobButtonCircularDraggingDetail {
+  readonly variant: KnobVariant;
+  readonly angle: number;
+  readonly sample: ICircularDragSample;
 }
 
 export const RgbButtonEvents = {

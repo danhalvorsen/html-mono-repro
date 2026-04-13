@@ -4,8 +4,9 @@ import { styleMap } from "lit/directives/style-map.js";
 import { TONE_SCALE } from "./toneLabel.js";
 import "./tone-label-element.js";
 
-export class SequencerToneLabelRowElement extends LitElement {
-  public static readonly tagName = "sequencer-tone-label-row";
+export class SvgLabelTonesElement extends LitElement {
+  public static readonly tagName = "svg-label-tones";
+  public static readonly legacyTagName = "sequencer-tone-label-row";
 
   public static override properties = {
     buttonWidth: { type: Number, attribute: "button-width", reflect: true },
@@ -40,11 +41,11 @@ export class SequencerToneLabelRowElement extends LitElement {
       >
         ${TONE_SCALE.map(
           (tone) => html`
-            <sequencer-tone-label
+            <svg-label
               .tone=${tone}
               .buttonWidth=${this.buttonWidth}
               .buttonHeight=${this.buttonHeight}
-            ></sequencer-tone-label>
+            ></svg-label>
           `,
         )}
       </div>
@@ -52,9 +53,15 @@ export class SequencerToneLabelRowElement extends LitElement {
   }
 }
 
-if (!customElements.get(SequencerToneLabelRowElement.tagName)) {
+export class SequencerToneLabelRowElement extends SvgLabelTonesElement {}
+
+if (!customElements.get(SvgLabelTonesElement.tagName)) {
+  customElements.define(SvgLabelTonesElement.tagName, SvgLabelTonesElement);
+}
+
+if (!customElements.get(SvgLabelTonesElement.legacyTagName)) {
   customElements.define(
-    SequencerToneLabelRowElement.tagName,
+    SvgLabelTonesElement.legacyTagName,
     SequencerToneLabelRowElement,
   );
 }
