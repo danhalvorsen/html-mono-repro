@@ -15,8 +15,13 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.js",
     "tests/**/*.ts",
     "../../../packages/core-style-system/src/style/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "src/**/*.js",
+    "src/**/*.d.ts",
+    "src/**/*.map"
   ]
 }

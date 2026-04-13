@@ -1,0 +1,25 @@
+{
+  "nodes": [
+    { "id": "graph-visualization-app", "payload": { "category": "WebComponent" } },
+    { "id": "graph-visualization-shell", "payload": { "category": "WebComponent" } },
+    { "id": "graph-visualization-toolbar", "payload": { "category": "WebComponent" } },
+    { "id": "graph-visualization-sidebar", "payload": { "category": "WebComponent" } },
+    { "id": "graph-visualization-canvas", "payload": { "category": "WebComponent" } },
+    { "id": "mr-core-graph-visualizer", "payload": { "category": "WebComponent" } },
+    { "id": "GraphVisualizationCoordinator", "payload": { "category": "ApplicationService" } },
+    { "id": "LayoutStrategy", "payload": { "category": "LayoutStrategy" } },
+    { "id": "LayoutReactiveController", "payload": { "category": "ReactiveController" } },
+    { "id": "GraphInteractionControllers", "payload": { "category": "ReactiveController" } }
+  ],
+  "edges": [
+    { "sourceId": "graph-visualization-app", "targetId": "graph-visualization-shell" },
+    { "sourceId": "graph-visualization-shell", "targetId": "graph-visualization-toolbar" },
+    { "sourceId": "graph-visualization-shell", "targetId": "graph-visualization-sidebar" },
+    { "sourceId": "graph-visualization-shell", "targetId": "graph-visualization-canvas" },
+    { "sourceId": "graph-visualization-app", "targetId": "GraphVisualizationCoordinator" },
+    { "sourceId": "GraphVisualizationCoordinator", "targetId": "LayoutReactiveController" },
+    { "sourceId": "LayoutReactiveController", "targetId": "LayoutStrategy" },
+    { "sourceId": "graph-visualization-canvas", "targetId": "mr-core-graph-visualizer" },
+    { "sourceId": "mr-core-graph-visualizer", "targetId": "GraphInteractionControllers" }
+  ]
+}

@@ -9,48 +9,12 @@ import {
   Vector2Gpu,
   Vector3Gpu,
 } from "@monorepo/core-math-gpu";
-
-// ============================================================================
-// CONTRACTS
-// ============================================================================
-
-export interface IBox2 {
-  getVertices(): readonly Vector2Gpu[];
-  getEdges(): readonly (readonly [Vector2Gpu, Vector2Gpu])[];
-
-  getAxes(): readonly Vector2Gpu[];
-
-  width(): number;
-  height(): number;
-  area(): number;
-  perimeter(): number;
-  center(): Vector2Gpu;
-
-  contains(point: Vector2Gpu): boolean;
-}
-
-export interface IBox3 {
-  getVertices(): readonly Vector3Gpu[];
-  getEdges(): readonly (readonly [Vector3Gpu, Vector3Gpu])[];
-
-  getAxes(): readonly Vector3Gpu[];
-
-  width(): number;
-  height(): number;
-  depth(): number;
-  volume(): number;
-  center(): Vector3Gpu;
-
-  contains(point: Vector3Gpu): boolean;
-}
-
-export interface IBox2Collision {
-  intersects(left: IBox2, right: IBox2): boolean;
-}
-
-export interface IBox3Collision {
-  intersects(left: IBox3, right: IBox3): boolean;
-}
+import { IBox2 } from "./IBox2.js";
+import { IBox3 } from "./IBox3.js";
+import { IBox2Collision } from "./IBox2Collision.js";
+import { IBox3Collision } from "./IBox3Collision.js";
+import { Aabb3 } from "./Aabb3.js";
+import { Obb3 } from "./Obb3.js";
 
 export interface IBoxModule {
   createBox2(
@@ -479,86 +443,6 @@ export class Box3 implements IBox3 {
     if (Math.abs(y.dot(z)) > EPSILON) {
       throw new Error("Box3 axisY and axisZ must be orthogonal.");
     }
-  }
-}
-
-// ============================================================================
-// AABB3
-// ============================================================================
-
-export class Aabb3 extends Box3 {
-  private readonly minValue: Vector3Gpu;
-  private readonly maxValue: Vector3Gpu;
-
-  public constructor(min: Vector3Gpu, max: Vector3Gpu) {
-    Aabb3.validate(min, max);
-
-    const minValue = min.clone();
-    const maxValue = max.clone();
-
-    const center = new Vector3Gpu(
-      (minValue.x + maxValue.x) * 0.5,
-      (minValue.y + maxValue.y) * 0.5,
-      (minValue.z + maxValue.z) * 0.5,
-    );
-
-    const halfSize = new Vector3Gpu(
-      (maxValue.x - minValue.x) * 0.5,
-      (maxValue.y - minValue.y) * 0.5,
-      (maxValue.z - minValue.z) * 0.5,
-    );
-
-    super(center, halfSize, Vector3Gpu.UnitX, Vector3Gpu.UnitY, Vector3Gpu.UnitZ);
-
-    this.minValue = minValue;
-    this.maxValue = maxValue;
-  }
-
-  public min(): Vector3Gpu {
-    return this.minValue.clone();
-  }
-
-  public max(): Vector3Gpu {
-    return this.maxValue.clone();
-  }
-
-  private static validate(min: Vector3Gpu, max: Vector3Gpu): void {
-    if (max.x < min.x || max.y < min.y || max.z < min.z) {
-      throw new Error("Aabb3 max must be greater than or equal to min.");
-    }
-
-    if (
-      Math.abs(max.x - min.x) <= EPSILON ||
-      Math.abs(max.y - min.y) <= EPSILON ||
-      Math.abs(max.z - min.z) <= EPSILON
-    ) {
-      throw new Error("Aabb3 dimensions must be greater than zero.");
-    }
-  }
-}
-
-// ============================================================================
-// OBB3
-// ============================================================================
-
-export class Obb3 extends Box3 {
-  private readonly orientationValue: Matrix4Gpu;
-
-  public constructor(
-    center: Vector3Gpu,
-    halfSize: Vector3Gpu,
-    orientation: Matrix4Gpu = Matrix4Gpu.identity(),
-  ) {
-    const orientationValue = orientation.clone();
-    const [axisX, axisY, axisZ] = Box3.createAxesFromOrientation(orientationValue);
-
-    super(center, halfSize, axisX, axisY, axisZ);
-
-    this.orientationValue = orientationValue;
-  }
-
-  public orientation(): Matrix4Gpu {
-    return this.orientationValue.clone();
   }
 }
 

@@ -1,0 +1,34 @@
+ 
+{
+  "version": "1.0.0",
+  "project": {
+    "schemaVersion": "1.0.0",
+    "name": "Demo Project",
+    "activePatternId": "pattern-1",
+    "playback": {
+      "tempoBpm": 120,
+      "swing": 0
+    },
+    "components": {
+      "samples": []
+    },
+    "patterns": [
+      {
+        "id": "pattern-1",
+        "name": "Main Pattern",
+        "stepCount": 16,
+        "ticksPerStep": 6,
+        "tracks": [
+          {
+            "id": "track-1",
+            "name": "Kick Track",
+            "kind": "sample",
+            "defaults": {},
+            "muteState": "unmuted",
+            "hits": []
+          }
+        ]
+      }
+    ]
+  }
+}

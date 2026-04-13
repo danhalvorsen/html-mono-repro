@@ -1,0 +1,1 @@
+{"version":3,"file":"GridWindowsScenarioStrategy.d.ts","sourceRoot":"","sources":["GridWindowsScenarioStrategy.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,+BAA+B,CAAC;AAEhE,OAAO,KAAK,EAA+B,sBAAsB,EAAE,MAAM,kCAAkC,CAAC;AAC5G,OAAO,EAAE,iCAAiC,EAAE,MAAM,wCAAwC,CAAC;AAE3F,qBAAa,2BAA4B,SAAQ,iCAAiC;gBAC7D,SAAS,EAAE,UAAU;IAIxB,cAAc,IAAI,sBAAsB;CAkCzD"}

@@ -29,6 +29,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+ 
     "@monorepo/core-math": "workspace:*",
     "@monorepo/core-constraints": "workspace:*"
   },

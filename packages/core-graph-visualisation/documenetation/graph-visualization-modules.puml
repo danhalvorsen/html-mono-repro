@@ -1,0 +1,154 @@
+@startuml graph_visualization_modules
+title Graph Visualization Module Class Diagram
+
+skinparam linetype ortho
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+
+namespace "graph-vizualisation" as App {
+  class GraphVisualizationApp
+  class GraphVisualizationCompositionRoot
+  class LayoutStrategyConstraintEngineAdapter
+  class SpringSimulationConstraintEngineAdapter
+  class DagConnectionPointEdgeController
+  class DagNodeExpansionController
+  class DeleteSelectedEdgeController
+  class GraphSelectionController
+}
+
+namespace "@monorepo/core-graph-visualisation" as CoreVisualization {
+  interface IGraphConstraintEngine
+  interface IGraphSvgSceneFactory
+  interface IGraphLayoutStrategy
+  class GraphSvgSceneFactory
+  class CoreGraphVisualizerElement
+  class GraphInteractionStateController
+  class GraphSceneSvgRenderer
+  class GraphConnectorGeometry
+  class GraphHierarchyAnalyzer
+  class GraphNodeStyler
+  class GridGraphConstraintEngine
+}
+
+namespace "@monorepo/core-graph-visualisation/layout" as CoreVisualizationLayout {
+  interface IGraphLayoutStrategyResolver
+  interface IExternalGraphLayoutEngine
+  class GraphLayoutModel
+  class GraphLayoutRequest
+  class GraphEdgeRouteConstraint
+}
+
+namespace "@monorepo/core-graph-visualization-d3" as D3Layout {
+  class D3ForceGraphLayoutStrategy
+  class SimulationD3SpringSimulation
+  interface ID3SpringSimulationHandle
+}
+
+namespace "@monorepo/core-graph-visualization-dgml" as DgmlLayout {
+  class DGMLLayeredLayoutStrategy
+  class DGMLForceDirectedLayoutStrategy
+  class DGMLLayoutStrategyResolver
+  class MSAGLExternalEngineStrategy
+}
+
+namespace "@monorepo/core-graph" as CoreGraph {
+  class Graph
+  class DagGraph
+  class Node
+  class Edge
+}
+
+namespace "@monorepo/core-scene-graph" as SceneGraph {
+  class SceneGraph
+  class SceneNode
+  class ShapeNode
+  class SceneProjector
+}
+
+namespace "@monorepo/core-fsm" as CoreFsm {
+  class StateMachine
+}
+
+namespace "lit" as Lit {
+  class LitElement
+  interface ReactiveController
+  interface ReactiveControllerHost
+}
+
+namespace "d3-force-3d" as D3Force {
+  class Simulation
+  class ForceLink
+  class ForceManyBody
+  class ForceCenter
+}
+
+App.GraphVisualizationApp --|> Lit.LitElement
+App.GraphVisualizationApp --> App.GraphVisualizationCompositionRoot : composes
+App.GraphVisualizationApp --> CoreVisualization.CoreGraphVisualizerElement : renders
+App.GraphVisualizationApp --> App.LayoutStrategyConstraintEngineAdapter : uses
+App.GraphVisualizationApp --> App.SpringSimulationConstraintEngineAdapter : uses
+App.GraphVisualizationApp --> D3Layout.D3ForceGraphLayoutStrategy : selects
+App.GraphVisualizationApp --> D3Layout.SimulationD3SpringSimulation : selects
+App.GraphVisualizationApp --> DgmlLayout.DGMLLayeredLayoutStrategy : selects
+App.GraphVisualizationApp --> DgmlLayout.DGMLForceDirectedLayoutStrategy : selects
+
+App.GraphVisualizationCompositionRoot --> App.DagConnectionPointEdgeController : creates
+App.GraphVisualizationCompositionRoot --> App.DagNodeExpansionController : creates
+App.GraphVisualizationCompositionRoot --> App.DeleteSelectedEdgeController : creates
+App.GraphVisualizationCompositionRoot --> App.GraphSelectionController : creates
+App.GraphVisualizationCompositionRoot --> CoreGraph.Graph : owns
+
+App.LayoutStrategyConstraintEngineAdapter ..|> CoreVisualization.IGraphConstraintEngine
+App.LayoutStrategyConstraintEngineAdapter --> CoreVisualization.IGraphLayoutStrategy : adapts
+App.SpringSimulationConstraintEngineAdapter ..|> CoreVisualization.IGraphConstraintEngine
+App.SpringSimulationConstraintEngineAdapter --> D3Layout.SimulationD3SpringSimulation : manages
+App.SpringSimulationConstraintEngineAdapter --> D3Layout.ID3SpringSimulationHandle : owns
+
+CoreVisualization.CoreGraphVisualizerElement --|> Lit.LitElement
+CoreVisualization.CoreGraphVisualizerElement --> CoreVisualization.IGraphSvgSceneFactory : queries
+CoreVisualization.CoreGraphVisualizerElement --> CoreVisualization.GraphInteractionStateController : coordinates
+CoreVisualization.CoreGraphVisualizerElement --> CoreVisualization.GraphSceneSvgRenderer : delegates
+CoreVisualization.CoreGraphVisualizerElement --> CoreVisualization.GraphConnectorGeometry : uses
+CoreVisualization.CoreGraphVisualizerElement --> CoreVisualization.GraphHierarchyAnalyzer : uses
+CoreVisualization.CoreGraphVisualizerElement --> CoreVisualization.GraphNodeStyler : uses
+
+CoreVisualization.GraphSvgSceneFactory ..|> CoreVisualization.IGraphSvgSceneFactory
+CoreVisualization.GraphSvgSceneFactory --> CoreVisualization.IGraphConstraintEngine : depends on
+CoreVisualization.GraphSvgSceneFactory --> SceneGraph.SceneGraph : builds
+CoreVisualization.GraphSvgSceneFactory --> SceneGraph.SceneNode : builds
+CoreVisualization.GraphSvgSceneFactory --> SceneGraph.ShapeNode : builds
+CoreVisualization.GraphSvgSceneFactory --> SceneGraph.SceneProjector : projects
+
+CoreVisualization.GraphInteractionStateController --> CoreFsm.StateMachine : uses
+
+D3Layout.D3ForceGraphLayoutStrategy ..|> CoreVisualization.IGraphLayoutStrategy
+D3Layout.SimulationD3SpringSimulation ..|> CoreVisualization.IGraphLayoutStrategy
+D3Layout.SimulationD3SpringSimulation --> D3Layout.ID3SpringSimulationHandle : creates
+D3Layout.D3ForceGraphLayoutStrategy --> D3Force.Simulation : drives
+D3Layout.SimulationD3SpringSimulation --> D3Force.Simulation : drives
+D3Layout.D3ForceGraphLayoutStrategy --> CoreVisualizationLayout.GraphLayoutModel : returns
+D3Layout.SimulationD3SpringSimulation --> CoreVisualizationLayout.GraphLayoutModel : returns
+
+DgmlLayout.DGMLLayeredLayoutStrategy ..|> CoreVisualization.IGraphLayoutStrategy
+DgmlLayout.DGMLForceDirectedLayoutStrategy ..|> CoreVisualization.IGraphLayoutStrategy
+DgmlLayout.DGMLLayoutStrategyResolver ..|> CoreVisualizationLayout.IGraphLayoutStrategyResolver
+DgmlLayout.MSAGLExternalEngineStrategy ..|> CoreVisualization.IGraphLayoutStrategy
+DgmlLayout.MSAGLExternalEngineStrategy --> CoreVisualizationLayout.IExternalGraphLayoutEngine : delegates
+
+CoreGraph.DagGraph --|> CoreGraph.Graph
+CoreGraph.Graph "1" *-- "many" CoreGraph.Node
+CoreGraph.Graph "1" *-- "many" CoreGraph.Edge
+
+note right of App.SpringSimulationConstraintEngineAdapter
+Animation orchestration currently lives in the app layer.
+Moving this behavior into a Lit ReactiveController would
+further align lifecycle management with presentation concerns.
+end note
+
+note bottom of CoreVisualization
+This package provides the visualization contracts,
+scene generation, interaction state, and SVG rendering.
+end note
+
+@enduml

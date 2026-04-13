@@ -12,15 +12,20 @@
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
+    "outDir": "./dist",
     "noEmit": true,
 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": false,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "tests/fixtures/IndexedGeometryBuilderFixture.ts"]
+  "include": ["src" ],
+  "exclude": [
+    "dist",
+    "src/**/*.js",
+    "src/**/*.d.ts",
+    "src/**/*.map"
+  ]
 }

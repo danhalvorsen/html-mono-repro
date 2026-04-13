@@ -1,0 +1,319 @@
+openapi: 3.1.0
+
+info:
+  title: Sequencer Project Persistence Schema
+  version: 1.0.0
+  description: >
+    Project-only persistence contract for a step-centric sequencer.
+    The project contains all musical and structural data required to load,
+    validate, build runtime state, and start playback from a known baseline.
+
+paths: {}
+
+components:
+  schemas:
+    Identifier:
+      type: string
+      minLength: 1
+
+    NonEmptyString:
+      type: string
+      minLength: 1
+
+    SchemaVersion:
+      type: string
+      const: "1.0.0"
+
+    MuteState:
+      type: string
+      enum:
+        - muted
+        - unmuted
+
+    StepState:
+      type: string
+      enum:
+        - inactive
+        - active
+        - tied
+        - muted
+
+    TrackKind:
+      type: string
+      enum:
+        - sample
+        - midi
+
+    MidiChannel:
+      type: integer
+      minimum: 1
+      maximum: 16
+
+    MidiNote:
+      type: integer
+      minimum: 0
+      maximum: 127
+
+    Probability:
+      type: number
+      minimum: 0
+      maximum: 1
+
+    Pan:
+      type: number
+      minimum: -1
+      maximum: 1
+
+    Velocity:
+      type: integer
+      minimum: 1
+      maximum: 127
+
+    DurationTicks:
+      type: integer
+      minimum: 1
+
+    OffsetTicks:
+      type: integer
+
+    TuneSemitones:
+      type: number
+
+    StepIndex:
+      type: integer
+      minimum: 1
+      maximum: 128
+
+    StepCount:
+      type: integer
+      minimum: 1
+      maximum: 128
+
+    TicksPerStep:
+      type: integer
+      minimum: 1
+
+    TempoBpm:
+      type: number
+      minimum: 20
+      maximum: 300
+
+    SwingAmount:
+      type: number
+      minimum: 0
+      maximum: 1
+
+    SampleWindow:
+      type: object
+      additionalProperties: false
+      required:
+        - start
+        - end
+      properties:
+        start:
+          type: number
+          minimum: 0
+          maximum: 1
+        end:
+          type: number
+          minimum: 0
+          maximum: 1
+
+    PlaybackSettings:
+      type: object
+      additionalProperties: false
+      required:
+        - tempoBpm
+        - swing
+      properties:
+        tempoBpm:
+          $ref: "#/components/schemas/TempoBpm"
+        swing:
+          $ref: "#/components/schemas/SwingAmount"
+
+    SampleComponent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: "#/components/schemas/Identifier"
+        name:
+          $ref: "#/components/schemas/NonEmptyString"
+        source:
+          type: string
+        rootNote:
+          $ref: "#/components/schemas/MidiNote"
+        description:
+          type: string
+
+    ProjectComponents:
+      type: object
+      additionalProperties: false
+      required:
+        - samples
+      properties:
+        samples:
+          type: array
+          items:
+            $ref: "#/components/schemas/SampleComponent"
+
+    TrackDefaults:
+      type: object
+      additionalProperties: false
+      properties:
+        note:
+          $ref: "#/components/schemas/MidiNote"
+        channel:
+          $ref: "#/components/schemas/MidiChannel"
+        velocity:
+          $ref: "#/components/schemas/Velocity"
+        durationTicks:
+          $ref: "#/components/schemas/DurationTicks"
+        probability:
+          $ref: "#/components/schemas/Probability"
+        offsetTicks:
+          $ref: "#/components/schemas/OffsetTicks"
+        pan:
+          $ref: "#/components/schemas/Pan"
+        tuneSemitones:
+          $ref: "#/components/schemas/TuneSemitones"
+        sampleWindow:
+          $ref: "#/components/schemas/SampleWindow"
+
+    Step:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - step
+        - state
+      properties:
+        id:
+          $ref: "#/components/schemas/Identifier"
+        step:
+          $ref: "#/components/schemas/StepIndex"
+        state:
+          $ref: "#/components/schemas/StepState"
+        velocity:
+          $ref: "#/components/schemas/Velocity"
+        durationTicks:
+          $ref: "#/components/schemas/DurationTicks"
+        probability:
+          $ref: "#/components/schemas/Probability"
+        offsetTicks:
+          $ref: "#/components/schemas/OffsetTicks"
+        pan:
+          $ref: "#/components/schemas/Pan"
+        tuneSemitones:
+          $ref: "#/components/schemas/TuneSemitones"
+        sampleWindow:
+          $ref: "#/components/schemas/SampleWindow"
+        description:
+          type: string
+
+    Track:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - kind
+        - muteState
+        - defaults
+        - hits
+      properties:
+        id:
+          $ref: "#/components/schemas/Identifier"
+        name:
+          $ref: "#/components/schemas/NonEmptyString"
+        kind:
+          $ref: "#/components/schemas/TrackKind"
+        sampleId:
+          $ref: "#/components/schemas/Identifier"
+        note:
+          $ref: "#/components/schemas/MidiNote"
+        channel:
+          $ref: "#/components/schemas/MidiChannel"
+        defaults:
+          $ref: "#/components/schemas/TrackDefaults"
+        muteState:
+          $ref: "#/components/schemas/MuteState"
+        hits:
+          type: array
+          items:
+            $ref: "#/components/schemas/Step"
+
+    Pattern:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - stepCount
+        - ticksPerStep
+        - tracks
+      properties:
+        id:
+          $ref: "#/components/schemas/Identifier"
+        name:
+          $ref: "#/components/schemas/NonEmptyString"
+        stepCount:
+          $ref: "#/components/schemas/StepCount"
+        ticksPerStep:
+          $ref: "#/components/schemas/TicksPerStep"
+        tracks:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/Track"
+
+    Project:
+      type: object
+      additionalProperties: false
+      required:
+        - schemaVersion
+        - projectId
+        - name
+        - activePatternId
+        - playback
+        - components
+        - patterns
+      properties:
+        schemaVersion:
+          $ref: "#/components/schemas/SchemaVersion"
+        projectId:
+          $ref: "#/components/schemas/Identifier"
+        name:
+          $ref: "#/components/schemas/NonEmptyString"
+        activePatternId:
+          $ref: "#/components/schemas/Identifier"
+        playback:
+          $ref: "#/components/schemas/PlaybackSettings"
+        components:
+          $ref: "#/components/schemas/ProjectComponents"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        patterns:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/Pattern"
+
+    SequencerProjectDocument:
+      type: object
+      additionalProperties: false
+      required:
+        - version
+        - project
+      properties:
+        version:
+          $ref: "#/components/schemas/SchemaVersion"
+        project:
+          $ref: "#/components/schemas/Project"

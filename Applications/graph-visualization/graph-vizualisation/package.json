@@ -1,0 +1,25 @@
+{
+  "name": "graph-vizualisation",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@monorepo/core-graph": "workspace:*",
+    "@monorepo/core-graph-json": "workspace:*",
+    "@monorepo/core-graph-visualisation": "workspace:*",
+    "@monorepo/core-graph-visualization-d3": "workspace:*",
+    "@monorepo/core-graph-visualization-dgml": "workspace:*",
+    "lit": "^3.3.2"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2",
+    "vite": "^8.0.4",
+    "vitest": "^3.2.4"
+  }
+}

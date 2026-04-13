@@ -1,0 +1,1 @@
+{"version":3,"file":"AllowedKindsPlacementSpecification.d.ts","sourceRoot":"","sources":["AllowedKindsPlacementSpecification.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,iBAAiB,EAAE,MAAM,oCAAoC,CAAC;AAE5E,qBAAa,kCAAkC;IAE3C,OAAO,CAAC,QAAQ,CAAC,YAAY;gBAAZ,YAAY,EAAE,SAAS;QAAE,QAAQ,CAAC,KAAK,EAAE,MAAM,CAAC;KAAE,EAAE;IAGhE,aAAa,CAAC,OAAO,EAAE,iBAAiB,GAAG,OAAO;CAK1D"}

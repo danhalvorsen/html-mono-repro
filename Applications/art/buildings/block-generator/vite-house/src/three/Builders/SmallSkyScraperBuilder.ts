@@ -3,135 +3,62 @@
 // ====================================================================================
 
 import * as THREE from "three";
-import type { IMaterialFactory } from "../Materials/IMaterialFactory";
-import type { MaterialToken } from "../Materials/MaterialToken";
+import type { IMaterialFactory } from "../../../core-threejs-app-framework/src/Materials/IMaterialFactory";
 
 import { MeshBuilder } from "./MeshBuilder";
-import type { ISmallSkyScraperBuilder } from "./ISmallSkyScraperBuilder";
-import { IndexedGeometryBuilder } from "../core/geometry/IndexedGeometryBuilder";
-
-type SmallSkyScraperState = Readonly<{
-  levels: number;
-  width: number;
-  depth: number;
-  levelHeight: number;
-  position: THREE.Vector3;
-  facadeToken: MaterialToken;
-  roofBorderToken: MaterialToken;
-  roofTopToken: MaterialToken;
-  windowToken: MaterialToken;
-  balconyToken: MaterialToken;
-}>;
+import type {
+  ISmallSkyScraper,
+  ISmallSkyScraperBuilder,
+} from "./ISmallSkyScraperBuilder";
+import { IndexedGeometryBuilder } from "../../../core-threejs-app-framework/src/geometry/IndexedGeometryBuilder";
 
 export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
-  private readonly state: SmallSkyScraperState;
-  private readonly materialFactory: IMaterialFactory;
-
-  private constructor(
-    materialFactory: IMaterialFactory,
-    state: SmallSkyScraperState,
+  public constructor(
+    private readonly materialFactory: IMaterialFactory,
   ) {
-    this.materialFactory = materialFactory;
-    this.state = state;
   }
 
-  public static create(
-    materialFactory: IMaterialFactory,
-  ): SmallSkyScraperBuilder {
-    return new SmallSkyScraperBuilder(materialFactory, {
-      levels: 5,
-      width: 4,
-      depth: 3.2,
-      levelHeight: 1.8,
-      position: new THREE.Vector3(0, 0, 0),
-      facadeToken: "building-red",
-      roofBorderToken: "window-frame",
-      roofTopToken: "roof-accent",
-      windowToken: "window-glass",
-      balconyToken: "building-red",
-    });
-  }
-
-  public withLevels(levels: number): SmallSkyScraperBuilder {
-    this.ensurePositiveInteger(levels, "levels");
-
-    return new SmallSkyScraperBuilder(this.materialFactory, {
-      ...this.state,
-      levels,
-    });
-  }
-
-  public withWidth(width: number): SmallSkyScraperBuilder {
-    this.ensurePositive(width, "width");
-
-    return new SmallSkyScraperBuilder(this.materialFactory, {
-      ...this.state,
-      width,
-    });
-  }
-
-  public withDepth(depth: number): SmallSkyScraperBuilder {
-    this.ensurePositive(depth, "depth");
-
-    return new SmallSkyScraperBuilder(this.materialFactory, {
-      ...this.state,
-      depth,
-    });
-  }
-
-  public withLevelHeight(levelHeight: number): SmallSkyScraperBuilder {
-    this.ensurePositive(levelHeight, "levelHeight");
-
-    return new SmallSkyScraperBuilder(this.materialFactory, {
-      ...this.state,
-      levelHeight,
-    });
-  }
-
-  public withPosition(x: number, y: number, z: number): SmallSkyScraperBuilder {
-    return new SmallSkyScraperBuilder(this.materialFactory, {
-      ...this.state,
-      position: new THREE.Vector3(x, y, z),
-    });
-  }
-
-  public build(): THREE.Group {
+  public build(configuration: ISmallSkyScraper): THREE.Group {
     const group = new THREE.Group();
     group.name = "small-skyscraper";
-    group.position.copy(this.state.position);
+    group.position.copy(configuration.position);
 
-    const bodyHeight = this.state.levels * this.state.levelHeight;
+    const bodyHeight = configuration.levels * configuration.levelHeight;
     const bodyCenterY = bodyHeight / 2;
 
     const body = MeshBuilder.create(this.materialFactory)
       .withGeometry(
-        new THREE.BoxGeometry(this.state.width, bodyHeight, this.state.depth),
+        new THREE.BoxGeometry(configuration.width, bodyHeight, configuration.depth),
       )
-      .withMaterialToken(this.state.facadeToken)
+      .withMaterialToken(configuration.facadeToken)
       .withPosition(0, bodyCenterY, 0)
       .build();
 
     group.add(body);
 
-    this.addRoof(group, bodyHeight);
-    this.addLeftWindows(group);
-    this.addFrontWindows(group);
-    this.addBalconies(group);
+    this.addRoof(group, bodyHeight, configuration);
+    this.addLeftWindows(group, configuration);
+    this.addFrontWindows(group, configuration);
+    this.addBalconies(group, configuration);
 
     return group;
   }
 
-  private addRoof(group: THREE.Group, bodyHeight: number): void {
+  private addRoof(
+    group: THREE.Group,
+    bodyHeight: number,
+    configuration: ISmallSkyScraper,
+  ): void {
     const roofBorderHeight = 0.35;
     const roofOverhang = 0.275;
     const roofRingThickness = 0.34;
     const roofTopHeight = 0.08;
     const roofTopInset = 0.34;
 
-    const outerMinX = -(this.state.width / 2) - roofOverhang;
-    const outerMaxX = this.state.width / 2 + roofOverhang;
-    const outerMinY = -(this.state.depth / 2) - roofOverhang;
-    const outerMaxY = this.state.depth / 2 + roofOverhang;
+    const outerMinX = -(configuration.width / 2) - roofOverhang;
+    const outerMaxX = configuration.width / 2 + roofOverhang;
+    const outerMinY = -(configuration.depth / 2) - roofOverhang;
+    const outerMaxY = configuration.depth / 2 + roofOverhang;
 
     const innerMinX = outerMinX + roofRingThickness;
     const innerMaxX = outerMaxX - roofRingThickness;
@@ -165,7 +92,7 @@ export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
 
     const roofBorder = MeshBuilder.create(this.materialFactory)
       .withGeometry(roofBorderGeometry)
-      .withMaterialToken(this.state.roofBorderToken)
+      .withMaterialToken(configuration.roofBorderToken)
       .withPosition(0, bodyHeight, 0)
       .build();
 
@@ -175,28 +102,28 @@ export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
     const roofTop = MeshBuilder.create(this.materialFactory)
       .withGeometry(
         new THREE.BoxGeometry(
-          this.state.width - roofTopInset,
+          configuration.width - roofTopInset,
           roofTopHeight,
-          this.state.depth - roofTopInset,
+          configuration.depth - roofTopInset,
         ),
       )
-      .withMaterialToken(this.state.roofTopToken)
+      .withMaterialToken(configuration.roofTopToken)
       .withPosition(0, bodyHeight + roofTopHeight / 2 + roofTopLift, 0)
       .build();
 
     group.add(roofTop);
   }
 
-  private addLeftWindows(group: THREE.Group): void {
+  private addLeftWindows(group: THREE.Group, configuration: ISmallSkyScraper): void {
     const columns = 1;
-    const rows = this.state.levels;
-    const windowWidth = this.state.width * 0.18;
-    const windowHeight = this.state.levelHeight * 0.48;
+    const rows = configuration.levels;
+    const windowWidth = configuration.width * 0.18;
+    const windowHeight = configuration.levelHeight * 0.48;
     const windowDepth = 0.06;
 
-    const sideX = -(this.state.width / 2) - 0.01;
-    const startY = this.state.levelHeight * 0.5;
-    const z = -(this.state.depth * 0.24);
+    const sideX = -(configuration.width / 2) - 0.01;
+    const startY = configuration.levelHeight * 0.5;
+    const z = -(configuration.depth * 0.24);
 
     for (let row = 0; row < rows; row++) {
       for (let column = 0; column < columns; column++) {
@@ -204,10 +131,10 @@ export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
           .withGeometry(
             new THREE.BoxGeometry(windowDepth, windowHeight, windowWidth),
           )
-          .withMaterialToken(this.state.windowToken)
+          .withMaterialToken(configuration.windowToken)
           .withPosition(
             sideX,
-            startY + row * this.state.levelHeight,
+            startY + row * configuration.levelHeight,
             z + column * (windowWidth * 1.5),
           )
           .build();
@@ -217,17 +144,17 @@ export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
     }
   }
 
-  private addFrontWindows(group: THREE.Group): void {
+  private addFrontWindows(group: THREE.Group, configuration: ISmallSkyScraper): void {
     const columns = 2;
-    const rows = this.state.levels;
-    const windowWidth = this.state.width * 0.19;
-    const windowHeight = this.state.levelHeight * 0.48;
+    const rows = configuration.levels;
+    const windowWidth = configuration.width * 0.19;
+    const windowHeight = configuration.levelHeight * 0.48;
     const windowDepth = 0.06;
 
-    const startX = -(this.state.width * 0.22);
-    const spacingX = this.state.width * 0.44;
-    const startY = this.state.levelHeight * 0.5;
-    const z = this.state.depth / 2 + 0.01;
+    const startX = -(configuration.width * 0.22);
+    const spacingX = configuration.width * 0.44;
+    const startY = configuration.levelHeight * 0.5;
+    const z = configuration.depth / 2 + 0.01;
 
     for (let row = 0; row < rows; row++) {
       for (let column = 0; column < columns; column++) {
@@ -235,10 +162,10 @@ export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
           .withGeometry(
             new THREE.BoxGeometry(windowWidth, windowHeight, windowDepth),
           )
-          .withMaterialToken(this.state.windowToken)
+          .withMaterialToken(configuration.windowToken)
           .withPosition(
             startX + column * spacingX,
-            startY + row * this.state.levelHeight,
+            startY + row * configuration.levelHeight,
             z,
           )
           .build();
@@ -248,29 +175,29 @@ export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
     }
   }
 
-  private addBalconies(group: THREE.Group): void {
-    const balconyCount = Math.max(1, this.state.levels - 1);
+  private addBalconies(group: THREE.Group, configuration: ISmallSkyScraper): void {
+    const balconyCount = Math.max(1, configuration.levels - 1);
 
-    const balconyWidth = this.state.width * 0.6;
-    const slabHeight = this.state.levelHeight * 0.14;
+    const balconyWidth = configuration.width * 0.6;
+    const slabHeight = configuration.levelHeight * 0.14;
     const balconyDepth = 0.48;
 
-    const railHeight = this.state.levelHeight * 0.36;
+    const railHeight = configuration.levelHeight * 0.36;
     const railThickness = 0.06;
     const postWidth = 0.06;
 
     const balconyCenterX = 0;
-    const balconyCenterZ = this.state.depth / 2 + balconyDepth / 2 + 0.02;
-    const firstBalconyCenterY = this.state.levelHeight * 0.78;
+    const balconyCenterZ = configuration.depth / 2 + balconyDepth / 2 + 0.02;
+    const firstBalconyCenterY = configuration.levelHeight * 0.78;
 
     for (let index = 0; index < balconyCount; index++) {
-      const centerY = firstBalconyCenterY + index * this.state.levelHeight;
+      const centerY = firstBalconyCenterY + index * configuration.levelHeight;
 
       const slab = MeshBuilder.create(this.materialFactory)
         .withGeometry(
           new THREE.BoxGeometry(balconyWidth, slabHeight, balconyDepth),
         )
-        .withMaterialToken(this.state.balconyToken)
+        .withMaterialToken(configuration.balconyToken)
         .withPosition(balconyCenterX, centerY, balconyCenterZ)
         .build();
 
@@ -286,14 +213,14 @@ export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
         .withPosition(
           balconyCenterX,
           railCenterY,
-          this.state.depth / 2 + balconyDepth + 0.01,
+          configuration.depth / 2 + balconyDepth + 0.01,
         )
         .build();
 
       group.add(frontRail);
 
       const sideRailOffsetX = balconyWidth / 2 - railThickness / 2;
-      const sideRailZ = this.state.depth / 2 + balconyDepth / 2;
+      const sideRailZ = configuration.depth / 2 + balconyDepth / 2;
 
       const leftRail = MeshBuilder.create(this.materialFactory)
         .withGeometry(
@@ -315,7 +242,7 @@ export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
       group.add(rightRail);
 
       const postOffsetX = balconyWidth * 0.32;
-      const postZ = this.state.depth / 2 + balconyDepth - railThickness * 0.5;
+      const postZ = configuration.depth / 2 + balconyDepth - railThickness * 0.5;
 
       const leftPost = MeshBuilder.create(this.materialFactory)
         .withGeometry(new THREE.BoxGeometry(postWidth, railHeight, postWidth))
@@ -334,15 +261,4 @@ export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
     }
   }
 
-  private ensurePositive(value: number, name: string): void {
-    if (!Number.isFinite(value) || value <= 0) {
-      throw new Error(`${name} must be greater than zero.`);
-    }
-  }
-
-  private ensurePositiveInteger(value: number, name: string): void {
-    if (!Number.isInteger(value) || value <= 0) {
-      throw new Error(`${name} must be a positive integer.`);
-    }
-  }
 }

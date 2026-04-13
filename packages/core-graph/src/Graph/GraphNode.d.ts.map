@@ -1,0 +1,1 @@
+{"version":3,"file":"GraphNode.d.ts","sourceRoot":"","sources":["GraphNode.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,uBAAuB,CAAC;AAExD,qBAAa,SAAU,YAAW,UAAU;IAEjC,EAAE,EAAE,MAAM;IACV,OAAO,EAAE,OAAO;gBADhB,EAAE,EAAE,MAAM,EACV,OAAO,GAAE,OAAc;CAEjC"}

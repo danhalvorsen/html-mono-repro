@@ -1,0 +1,50 @@
+ 
+{
+  "name": "@monorepo/core-graph-visualisation",
+  "version": "1.0.0",
+  "description": "Example module scaffold.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./layout": {
+      "import": "./dist/layout/index.js",
+      "types": "./dist/layout/index.d.ts"
+    },
+    "./lit": {
+      "import": "./dist/lit.js",
+      "types": "./dist/lit.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "graph",
+    "visualization",
+    "lit",
+    "svg"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-fsm": "workspace:*",
+    "@monorepo/core-graph": "workspace:*",
+    "@monorepo/core-scene-graph": "workspace:*",
+    "lit": "^3.3.1"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}

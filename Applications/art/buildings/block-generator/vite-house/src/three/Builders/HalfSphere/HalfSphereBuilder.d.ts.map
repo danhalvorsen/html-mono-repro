@@ -1,0 +1,1 @@
+{"version":3,"file":"HalfSphereBuilder.d.ts","sourceRoot":"","sources":["HalfSphereBuilder.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,KAAK,MAAM,OAAO,CAAC;AAE/B,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,iBAAiB,CAAC;AAEnD,qBAAa,iBAAiB;IACrB,KAAK,CAAC,aAAa,EAAE,WAAW,GAAG,KAAK,CAAC,QAAQ;CAazD"}

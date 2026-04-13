@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vite-project</title>
+    <script type="module" src="/src/my-element.ts"></script>
+  </head>
+  <body>
+    <section class="preview-system" aria-label="Direct SVG web component preview">
+      <div class="preview-row" aria-label="Label row">
+        <svg
+          class="preview-title"
+          width="92"
+          height="24"
+          viewBox="0 0 92 24"
+          role="img"
+          aria-label="Labels"
+        >
+          <rect x="0.5" y="0.5" width="91" height="23" rx="7" ry="7" fill="#12161f" stroke="#d8d3c4" stroke-width="1" />
+          <text x="46" y="12" fill="#f1efe6" font-family="system-ui, sans-serif" font-size="11" font-weight="700" text-anchor="middle" dominant-baseline="middle">LABELS</text>
+        </svg>
+        <svg-label tone="C#" button-width="88" button-height="88"></svg-label>
+        <svg-label-tones button-width="88" button-height="88"></svg-label-tones>
+      </div>
+
+      <div class="preview-row" aria-label="Button row">
+        <svg
+          class="preview-title"
+          width="92"
+          height="24"
+          viewBox="0 0 92 24"
+          role="img"
+          aria-label="Buttons"
+        >
+          <rect x="0.5" y="0.5" width="91" height="23" rx="7" ry="7" fill="#12161f" stroke="#d8d3c4" stroke-width="1" />
+          <text x="46" y="12" fill="#f1efe6" font-family="system-ui, sans-serif" font-size="11" font-weight="700" text-anchor="middle" dominant-baseline="middle">BUTTONS</text>
+        </svg>
+        <sequencer-rgb-button r="255" g="40" b="40" on></sequencer-rgb-button>
+        <sequencer-rgb-button r="40" g="220" b="255"></sequencer-rgb-button>
+        <sequencer-digit-button digit="1" on></sequencer-digit-button>
+        <sequencer-digit-button digit="1"></sequencer-digit-button>
+        <sequencer-digit-button-row on-digit="1"></sequencer-digit-button-row>
+      </div>
+
+      <div class="preview-row" aria-label="Knob row">
+        <svg
+          class="preview-title"
+          width="92"
+          height="24"
+          viewBox="0 0 92 24"
+          role="img"
+          aria-label="Knobs"
+        >
+          <rect x="0.5" y="0.5" width="91" height="23" rx="7" ry="7" fill="#12161f" stroke="#d8d3c4" stroke-width="1" />
+          <text x="46" y="12" fill="#f1efe6" font-family="system-ui, sans-serif" font-size="11" font-weight="700" text-anchor="middle" dominant-baseline="middle">KNOBS</text>
+        </svg>
+        <sequencer-knob-button variant="matte" on></sequencer-knob-button>
+        <span class="preview-separator" aria-hidden="true">-</span>
+        <sequencer-knob-button variant="glossy" on></sequencer-knob-button>
+        <span class="preview-separator" aria-hidden="true">-</span>
+        <sequencer-knob-button variant="ribbed" on></sequencer-knob-button>
+        <span class="preview-separator" aria-hidden="true">-</span>
+        <sequencer-knob-button variant="beveled" on></sequencer-knob-button>
+      </div>
+    </section>
+    <my-element></my-element>
+  </body>
+</html>

@@ -1,0 +1,1 @@
+{"version":3,"file":"Sphere.Builder.d.ts","sourceRoot":"","sources":["Sphere.Builder.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,KAAK,MAAM,OAAO,CAAC;AAE/B,OAAO,KAAK,EAAE,OAAO,EAAE,MAAM,aAAa,CAAC;AAE3C,qBAAa,aAAa;IACjB,KAAK,CAAC,aAAa,EAAE,OAAO,GAAG,KAAK,CAAC,QAAQ;CASrD"}
