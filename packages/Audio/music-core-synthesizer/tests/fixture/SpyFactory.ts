@@ -1,8 +1,5 @@
-import type { components } from "../../src/generated/schema-types.js";
+import type { SequencerProjectDocumentDto } from "../../src/dto.js";
 import type { IProjectFactory } from "../../src/IProjectFactory.js";
-
-type SequencerProjectDocumentDto =
-  components["schemas"]["SequencerProjectDocument"];
 
 export class SpyFactory
   implements

@@ -30,4 +30,11 @@
     "vitest.config.ts",
     "vite.config.ts"
   ]
+}{
+  "compilerOptions": {
+    "module": "commonjs"
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }

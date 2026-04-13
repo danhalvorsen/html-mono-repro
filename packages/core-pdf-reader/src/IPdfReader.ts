@@ -1,0 +1,1 @@
+import { IPdfBinarySource } from './IPdfBinarySource.js'; import { IPdfPageText } from './IPdfPageText.js'; export interface IPdfReader { read(source: IPdfBinarySource): Promise<readonly IPdfPageText[]>; }
