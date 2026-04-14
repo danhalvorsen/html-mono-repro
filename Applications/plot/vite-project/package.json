@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "lit": "^3.3.2",
-    "@monorepo/core-plot": "workspace:*"
+    "@monorepo/core-plot": "workspace:*",
+    "@monorepo/core-plot-curve": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

@@ -399,6 +399,16 @@ Then the CoordinateSystem shall store them in a coordinate container
 And the container shall be the single source of truth for all points
 ```
 
+### Scenario: CoordinateSystem hosts point commands through the menu system
+
+```gherkin
+Given a CoordinateSystem is active
+And a point is selected from the coordinate-system menu or canvas
+When point commands are presented
+Then the system shall expose point-specific commands for that selected point
+And the selected menu item and selected plotted point shall remain synchronized
+```
+
 ---
 
 # 7. Axis
@@ -484,6 +494,9 @@ Then it shall consist of:
 
 `Point` is a coordinate-system domain object.
 
+Point participation shall evolve behind an `IPoint` abstraction so the system can support multiple
+point behaviors without changing `CoordinateSystem` orchestration.
+
 It is not a `CanvasObject`.
 
 It does not render itself directly.
@@ -509,6 +522,15 @@ Then the Point shall expose its position in Cartesian coordinates
 And that position shall be the source of truth for mapping
 ```
 
+### Scenario: IPoint abstraction supports point variants
+
+```gherkin
+Given the plotting system supports more than one point type
+When a point participates in plotting behavior
+Then it shall do so through an `IPoint` abstraction
+And `CoordinateSystem` shall depend on the abstraction rather than a concrete point type
+```
+
 ### Scenario: Point is mapped to SVG coordinates
 
 ```gherkin
@@ -527,6 +549,44 @@ Then the Point's Cartesian position shall remain unchanged
 And its SVG render position shall be recomputed from the new mapping
 ```
 
+### Scenario: Point participates in click selection
+
+```gherkin
+Given a Point is rendered in the CoordinateSystem
+When the user clicks the rendered point
+Then `OnClickController` shall resolve that point as the selected target
+And the selected point shall enter highlighted visual state
+```
+
+### Scenario: Point can be moved from the coordinate-system menu
+
+```gherkin
+Given a movable point exists in the CoordinateSystem
+And the point is selected in the coordinate-system menu
+When the user issues a move command from the menu
+Then the point's Cartesian position shall update through the point abstraction
+And the CoordinateSystem shall rerender the point at its new mapped SVG position
+```
+
+### Scenario: Free movable point supports unrestricted movement
+
+```gherkin
+Given a free movable point exists in the CoordinateSystem
+When the system updates that point's Cartesian position
+Then the point shall accept the new Cartesian position directly
+And the CoordinateSystem shall rerender from that updated source of truth
+```
+
+### Scenario: Rule-controlled point movement is constrained
+
+```gherkin
+Given a rule-controlled point exists in the CoordinateSystem
+And that point is governed by one or more movement rules
+When the system requests a move for that point
+Then the point shall evaluate the move through its rule system
+And only the allowed Cartesian position shall become the new source of truth
+```
+
 ### Scenario: Point supports hit testing
 
 ```gherkin
@@ -534,6 +594,15 @@ Given a Point is rendered in the CoordinateSystem
 When the user interacts near the rendered point
 Then hit testing shall evaluate against the rendered SVG-space geometry
 And the correct Point shall be resolved as the target when intersected
+```
+
+### Scenario: Unsupported point move remains stable
+
+```gherkin
+Given a non-movable point or rejected point move request occurs
+When the system applies the request
+Then the plotting system shall remain stable
+And the point shall keep its last valid Cartesian position
 ```
 
 ---

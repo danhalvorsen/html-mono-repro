@@ -26,6 +26,8 @@ export * from "./plot-canvas-element.js";
 export * from "./services/canvas-hit-test-service.js";
 export * from "./services/canvas-spatial-index.js";
 export * from "./domain/point.js";
+export * from "./domain/rectangle.js";
+export * from "@monorepo/core-plot-curve";
 export * from "./styles/core-plot-style-system.js";
 export * from "./styles/component-styles.js";
 export * from "./styles/style-state.js";

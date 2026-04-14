@@ -10,6 +10,12 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
+    "paths": {
+      "@monorepo/core-plot": ["../../../packages/core-plot/dist/index.d.ts"],
+      "@monorepo/core-plot-curve": ["../../../packages/core-plot-curve/dist/index.d.ts"]
+    },
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",

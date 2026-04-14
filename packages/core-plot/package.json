@@ -31,6 +31,8 @@
   "dependencies": {
     "@monorepo/core-design-pattern-quad-tree": "workspace:*",
     "@monorepo/core-design-pattern-quad-tree-abstract": "workspace:*",
+    "@monorepo/core-plot-curve": "workspace:*",
+    "@monorepo/core-plot-menu": "workspace:*",
     "lit": "^3.3.2",
     "@monorepo/core-math": "workspace:*",
     "@monorepo/core-style-system": "workspace:*"

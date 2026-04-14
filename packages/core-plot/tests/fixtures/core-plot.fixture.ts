@@ -5,7 +5,10 @@ import { AxisRange } from "../../src/coordinates/axis-range.js";
 import { CoordinateSystem } from "../../src/coordinates/coordinate-system.js";
 import { CanvasObject } from "../../src/core/canvas-object.js";
 import type { RenderContext } from "../../src/core/render-context.js";
+import { InterpolatedCurve } from "@monorepo/core-plot-curve";
 import { Point } from "../../src/domain/point.js";
+import { PlotRectangle } from "../../src/domain/rectangle.js";
+import type { Rectangle2 } from "@monorepo/core-math";
 
 class FixtureReactiveHost implements ReactiveControllerHost {
   private readonly controllers: ReactiveController[] = [];
@@ -130,9 +133,30 @@ export class CorePlotFixture {
       this.createReactiveHost(),
       "coordinate-system-fixture",
       this.createPointSet(),
+      this.createRectangleSet(),
       this.createAxisRange(-10, 10),
       this.createAxisRange(-10, 10),
+      this.createCurveSet(),
     );
+  }
+
+  public createRectangle(bounds: Rectangle2, label = "R"): PlotRectangle {
+    return new PlotRectangle(bounds, label);
+  }
+
+  public createRectangleSet(): readonly PlotRectangle[] {
+    return [
+      this.createRectangle({ x: -8, y: -6, width: 4, height: 3 }, "Zone A"),
+      this.createRectangle({ x: 1, y: 1, width: 3, height: 5 }, "Zone B"),
+    ];
+  }
+
+  public createCurve(points: readonly Point[], label = "g"): InterpolatedCurve {
+    return new InterpolatedCurve(points, label);
+  }
+
+  public createCurveSet(): readonly InterpolatedCurve[] {
+    return [this.createCurve(this.createPointSet(), "g")];
   }
 
   public createCanvasObject(id: string, minX = 0, minY = 0, maxX = 20, maxY = 20): TestCanvasObject {

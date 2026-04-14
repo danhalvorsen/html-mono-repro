@@ -20,7 +20,8 @@
   "dependencies": {
     "@monorepo/core-specifications": "workspace:*",
     "@monorepo/core-specifications-rules": "workspace:*",
-    "@monorepo/core-template": "workspace:*"
+    "@monorepo/core-template": "workspace:*",
+    "@monorepo/core-math": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",

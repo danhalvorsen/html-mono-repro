@@ -456,6 +456,9 @@ importers:
       '@monorepo/core-plot':
         specifier: workspace:*
         version: link:../../../packages/core-plot
+      '@monorepo/core-plot-curve':
+        specifier: workspace:*
+        version: link:../../../packages/core-plot-curve
       lit:
         specifier: ^3.3.2
         version: 3.3.2
@@ -621,6 +624,9 @@ importers:
 
   packages/Audio/music-core-synthesizer:
     dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../core-math
       '@monorepo/core-specifications':
         specifier: workspace:*
         version: link:../../core-specifications
@@ -2013,6 +2019,12 @@ importers:
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../core-math
+      '@monorepo/core-plot-curve':
+        specifier: workspace:*
+        version: link:../core-plot-curve
+      '@monorepo/core-plot-menu':
+        specifier: workspace:*
+        version: link:../core-plot-menu
       '@monorepo/core-style-system':
         specifier: workspace:*
         version: link:../core-style-system
@@ -2026,6 +2038,34 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+
+  packages/core-plot-curve:
+    dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../core-math
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/core-plot-menu:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/core-procedural-graphics-abstract:
     devDependencies:

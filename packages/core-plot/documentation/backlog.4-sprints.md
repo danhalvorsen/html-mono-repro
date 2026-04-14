@@ -379,6 +379,8 @@ Deliver the following behaviors as new specification-backed features:
 * Introduce `PlotMenuElement` as the left-side plot menu
 * Introduce a custom `PlotInputControl` for equation or plot definition entry
 * Connect menu selection and coordinate-system highlight state bidirectionally
+* Move the Sprint 3.1 axis interval interaction from demo-only code into package-level runtime behavior so `CoordinateSystem` axes support the same interval-drag semantics in real plotting views
+* Wire package-level axis interval scaling through `Axis`, `DragController`, and `OnRangeChangeController` instead of keeping it isolated to the 3.1 demo route
 * Support initial plot types:
   * vertical line: `x = c`
   * horizontal line: `y = c`
@@ -417,6 +419,7 @@ Deliver the following behaviors as new specification-backed features:
 * Plot menu and plotted output remain synchronized for selection and visibility
 * Plot registry order is deterministic
 * Invalid plot input does not destabilize the canvas or registry
+* Package-level coordinate-system axes support the same interval drag behavior demonstrated in Sprint 3.1
 * Drag lifecycle is modeled explicitly through `core-fsm` and supports deterministic complete vs cancel behavior
 * Automated tests provide high-confidence coverage for core runtime behavior, menu workflows, and known regressions
 

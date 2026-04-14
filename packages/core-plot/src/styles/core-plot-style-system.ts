@@ -195,5 +195,9 @@ export const CORE_PLOT_THEME = Object.freeze({
     overlayDash: resolveStrokeDash("canvas-overlay").join(" "),
     selectionRingMutedWidth: resolveStrokeWidth("selection-ring-muted"),
     selectionRingMutedDash: resolveStrokeDash("selection-ring-muted").join(" "),
+    plotViewportInsetLeft: 80,
+    plotViewportInsetTop: 48,
+    plotViewportInsetRight: 60,
+    plotViewportInsetBottom: 60,
   }),
 });

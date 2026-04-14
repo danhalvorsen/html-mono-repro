@@ -30,6 +30,9 @@ export class DemoShellView extends LitElement {
             <a href="#sprint-3-1" data-active=${String(this.currentRoute === "sprint-3-1")}>
               Sprint 3.1 Delivery
             </a>
+            <a href="#sprint-4" data-active=${String(this.currentRoute === "sprint-4")}>
+              Sprint 4 Delivery
+            </a>
           </nav>
         </header>
 
