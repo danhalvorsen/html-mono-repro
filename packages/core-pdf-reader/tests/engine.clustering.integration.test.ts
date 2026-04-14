@@ -99,4 +99,5 @@ describe("CompositePdfEngine (Kiwi.pdf) - clustering", () => {
     // optional debug output (kept deterministic)
     console.log("PDF clustering stats:", stats);
   });
+
 });
