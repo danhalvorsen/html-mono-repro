@@ -1,22 +1,22 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 
-import type { CanvasObjectRegistry } from "../core/canvas-object-registry.js";
 import type { CanvasObject } from "../core/canvas-object.js";
+import type { CanvasHitTestService } from "../services/canvas-hit-test-service.js";
 import type { MouseController } from "./mouse-controller.js";
 
 export class OnClickController implements ReactiveController {
   private readonly host: ReactiveControllerHost & HTMLElement;
-  private readonly registry: CanvasObjectRegistry;
+  private readonly hitTestService: CanvasHitTestService;
   private readonly mouseController: MouseController;
   private selectedObject: CanvasObject | null = null;
 
   public constructor(
     host: ReactiveControllerHost & HTMLElement,
-    registry: CanvasObjectRegistry,
+    hitTestService: CanvasHitTestService,
     mouseController: MouseController,
   ) {
     this.host = host;
-    this.registry = registry;
+    this.hitTestService = hitTestService;
     this.mouseController = mouseController;
     this.host.addController(this);
   }
@@ -35,7 +35,7 @@ export class OnClickController implements ReactiveController {
 
   private readonly handleClick = (): void => {
     const pointer = this.mouseController.pointer;
-    const hit = this.registry.hitTestTopMost({
+    const hit = this.hitTestService.queryTopMost({
       x: pointer.canvasX,
       y: pointer.canvasY,
     });

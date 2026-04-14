@@ -44,10 +44,26 @@ const CORE_PLOT_STYLE_TOKENS = {
       opacity: 1,
     },
   },
+  "canvas-overlay-muted": {
+    name: "canvas-overlay-muted",
+    style: {
+      fill: { color: "transparent" },
+      stroke: { color: "rgba(245,159,70,0.35)", width: 1, dash: [] },
+      opacity: 1,
+    },
+  },
   "panel-surface": {
     name: "panel-surface",
     style: {
       fill: { color: "rgba(255, 255, 255, 0.04)" },
+      stroke: { color: "rgba(232, 221, 202, 0.12)", width: 1 },
+      opacity: 1,
+    },
+  },
+  "panel-surface-subtle": {
+    name: "panel-surface-subtle",
+    style: {
+      fill: { color: "rgba(255, 255, 255, 0.02)" },
       stroke: { color: "rgba(232, 221, 202, 0.12)", width: 1 },
       opacity: 1,
     },
@@ -112,6 +128,14 @@ const CORE_PLOT_STYLE_TOKENS = {
       opacity: 1,
     },
   },
+  "selection-ring-muted": {
+    name: "selection-ring-muted",
+    style: {
+      fill: { color: "transparent" },
+      stroke: { color: "rgba(255,255,255,0.12)", width: 1.5, dash: [6, 6] },
+      opacity: 1,
+    },
+  },
 } as const satisfies Record<string, IStyleToken>;
 
 const styleLibrary = new StyleLibrary(CORE_PLOT_STYLE_TOKENS);
@@ -146,8 +170,10 @@ export const CORE_PLOT_THEME = Object.freeze({
     grid: resolveStrokeColor("canvas-grid"),
     gridEmphasis: resolveStrokeColor("canvas-grid-emphasis"),
     overlay: resolveColor("canvas-overlay"),
+    overlayMuted: resolveStrokeColor("canvas-overlay-muted"),
     panelSurface: resolveColor("panel-surface"),
     panelBorder: resolveStrokeColor("panel-surface"),
+    panelSurfaceSubtle: resolveColor("panel-surface-subtle"),
     textPrimary: resolveColor("text-primary"),
     textSecondary: resolveColor("text-secondary"),
     textMuted: resolveColor("text-muted"),
@@ -160,11 +186,14 @@ export const CORE_PLOT_THEME = Object.freeze({
     betaStroke: resolveStrokeColor("shape-beta"),
     gammaFill: resolveColor("shape-gamma"),
     gammaStroke: resolveStrokeColor("shape-gamma"),
+    selectionRingMuted: resolveStrokeColor("selection-ring-muted"),
   }),
   metrics: Object.freeze({
     gridStrokeWidth: resolveStrokeWidth("canvas-grid"),
     gridEmphasisStrokeWidth: resolveStrokeWidth("canvas-grid-emphasis"),
     overlayStrokeWidth: resolveStrokeWidth("canvas-overlay"),
     overlayDash: resolveStrokeDash("canvas-overlay").join(" "),
+    selectionRingMutedWidth: resolveStrokeWidth("selection-ring-muted"),
+    selectionRingMutedDash: resolveStrokeDash("selection-ring-muted").join(" "),
   }),
 });

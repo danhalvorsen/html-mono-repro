@@ -3,10 +3,11 @@ import { LitElement, html, svg } from "lit";
 import {
   CanvasObject,
   CORE_PLOT_THEME,
+  SPRINT_ONE_VIEW_STYLES,
   type HitTestContext,
   PlotCanvasElement,
   type RenderContext,
-} from "../../../../../packages/core-plot/src/index.ts";
+} from "@monorepo/core-plot";
 
 class DemoRectangleObject extends CanvasObject {
   private readonly x: number;
@@ -41,6 +42,7 @@ class DemoRectangleObject extends CanvasObject {
   }
 
   public override render(_context: RenderContext) {
+    const highlighted = _context.selectedObjectId === this.id;
     return svg`
       <g data-object-id=${this.id}>
         <rect
@@ -50,15 +52,17 @@ class DemoRectangleObject extends CanvasObject {
           height=${this.height}
           rx="20"
           fill=${this.fill}
-          stroke=${this.id === "alpha"
+          stroke=${highlighted
+            ? CORE_PLOT_THEME.colors.routeActive
+            : this.id === "alpha"
             ? CORE_PLOT_THEME.colors.alphaStroke
             : CORE_PLOT_THEME.colors.gammaStroke}
-          stroke-width="2"
+          stroke-width=${highlighted ? "3" : "2"}
         ></rect>
         <text
           x=${this.x + 18}
           y=${this.y + 34}
-          fill=${CORE_PLOT_THEME.colors.textPrimary}
+          fill=${highlighted ? CORE_PLOT_THEME.colors.routeActive : CORE_PLOT_THEME.colors.textPrimary}
           font-size="14"
           font-family=${CORE_PLOT_THEME.typography.fontFamily.ui}
         >
@@ -106,6 +110,7 @@ class DemoCircleObject extends CanvasObject {
   }
 
   public override render(_context: RenderContext) {
+    const highlighted = _context.selectedObjectId === this.id;
     return svg`
       <g data-object-id=${this.id}>
         <circle
@@ -113,13 +118,13 @@ class DemoCircleObject extends CanvasObject {
           cy=${this.cy}
           r=${this.radius}
           fill=${this.fill}
-          stroke=${CORE_PLOT_THEME.colors.betaStroke}
-          stroke-width="2"
+          stroke=${highlighted ? CORE_PLOT_THEME.colors.routeActive : CORE_PLOT_THEME.colors.betaStroke}
+          stroke-width=${highlighted ? "3" : "2"}
         ></circle>
         <text
           x=${this.cx - 36}
           y=${this.cy + 6}
-          fill=${CORE_PLOT_THEME.colors.textPrimary}
+          fill=${highlighted ? CORE_PLOT_THEME.colors.routeActive : CORE_PLOT_THEME.colors.textPrimary}
           font-size="14"
           font-family=${CORE_PLOT_THEME.typography.fontFamily.ui}
         >
@@ -137,6 +142,8 @@ class DemoCircleObject extends CanvasObject {
 }
 
 export class SprintOneView extends LitElement {
+  public static override styles = [SPRINT_ONE_VIEW_STYLES];
+
   protected override firstUpdated(): void {
     const canvas = this.renderRoot.querySelector("plot-canvas");
     if (!(canvas instanceof PlotCanvasElement)) {
@@ -150,65 +157,6 @@ export class SprintOneView extends LitElement {
 
   protected override render() {
     return html`
-      <style>
-        :host {
-          display: block;
-        }
-
-        .page {
-          display: grid;
-          gap: 26px;
-        }
-
-        .hero {
-          display: grid;
-          gap: 10px;
-          align-items: start;
-        }
-
-        .eyebrow {
-          font: 12px/1.2 "IBM Plex Mono", "Fira Code", monospace;
-          text-transform: uppercase;
-          letter-spacing: 0.24em;
-          color: #c8a97c;
-        }
-
-        h1 {
-          margin: 0;
-          font: 600 52px/0.94 "Segoe UI", sans-serif;
-          letter-spacing: -0.05em;
-          max-width: 12ch;
-          color: ${CORE_PLOT_THEME.colors.textPrimary};
-        }
-
-        p {
-          margin: 0;
-          max-width: 66ch;
-          color: ${CORE_PLOT_THEME.colors.textMuted};
-          font: 16px/1.6 ${CORE_PLOT_THEME.typography.fontFamily.ui};
-        }
-
-        .notes {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 14px;
-        }
-
-        .note {
-          padding: 16px 18px;
-          border-radius: 18px;
-          background: ${CORE_PLOT_THEME.colors.panelSurface};
-          border: 1px solid ${CORE_PLOT_THEME.colors.panelBorder};
-          font: 13px/1.5 ${CORE_PLOT_THEME.typography.fontFamily.ui};
-          color: ${CORE_PLOT_THEME.colors.textSecondary};
-        }
-
-        @media (max-width: 900px) {
-          .notes {
-            grid-template-columns: 1fr;
-          }
-        }
-      </style>
       <div class="page">
         <header class="hero">
           <div class="eyebrow">Sprint 1 Delivery</div>

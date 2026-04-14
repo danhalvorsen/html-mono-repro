@@ -1,10 +1,16 @@
 import { svg, type ReactiveControllerHost, type TemplateResult } from "lit";
 
 import { MappingController, type MappingViewport } from "../controllers/mapping-controller.js";
-import { CanvasObject, type HitTestContext } from "../core/canvas-object.js";
+import {
+  CanvasObject,
+  type CanvasObjectBounds,
+  type HitTestContext,
+} from "../core/canvas-object.js";
 import type { RenderContext } from "../core/render-context.js";
 import { Point } from "../domain/point.js";
+import { CORE_PLOT_THEME } from "../styles/core-plot-style-system.js";
 import { Axis } from "./axis.js";
+import { AxisTickDensityPolicy } from "./axis-tick-density-policy.js";
 import { AxisRange } from "./axis-range.js";
 import type { GridLineModel } from "../controllers/grid-controller.js";
 import type { SnapResult } from "../controllers/snap-controller.js";
@@ -16,6 +22,7 @@ export class CoordinateSystem extends CanvasObject {
   private readonly mappingController: MappingController;
   private readonly xRange: AxisRange;
   private readonly yRange: AxisRange;
+  private readonly tickDensityPolicy: AxisTickDensityPolicy;
 
   public constructor(
     host: ReactiveControllerHost,
@@ -31,6 +38,23 @@ export class CoordinateSystem extends CanvasObject {
     this.horizontalAxis = new Axis(`${id}-x-axis`, "horizontal", this.xRange);
     this.verticalAxis = new Axis(`${id}-y-axis`, "vertical", this.yRange);
     this.mappingController = new MappingController(host);
+    this.tickDensityPolicy = new AxisTickDensityPolicy();
+  }
+
+  public override getCapabilities() {
+    return {
+      clickable: true,
+    };
+  }
+
+  public override getBounds(context: RenderContext): CanvasObjectBounds {
+    const viewport = this.createViewport(context);
+    return {
+      x: viewport.left,
+      y: viewport.top,
+      width: viewport.width,
+      height: viewport.height,
+    };
   }
 
   public override render(context: RenderContext): TemplateResult {
@@ -49,7 +73,7 @@ export class CoordinateSystem extends CanvasObject {
       endY: zero.y,
       zeroX: zero.x,
       zeroY: zero.y,
-      tickValues: this.buildTickValues(this.xRange),
+      tickValues: this.buildTickValues(this.xRange, viewport.width),
     });
 
     this.verticalAxis.setLayout({
@@ -59,16 +83,35 @@ export class CoordinateSystem extends CanvasObject {
       endY: viewport.top + viewport.height,
       zeroX: zero.x,
       zeroY: zero.y,
-      tickValues: this.buildTickValues(this.yRange),
+      tickValues: this.buildTickValues(this.yRange, viewport.height),
     });
 
     const plottedPoints = this.points.map((point) => {
       const mapped = this.mappingController.mapToSvg(point, this.xRange, this.yRange, viewport);
+      const pointIsHighlighted = context.selectedObjectId === this.id;
       return svg`
         <g data-point-label=${point.label}>
-          <circle cx=${mapped.x} cy=${mapped.y} r="6.5" fill="#f59f46"></circle>
-          <circle cx=${mapped.x} cy=${mapped.y} r="11" fill="none" stroke="rgba(245,159,70,0.35)"></circle>
-          <text x=${mapped.x + 12} y=${mapped.y - 10} fill="#f6efe0" font-size="12" font-family='"IBM Plex Mono", monospace'>
+          <circle
+            cx=${mapped.x}
+            cy=${mapped.y}
+            r=${pointIsHighlighted ? "8" : "6.5"}
+            fill=${pointIsHighlighted ? CORE_PLOT_THEME.colors.routeActive : CORE_PLOT_THEME.colors.overlay}
+          ></circle>
+          <circle
+            cx=${mapped.x}
+            cy=${mapped.y}
+            r=${pointIsHighlighted ? "14" : "11"}
+            fill="none"
+            stroke=${pointIsHighlighted ? CORE_PLOT_THEME.colors.routeActive : CORE_PLOT_THEME.colors.overlayMuted}
+            stroke-width=${pointIsHighlighted ? "2" : "1"}
+          ></circle>
+          <text
+            x=${mapped.x + 12}
+            y=${mapped.y - 10}
+            fill=${pointIsHighlighted ? CORE_PLOT_THEME.colors.routeActive : CORE_PLOT_THEME.colors.textPrimary}
+            font-size="12"
+            font-family=${CORE_PLOT_THEME.typography.fontFamily.ui}
+          >
             ${point.label} (${point.x}, ${point.y})
           </text>
         </g>
@@ -83,8 +126,11 @@ export class CoordinateSystem extends CanvasObject {
           width=${viewport.width}
           height=${viewport.height}
           rx="20"
-          fill="rgba(255,255,255,0.02)"
-          stroke="rgba(239,232,217,0.12)"
+          fill=${CORE_PLOT_THEME.colors.panelSurfaceSubtle}
+          stroke=${context.selectedObjectId === this.id
+            ? CORE_PLOT_THEME.colors.routeActive
+            : CORE_PLOT_THEME.colors.panelBorder}
+          stroke-width=${context.selectedObjectId === this.id ? "2" : "1"}
         ></rect>
         ${this.horizontalAxis.render(context)}
         ${this.verticalAxis.render(context)}
@@ -94,7 +140,7 @@ export class CoordinateSystem extends CanvasObject {
   }
 
   public override hitTest(context: HitTestContext): boolean {
-    const viewport = this.createViewport({ width: 840, height: 520 });
+    const viewport = this.createViewport({ width: 840, height: 520, selectedObjectId: null });
     return this.points.some((point) => {
       const mapped = this.mappingController.mapToSvg(point, this.xRange, this.yRange, viewport);
       const dx = context.x - mapped.x;
@@ -181,12 +227,7 @@ export class CoordinateSystem extends CanvasObject {
     };
   }
 
-  private buildTickValues(range: AxisRange): readonly number[] {
-    const values: number[] = [];
-    for (let value = range.min; value <= range.max; value += 2) {
-      values.push(value);
-    }
-
-    return values;
+  private buildTickValues(range: AxisRange, pixelLength: number): readonly number[] {
+    return this.tickDensityPolicy.buildVisibleTickValues(range, pixelLength);
   }
 }

@@ -55,6 +55,23 @@ export class TestCanvasObject extends CanvasObject {
     return svg`<g data-test-object=${this.id}></g>`;
   }
 
+  public override getBounds() {
+    return {
+      x: this.minX,
+      y: this.minY,
+      width: this.maxX - this.minX,
+      height: this.maxY - this.minY,
+    };
+  }
+
+  public override getCapabilities() {
+    return {
+      clickable: true,
+      draggable: true,
+      doubleClickable: true,
+    };
+  }
+
   public override hitTest(context: { x: number; y: number }): boolean {
     return (
       context.x >= this.minX &&
@@ -74,6 +91,7 @@ export class CorePlotFixture {
     return {
       width: 840,
       height: 520,
+      selectedObjectId: null,
     };
   }
 

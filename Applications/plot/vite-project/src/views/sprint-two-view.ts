@@ -1,13 +1,15 @@
 import { LitElement, html } from "lit";
 
 import {
-  CORE_PLOT_THEME,
   CoordinateSystem,
   PlotCanvasElement,
   Point,
-} from "../../../../../packages/core-plot/src/index.ts";
+  SPRINT_PANEL_VIEW_STYLES,
+} from "@monorepo/core-plot";
 
 export class SprintTwoView extends LitElement {
+  public static override styles = [SPRINT_PANEL_VIEW_STYLES];
+
   protected override firstUpdated(): void {
     const canvas = this.renderRoot.querySelector("plot-canvas");
     if (!(canvas instanceof PlotCanvasElement)) {
@@ -30,51 +32,6 @@ export class SprintTwoView extends LitElement {
 
   protected override render() {
     return html`
-      <style>
-        :host {
-          display: block;
-        }
-
-        .page {
-          display: grid;
-          gap: 18px;
-        }
-
-        .panel {
-          padding: 28px;
-          border-radius: 26px;
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(239, 232, 217, 0.1);
-        }
-
-        .eyebrow {
-          font: 12px/1.2 "IBM Plex Mono", "Fira Code", monospace;
-          text-transform: uppercase;
-          letter-spacing: 0.24em;
-          color: ${CORE_PLOT_THEME.colors.textAccent};
-        }
-
-        h1 {
-          margin: 0 0 10px;
-          font: 600 52px/0.94 ${CORE_PLOT_THEME.typography.fontFamily.ui};
-          letter-spacing: -0.05em;
-          color: ${CORE_PLOT_THEME.colors.textPrimary};
-        }
-
-        p,
-        li {
-          margin: 0;
-          color: ${CORE_PLOT_THEME.colors.textMuted};
-          font: 16px/1.6 ${CORE_PLOT_THEME.typography.fontFamily.ui};
-        }
-
-        ul {
-          margin: 0;
-          padding-left: 18px;
-          display: grid;
-          gap: 10px;
-        }
-      </style>
       <section class="page">
         <article class="panel">
           <div class="eyebrow">Sprint 2 Delivery</div>

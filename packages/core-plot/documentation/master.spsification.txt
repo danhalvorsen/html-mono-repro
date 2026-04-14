@@ -286,6 +286,26 @@ When DragController starts a drag operation for that handle
 Then OnRangeChangeController shall start an axis range change operation
 ```
 
+### Scenario: Axis drag right expands interval
+
+```gherkin
+Given an Axis starts with range [-10, 10]
+When the user drags the axis to the right
+Then the visible interval shall expand by a deterministic factor
+And a short drag may produce an interval approximately like [-15, 15]
+And a longer drag shall produce a broader interval than a shorter drag
+```
+
+### Scenario: Axis drag left contracts interval below default
+
+```gherkin
+Given an Axis starts with range [-10, 10]
+When the user drags the axis to the left
+Then the visible interval shall contract by a deterministic factor
+And the resulting interval shall be smaller than the default interval
+And the system shall remain stable while contracting below the default span
+```
+
 ---
 
 # 6. Coordinate System
@@ -426,6 +446,25 @@ Given an Axis is rendered
 When the render cycle executes
 Then the Axis shall render TickSvg objects
 And each TickSvg shall represent a value in the axis domain
+```
+
+### Scenario: Axis label density remains readable
+
+```gherkin
+Given an Axis interval becomes dense enough that all tick labels cannot be read clearly
+When tick labels are rendered
+Then the system shall reduce visible label density deterministically
+And it may render labels only for major ticks or every nth tick
+And the rendered labels shall not visually collide or destroy readability
+```
+
+### Scenario: Axis label density adapts to interval scale
+
+```gherkin
+Given an Axis range changes repeatedly through expansion or contraction
+When tick rendering is recalculated
+Then the label cadence and numeric formatting shall adapt to the current scale
+And only the amount of label detail that remains readable shall be rendered
 ```
 
 ### Scenario: Axis composition

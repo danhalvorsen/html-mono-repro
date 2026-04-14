@@ -1,6 +1,6 @@
 # `@monorepo/core-plot`
 
-## 4-Sprint Backlog
+## Sprint Backlog
 
 This backlog is ordered so the core plotting functionality is delivered first.
 
@@ -205,6 +205,84 @@ Deliver the following behaviors from the master specification:
 
 ---
 
+# Sprint 3.1: Interaction Routing and Spatial Selection
+
+## Goal
+
+Introduce a clean interaction-routing layer so selection and highlighting work consistently across
+axes and other `CanvasObject`s without overloading `MouseController`.
+
+This stage focuses on interaction architecture, click selection, highlighted style state, and
+faster hit-detection infrastructure.
+
+## Delivery specification scope
+
+Deliver or complete the following behaviors from the master specification:
+
+* Click selects top-most object
+* Canvas delegates behavior to controllers
+* CanvasObject interaction opt-in
+* Drag start
+* Drag move
+* Axis endpoints are interactive
+* Range change begins from axis endpoint
+* Style states
+* Token-based styling
+
+## Implementation backlog
+
+* Keep `MouseController` limited to pointer collection and normalization
+* Use a single DOM event boundary at `PlotCanvasElement` or the root SVG
+* Avoid listener sprawl:
+  * no per-`CanvasObject` DOM listeners
+  * no per-primitive SVG listeners
+  * no duplicate raw pointer listeners across controllers
+* Introduce a dedicated hit-test/query service for interaction routing
+* Introduce a spatial index abstraction for broad-phase lookup
+* Integrate `@monorepo/core-design-pattern-quad-tree` as the broad-phase spatial index
+* Preserve exact `CanvasObject.hitTest(...)` as the final interaction truth
+* Make `OnClickController` the first completed semantic interaction controller
+* Store selected `CanvasObject` identity explicitly at canvas level
+* Apply highlighted style tokens when a clickable `CanvasObject` is selected
+* Ensure the same highlight mechanism works for `Axis` and other clickable `CanvasObject`s
+* Introduce axis endpoint handles or endpoint hit regions as explicit interactive targets
+* Support drag-move interaction for draggable `CanvasObject`s through `DragController`
+* Support `OnDrag` operation semantics so a draggable `CanvasObject` can be repositioned through drag lifecycle events
+* Reuse the same target-resolution architecture for axis interaction:
+  * `MouseController` provides normalized pointer state
+  * hit-test/query service resolves the endpoint target
+  * `DragController` owns drag lifecycle
+  * `OnRangeChangeController` interprets drag movement as axis interval or range change
+* Define axis interval drag semantics as scale-style interval change:
+  * dragging to the right increases the visible interval
+  * dragging to the left decreases the visible interval
+  * short drags apply a smaller factor
+  * longer drags apply a broader factor
+  * example: `[-10, 10]` dragged right may become approximately `[-15, 15]`
+* Ensure axis interval updates trigger remapping of ticks, grid, snap, and plotted visuals
+* Add unit tests for click routing, selection state, highlight state, and quad-tree-backed candidate lookup
+* Defer `DragOperation` object refactoring until Sprint 5 together with FSM-based drag lifecycle modeling
+
+## Sprint exit criteria
+
+* `MouseController` is not the master for all interactivity
+* Raw DOM event listening is centralized and not duplicated across the object model
+* Click routing uses a dedicated hit-test/query path
+* Broad-phase candidate lookup is accelerated through the quad-tree integration
+* Selected `CanvasObject`s render with highlighted token-driven style
+* The same interaction model applies to axes and other clickable canvas objects
+* Draggable `CanvasObject`s can be repositioned through `DragController` and `OnDrag` behavior
+* Axis endpoint drag is modeled through `DragController` plus `OnRangeChangeController`, not through raw event handling on the axis itself
+* Dragging axis interval handles to the right expands the interval and dragging left contracts it using a deterministic factor-based rule
+
+## Sprint deliverables
+
+* Interaction routing specification pack
+* Public contracts for hit-test/query and spatial index services
+* BDD and unit tests for click selection, highlighting, and spatial candidate resolution
+
+---
+
 # Sprint 4: Geometry and Advanced Plotting
 
 ## Goal
@@ -239,6 +317,10 @@ Deliver the following behaviors from the master specification:
 ## Implementation backlog
 
 * Integrate `core-math` interpolation functions
+* Adopt `core-math` geometry types intentionally:
+  * `Point2` for stored coordinate positions
+  * `Vector2` for deltas, directions, tangents, and normals
+  * `BoundingBox2D` for hit testing and view bounds
 * Add curve representation in Cartesian space
 * Map curve geometry through `MappingController`
 * Recompute curves when source point data changes
@@ -252,6 +334,7 @@ Deliver the following behaviors from the master specification:
 
 * Curves are computed in Cartesian space and rendered through mapped SVG geometry
 * Rectangles render deterministically from Cartesian source data
+* Core plotting geometry uses `core-math` types consistently where semantics matter
 * Geometry primitives support path validity and reusable hit testing
 * Advanced plotted geometry remains stable under axis range changes
 
@@ -260,6 +343,88 @@ Deliver the following behaviors from the master specification:
 * Advanced plotting specification pack
 * Public contracts for geometry and path abstractions
 * BDD tests for interpolation, rectangle remapping, and geometry hit testing
+
+---
+
+# Sprint 5: Plot Menu and Equation Input
+
+## Goal
+
+Introduce a plot-authoring menu system connected to an active `CoordinateSystem` so users can add,
+edit, select, toggle, and remove plots through a dedicated left-side menu and custom input control.
+
+This sprint focuses on plot management workflow rather than low-level geometry primitives.
+
+## Delivery specification scope
+
+Deliver the following behaviors as new specification-backed features:
+
+* CoordinateSystem hosts an interactive plot menu
+* Plot menu lists active plots in deterministic order
+* Plot menu adds a new plot from custom input control text
+* Plot menu supports equation-driven plot creation
+* Selected plot row highlights the plotted object in the coordinate system
+* Selected plotted object highlights the plot row in the menu
+* Plot visibility can be toggled without deletion
+* Plot can be removed from the registry
+* Invalid plot input is handled safely
+
+## Implementation backlog
+
+* Introduce `PlotRegistry` for active plots
+* Introduce `PlotDefinition` or equivalent typed plot model
+* Introduce `PlotFactory` for creating plots from typed commands
+* Introduce `PlotParser` for translating input text into plot definitions
+* Introduce `PlotMenuController` for add/select/toggle/delete actions
+* Introduce `PlotMenuElement` as the left-side plot menu
+* Introduce a custom `PlotInputControl` for equation or plot definition entry
+* Connect menu selection and coordinate-system highlight state bidirectionally
+* Support initial plot types:
+  * vertical line: `x = c`
+  * horizontal line: `y = c`
+  * function: `y = f(x)`
+  * points
+  * circle
+  * segment or polyline
+* Ensure new plots are registered into the active `CoordinateSystem` and rerender deterministically
+* Refactor pointer-driven drag lifecycle onto `@monorepo/core-fsm`
+* Introduce an explicit drag session FSM for:
+  * `idle`
+  * `pressed`
+  * `dragging`
+  * completion and cancellation transitions
+* Introduce `DragOperation` objects initialized by `DragController`
+* Separate drag lifecycle concerns from drag semantics:
+  * `DragController` owns FSM and pointer inputs
+  * `DragOperation` owns move, interval-scale, and future drag meanings
+* Support deterministic drag interruption through FSM transitions for:
+  * `Escape`
+  * competing pointer intent
+  * `pointercancel`
+  * `lostpointercapture`
+* Add unit and BDD tests for plot creation, registry updates, selection synchronization, and invalid input handling
+* Expand automated test coverage to a high-confidence level:
+  * one focused test file per object or controller where practical
+  * shared fixtures for dry setup
+  * positive and negative behavioral cases
+  * regression tests for fixed bugs
+  * stronger coverage for controllers, `PlotCanvasElement`, geometry, mapping, style-driven composition, and menu workflows
+
+## Sprint exit criteria
+
+* The active `CoordinateSystem` can receive plots from a left-side menu workflow
+* A custom input control can add a plot from equation text
+* Plot menu and plotted output remain synchronized for selection and visibility
+* Plot registry order is deterministic
+* Invalid plot input does not destabilize the canvas or registry
+* Drag lifecycle is modeled explicitly through `core-fsm` and supports deterministic complete vs cancel behavior
+* Automated tests provide high-confidence coverage for core runtime behavior, menu workflows, and known regressions
+
+## Sprint deliverables
+
+* Plot menu specification pack
+* Public contracts for plot registry, parser, factory, and menu controller
+* BDD and unit tests for menu-driven plot authoring, synchronization, and broader high-confidence runtime coverage
 
 ---
 
@@ -298,3 +463,27 @@ Recommended sprint documents:
 * `sprint-2-coordinate-system-core.spec.md`
 * `sprint-3-svg-and-styling.spec.md`
 * `sprint-4-advanced-plotting.spec.md`
+
+---
+
+# Sprint 6: Composition Evaluation and Visual Tree Reuse
+
+## Goal
+
+Evaluate whether selected composition concepts or limited components from
+`@monorepo/core-composition-svg` should be reused in `core-plot` for complex SVG composition,
+visual-tree structuring, or hit metadata support without replacing the existing Lit/controller
+architecture.
+
+## Implementation note
+
+* Evaluate `@monorepo/core-composition-svg` as a selective source of reuse
+* Reuse only where it improves `core-plot` without taking over the runtime model
+* Candidate reuse areas:
+  * composite SVG composition patterns
+  * bounding-box metadata and pruning concepts
+  * primitive composition support for complex visuals
+* Explicitly avoid direct wholesale adoption of:
+  * `SceneRenderer` as the main render loop
+  * DOM-owned behavior routing in place of controllers
+  * replacing the existing Lit-based `CanvasObject` architecture

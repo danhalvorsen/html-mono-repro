@@ -9,10 +9,13 @@ import { GridController } from "./controllers/grid-controller.js";
 import { MouseController } from "./controllers/mouse-controller.js";
 import { OnClickController } from "./controllers/on-click-controller.js";
 import { OnDoubleClickController } from "./controllers/on-double-click-controller.js";
+import { OnRangeChangeController } from "./controllers/on-range-change-controller.js";
 import { OnScaleController } from "./controllers/on-scale-controller.js";
 import { SnapController } from "./controllers/snap-controller.js";
 import { CoordinateSystem } from "./coordinates/coordinate-system.js";
-import { CORE_PLOT_THEME } from "./styles/core-plot-style-system.js";
+import { CanvasHitTestService } from "./services/canvas-hit-test-service.js";
+import { QuadTreeCanvasSpatialIndex } from "./services/canvas-spatial-index.js";
+import { CANVAS_OVERLAY_ATTRS, PLOT_CANVAS_STYLES } from "./styles/component-styles.js";
 
 export interface PlotCanvasSnapshot {
   readonly pointerX: number;
@@ -25,23 +28,30 @@ export interface PlotCanvasSnapshot {
 }
 
 export class PlotCanvasElement extends LitElement {
+  public static override styles = [PLOT_CANVAS_STYLES];
   private readonly svgRef: Ref<SVGSVGElement> = createRef();
   private readonly registry = new CanvasObjectRegistry();
   private readonly mouseController = new MouseController(this, () => this.svgRef.value ?? null);
   private readonly dragController = new DragController(this, this.mouseController);
   private readonly gridController = new GridController(this);
   private readonly snapController = new SnapController(this);
+  private readonly hitTestService = new CanvasHitTestService(
+    this.registry,
+    new QuadTreeCanvasSpatialIndex(),
+    () => this.getCurrentRenderContext(),
+  );
   private readonly onClickController = new OnClickController(
     this,
-    this.registry,
+    this.hitTestService,
     this.mouseController,
   );
   private readonly onDoubleClickController = new OnDoubleClickController(
     this,
-    this.registry,
+    this.hitTestService,
     this.mouseController,
   );
   private readonly onScaleController = new OnScaleController(this);
+  private readonly onRangeChangeController = new OnRangeChangeController(this, this.dragController);
 
   public registerObject(object: CanvasObject): void {
     this.registry.register(object);
@@ -70,7 +80,7 @@ export class PlotCanvasElement extends LitElement {
   protected override render() {
     const width = 840;
     const height = 520;
-    const renderContext: RenderContext = { width, height };
+    const renderContext = this.getCurrentRenderContext(width, height);
     const registeredObjects = this.registry.getAll();
     const coordinateSystem = registeredObjects.find(
       (object): object is CoordinateSystem => object instanceof CoordinateSystem,
@@ -89,66 +99,6 @@ export class PlotCanvasElement extends LitElement {
       : this.gridController.render(width, height);
 
     return html`
-      <style>
-        :host {
-          display: block;
-          color: ${CORE_PLOT_THEME.colors.canvasShell};
-        }
-
-        .shell {
-          display: grid;
-          gap: 18px;
-        }
-
-        svg {
-          width: 100%;
-          height: auto;
-          display: block;
-          border-radius: 22px;
-          background:
-            radial-gradient(circle at 20% 0%, rgba(203, 139, 62, 0.16), transparent 32%),
-            linear-gradient(180deg, #17181c, ${CORE_PLOT_THEME.colors.canvasSurface});
-          border: 1px solid ${CORE_PLOT_THEME.colors.panelBorder};
-          box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
-          touch-action: none;
-        }
-
-        [data-role='grid'] line {
-          stroke: ${CORE_PLOT_THEME.colors.grid};
-          stroke-width: ${String(CORE_PLOT_THEME.metrics.gridStrokeWidth)};
-        }
-
-        .overlay text {
-          fill: ${CORE_PLOT_THEME.colors.canvasShell};
-          font: 12px/1.2 ${CORE_PLOT_THEME.typography.fontFamily.ui};
-        }
-
-        .panel {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 12px;
-          font: 12px/1.4 "IBM Plex Mono", "Fira Code", monospace;
-        }
-
-        .stat {
-          padding: 12px 14px;
-          border-radius: 14px;
-          background: ${CORE_PLOT_THEME.colors.panelSurface};
-          border: 1px solid ${CORE_PLOT_THEME.colors.panelBorder};
-        }
-
-        .label {
-          display: block;
-          color: ${CORE_PLOT_THEME.colors.textMuted};
-          margin-bottom: 6px;
-          text-transform: uppercase;
-          letter-spacing: 0.12em;
-        }
-
-        .value {
-          color: ${CORE_PLOT_THEME.colors.textPrimary};
-        }
-      </style>
       <div class="shell">
         <svg
           ${ref(this.svgRef)}
@@ -156,18 +106,23 @@ export class PlotCanvasElement extends LitElement {
           @pointerdown=${this.handlePointerDown}
           @pointermove=${this.handlePointerMove}
           @pointerup=${this.handlePointerUp}
+          @pointercancel=${this.handlePointerCancel}
+          @lostpointercapture=${this.handleLostPointerCapture}
+          @contextmenu=${this.handleContextMenu}
           @wheel=${this.handleWheel}
+          tabindex="0"
+          @keydown=${this.handleKeyDown}
         >
           ${grid} ${objects}
           <g class="overlay">
-            <circle cx=${pointer.canvasX} cy=${pointer.canvasY} r="5" fill="#f59f46"></circle>
-            <circle cx=${pointer.canvasX} cy=${pointer.canvasY} r="5" fill=${CORE_PLOT_THEME.colors.overlay}></circle>
+            <circle cx=${pointer.canvasX} cy=${pointer.canvasY} r="5" fill=${CANVAS_OVERLAY_ATTRS.overlayFill}></circle>
+            <circle cx=${pointer.canvasX} cy=${pointer.canvasY} r="5" fill=${CANVAS_OVERLAY_ATTRS.overlayFill}></circle>
             <circle
               cx=${snapped.x}
               cy=${snapped.y}
               r="7"
               fill="none"
-              stroke=${CORE_PLOT_THEME.colors.overlay}
+              stroke=${CANVAS_OVERLAY_ATTRS.overlayStroke}
               stroke-dasharray="4 4"
             ></circle>
             ${drag.isActive
@@ -177,9 +132,9 @@ export class PlotCanvasElement extends LitElement {
                     y1=${drag.startY}
                     x2=${drag.currentX}
                     y2=${drag.currentY}
-                    stroke=${CORE_PLOT_THEME.colors.overlay}
-                    stroke-width=${String(CORE_PLOT_THEME.metrics.overlayStrokeWidth)}
-                    stroke-dasharray=${CORE_PLOT_THEME.metrics.overlayDash}
+                    stroke=${CANVAS_OVERLAY_ATTRS.overlayStroke}
+                    stroke-width=${String(CANVAS_OVERLAY_ATTRS.overlayStrokeWidth)}
+                    stroke-dasharray=${CANVAS_OVERLAY_ATTRS.overlayDash}
                   ></line>
                 `
               : svg``}
@@ -211,12 +166,27 @@ export class PlotCanvasElement extends LitElement {
     `;
   }
 
-  private readonly handlePointerDown = (): void => {
+  private readonly handlePointerDown = (event: PointerEvent): void => {
+    if (event.button !== 0) {
+      this.cancelActiveInteraction();
+      return;
+    }
     const pointer = this.mouseController.pointer;
-    const target = this.registry.hitTestTopMost({
+    const target = this.hitTestService.queryTopMost({
       x: pointer.canvasX,
       y: pointer.canvasY,
     });
+    const activeDrag = this.dragController.state;
+
+    if (
+      activeDrag.phase !== "idle" &&
+      (target === null || target.id !== activeDrag.target?.id)
+    ) {
+      this.cancelActiveInteraction();
+      return;
+    }
+
+    this.svgRef.value?.setPointerCapture(event.pointerId);
 
     if (target !== null && target.getCapabilities().draggable === true) {
       this.dragController.startDrag(target);
@@ -225,16 +195,65 @@ export class PlotCanvasElement extends LitElement {
 
   private readonly handlePointerMove = (): void => {
     this.dragController.updateDrag();
+    this.onRangeChangeController.applyActiveRangeChange();
   };
 
-  private readonly handlePointerUp = (): void => {
-    this.dragController.endDrag();
+  private readonly handlePointerUp = (event: PointerEvent): void => {
+    this.stopActiveInteraction(event.pointerId);
+  };
+
+  private readonly handlePointerCancel = (event: PointerEvent): void => {
+    this.cancelActiveInteraction(event.pointerId);
+  };
+
+  private readonly handleLostPointerCapture = (): void => {
+    this.cancelActiveInteraction();
   };
 
   private readonly handleWheel = (event: WheelEvent): void => {
     event.preventDefault();
     this.onScaleController.beginScale(event.deltaY);
   };
+
+  private readonly handleKeyDown = (event: KeyboardEvent): void => {
+    if (event.key !== "Escape") {
+      return;
+    }
+
+    event.preventDefault();
+    this.cancelActiveInteraction();
+  };
+
+  private readonly handleContextMenu = (event: MouseEvent): void => {
+    event.preventDefault();
+    this.cancelActiveInteraction();
+  };
+
+  private getCurrentRenderContext(width = 840, height = 520): RenderContext {
+    return {
+      width,
+      height,
+      selectedObjectId: this.onClickController.selection?.id ?? null,
+    };
+  }
+
+  private stopActiveInteraction(pointerId?: number): void {
+    this.onRangeChangeController.endRangeChange();
+    this.dragController.endDrag();
+    this.releaseActivePointerCapture(pointerId);
+  }
+
+  private cancelActiveInteraction(pointerId?: number): void {
+    this.onRangeChangeController.cancelRangeChange();
+    this.dragController.cancelDrag();
+    this.releaseActivePointerCapture(pointerId);
+  }
+
+  private releaseActivePointerCapture(pointerId?: number): void {
+    if (pointerId !== undefined && this.svgRef.value?.hasPointerCapture(pointerId) === true) {
+      this.svgRef.value.releasePointerCapture(pointerId);
+    }
+  }
 }
 
 customElements.define("plot-canvas", PlotCanvasElement);
