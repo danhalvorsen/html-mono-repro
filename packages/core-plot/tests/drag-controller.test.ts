@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { CanvasObject, type CanvasObjectDragContext } from "@monorepo/core-plot-canvas";
 
 import { DragController } from "../src/controllers/drag-controller.js";
-import { CanvasObject, type CanvasObjectDragContext } from "../src/core/canvas-object.js";
 import { CorePlotFixture } from "./fixtures/core-plot.fixture.js";
 
 class MovableCanvasObject extends CanvasObject {

@@ -1,34 +1,34 @@
 import { svg, type ReactiveControllerHost, type TemplateResult } from "lit";
 import { BoundingBox2D, BoundingBox2DBuilder, Vector2 } from "@monorepo/core-math";
 import {
-  CurveGeometryService,
-  CurveInterpolationService,
-  InterpolatedCurve,
-  PlotPathBuilder,
-} from "@monorepo/core-plot-curve";
-
-import { MappingController, type MappingViewport } from "../controllers/mapping-controller.js";
-import {
   CanvasObject,
   type CanvasObjectBounds,
   type HitTestContext,
-} from "../core/canvas-object.js";
-import type { RenderContext } from "../core/render-context.js";
-import { Point } from "../domain/point.js";
+  type RenderContext,
+} from "@monorepo/core-plot-canvas";
+import {
+  CurveGeometryService,
+  CurveInterpolationService,
+  type IPoint,
+  InterpolatedCurve,
+  PlotPathBuilder,
+} from "@monorepo/core-plot-curve";
+import { RectangleBuilder } from "@monorepo/core-plot-shapes";
+
+import { MappingController, type MappingViewport } from "../controllers/mapping-controller.js";
+import { type GridLineModel } from "../controllers/grid-controller.js";
+import { type SnapResult } from "../controllers/snap-controller.js";
 import { PlotRectangle } from "../domain/rectangle.js";
 import { CORE_PLOT_THEME } from "../styles/core-plot-style-system.js";
 import { Axis } from "./axis.js";
 import { AxisTickDensityPolicy } from "./axis-tick-density-policy.js";
 import { AxisRange } from "./axis-range.js";
-import type { GridLineModel } from "../controllers/grid-controller.js";
-import type { SnapResult } from "../controllers/snap-controller.js";
-import { RectangleBuilder } from "../builders/rectangle-builder.js";
 import type { Rectangle2 } from "@monorepo/core-math";
 
 export class CoordinateSystem extends CanvasObject {
   private readonly horizontalAxis: Axis;
   private readonly verticalAxis: Axis;
-  private readonly points: Point[];
+  private readonly points: IPoint[];
   private readonly rectangles: PlotRectangle[];
   private readonly curves: InterpolatedCurve[];
   private readonly mappingController: MappingController;
@@ -38,11 +38,19 @@ export class CoordinateSystem extends CanvasObject {
   private readonly xRange: AxisRange;
   private readonly yRange: AxisRange;
   private readonly tickDensityPolicy: AxisTickDensityPolicy;
+  private selectedPointId: string | null = null;
+  private lastRenderContext: RenderContext = {
+    width: 840,
+    height: 520,
+    selectedObjectId: null,
+    selectedPointId: null,
+  };
+  private dragStartPointPosition: { x: number; y: number } | null = null;
 
   public constructor(
     host: ReactiveControllerHost,
     id: string,
-    points: readonly Point[],
+    points: readonly IPoint[],
     rectangles: readonly PlotRectangle[] = [],
     xRange = new AxisRange(),
     yRange = new AxisRange(),
@@ -66,6 +74,7 @@ export class CoordinateSystem extends CanvasObject {
   public override getCapabilities() {
     return {
       clickable: true,
+      draggable: true,
     };
   }
 
@@ -80,6 +89,7 @@ export class CoordinateSystem extends CanvasObject {
   }
 
   public override render(context: RenderContext): TemplateResult {
+    this.lastRenderContext = context;
     const viewport = this.createViewport(context);
     const zero = this.mappingController.mapToSvg(
       { x: 0, y: 0 },
@@ -128,7 +138,6 @@ export class CoordinateSystem extends CanvasObject {
           };
 
       const pathData = this.pathBuilder.buildPolylinePath(mappedSamples);
-
       const labelAnchor = mappedSamples[Math.floor(mappedSamples.length * 0.72)] ?? mappedSamples.at(-1);
       return svg`
         <g data-curve-label=${curve.label}>
@@ -197,7 +206,7 @@ export class CoordinateSystem extends CanvasObject {
 
     const plottedPoints = this.points.map((point) => {
       const mapped = this.mappingController.mapToSvg(point, this.xRange, this.yRange, viewport);
-      const pointIsHighlighted = context.selectedObjectId === this.id;
+      const pointIsHighlighted = context.selectedPointId === point.id;
       return svg`
         <g data-point-label=${point.label}>
           <circle
@@ -251,7 +260,12 @@ export class CoordinateSystem extends CanvasObject {
   }
 
   public override hitTest(context: HitTestContext): boolean {
-    const renderContext = { width: 840, height: 520, selectedObjectId: null };
+    const renderContext = {
+      width: 840,
+      height: 520,
+      selectedObjectId: null,
+      selectedPointId: null,
+    };
     const viewport = this.createViewport(renderContext);
     const pointHit = this.points.some((point) => {
       const mapped = this.mappingController.mapToSvg(point, this.xRange, this.yRange, viewport);
@@ -291,9 +305,80 @@ export class CoordinateSystem extends CanvasObject {
     });
   }
 
+  public resolvePointSelectionAt(point: { x: number; y: number }, context: RenderContext): string | null {
+    const viewport = this.createViewport(context);
+
+    for (let index = this.points.length - 1; index >= 0; index -= 1) {
+      const candidate = this.points[index];
+      if (candidate === undefined) {
+        continue;
+      }
+
+      const mapped = this.mappingController.mapToSvg(candidate, this.xRange, this.yRange, viewport);
+      const dx = point.x - mapped.x;
+      const dy = point.y - mapped.y;
+      if (dx * dx + dy * dy <= 144) {
+        return candidate.id;
+      }
+    }
+
+    return null;
+  }
+
+  public applyPointSelection(pointId: string | null): void {
+    this.selectedPointId = pointId;
+  }
+
+  public getSelectedPointId(): string | null {
+    return this.selectedPointId;
+  }
+
+  public getPointById(pointId: string): IPoint | null {
+    return this.points.find((point) => point.id === pointId) ?? null;
+  }
+
+  public override onDragStart(): void {
+    const point = this.getSelectedMovablePoint();
+    this.dragStartPointPosition = point?.position ?? null;
+  }
+
+  public override onDragMove(context: { currentX: number; currentY: number }): void {
+    const point = this.getSelectedMovablePoint();
+    if (point === null) {
+      return;
+    }
+
+    const cartesian = this.mapSvgToCartesian(
+      { x: context.currentX, y: context.currentY },
+      this.lastRenderContext,
+    );
+    point.moveTo(cartesian);
+  }
+
+  public override onDragCancel(): void {
+    const point = this.getSelectedMovablePoint();
+    if (point !== null && this.dragStartPointPosition !== null) {
+      point.moveTo(this.dragStartPointPosition);
+    }
+    this.dragStartPointPosition = null;
+  }
+
+  public override onDragEnd(): void {
+    this.dragStartPointPosition = null;
+  }
+
   public mapSvgToCartesian(svgPoint: { x: number; y: number }, context: RenderContext): { x: number; y: number } {
     return this.mappingController.mapToCartesian(
       svgPoint,
+      this.xRange,
+      this.yRange,
+      this.createViewport(context),
+    );
+  }
+
+  public mapCartesianPointToSvg(point: { x: number; y: number }, context: RenderContext): { x: number; y: number } {
+    return this.mappingController.mapToSvg(
+      point,
       this.xRange,
       this.yRange,
       this.createViewport(context),
@@ -323,9 +408,7 @@ export class CoordinateSystem extends CanvasObject {
     };
   }
 
-  public sampleInterpolatedCurve(
-    curve: InterpolatedCurve,
-  ): readonly Vector2[] {
+  public sampleInterpolatedCurve(curve: InterpolatedCurve): readonly Vector2[] {
     return this.curveInterpolationService.sample(curve);
   }
 
@@ -452,6 +535,19 @@ export class CoordinateSystem extends CanvasObject {
       width: context.width - left - right,
       height: context.height - top - bottom,
     };
+  }
+
+  private getSelectedMovablePoint(): IPoint | null {
+    if (this.selectedPointId === null) {
+      return null;
+    }
+
+    const point = this.getPointById(this.selectedPointId);
+    if (point === null || point.movable !== true) {
+      return null;
+    }
+
+    return point;
   }
 
   private buildTickValues(range: AxisRange, pixelLength: number): readonly number[] {

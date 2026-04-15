@@ -18,6 +18,7 @@ export class DemoShellView extends LitElement {
             <div class="title">Multi-view Lit application for sprint deliveries</div>
           </div>
           <nav>
+            <!-- TODO: Add Sprint 5 navigation link when Sprint 5 demo features are ready. -->
             <a href="#sprint-1" data-active=${String(this.currentRoute === "sprint-1")}>
               Sprint 1 Delivery
             </a>

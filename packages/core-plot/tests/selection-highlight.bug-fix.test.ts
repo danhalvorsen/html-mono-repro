@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
+import type { RenderContext } from "@monorepo/core-plot-canvas";
 
 import { Axis } from "../src/coordinates/axis.js";
 import { AxisRange } from "../src/coordinates/axis-range.js";
 import { CoordinateSystem } from "../src/coordinates/coordinate-system.js";
-import { Point } from "../src/domain/point.js";
-import type { RenderContext } from "../src/core/render-context.js";
+import { Point } from "@monorepo/core-plot-curve";
 
 describe("selection highlight bug fix", () => {
   it("should render highlighted axis visuals when the axis is selected", () => {
@@ -23,6 +23,7 @@ describe("selection highlight bug fix", () => {
       width: 840,
       height: 520,
       selectedObjectId: "axis-1",
+      selectedPointId: null,
     };
 
     const rendered = JSON.stringify(axis.render(renderContext).values);
@@ -45,6 +46,7 @@ describe("selection highlight bug fix", () => {
       width: 840,
       height: 520,
       selectedObjectId: "cs-1",
+      selectedPointId: null,
     };
 
     const rendered = JSON.stringify(coordinateSystem.render(renderContext).values);

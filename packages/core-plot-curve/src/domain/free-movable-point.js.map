@@ -1,0 +1,1 @@
+{"version":3,"file":"free-movable-point.js","sourceRoot":"","sources":["free-movable-point.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,KAAK,EAAiB,MAAM,2BAA2B,CAAA;AAChE,MAAM,OAAO,gBAAiB,SAAQ,KAAK;IACzC,IAAoB,OAAO;QACzB,OAAO,IAAI,CAAC;IACd,CAAC;IAEe,MAAM,CAAC,QAAuB;QAC5C,IAAI,CAAC,WAAW,CAAC,QAAQ,CAAC,CAAC;QAC3B,OAAO,IAAI,CAAC;IACd,CAAC;CACF"}

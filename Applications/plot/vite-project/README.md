@@ -21,6 +21,11 @@ Current routes:
 * `#sprint-3`
 * `#sprint-3-1`
 
+Pending route:
+
+* `#sprint-5`
+  Add this route and its delivery view when Sprint 5 demo features are ready.
+
 ## Structure
 
 Main files:
@@ -111,6 +116,10 @@ type DemoRoute =
 6. Extend the render branch in `MyElement` to render the new view.
 
 7. Add a navigation link in [src/views/demo-shell-view.ts](/mnt/c/Users/danha/source/repos/HTML/MonoRepro/Applications/plot/vite-project/src/views/demo-shell-view.ts:1).
+
+Sprint 5 note:
+
+* Add `#sprint-5` and `src/views/sprint-five-view.ts` once the Sprint 5 demo features are ready to be shown as a coherent delivery.
 
 ## View Design Rules
 

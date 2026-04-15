@@ -1,5 +1,4 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
-
 import { AxisRange } from "../coordinates/axis-range.js";
 
 export interface CartesianPoint {

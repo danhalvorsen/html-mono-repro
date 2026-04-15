@@ -1,7 +1,6 @@
-export interface CurvePointLike {
-  readonly x: number;
-  readonly y: number;
-}
+import type { Point2 } from "@monorepo/core-math";
+
+export type CurvePointLike = Point2;
 
 export type InterpolationKind = "catmull-rom";
 

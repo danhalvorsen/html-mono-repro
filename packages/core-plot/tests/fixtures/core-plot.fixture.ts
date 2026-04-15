@@ -1,12 +1,12 @@
 import { svg, type ReactiveController, type ReactiveControllerHost } from "lit";
+import { CanvasObject, type RenderContext } from "@monorepo/core-plot-canvas";
 
 import { MappingController, type MappingViewport } from "../../src/controllers/mapping-controller.js";
 import { AxisRange } from "../../src/coordinates/axis-range.js";
 import { CoordinateSystem } from "../../src/coordinates/coordinate-system.js";
-import { CanvasObject } from "../../src/core/canvas-object.js";
-import type { RenderContext } from "../../src/core/render-context.js";
+import { FreeMovablePoint } from "../../src/domain/free-movable-point.js";
 import { InterpolatedCurve } from "@monorepo/core-plot-curve";
-import { Point } from "../../src/domain/point.js";
+import { Point } from "@monorepo/core-plot-curve";
 import { PlotRectangle } from "../../src/domain/rectangle.js";
 import type { Rectangle2 } from "@monorepo/core-math";
 
@@ -95,6 +95,7 @@ export class CorePlotFixture {
       width: 840,
       height: 520,
       selectedObjectId: null,
+      selectedPointId: null,
     };
   }
 
@@ -117,6 +118,10 @@ export class CorePlotFixture {
 
   public createPoint(x: number, y: number, label = "P"): Point {
     return new Point(x, y, label);
+  }
+
+  public createFreeMovablePoint(x: number, y: number, label = "P"): FreeMovablePoint {
+    return new FreeMovablePoint(x, y, label);
   }
 
   public createPointSet(): readonly Point[] {

@@ -9,7 +9,9 @@ const packageRoot = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   resolve: {
     alias: {
+      "@monorepo/core-plot-canvas": path.resolve(packageRoot, "../core-plot-canvas/src/index.ts"),
       "@monorepo/core-plot-curve": path.resolve(packageRoot, "../core-plot-curve/src/index.ts"),
+      "@monorepo/core-plot-shapes": path.resolve(packageRoot, "../core-plot-shapes/src/index.ts"),
     },
   },
   test: {

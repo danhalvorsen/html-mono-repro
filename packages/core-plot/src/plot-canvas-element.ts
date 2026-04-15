@@ -1,9 +1,11 @@
 import { LitElement, html, svg } from "lit";
 import { createRef, ref, type Ref } from "lit/directives/ref.js";
 
-import { CanvasObjectRegistry } from "./core/canvas-object-registry.js";
-import type { CanvasObject } from "./core/canvas-object.js";
-import type { RenderContext } from "./core/render-context.js";
+import {
+  CanvasObjectRegistry,
+  type CanvasObject,
+  type RenderContext,
+} from "@monorepo/core-plot-canvas";
 import { DragController } from "./controllers/drag-controller.js";
 import { GridController } from "./controllers/grid-controller.js";
 import { MouseController } from "./controllers/mouse-controller.js";
@@ -21,6 +23,7 @@ export interface PlotCanvasSnapshot {
   readonly pointerX: number;
   readonly pointerY: number;
   readonly selectedObjectId: string | null;
+  readonly selectedPointId: string | null;
   readonly doubleClickedObjectId: string | null;
   readonly dragTargetId: string | null;
   readonly dragDeltaX: number;
@@ -44,6 +47,7 @@ export class PlotCanvasElement extends LitElement {
     this,
     this.hitTestService,
     this.mouseController,
+    () => this.getCurrentRenderContext(),
   );
   private readonly onDoubleClickController = new OnDoubleClickController(
     this,
@@ -66,6 +70,7 @@ export class PlotCanvasElement extends LitElement {
       pointerX: pointer.canvasX,
       pointerY: pointer.canvasY,
       selectedObjectId: this.onClickController.selection?.id ?? null,
+      selectedPointId: this.onClickController.selectedPoint,
       doubleClickedObjectId: this.onDoubleClickController.lastTarget?.id ?? null,
       dragTargetId: drag.target?.id ?? null,
       dragDeltaX: drag.deltaX,
@@ -234,6 +239,7 @@ export class PlotCanvasElement extends LitElement {
       width,
       height,
       selectedObjectId: this.onClickController.selection?.id ?? null,
+      selectedPointId: this.onClickController.selectedPoint,
     };
   }
 

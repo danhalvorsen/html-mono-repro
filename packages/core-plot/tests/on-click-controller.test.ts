@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { CanvasObjectRegistry } from "@monorepo/core-plot-canvas";
 
-import { CanvasObjectRegistry } from "../src/core/canvas-object-registry.js";
+import { CoordinateSystem } from "../src/coordinates/coordinate-system.js";
 import { OnClickController } from "../src/controllers/on-click-controller.js";
 import { CanvasHitTestService } from "../src/services/canvas-hit-test-service.js";
 import { QuadTreeCanvasSpatialIndex } from "../src/services/canvas-spatial-index.js";
@@ -42,12 +43,55 @@ describe("OnClickController", () => {
       },
     };
 
-    const controller = new OnClickController(host, hitTestService, mouseController as never);
+    const controller = new OnClickController(
+      host,
+      hitTestService,
+      mouseController as never,
+      () => fixture.createRenderContext(),
+    );
+    controller.hostConnected();
+    host.dispatchEvent(new Event("click"));
+    
+    expect(controller.selection?.id).toBe("upper");
+    expect(host.updates).toBe(1);
+  });
+
+  it("should select a point inside the coordinate system when clicking on its mapped svg position", () => {
+    const host = new ClickHost() as ClickHost & HTMLElement;
+    const registry = new CanvasObjectRegistry();
+    const points = fixture.createPointSet();
+    const coordinateSystem = new CoordinateSystem(
+      fixture.createReactiveHost(),
+      "coordinate-system-fixture",
+      points,
+    );
+    const renderContext = fixture.createRenderContext();
+    registry.register(coordinateSystem);
+    const hitTestService = new CanvasHitTestService(
+      registry,
+      new QuadTreeCanvasSpatialIndex(),
+      () => renderContext,
+    );
+    const point = points[1];
+    const mapped = coordinateSystem.mapCartesianPointToSvg(point, renderContext);
+    const mouseController = {
+      pointer: {
+        canvasX: mapped.x,
+        canvasY: mapped.y,
+      },
+    };
+
+    const controller = new OnClickController(
+      host,
+      hitTestService,
+      mouseController as never,
+      () => renderContext,
+    );
     controller.hostConnected();
     host.dispatchEvent(new Event("click"));
 
-    expect(controller.selection?.id).toBe("upper");
-    expect(host.updates).toBe(1);
+    expect(controller.selection?.id).toBe("coordinate-system-fixture");
+    expect(controller.selectedPoint).toBe(point.id);
   });
 
   it("should clear selection when no clickable object is hit", () => {
@@ -67,7 +111,12 @@ describe("OnClickController", () => {
       },
     };
 
-    const controller = new OnClickController(host, hitTestService, mouseController as never);
+    const controller = new OnClickController(
+      host,
+      hitTestService,
+      mouseController as never,
+      () => fixture.createRenderContext(),
+    );
     controller.hostConnected();
     host.dispatchEvent(new Event("click"));
 

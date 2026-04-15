@@ -1,7 +1,14 @@
 import { AxisRange } from "./axis-range.js";
 
+export interface AxisRangeLike {
+  readonly min: number;
+  readonly max: number;
+
+  span(): number;
+}
+
 export class AxisIntervalScaler {
-  public scaleFromHorizontalDrag(range: AxisRange, dragDeltaX: number): AxisRange {
+  public scaleFromHorizontalDrag(range: AxisRangeLike, dragDeltaX: number): AxisRange {
     const center = (range.min + range.max) / 2;
     const halfSpan = range.span() / 2;
     const factor = Math.max(0.2, 1 + dragDeltaX / 240);

@@ -1,6 +1,4 @@
-import type { CanvasObject } from "../core/canvas-object.js";
-import type { CanvasObjectRegistry } from "../core/canvas-object-registry.js";
-import type { RenderContext } from "../core/render-context.js";
+import type { CanvasObject, CanvasObjectRegistry, RenderContext } from "@monorepo/core-plot-canvas";
 import type { CanvasSpatialIndex } from "./canvas-spatial-index.js";
 
 export class CanvasHitTestService {
