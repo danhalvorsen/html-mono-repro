@@ -1,0 +1,411 @@
+eature: Mech-Based Modular 2D Engine Specification
+
+  Rule: Domain definitions and core semantics
+
+    Scenario: Domain types are defined
+      Given the abstract system is specified
+      When domain concepts are declared
+      Then the system SHALL define type Mech
+      And the system SHALL define type Connector
+      And the system SHALL define type Rotation where Rotation ∈ {0°, 90°, 180°, 270°}
+      And the system SHALL define type Position where Position = (x, y)
+      And the system SHALL define type Direction where Direction ∈ {N, E, S, W}
+      And the system SHALL define type Span where Span ∈ ℕ
+      And the system SHALL define type CompatibilityType where CompatibilityType ∈ Symbol
+      And all constraints SHALL operate on these domain types
+
+    Scenario: Core function contracts are defined
+      Given the abstract system is specified
+      When core operations are declared
+      Then the system SHALL define rotate(direction, R) -> direction
+      And the system SHALL define rotate(position, R) -> position
+      And the system SHALL define Transform(geometry, transform) -> geometry
+      And the system SHALL define compatible(A, B) -> Boolean
+      And all such functions SHALL be pure
+      And identical inputs SHALL produce identical outputs
+
+    Scenario: Type consistency is enforced
+      Given any operation in the system
+      When inputs are evaluated
+      Then all input types SHALL match declared domain types
+      And NOT implicit type coercion SHALL be allowed
+
+  Rule: Canonical mech definition
+
+    Scenario: Canonical geometry exists
+      Given a mech type is defined
+      When the engine loads mech definitions
+      Then each mech SHALL have a canonical geometry
+      And geometry SHALL define boundingBox AND pivot AND orientation
+      And geometry SHALL be deterministic AND rotation-safe
+
+    Scenario: Canonical local space is used
+      Given a mech is defined
+      When geometry OR connectors are evaluated
+      Then all definitions SHALL exist in canonical local space
+      And NOT geometry depends on world coordinates
+      And instanceGeometry = Transform(canonicalGeometry, instanceTransform)
+
+    Scenario: Canonical identity is stable
+      Given a mech type exists
+      When referenced by the system
+      Then its identity SHALL be stable
+      And instanceA.typeId == instanceB.typeId IMPLIES shared canonical definition
+
+    Scenario: Canonical definitions are reusable
+      Given a canonical mech definition exists
+      When multiple instances are created
+      Then all instances SHALL reuse the same canonical definition
+      And per-instance differences SHALL be expressed by transformation only
+
+  Rule: Connector model and adjacency
+
+    Scenario: Connector contract is explicit
+      Given a mech has connectors
+      When a connector is defined
+      Then connector SHALL define position AND direction AND compatibilityType AND span
+      And connector SHALL belong to exactly one mech
+      And connector compatibility SHALL be decidable WITHOUT inspecting rendered geometry
+
+    Scenario: Connector compatibility governs adjacency
+      Given two connectors A and B
+      When adjacency is evaluated
+      Then compatible(A, B) iff (A.type == B.type) AND (A.direction == opposite(B.direction)) AND (A.span == B.span)
+      And NOT compatible(A, B) IMPLIES placementRejected
+
+    Scenario: Connectors rotate with the mech
+      Given a mech is rotated by R
+      When rotation is applied
+      Then connector.direction' = rotate(connector.direction, R)
+      And connector.position' = rotate(connector.position, R)
+      And compatibility semantics SHALL remain invariant under allowed rotation
+
+    Scenario: Edge and corner adjacency are both considered
+      Given a mech placement exists
+      When neighbors are evaluated
+      Then adjacency SHALL consider edgeAdjacency OR cornerAdjacency
+      And NOT overlap SHALL hold
+      And NOT undefinedGap SHALL hold
+
+    Scenario: Connection interfaces remain consistent
+      Given two adjacent mech instances A and B
+      When their interfaces meet
+      Then interface(A) SHALL equal inverse(interface(B))
+      And connection position AND direction AND span SHALL align
+
+  Rule: Rotation system
+
+    Scenario: Rotation domain is discrete and explicit
+      Given a mech supports rotation
+      When a rotation is requested
+      Then requestedRotation ∈ allowedRotations
+      And allowedRotations ⊆ {0°, 90°, 180°, 270°}
+      And rotatedGeometry = rotate(canonicalGeometry, requestedRotation)
+      And topology(rotatedGeometry) SHALL equal topology(canonicalGeometry)
+
+    Scenario: Rotation is derived from canonical definition
+      Given a mech instance is rotated
+      When the rotation is applied
+      Then rotatedInstance SHALL be derived from the canonical definition
+      And geometry AND connectors AND pivot AND collision SHALL rotate as one unit
+      And NOT new geometry SHALL be authored
+
+    Scenario: Invalid rotations are rejected
+      Given a mech type
+      When rotation R is requested
+      Then (R ∈ allowedRotations) IMPLIES rotationValid
+      And NOT (R ∈ allowedRotations) IMPLIES rotationRejected
+
+    Scenario: Symmetry reduces authored cases
+      Given two rotations R1 and R2
+      When the mech is rotationally symmetric under R1 and R2
+      Then equivalent(R1, R2) IMPLIES reuse same canonical template
+      And behavior SHALL remain consistent across equivalent rotations
+
+  Rule: Placement and assembly
+
+    Scenario: Placement validation is complete
+      Given a placement attempt P
+      When placement is evaluated
+      Then placementValid iff inBounds AND NOT overlap AND connectorCompatible AND rotationValid
+      And placement SHALL commit only if placementValid
+
+    Scenario: Placement is atomic
+      Given a placement attempt P
+      When placement validation fails
+      Then NOT partialStateCommitted
+      And sceneState_before SHALL equal sceneState_after
+
+    Scenario: Automatic placement is connector-driven
+      Given a mech M is placed
+      When neighbors N are evaluated
+      Then for all n in N compatible(M, n) MUST hold
+      Else placementRejected
+
+    Scenario: Neighbor updates preserve consistency
+      Given mech M changes OR rotates OR is removed
+      When the update occurs
+      Then all affected neighbors SHALL be notified
+      And all affected neighbors SHALL recompute valid states
+      And sceneConsistency MUST hold
+
+    Scenario: Failure remains localized
+      Given a placement attempt fails
+      When failure is handled
+      Then failure SHALL NOT propagate beyond the attempted placement
+      And unrelated regions SHALL remain unchanged
+      And systemState SHALL remain unchanged
+
+    Scenario: Selection ordering is deterministic
+      Given a set of valid candidates C
+      When selection occurs
+      Then selection SHALL follow deterministic ordering O
+      And O ∈ {priority OR lexicographic OR canonicalIndex}
+      And identical candidate sets SHALL produce identical selections across runs
+
+  Rule: Procedural generation and constraint solving
+
+    Scenario: Generator outputs mech intent, not final geometry
+      Given a procedural generator runs
+      When it assigns content to cells OR regions
+      Then output SHALL be mechType OR candidateSet OR placementIntent
+      And NOT finalGeometry SHALL be output by the generator
+
+    Scenario: Generation and assembly are separated
+      Given generation AND assembly both exist
+      When the system executes
+      Then generation decides WHAT is placed
+      And assembly decides HOW the placement is realized geometrically
+
+    Scenario: Constraint propagation removes invalid candidates
+      Given a candidate set C
+      When constraints are applied
+      Then C' = filter(C, constraints)
+      And C' ⊆ C
+      And NOT invalidCandidate ∈ C'
+
+    Scenario: Empty candidate sets trigger solver behavior
+      Given a candidate set C
+      When constraints reduce C to ∅
+      Then solver SHALL backtrack OR rejectPlacement
+      And solver behavior SHALL be deterministic
+
+    Scenario: Procedural generation is deterministic
+      Given identical input AND identical seed AND identical mech definitions
+      When the generator AND solver execute
+      Then resulting placements SHALL be identical across runs
+
+  Rule: Data-driven definitions
+
+    Scenario: Mech definitions are external
+      Given the engine starts
+      When definitions are loaded
+      Then mech metadata SHALL be loaded from external data
+      And mech metadata SHALL include geometry AND connectors AND allowedRotations AND rules
+
+    Scenario: New mech types do not require engine modification
+      Given a new mech type T is introduced
+      When the engine loads T
+      Then NOT engine core code SHALL require modification
+      And behavior(T) SHALL be derived from data AND abstractions
+
+  Rule: Determinism and purity
+
+    Scenario: Assembly is deterministic
+      Given identical input AND identical seed AND identical definitions
+      When assembly is executed
+      Then output1 SHALL equal output2
+
+    Scenario: Rotation is deterministic
+      Given the same mech AND the same rotation R
+      When rotation is applied multiple times
+      Then result1 SHALL equal result2
+
+    Scenario: No hidden state influences behavior
+      Given any system execution
+      When the result is evaluated
+      Then output = f(input, explicitContext)
+      And NOT hiddenState influences output
+
+    Scenario: Pure functions are repeatable
+      Given a pure function f
+      When f(x) is evaluated multiple times
+      Then all returned results SHALL be equal
+
+  Rule: Geometry and runtime use
+
+    Scenario: Geometry is derived from canonical definition
+      Given a mech instance I
+      When runtime geometry is required
+      Then geometry(I) = Transform(canonical(I.type), I.transform)
+
+    Scenario: Adjacent geometry aligns
+      Given adjacent mechs A and B
+      When geometry is emitted OR queried
+      Then align(A, B) MUST hold
+      And NOT gap SHALL hold
+      And NOT overlap SHALL hold
+
+    Scenario: Geometry is not the source of truth
+      Given any runtime decision D
+      When D is evaluated
+      Then NOT D derivedFrom geometry
+      And D derivedFrom canonicalDefinition AND connectors
+
+    Scenario: Rendering consumes derived geometry
+      Given a mech is placed
+      When the renderer draws the scene
+      Then the renderer SHALL use canonical or rotated derived geometry
+      And rendered geometry SHALL align with neighbors
+
+    Scenario: Collision consumes derived geometry
+      Given a mech has collision geometry
+      When the physics OR collision system queries it
+      Then collision SHALL match the rotated derived geometry
+
+  Rule: Topology, reuse, and transforms
+
+    Scenario: Templates are reused through transforms
+      Given a canonical template T
+      When reused in multiple placements
+      Then each instance SHALL be Transform(T, instanceTransform)
+      And NOT duplicate authored definitions SHALL be required
+
+    Scenario: Final transform is composed explicitly
+      Given a mech instance I
+      When placed into the scene
+      Then transform(I) = translation AND rotation AND optionalScale
+
+    Scenario: Transform preserves connectivity
+      Given a transformed mech instance
+      When placed adjacent to compatible neighbors
+      Then transform SHALL NOT distort connector compatibility
+      And adjacency alignment SHALL remain valid
+
+  Rule: Global invariants
+
+    Scenario: Adjacency invariant holds globally
+      Given any two mechs A and B
+      When adjacent(A, B)
+      Then adjacent(A, B) IMPLIES compatible(A, B)
+
+    Scenario: Non-overlap invariant holds globally
+      Given any two placed mechs A and B
+      When their occupied space is evaluated
+      Then NOT overlap(A, B)
+
+    Scenario: Identity invariant holds globally
+      Given instances I1 and I2
+      When I1.typeId == I2.typeId
+      Then canonical(I1) SHALL equal canonical(I2)
+
+    Scenario: Rotation invariant holds globally
+      Given a mech M
+      When M is rotated by any allowed rotation
+      Then count(connectors(M)) SHALL remain invariant
+      And connector compatibility classes SHALL remain invariant
+
+    Scenario: Valid scene modifications preserve validity
+      Given a valid scene S
+      When a modification is attempted
+      Then valid(S') OR reject(modification)
+
+    Scenario: Reuse invariant holds globally
+      Given a canonical definition D
+      When instances are created from D
+      Then for all instances i source(i) SHALL equal D
+
+  Rule: Error semantics
+
+    Scenario: Errors are explicit
+      Given a constraint violation occurs
+      When the violation is detected
+      Then an explicit error SHALL be produced
+
+    Scenario: Errors identify violated constraints
+      Given an error E
+      When E is reported
+      Then E SHALL identify the violated constraint
+      And E SHALL identify the failing mech OR connector OR placement when applicable
+
+    Scenario: Errors do not mutate state
+      Given an error occurs during validation OR placement OR solving
+      When the error is handled
+      Then NOT scene state SHALL be modified
+
+  Rule: Serialization and reconstruction
+
+    Scenario: Serialization preserves canonical identity
+      Given a scene S
+      When S is serialized AND deserialized
+      Then for all mech instances I identity(I) SHALL be preserved
+
+    Scenario: Serialization preserves transforms
+      Given a mech instance I
+      When I is serialized AND deserialized
+      Then transform(I) SHALL be preserved exactly
+
+    Scenario: Deserialization is deterministic
+      Given serialized data D
+      When D is deserialized multiple times
+      Then reconstructedScene1 SHALL equal reconstructedScene2
+
+  Rule: Performance constraints
+
+    Scenario: Connector compatibility is constant time
+      Given two connectors A and B
+      When compatible(A, B) is evaluated
+      Then timeComplexity SHALL be O(1)
+
+    Scenario: Rotation transform is constant time
+      Given a mech instance
+      When an allowed rotation is applied
+      Then timeComplexity SHALL be O(1)
+
+    Scenario: Placement validation scales with local neighborhood
+      Given a mech M with k relevant neighbors
+      When placement is validated
+      Then timeComplexity SHALL be O(k)
+
+  Rule: Extensibility and replaceability
+
+    Scenario: Extension is achieved through new types
+      Given a new feature F is required
+      When the system is extended
+      Then extension SHALL be achieved by adding new types OR new data
+      And NOT existing core abstractions SHALL require modification
+
+    Scenario: New mech types preserve invariants
+      Given a new mech type T
+      When T is introduced
+      Then all existing invariants SHALL remain valid
+      And existing behavior SHALL remain unchanged unless explicitly configured otherwise
+
+    Scenario: Implementations are replaceable behind abstractions
+      Given an abstraction A
+      When implementation B replaces implementation C
+      Then behavior(B) SHALL be equivalent to behavior(C) with respect to this specification
+      And all scenarios in this specification SHALL still pass
+
+    Scenario: Modules remain independent
+      Given modules M1 and M2
+      When integrated into the same system
+      Then interaction(M1, M2) SHALL occur via abstractions only
+      And NOT internal implementation knowledge SHALL be required
+
+  Rule: Testability
+
+    Scenario: Every constraint is testable
+      Given a constraint C in this specification
+      When the test suite is authored
+      Then there SHALL exist at least one test for C
+
+    Scenario: Positive and negative coverage exists
+      Given a constraint C
+      When the test suite is authored
+      Then there SHALL exist a validCase AND an invalidCase for C
+
+    Scenario: Test execution is deterministic
+      Given a test case T
+      When T is executed multiple times with identical inputs
+      Then result(T) SHALL be identical across runs

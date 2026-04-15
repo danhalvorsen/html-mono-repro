@@ -1,13 +1,11 @@
 // packages/Audio/music-core-synthesizer/tests/fixture/SequencerProjectDocumentBuilder.ts
 
+import type { SequencerProjectDocumentDto } from "../../src/dto.js";
 import type { components } from "../../src/generated/schema-types.js";
 
 export interface IBuilder<T> {
   build(): T;
 }
-
-type SequencerProjectDocumentDto =
-  components["schemas"]["SequencerProjectDocument"];
 
 type ProjectDto = components["schemas"]["Project"];
 type ProjectComponentsDto = components["schemas"]["ProjectComponents"];

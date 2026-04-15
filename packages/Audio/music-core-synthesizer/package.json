@@ -14,12 +14,14 @@
     "build": "tsc -b",
     "test": "vitest run",
     "test:watch": "vitest",
-    "generate:schema-types": "tsx ./script/generate-schema-types.ts",
+    "generate:schema-types": "tsx ./scripts/generate-schema-types.ts",
     "generate:state-types": "openapi-typescript ./schemas/state.yaml -o ./src/generated/state.d.ts"
   },
   "dependencies": {
     "@monorepo/core-specifications": "workspace:*",
-    "@monorepo/core-specifications-rules": "workspace:*"
+    "@monorepo/core-specifications-rules": "workspace:*",
+    "@monorepo/core-template": "workspace:*",
+    "@monorepo/core-math": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",

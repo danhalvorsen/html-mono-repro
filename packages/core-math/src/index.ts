@@ -34,4 +34,5 @@ export * from './interpolation/CatmullRomSpline3D.js';
 export * from './interpolation/ISpline.js';
 export * from './interpolation/LinearInterpolator3D.js';
 export * from './types/Types.js';
- 
+
+export * from './implementations/BoundingBox2DBuilder.js'

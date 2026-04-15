@@ -10,7 +10,14 @@
       "swing": 0
     },
     "components": {
-      "samples": []
+      "samples": [
+        {
+          "id": "sample-1",
+          "name": "Kick",
+          "source": "kick.wav",
+          "rootNote": 36
+        }
+      ]
     },
     "patterns": [
       {
@@ -23,6 +30,7 @@
             "id": "track-1",
             "name": "Kick Track",
             "kind": "sample",
+            "sampleId": "sample-1",
             "defaults": {},
             "muteState": "unmuted",
             "hits": [

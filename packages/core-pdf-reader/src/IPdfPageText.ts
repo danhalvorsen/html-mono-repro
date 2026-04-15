@@ -1,0 +1,1 @@
+export interface IPdfPageText { readonly pageNumber: number; readonly text: string; }

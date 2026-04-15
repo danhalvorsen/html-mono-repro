@@ -1,0 +1,1 @@
+{"version":3,"file":"FiniteDifferenceTangentStrategy.d.ts","sourceRoot":"","sources":["FiniteDifferenceTangentStrategy.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,OAAO,EAAE,MAAM,cAAc,CAAC;AACvC,OAAO,EAAE,qBAAqB,EAAE,MAAM,wCAAwC,CAAC;AAE/E,qBAAa,+BAAgC,YAAW,qBAAqB,CAAC,OAAO,CAAC;IACtF,QAAQ,CAAC,MAAM,EAAE,OAAO,EAAE,EAAE,KAAK,EAAE,MAAM,GAAG,OAAO;CAKlD"}

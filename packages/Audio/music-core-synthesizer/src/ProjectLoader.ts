@@ -1,21 +1,25 @@
-import { IProjectLoader } from "./IProjectLoader.js";
+import type { IJsonDocumentParser } from "./IJsonDocumentParser.js";
+import type { IProjectFactory } from "./IProjectFactory.js";
+import type { IProjectLoader } from "./IProjectLoader.js";
+import type { ISemanticValidator } from "./ISemanticValidator.js";
+import type { ISchemaValidator } from "./ISchemaValidator.js";
 
-export interface IJsonSchemaValidator<T> {
-  validate(input: unknown): T;
-}
-
-export interface IProjectMapper<TDocument, TProject> {
-  map(document: TDocument): TProject;
-}
-
-export class ProjectLoader<TDocument, TProject> implements IProjectLoader<TProject, unknown> {
+export class ProjectLoader<TDocument, TProject, TInput = string>
+  implements IProjectLoader<TProject, TInput>
+{
   public constructor(
-    private readonly validator: IJsonSchemaValidator<TDocument>,
-    private readonly mapper: IProjectMapper<TDocument, TProject>,
+    private readonly documentParser: IJsonDocumentParser<TInput>,
+    private readonly schemaValidator: ISchemaValidator<TDocument>,
+    private readonly semanticValidator: ISemanticValidator<TDocument>,
+    private readonly projectFactory: IProjectFactory<TDocument, TProject>,
   ) {}
 
-  public load(input: unknown): TProject {
-    const dto = this.validator.validate(input);
-    return this.mapper.map(dto);
+  public load(input: TInput): TProject {
+    const parsed = this.documentParser.parse(input);
+    const schemaValidatedDocument = this.schemaValidator.validate(parsed);
+    const semanticallyValidatedDocument = this.semanticValidator.validate(
+      schemaValidatedDocument,
+    );
+    return this.projectFactory.create(semanticallyValidatedDocument);
   }
 }

@@ -1,7 +1,24 @@
 export * from "./generated/schema-types.js";
 export * from "./IProjectFactory.js";
 export * from "./IProjectLoader.js";
+export * from "./ISemanticValidator.js";
 export * from "./ProjectLoader.js";
 export * from "./OpenApiSchemaProjectLoader.js";
+export * from "./RuleBasedSemanticValidator.js";
 export * from "./SchemaValidationError.js";
-AbortController
+export * from "./SemanticValidationError.js";
+export * from "./specifications/ActivePatternExistsSpecification.js";
+export * from "./specifications/CreatedAtBeforeUpdatedAtSpecification.js";
+export * from "./specifications/MidiTrackMustNotReferenceSampleIdSpecification.js";
+export * from "./specifications/ReferencedSamplesExistSpecification.js";
+export * from "./specifications/SampleTrackRequiresSampleIdSpecification.js";
+export * from "./specifications/SampleWindowStartBeforeEndSpecification.js";
+export * from "./specifications/StepsWithinPatternBoundsSpecification.js";
+export * from "./specifications/SequencerProjectSemanticSpecification.js";
+export * from "./specifications/UniquePatternIdsSpecification.js";
+export * from "./specifications/UniqueSampleIdsSpecification.js";
+export * from "./specifications/UniqueStepIdsWithinTrackSpecification.js";
+export * from "./specifications/UniqueStepIndexesWithinTrackSpecification.js";
+export * from "./specifications/UniqueTrackIdsWithinPatternSpecification.js";
+export * from "./rules/SequencerProjectSemanticRuleSet.js";
+

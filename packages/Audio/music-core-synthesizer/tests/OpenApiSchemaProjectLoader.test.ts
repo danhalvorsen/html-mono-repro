@@ -7,8 +7,15 @@ import { describe, expect, it } from "vitest";
 import {
   OpenApiSchemaProjectLoader,
   SchemaValidationError,
+  SemanticValidationError,
 } from "../src/index.js";
 import { SpyFactory } from "./fixture/SpyFactory.js";
+import {
+  ProjectComponentsBuilder,
+  ProjectBuilder,
+  SampleComponentBuilder,
+  SequencerProjectDocumentBuilder,
+} from "./fixture/SequencerProjectDocumentBuilder.js";
 
 async function readSchema(): Promise<string> {
   return readFile(
@@ -67,6 +74,34 @@ describe("OpenApiSchemaProjectLoader", () => {
 
     expect(factory.received).toBeNull();
   });
+
+  it("Given schema-valid but semantically invalid document When load Then SemanticValidationError is thrown", async () => {
+    const schemaYaml = await readSchema();
+    const validDocument = new SequencerProjectDocumentBuilder().build();
+    const json = JSON.stringify({
+      ...validDocument,
+      project: {
+        ...validDocument.project,
+        activePatternId: "missing-pattern",
+      },
+    });
+
+    const factory = new SpyFactory();
+    const loader = OpenApiSchemaProjectLoader.create(schemaYaml, factory);
+
+    await expect(loader.load(json)).rejects.toBeInstanceOf(
+      SemanticValidationError,
+    );
+
+    await expect(loader.load(json)).rejects.toMatchObject({
+      validationErrors: [
+        "Rule ActivePatternExists failed: pattern 'missing-pattern' was not found at project.activePatternId",
+      ],
+    });
+
+    expect(factory.received).toBeNull();
+  });
+
   it("Given valid fixture with non power of two stepCount When load Then factory is invoked with validated document", async () => {
   const schemaYaml = await readSchema();
   const json = await readFixture("valid-non-power-of-two-step-count.json");

@@ -1,0 +1,1 @@
+{"version":3,"file":"IInterpolationStrategy.d.ts","sourceRoot":"","sources":["IInterpolationStrategy.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,yEAAyE,CAAC;AAGzG,MAAM,WAAW,sBAAsB,CAAC,CAAC,EAAE,UAAU;IACjD,WAAW,CAAC,OAAO,EAAE,cAAc,CAAC,CAAC,CAAC,EAAE,CAAC,EAAE,UAAU,GAAG,CAAC,CAAC;CAC7D"}
