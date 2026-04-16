@@ -1,6 +1,1 @@
-export interface IFontInformation {
-  readonly name: string;
-  readonly size: number;
-  readonly family?: string;
-  readonly rawName?: string;
-}
+export type { IFontInformation } from "./contracts/contracts.js";

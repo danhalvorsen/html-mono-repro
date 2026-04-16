@@ -23,8 +23,10 @@ describe("CompositePdfEngine (Kiwi.pdf) - page 1 full JSON export", () => {
 
     // deterministic ordering (important for diff/debug)
     const sorted = [...page1].sort((a, b) => {
-      if (b.y !== a.y) return b.y - a.y; // top → bottom
-      return a.x - b.x;                  // left → right
+      const ay = a.boundingBox.position.y;
+      const by = b.boundingBox.position.y;
+      if (by !== ay) return by - ay; // top → bottom
+      return a.boundingBox.position.x - b.boundingBox.position.x; // left → right
     });
 
     await writeFile(

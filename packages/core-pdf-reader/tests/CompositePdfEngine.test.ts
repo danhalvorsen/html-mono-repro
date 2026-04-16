@@ -48,10 +48,11 @@ describe("CompositePdfEngine", () => {
       {
         pageNumber: 1,
         text: "Kiwi",
-        x: 25,
-        y: 40,
-        width: 36,
-        height: 20,
+        boundingBox: {
+          position: { x: 25, y: 40 },
+          width: 36,
+          height: 20,
+        },
         font: {
           name: "Helvetica Neue",
           size: 18,
@@ -106,10 +107,11 @@ describe("CompositePdfEngine", () => {
       {
         pageNumber: 1,
         text: "FontObject",
-        x: 14,
-        y: 22,
-        width: 55,
-        height: 0,
+        boundingBox: {
+          position: { x: 14, y: 22 },
+          width: 55,
+          height: 0,
+        },
         font: {
           name: "Roboto",
           size: 11,

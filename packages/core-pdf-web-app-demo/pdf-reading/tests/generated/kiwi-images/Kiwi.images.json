@@ -1,0 +1,6111 @@
+{
+  "sourcePdf": "Kiwi.pdf",
+  "generatedAtUtc": "2026-04-16T14:25:14.409Z",
+  "imageCount": 436,
+  "images": [
+    {
+      "id": "image-0",
+      "pageNumber": 1,
+      "name": "img_p0_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 848
+      }
+    },
+    {
+      "id": "image-1",
+      "pageNumber": 1,
+      "name": "img_p0_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 276,
+        "height": 344
+      }
+    },
+    {
+      "id": "image-2",
+      "pageNumber": 1,
+      "name": "img_p0_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 219,
+        "height": 310
+      }
+    },
+    {
+      "id": "image-3",
+      "pageNumber": 1,
+      "name": "img_p0_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 740,
+        "height": 261
+      }
+    },
+    {
+      "id": "image-4",
+      "pageNumber": 1,
+      "name": "img_p0_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 304,
+        "height": 140
+      }
+    },
+    {
+      "id": "image-5",
+      "pageNumber": 1,
+      "name": "img_p0_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 36,
+        "height": 35
+      }
+    },
+    {
+      "id": "image-6",
+      "pageNumber": 1,
+      "name": "img_p0_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 44,
+        "height": 22
+      }
+    },
+    {
+      "id": "image-7",
+      "pageNumber": 1,
+      "name": "img_p0_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 136,
+        "height": 121
+      }
+    },
+    {
+      "id": "image-8",
+      "pageNumber": 1,
+      "name": "img_p0_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 308,
+        "height": 288
+      }
+    },
+    {
+      "id": "image-9",
+      "pageNumber": 1,
+      "name": "img_p0_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 252,
+        "height": 253
+      }
+    },
+    {
+      "id": "image-10",
+      "pageNumber": 1,
+      "name": "img_p0_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-11",
+      "pageNumber": 1,
+      "name": "img_p0_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 620,
+        "height": 471
+      }
+    },
+    {
+      "id": "image-12",
+      "pageNumber": 1,
+      "name": "img_p0_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 564,
+        "height": 423
+      }
+    },
+    {
+      "id": "image-13",
+      "pageNumber": 1,
+      "name": "img_p0_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 564,
+        "height": 423
+      }
+    },
+    {
+      "id": "image-14",
+      "pageNumber": 1,
+      "name": "img_p0_16",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 144,
+        "height": 137
+      }
+    },
+    {
+      "id": "image-15",
+      "pageNumber": 1,
+      "name": "img_p0_17",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 96,
+        "height": 70
+      }
+    },
+    {
+      "id": "image-16",
+      "pageNumber": 1,
+      "name": "img_p0_19",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 39,
+        "height": 22
+      }
+    },
+    {
+      "id": "image-17",
+      "pageNumber": 1,
+      "name": "img_p0_20",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 39,
+        "height": 22
+      }
+    },
+    {
+      "id": "image-18",
+      "pageNumber": 1,
+      "name": "img_p0_21",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 416,
+        "height": 276
+      }
+    },
+    {
+      "id": "image-19",
+      "pageNumber": 1,
+      "name": "img_p0_22",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 124,
+        "height": 209
+      }
+    },
+    {
+      "id": "image-20",
+      "pageNumber": 1,
+      "name": "img_p0_23",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 123,
+        "height": 209
+      }
+    },
+    {
+      "id": "image-21",
+      "pageNumber": 1,
+      "name": "img_p0_24",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 142,
+        "height": 243
+      }
+    },
+    {
+      "id": "image-22",
+      "pageNumber": 1,
+      "name": "img_p0_25",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 138,
+        "height": 243
+      }
+    },
+    {
+      "id": "image-23",
+      "pageNumber": 1,
+      "name": "img_p0_26",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      }
+    },
+    {
+      "id": "image-24",
+      "pageNumber": 1,
+      "name": "img_p0_27",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      }
+    },
+    {
+      "id": "image-25",
+      "pageNumber": 1,
+      "name": "img_p0_26",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      }
+    },
+    {
+      "id": "image-26",
+      "pageNumber": 1,
+      "name": "img_p0_27",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      }
+    },
+    {
+      "id": "image-27",
+      "pageNumber": 1,
+      "name": "img_p0_26",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      }
+    },
+    {
+      "id": "image-28",
+      "pageNumber": 1,
+      "name": "img_p0_27",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      }
+    },
+    {
+      "id": "image-29",
+      "pageNumber": 1,
+      "name": "img_p0_28",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 256,
+        "height": 231
+      }
+    },
+    {
+      "id": "image-30",
+      "pageNumber": 2,
+      "name": "img_p1_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-31",
+      "pageNumber": 2,
+      "name": "img_p1_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 700,
+        "height": 160
+      }
+    },
+    {
+      "id": "image-32",
+      "pageNumber": 2,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-33",
+      "pageNumber": 2,
+      "name": "img_p1_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 204,
+        "height": 319
+      }
+    },
+    {
+      "id": "image-34",
+      "pageNumber": 2,
+      "name": "img_p1_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 125,
+        "height": 344
+      }
+    },
+    {
+      "id": "image-35",
+      "pageNumber": 2,
+      "name": "img_p1_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 216,
+        "height": 318
+      }
+    },
+    {
+      "id": "image-36",
+      "pageNumber": 2,
+      "name": "img_p1_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 352,
+        "height": 148
+      }
+    },
+    {
+      "id": "image-37",
+      "pageNumber": 2,
+      "name": "img_p1_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 225,
+        "height": 332
+      }
+    },
+    {
+      "id": "image-38",
+      "pageNumber": 2,
+      "name": "img_p1_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 368,
+        "height": 411
+      }
+    },
+    {
+      "id": "image-39",
+      "pageNumber": 2,
+      "name": "img_p1_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 303,
+        "height": 353
+      }
+    },
+    {
+      "id": "image-40",
+      "pageNumber": 2,
+      "name": "img_p1_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 303,
+        "height": 353
+      }
+    },
+    {
+      "id": "image-41",
+      "pageNumber": 3,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-42",
+      "pageNumber": 3,
+      "name": "g_d0_img_p2_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 700,
+        "height": 160
+      }
+    },
+    {
+      "id": "image-43",
+      "pageNumber": 3,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-44",
+      "pageNumber": 3,
+      "name": "img_p2_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 257,
+        "height": 337
+      }
+    },
+    {
+      "id": "image-45",
+      "pageNumber": 3,
+      "name": "img_p2_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 150,
+        "height": 338
+      }
+    },
+    {
+      "id": "image-46",
+      "pageNumber": 3,
+      "name": "img_p2_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 216,
+        "height": 328
+      }
+    },
+    {
+      "id": "image-47",
+      "pageNumber": 3,
+      "name": "img_p2_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 212,
+        "height": 306
+      }
+    },
+    {
+      "id": "image-48",
+      "pageNumber": 3,
+      "name": "img_p2_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 432,
+        "height": 396
+      }
+    },
+    {
+      "id": "image-49",
+      "pageNumber": 3,
+      "name": "img_p2_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 371,
+        "height": 338
+      }
+    },
+    {
+      "id": "image-50",
+      "pageNumber": 3,
+      "name": "img_p2_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 371,
+        "height": 338
+      }
+    },
+    {
+      "id": "image-51",
+      "pageNumber": 4,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-52",
+      "pageNumber": 4,
+      "name": "img_p3_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 700,
+        "height": 160
+      }
+    },
+    {
+      "id": "image-53",
+      "pageNumber": 4,
+      "name": "img_p3_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 240,
+        "height": 374
+      }
+    },
+    {
+      "id": "image-54",
+      "pageNumber": 4,
+      "name": "img_p3_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 174,
+        "height": 330
+      }
+    },
+    {
+      "id": "image-55",
+      "pageNumber": 4,
+      "name": "img_p3_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 216,
+        "height": 376
+      }
+    },
+    {
+      "id": "image-56",
+      "pageNumber": 4,
+      "name": "img_p3_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 130,
+        "height": 333
+      }
+    },
+    {
+      "id": "image-57",
+      "pageNumber": 4,
+      "name": "img_p3_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 220,
+        "height": 376
+      }
+    },
+    {
+      "id": "image-58",
+      "pageNumber": 4,
+      "name": "img_p3_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 147,
+        "height": 333
+      }
+    },
+    {
+      "id": "image-59",
+      "pageNumber": 4,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-60",
+      "pageNumber": 4,
+      "name": "img_p3_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 524,
+        "height": 400
+      }
+    },
+    {
+      "id": "image-61",
+      "pageNumber": 4,
+      "name": "img_p3_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 191,
+        "height": 321
+      }
+    },
+    {
+      "id": "image-62",
+      "pageNumber": 4,
+      "name": "img_p3_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 178,
+        "height": 321
+      }
+    },
+    {
+      "id": "image-63",
+      "pageNumber": 4,
+      "name": "img_p3_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 212,
+        "height": 344
+      }
+    },
+    {
+      "id": "image-64",
+      "pageNumber": 4,
+      "name": "img_p3_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 268,
+        "height": 294
+      }
+    },
+    {
+      "id": "image-65",
+      "pageNumber": 4,
+      "name": "img_p3_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 217,
+        "height": 250
+      }
+    },
+    {
+      "id": "image-66",
+      "pageNumber": 4,
+      "name": "img_p3_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 217,
+        "height": 250
+      }
+    },
+    {
+      "id": "image-67",
+      "pageNumber": 4,
+      "name": "img_p3_16",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 196,
+        "height": 191
+      }
+    },
+    {
+      "id": "image-68",
+      "pageNumber": 4,
+      "name": "img_p3_17",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 120,
+        "height": 115
+      }
+    },
+    {
+      "id": "image-69",
+      "pageNumber": 4,
+      "name": "img_p3_18",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 112,
+        "height": 58
+      }
+    },
+    {
+      "id": "image-70",
+      "pageNumber": 4,
+      "name": "img_p3_19",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 112,
+        "height": 58
+      }
+    },
+    {
+      "id": "image-71",
+      "pageNumber": 4,
+      "name": "img_p3_20",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 124,
+        "height": 118
+      }
+    },
+    {
+      "id": "image-72",
+      "pageNumber": 4,
+      "name": "img_p3_21",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 115,
+        "height": 59
+      }
+    },
+    {
+      "id": "image-73",
+      "pageNumber": 5,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-74",
+      "pageNumber": 5,
+      "name": "g_d0_img_p4_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 700,
+        "height": 160
+      }
+    },
+    {
+      "id": "image-75",
+      "pageNumber": 5,
+      "name": "img_p4_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 368,
+        "height": 286
+      }
+    },
+    {
+      "id": "image-76",
+      "pageNumber": 5,
+      "name": "img_p4_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 297,
+        "height": 257
+      }
+    },
+    {
+      "id": "image-77",
+      "pageNumber": 5,
+      "name": "img_p4_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 324,
+        "height": 372
+      }
+    },
+    {
+      "id": "image-78",
+      "pageNumber": 5,
+      "name": "img_p4_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 260,
+        "height": 330
+      }
+    },
+    {
+      "id": "image-79",
+      "pageNumber": 5,
+      "name": "img_p4_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 280,
+        "height": 348
+      }
+    },
+    {
+      "id": "image-80",
+      "pageNumber": 5,
+      "name": "img_p4_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 223,
+        "height": 317
+      }
+    },
+    {
+      "id": "image-81",
+      "pageNumber": 5,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-82",
+      "pageNumber": 5,
+      "name": "img_p4_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 292,
+        "height": 305
+      }
+    },
+    {
+      "id": "image-83",
+      "pageNumber": 5,
+      "name": "img_p4_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 238,
+        "height": 250
+      }
+    },
+    {
+      "id": "image-84",
+      "pageNumber": 5,
+      "name": "img_p4_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 238,
+        "height": 250
+      }
+    },
+    {
+      "id": "image-85",
+      "pageNumber": 5,
+      "name": "img_p4_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 156,
+        "height": 148
+      }
+    },
+    {
+      "id": "image-86",
+      "pageNumber": 5,
+      "name": "img_p4_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 148,
+        "height": 77
+      }
+    },
+    {
+      "id": "image-87",
+      "pageNumber": 5,
+      "name": "img_p4_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 148,
+        "height": 77
+      }
+    },
+    {
+      "id": "image-88",
+      "pageNumber": 5,
+      "name": "img_p4_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 356,
+        "height": 276
+      }
+    },
+    {
+      "id": "image-89",
+      "pageNumber": 5,
+      "name": "img_p4_16",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 325,
+        "height": 252
+      }
+    },
+    {
+      "id": "image-90",
+      "pageNumber": 6,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-91",
+      "pageNumber": 6,
+      "name": "g_d0_img_p2_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 700,
+        "height": 160
+      }
+    },
+    {
+      "id": "image-92",
+      "pageNumber": 6,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-93",
+      "pageNumber": 6,
+      "name": "img_p5_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 444,
+        "height": 292
+      }
+    },
+    {
+      "id": "image-94",
+      "pageNumber": 6,
+      "name": "img_p5_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 133,
+        "height": 225
+      }
+    },
+    {
+      "id": "image-95",
+      "pageNumber": 6,
+      "name": "img_p5_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 132,
+        "height": 225
+      }
+    },
+    {
+      "id": "image-96",
+      "pageNumber": 6,
+      "name": "img_p5_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 153,
+        "height": 261
+      }
+    },
+    {
+      "id": "image-97",
+      "pageNumber": 6,
+      "name": "img_p5_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 148,
+        "height": 262
+      }
+    },
+    {
+      "id": "image-98",
+      "pageNumber": 6,
+      "name": "img_p5_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 200,
+        "height": 193
+      }
+    },
+    {
+      "id": "image-99",
+      "pageNumber": 6,
+      "name": "img_p5_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 198,
+        "height": 102
+      }
+    },
+    {
+      "id": "image-100",
+      "pageNumber": 6,
+      "name": "img_p5_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 198,
+        "height": 102
+      }
+    },
+    {
+      "id": "image-101",
+      "pageNumber": 6,
+      "name": "img_p5_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 228,
+        "height": 420
+      }
+    },
+    {
+      "id": "image-102",
+      "pageNumber": 6,
+      "name": "img_p5_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 165,
+        "height": 380
+      }
+    },
+    {
+      "id": "image-103",
+      "pageNumber": 6,
+      "name": "img_p5_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 348,
+        "height": 200
+      }
+    },
+    {
+      "id": "image-104",
+      "pageNumber": 6,
+      "name": "img_p5_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 297,
+        "height": 145
+      }
+    },
+    {
+      "id": "image-105",
+      "pageNumber": 6,
+      "name": "img_p5_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 124,
+        "height": 119
+      }
+    },
+    {
+      "id": "image-106",
+      "pageNumber": 6,
+      "name": "img_p5_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 116,
+        "height": 60
+      }
+    },
+    {
+      "id": "image-107",
+      "pageNumber": 6,
+      "name": "img_p5_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 116,
+        "height": 60
+      }
+    },
+    {
+      "id": "image-108",
+      "pageNumber": 6,
+      "name": "img_p5_16",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 380,
+        "height": 297
+      }
+    },
+    {
+      "id": "image-109",
+      "pageNumber": 6,
+      "name": "img_p5_17",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 125,
+        "height": 258
+      }
+    },
+    {
+      "id": "image-110",
+      "pageNumber": 6,
+      "name": "img_p5_18",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 127,
+        "height": 252
+      }
+    },
+    {
+      "id": "image-111",
+      "pageNumber": 6,
+      "name": "img_p5_19",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 132,
+        "height": 259
+      }
+    },
+    {
+      "id": "image-112",
+      "pageNumber": 6,
+      "name": "img_p5_20",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 128,
+        "height": 121
+      }
+    },
+    {
+      "id": "image-113",
+      "pageNumber": 6,
+      "name": "img_p5_21",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 118,
+        "height": 61
+      }
+    },
+    {
+      "id": "image-114",
+      "pageNumber": 7,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-115",
+      "pageNumber": 7,
+      "name": "img_p6_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 648,
+        "height": 192
+      }
+    },
+    {
+      "id": "image-116",
+      "pageNumber": 7,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-117",
+      "pageNumber": 7,
+      "name": "img_p6_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 604,
+        "height": 396
+      }
+    },
+    {
+      "id": "image-118",
+      "pageNumber": 7,
+      "name": "img_p6_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 237,
+        "height": 303
+      }
+    },
+    {
+      "id": "image-119",
+      "pageNumber": 7,
+      "name": "img_p6_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 237,
+        "height": 303
+      }
+    },
+    {
+      "id": "image-120",
+      "pageNumber": 7,
+      "name": "img_p6_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 266,
+        "height": 340
+      }
+    },
+    {
+      "id": "image-121",
+      "pageNumber": 7,
+      "name": "img_p6_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 212,
+        "height": 206
+      }
+    },
+    {
+      "id": "image-122",
+      "pageNumber": 7,
+      "name": "img_p6_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 212,
+        "height": 109
+      }
+    },
+    {
+      "id": "image-123",
+      "pageNumber": 7,
+      "name": "img_p6_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 212,
+        "height": 109
+      }
+    },
+    {
+      "id": "image-124",
+      "pageNumber": 7,
+      "name": "img_p6_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 356,
+        "height": 216
+      }
+    },
+    {
+      "id": "image-125",
+      "pageNumber": 7,
+      "name": "img_p6_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 284,
+        "height": 120
+      }
+    },
+    {
+      "id": "image-126",
+      "pageNumber": 7,
+      "name": "img_p6_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 192,
+        "height": 344
+      }
+    },
+    {
+      "id": "image-127",
+      "pageNumber": 7,
+      "name": "img_p6_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 122,
+        "height": 296
+      }
+    },
+    {
+      "id": "image-128",
+      "pageNumber": 7,
+      "name": "img_p6_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 340,
+        "height": 172
+      }
+    },
+    {
+      "id": "image-129",
+      "pageNumber": 7,
+      "name": "img_p6_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 284,
+        "height": 120
+      }
+    },
+    {
+      "id": "image-130",
+      "pageNumber": 7,
+      "name": "img_p6_16",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 364,
+        "height": 260
+      }
+    },
+    {
+      "id": "image-131",
+      "pageNumber": 7,
+      "name": "img_p6_17",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 284,
+        "height": 163
+      }
+    },
+    {
+      "id": "image-132",
+      "pageNumber": 7,
+      "name": "img_p6_18",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 212,
+        "height": 206
+      }
+    },
+    {
+      "id": "image-133",
+      "pageNumber": 7,
+      "name": "img_p6_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 212,
+        "height": 109
+      }
+    },
+    {
+      "id": "image-134",
+      "pageNumber": 7,
+      "name": "img_p6_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 212,
+        "height": 109
+      }
+    },
+    {
+      "id": "image-135",
+      "pageNumber": 8,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-136",
+      "pageNumber": 8,
+      "name": "img_p7_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 208,
+        "height": 184
+      }
+    },
+    {
+      "id": "image-137",
+      "pageNumber": 8,
+      "name": "img_p7_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 119,
+        "height": 32
+      }
+    },
+    {
+      "id": "image-138",
+      "pageNumber": 8,
+      "name": "img_p7_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 119,
+        "height": 32
+      }
+    },
+    {
+      "id": "image-139",
+      "pageNumber": 8,
+      "name": "img_p7_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 121,
+        "height": 48
+      }
+    },
+    {
+      "id": "image-140",
+      "pageNumber": 8,
+      "name": "img_p7_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 121,
+        "height": 48
+      }
+    },
+    {
+      "id": "image-141",
+      "pageNumber": 8,
+      "name": "img_p7_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 201,
+        "height": 223
+      }
+    },
+    {
+      "id": "image-142",
+      "pageNumber": 8,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-143",
+      "pageNumber": 8,
+      "name": "img_p7_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 200,
+        "height": 356
+      }
+    },
+    {
+      "id": "image-144",
+      "pageNumber": 8,
+      "name": "img_p7_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 160,
+        "height": 308
+      }
+    },
+    {
+      "id": "image-145",
+      "pageNumber": 8,
+      "name": "img_p7_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 204,
+        "height": 352
+      }
+    },
+    {
+      "id": "image-146",
+      "pageNumber": 8,
+      "name": "img_p7_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 163,
+        "height": 305
+      }
+    },
+    {
+      "id": "image-147",
+      "pageNumber": 8,
+      "name": "img_p7_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 248,
+        "height": 348
+      }
+    },
+    {
+      "id": "image-148",
+      "pageNumber": 8,
+      "name": "img_p7_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 195,
+        "height": 287
+      }
+    },
+    {
+      "id": "image-149",
+      "pageNumber": 8,
+      "name": "img_p7_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 252,
+        "height": 352
+      }
+    },
+    {
+      "id": "image-150",
+      "pageNumber": 8,
+      "name": "img_p7_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 198,
+        "height": 293
+      }
+    },
+    {
+      "id": "image-151",
+      "pageNumber": 8,
+      "name": "img_p7_16",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 272,
+        "height": 372
+      }
+    },
+    {
+      "id": "image-152",
+      "pageNumber": 8,
+      "name": "img_p7_17",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 220,
+        "height": 313
+      }
+    },
+    {
+      "id": "image-153",
+      "pageNumber": 9,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-154",
+      "pageNumber": 9,
+      "name": "g_d0_img_p8_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 208,
+        "height": 184
+      }
+    },
+    {
+      "id": "image-155",
+      "pageNumber": 9,
+      "name": "g_d0_img_p8_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 119,
+        "height": 32
+      }
+    },
+    {
+      "id": "image-156",
+      "pageNumber": 9,
+      "name": "g_d0_img_p8_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 119,
+        "height": 32
+      }
+    },
+    {
+      "id": "image-157",
+      "pageNumber": 9,
+      "name": "g_d0_img_p8_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 121,
+        "height": 48
+      }
+    },
+    {
+      "id": "image-158",
+      "pageNumber": 9,
+      "name": "g_d0_img_p8_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 121,
+        "height": 48
+      }
+    },
+    {
+      "id": "image-159",
+      "pageNumber": 9,
+      "name": "g_d0_img_p8_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 201,
+        "height": 223
+      }
+    },
+    {
+      "id": "image-160",
+      "pageNumber": 9,
+      "name": "img_p8_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 340,
+        "height": 360
+      }
+    },
+    {
+      "id": "image-161",
+      "pageNumber": 9,
+      "name": "img_p8_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 239,
+        "height": 318
+      }
+    },
+    {
+      "id": "image-162",
+      "pageNumber": 9,
+      "name": "img_p8_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 328,
+        "height": 356
+      }
+    },
+    {
+      "id": "image-163",
+      "pageNumber": 9,
+      "name": "img_p8_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 249,
+        "height": 323
+      }
+    },
+    {
+      "id": "image-164",
+      "pageNumber": 9,
+      "name": "img_p8_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 224,
+        "height": 388
+      }
+    },
+    {
+      "id": "image-165",
+      "pageNumber": 9,
+      "name": "img_p8_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 165,
+        "height": 324
+      }
+    },
+    {
+      "id": "image-166",
+      "pageNumber": 9,
+      "name": "img_p8_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 304,
+        "height": 388
+      }
+    },
+    {
+      "id": "image-167",
+      "pageNumber": 9,
+      "name": "img_p8_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 270,
+        "height": 338
+      }
+    },
+    {
+      "id": "image-168",
+      "pageNumber": 9,
+      "name": "img_p8_16",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 256,
+        "height": 352
+      }
+    },
+    {
+      "id": "image-169",
+      "pageNumber": 9,
+      "name": "img_p8_17",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 196,
+        "height": 288
+      }
+    },
+    {
+      "id": "image-170",
+      "pageNumber": 9,
+      "name": "img_p8_18",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 276,
+        "height": 372
+      }
+    },
+    {
+      "id": "image-171",
+      "pageNumber": 9,
+      "name": "img_p8_19",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 217,
+        "height": 299
+      }
+    },
+    {
+      "id": "image-172",
+      "pageNumber": 9,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-173",
+      "pageNumber": 10,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-174",
+      "pageNumber": 10,
+      "name": "img_p9_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 224,
+        "height": 200
+      }
+    },
+    {
+      "id": "image-175",
+      "pageNumber": 10,
+      "name": "img_p9_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 131,
+        "height": 36
+      }
+    },
+    {
+      "id": "image-176",
+      "pageNumber": 10,
+      "name": "img_p9_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 131,
+        "height": 36
+      }
+    },
+    {
+      "id": "image-177",
+      "pageNumber": 10,
+      "name": "img_p9_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 133,
+        "height": 52
+      }
+    },
+    {
+      "id": "image-178",
+      "pageNumber": 10,
+      "name": "img_p9_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 133,
+        "height": 52
+      }
+    },
+    {
+      "id": "image-179",
+      "pageNumber": 10,
+      "name": "img_p9_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 210,
+        "height": 228
+      }
+    },
+    {
+      "id": "image-180",
+      "pageNumber": 10,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-181",
+      "pageNumber": 10,
+      "name": "img_p9_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 332,
+        "height": 372
+      }
+    },
+    {
+      "id": "image-182",
+      "pageNumber": 10,
+      "name": "img_p9_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 269,
+        "height": 302
+      }
+    },
+    {
+      "id": "image-183",
+      "pageNumber": 10,
+      "name": "img_p9_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 332,
+        "height": 372
+      }
+    },
+    {
+      "id": "image-184",
+      "pageNumber": 10,
+      "name": "img_p9_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 228,
+        "height": 302
+      }
+    },
+    {
+      "id": "image-185",
+      "pageNumber": 10,
+      "name": "img_p9_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 348,
+        "height": 388
+      }
+    },
+    {
+      "id": "image-186",
+      "pageNumber": 10,
+      "name": "img_p9_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 285,
+        "height": 320
+      }
+    },
+    {
+      "id": "image-187",
+      "pageNumber": 10,
+      "name": "img_p9_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 348,
+        "height": 388
+      }
+    },
+    {
+      "id": "image-188",
+      "pageNumber": 10,
+      "name": "img_p9_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 285,
+        "height": 320
+      }
+    },
+    {
+      "id": "image-189",
+      "pageNumber": 11,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-190",
+      "pageNumber": 11,
+      "name": "g_d0_img_p10_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 224,
+        "height": 200
+      }
+    },
+    {
+      "id": "image-191",
+      "pageNumber": 11,
+      "name": "g_d0_img_p10_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 131,
+        "height": 36
+      }
+    },
+    {
+      "id": "image-192",
+      "pageNumber": 11,
+      "name": "g_d0_img_p10_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 131,
+        "height": 36
+      }
+    },
+    {
+      "id": "image-193",
+      "pageNumber": 11,
+      "name": "g_d0_img_p10_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 133,
+        "height": 52
+      }
+    },
+    {
+      "id": "image-194",
+      "pageNumber": 11,
+      "name": "g_d0_img_p10_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 133,
+        "height": 52
+      }
+    },
+    {
+      "id": "image-195",
+      "pageNumber": 11,
+      "name": "img_p10_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 190,
+        "height": 226
+      }
+    },
+    {
+      "id": "image-196",
+      "pageNumber": 11,
+      "name": "img_p10_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 360,
+        "height": 344
+      }
+    },
+    {
+      "id": "image-197",
+      "pageNumber": 11,
+      "name": "img_p10_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 303,
+        "height": 300
+      }
+    },
+    {
+      "id": "image-198",
+      "pageNumber": 11,
+      "name": "img_p10_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 312,
+        "height": 344
+      }
+    },
+    {
+      "id": "image-199",
+      "pageNumber": 11,
+      "name": "img_p10_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 256,
+        "height": 301
+      }
+    },
+    {
+      "id": "image-200",
+      "pageNumber": 11,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-201",
+      "pageNumber": 11,
+      "name": "img_p10_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 180,
+        "height": 356
+      }
+    },
+    {
+      "id": "image-202",
+      "pageNumber": 11,
+      "name": "img_p10_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 125,
+        "height": 307
+      }
+    },
+    {
+      "id": "image-203",
+      "pageNumber": 11,
+      "name": "img_p10_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 204,
+        "height": 360
+      }
+    },
+    {
+      "id": "image-204",
+      "pageNumber": 11,
+      "name": "img_p10_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 149,
+        "height": 311
+      }
+    },
+    {
+      "id": "image-205",
+      "pageNumber": 11,
+      "name": "img_p10_16",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 164,
+        "height": 156
+      }
+    },
+    {
+      "id": "image-206",
+      "pageNumber": 12,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-207",
+      "pageNumber": 12,
+      "name": "img_p11_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 592,
+        "height": 144
+      }
+    },
+    {
+      "id": "image-208",
+      "pageNumber": 12,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-209",
+      "pageNumber": 12,
+      "name": "img_p11_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 364,
+        "height": 286
+      }
+    },
+    {
+      "id": "image-210",
+      "pageNumber": 12,
+      "name": "img_p11_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 401,
+        "height": 278
+      }
+    },
+    {
+      "id": "image-211",
+      "pageNumber": 12,
+      "name": "img_p11_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 259,
+        "height": 278
+      }
+    },
+    {
+      "id": "image-212",
+      "pageNumber": 12,
+      "name": "img_p11_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 416,
+        "height": 278
+      }
+    },
+    {
+      "id": "image-213",
+      "pageNumber": 12,
+      "name": "img_p11_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 361,
+        "height": 248
+      }
+    },
+    {
+      "id": "image-214",
+      "pageNumber": 12,
+      "name": "img_p11_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 394,
+        "height": 302
+      }
+    },
+    {
+      "id": "image-215",
+      "pageNumber": 12,
+      "name": "img_p11_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 298,
+        "height": 278
+      }
+    },
+    {
+      "id": "image-216",
+      "pageNumber": 12,
+      "name": "img_p11_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 156,
+        "height": 151
+      }
+    },
+    {
+      "id": "image-217",
+      "pageNumber": 12,
+      "name": "img_p11_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 156,
+        "height": 151
+      }
+    },
+    {
+      "id": "image-218",
+      "pageNumber": 12,
+      "name": "img_p11_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 156,
+        "height": 151
+      }
+    },
+    {
+      "id": "image-219",
+      "pageNumber": 12,
+      "name": "img_p11_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 156,
+        "height": 151
+      }
+    },
+    {
+      "id": "image-220",
+      "pageNumber": 12,
+      "name": "img_p11_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 156,
+        "height": 151
+      }
+    },
+    {
+      "id": "image-221",
+      "pageNumber": 12,
+      "name": "img_p11_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 156,
+        "height": 151
+      }
+    },
+    {
+      "id": "image-222",
+      "pageNumber": 13,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-223",
+      "pageNumber": 13,
+      "name": "g_d0_img_p12_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 592,
+        "height": 144
+      }
+    },
+    {
+      "id": "image-224",
+      "pageNumber": 13,
+      "name": "img_p12_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 314,
+        "height": 230
+      }
+    },
+    {
+      "id": "image-225",
+      "pageNumber": 13,
+      "name": "img_p12_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 348,
+        "height": 235
+      }
+    },
+    {
+      "id": "image-226",
+      "pageNumber": 13,
+      "name": "img_p12_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 322,
+        "height": 233
+      }
+    },
+    {
+      "id": "image-227",
+      "pageNumber": 13,
+      "name": "img_p12_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 314,
+        "height": 225
+      }
+    },
+    {
+      "id": "image-228",
+      "pageNumber": 13,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-229",
+      "pageNumber": 13,
+      "name": "img_p12_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 188,
+        "height": 183
+      }
+    },
+    {
+      "id": "image-230",
+      "pageNumber": 13,
+      "name": "img_p12_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 329,
+        "height": 339
+      }
+    },
+    {
+      "id": "image-231",
+      "pageNumber": 13,
+      "name": "img_p12_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 188,
+        "height": 183
+      }
+    },
+    {
+      "id": "image-232",
+      "pageNumber": 13,
+      "name": "img_p12_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 359,
+        "height": 326
+      }
+    },
+    {
+      "id": "image-233",
+      "pageNumber": 13,
+      "name": "img_p12_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 188,
+        "height": 183
+      }
+    },
+    {
+      "id": "image-234",
+      "pageNumber": 13,
+      "name": "img_p12_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 247,
+        "height": 350
+      }
+    },
+    {
+      "id": "image-235",
+      "pageNumber": 13,
+      "name": "img_p12_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 188,
+        "height": 183
+      }
+    },
+    {
+      "id": "image-236",
+      "pageNumber": 14,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-237",
+      "pageNumber": 14,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-238",
+      "pageNumber": 14,
+      "name": "img_p13_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 280,
+        "height": 266
+      }
+    },
+    {
+      "id": "image-239",
+      "pageNumber": 14,
+      "name": "img_p13_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 255,
+        "height": 241
+      }
+    },
+    {
+      "id": "image-240",
+      "pageNumber": 14,
+      "name": "img_p13_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 292,
+        "height": 304
+      }
+    },
+    {
+      "id": "image-241",
+      "pageNumber": 14,
+      "name": "img_p13_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 270,
+        "height": 290
+      }
+    },
+    {
+      "id": "image-242",
+      "pageNumber": 14,
+      "name": "img_p13_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 284,
+        "height": 340
+      }
+    },
+    {
+      "id": "image-243",
+      "pageNumber": 14,
+      "name": "img_p13_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 270,
+        "height": 334
+      }
+    },
+    {
+      "id": "image-244",
+      "pageNumber": 14,
+      "name": "img_p13_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 476,
+        "height": 228
+      }
+    },
+    {
+      "id": "image-245",
+      "pageNumber": 14,
+      "name": "img_p13_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 176,
+        "height": 41
+      }
+    },
+    {
+      "id": "image-246",
+      "pageNumber": 14,
+      "name": "img_p13_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 656,
+        "height": 504
+      }
+    },
+    {
+      "id": "image-247",
+      "pageNumber": 14,
+      "name": "img_p13_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 562,
+        "height": 402
+      }
+    },
+    {
+      "id": "image-248",
+      "pageNumber": 14,
+      "name": "img_p13_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 172,
+        "height": 166
+      }
+    },
+    {
+      "id": "image-249",
+      "pageNumber": 14,
+      "name": "img_p13_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 172,
+        "height": 166
+      }
+    },
+    {
+      "id": "image-250",
+      "pageNumber": 14,
+      "name": "img_p13_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 268,
+        "height": 262
+      }
+    },
+    {
+      "id": "image-251",
+      "pageNumber": 15,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-252",
+      "pageNumber": 15,
+      "name": "img_p14_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 191,
+        "height": 191
+      }
+    },
+    {
+      "id": "image-253",
+      "pageNumber": 15,
+      "name": "img_p14_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 248,
+        "height": 320
+      }
+    },
+    {
+      "id": "image-254",
+      "pageNumber": 15,
+      "name": "img_p14_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 203,
+        "height": 296
+      }
+    },
+    {
+      "id": "image-255",
+      "pageNumber": 15,
+      "name": "img_p14_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 360,
+        "height": 280
+      }
+    },
+    {
+      "id": "image-256",
+      "pageNumber": 15,
+      "name": "img_p14_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 307,
+        "height": 235
+      }
+    },
+    {
+      "id": "image-257",
+      "pageNumber": 15,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-258",
+      "pageNumber": 15,
+      "name": "img_p14_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 120,
+        "height": 113
+      }
+    },
+    {
+      "id": "image-259",
+      "pageNumber": 15,
+      "name": "img_p14_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 296,
+        "height": 432
+      }
+    },
+    {
+      "id": "image-260",
+      "pageNumber": 15,
+      "name": "img_p14_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 244,
+        "height": 386
+      }
+    },
+    {
+      "id": "image-261",
+      "pageNumber": 15,
+      "name": "img_p14_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 144,
+        "height": 137
+      }
+    },
+    {
+      "id": "image-262",
+      "pageNumber": 15,
+      "name": "img_p14_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 224,
+        "height": 412
+      }
+    },
+    {
+      "id": "image-263",
+      "pageNumber": 15,
+      "name": "img_p14_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 172,
+        "height": 375
+      }
+    },
+    {
+      "id": "image-264",
+      "pageNumber": 16,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-265",
+      "pageNumber": 16,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-266",
+      "pageNumber": 16,
+      "name": "g_d0_img_p15_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 476,
+        "height": 228
+      }
+    },
+    {
+      "id": "image-267",
+      "pageNumber": 16,
+      "name": "g_d0_img_p15_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 176,
+        "height": 41
+      }
+    },
+    {
+      "id": "image-268",
+      "pageNumber": 16,
+      "name": "img_p15_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 420,
+        "height": 283
+      }
+    },
+    {
+      "id": "image-269",
+      "pageNumber": 16,
+      "name": "img_p15_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 379,
+        "height": 244
+      }
+    },
+    {
+      "id": "image-270",
+      "pageNumber": 16,
+      "name": "img_p15_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 240,
+        "height": 347
+      }
+    },
+    {
+      "id": "image-271",
+      "pageNumber": 16,
+      "name": "img_p15_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 174,
+        "height": 289
+      }
+    },
+    {
+      "id": "image-272",
+      "pageNumber": 16,
+      "name": "img_p15_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 120,
+        "height": 115
+      }
+    },
+    {
+      "id": "image-273",
+      "pageNumber": 16,
+      "name": "img_p15_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 436,
+        "height": 328
+      }
+    },
+    {
+      "id": "image-274",
+      "pageNumber": 16,
+      "name": "img_p15_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 353,
+        "height": 131
+      }
+    },
+    {
+      "id": "image-275",
+      "pageNumber": 16,
+      "name": "img_p15_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 120,
+        "height": 115
+      }
+    },
+    {
+      "id": "image-276",
+      "pageNumber": 16,
+      "name": "img_p15_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 460,
+        "height": 324
+      }
+    },
+    {
+      "id": "image-277",
+      "pageNumber": 16,
+      "name": "img_p15_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 368,
+        "height": 220
+      }
+    },
+    {
+      "id": "image-278",
+      "pageNumber": 16,
+      "name": "img_p15_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 120,
+        "height": 115
+      }
+    },
+    {
+      "id": "image-279",
+      "pageNumber": 16,
+      "name": "img_p15_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 356,
+        "height": 292
+      }
+    },
+    {
+      "id": "image-280",
+      "pageNumber": 16,
+      "name": "img_p15_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 294,
+        "height": 227
+      }
+    },
+    {
+      "id": "image-281",
+      "pageNumber": 16,
+      "name": "img_p15_16",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 124,
+        "height": 119
+      }
+    },
+    {
+      "id": "image-282",
+      "pageNumber": 17,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-283",
+      "pageNumber": 17,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-284",
+      "pageNumber": 17,
+      "name": "g_d0_img_p15_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 476,
+        "height": 228
+      }
+    },
+    {
+      "id": "image-285",
+      "pageNumber": 17,
+      "name": "g_d0_img_p15_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 176,
+        "height": 41
+      }
+    },
+    {
+      "id": "image-286",
+      "pageNumber": 17,
+      "name": "g_d0_img_p16_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 420,
+        "height": 283
+      }
+    },
+    {
+      "id": "image-287",
+      "pageNumber": 17,
+      "name": "g_d0_img_p16_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 379,
+        "height": 244
+      }
+    },
+    {
+      "id": "image-288",
+      "pageNumber": 17,
+      "name": "img_p16_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 260,
+        "height": 344
+      }
+    },
+    {
+      "id": "image-289",
+      "pageNumber": 17,
+      "name": "img_p16_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 194,
+        "height": 288
+      }
+    },
+    {
+      "id": "image-290",
+      "pageNumber": 17,
+      "name": "g_d0_img_p16_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 124,
+        "height": 119
+      }
+    },
+    {
+      "id": "image-291",
+      "pageNumber": 17,
+      "name": "img_p16_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 512,
+        "height": 364
+      }
+    },
+    {
+      "id": "image-292",
+      "pageNumber": 17,
+      "name": "img_p16_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 434,
+        "height": 295
+      }
+    },
+    {
+      "id": "image-293",
+      "pageNumber": 17,
+      "name": "img_p16_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 208,
+        "height": 200
+      }
+    },
+    {
+      "id": "image-294",
+      "pageNumber": 17,
+      "name": "img_p16_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 304,
+        "height": 352
+      }
+    },
+    {
+      "id": "image-295",
+      "pageNumber": 17,
+      "name": "img_p16_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 233,
+        "height": 290
+      }
+    },
+    {
+      "id": "image-296",
+      "pageNumber": 17,
+      "name": "g_d0_img_p16_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 120,
+        "height": 115
+      }
+    },
+    {
+      "id": "image-297",
+      "pageNumber": 18,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-298",
+      "pageNumber": 18,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-299",
+      "pageNumber": 18,
+      "name": "g_d0_img_p15_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 476,
+        "height": 228
+      }
+    },
+    {
+      "id": "image-300",
+      "pageNumber": 18,
+      "name": "g_d0_img_p15_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 176,
+        "height": 41
+      }
+    },
+    {
+      "id": "image-301",
+      "pageNumber": 18,
+      "name": "g_d0_img_p16_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 420,
+        "height": 283
+      }
+    },
+    {
+      "id": "image-302",
+      "pageNumber": 18,
+      "name": "g_d0_img_p16_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 379,
+        "height": 244
+      }
+    },
+    {
+      "id": "image-303",
+      "pageNumber": 18,
+      "name": "img_p17_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 288,
+        "height": 344
+      }
+    },
+    {
+      "id": "image-304",
+      "pageNumber": 18,
+      "name": "img_p17_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 217,
+        "height": 286
+      }
+    },
+    {
+      "id": "image-305",
+      "pageNumber": 18,
+      "name": "g_d0_img_p16_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 124,
+        "height": 119
+      }
+    },
+    {
+      "id": "image-306",
+      "pageNumber": 18,
+      "name": "img_p17_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 308,
+        "height": 333
+      }
+    },
+    {
+      "id": "image-307",
+      "pageNumber": 18,
+      "name": "img_p17_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 239,
+        "height": 272
+      }
+    },
+    {
+      "id": "image-308",
+      "pageNumber": 18,
+      "name": "g_d0_img_p16_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 124,
+        "height": 119
+      }
+    },
+    {
+      "id": "image-309",
+      "pageNumber": 18,
+      "name": "img_p17_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 196,
+        "height": 380
+      }
+    },
+    {
+      "id": "image-310",
+      "pageNumber": 18,
+      "name": "img_p17_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 115,
+        "height": 310
+      }
+    },
+    {
+      "id": "image-311",
+      "pageNumber": 18,
+      "name": "g_d0_img_p16_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 124,
+        "height": 119
+      }
+    },
+    {
+      "id": "image-312",
+      "pageNumber": 18,
+      "name": "img_p17_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 200,
+        "height": 388
+      }
+    },
+    {
+      "id": "image-313",
+      "pageNumber": 18,
+      "name": "img_p17_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 125,
+        "height": 321
+      }
+    },
+    {
+      "id": "image-314",
+      "pageNumber": 18,
+      "name": "g_d0_img_p16_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 120,
+        "height": 115
+      }
+    },
+    {
+      "id": "image-315",
+      "pageNumber": 18,
+      "name": "img_p17_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 164,
+        "height": 392
+      }
+    },
+    {
+      "id": "image-316",
+      "pageNumber": 18,
+      "name": "img_p17_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 89,
+        "height": 323
+      }
+    },
+    {
+      "id": "image-317",
+      "pageNumber": 18,
+      "name": "g_d0_img_p16_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 124,
+        "height": 119
+      }
+    },
+    {
+      "id": "image-318",
+      "pageNumber": 19,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-319",
+      "pageNumber": 19,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-320",
+      "pageNumber": 19,
+      "name": "g_d0_img_p15_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 476,
+        "height": 228
+      }
+    },
+    {
+      "id": "image-321",
+      "pageNumber": 19,
+      "name": "g_d0_img_p15_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 176,
+        "height": 41
+      }
+    },
+    {
+      "id": "image-322",
+      "pageNumber": 19,
+      "name": "img_p18_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 276,
+        "height": 260
+      }
+    },
+    {
+      "id": "image-323",
+      "pageNumber": 19,
+      "name": "img_p18_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 238,
+        "height": 209
+      }
+    },
+    {
+      "id": "image-324",
+      "pageNumber": 19,
+      "name": "img_p18_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 276,
+        "height": 260
+      }
+    },
+    {
+      "id": "image-325",
+      "pageNumber": 19,
+      "name": "img_p18_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 238,
+        "height": 212
+      }
+    },
+    {
+      "id": "image-326",
+      "pageNumber": 19,
+      "name": "img_p18_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 132,
+        "height": 120
+      }
+    },
+    {
+      "id": "image-327",
+      "pageNumber": 19,
+      "name": "img_p18_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 292,
+        "height": 272
+      }
+    },
+    {
+      "id": "image-328",
+      "pageNumber": 19,
+      "name": "img_p18_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 249,
+        "height": 223
+      }
+    },
+    {
+      "id": "image-329",
+      "pageNumber": 19,
+      "name": "img_p18_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 228,
+        "height": 376
+      }
+    },
+    {
+      "id": "image-330",
+      "pageNumber": 19,
+      "name": "img_p18_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 118,
+        "height": 323
+      }
+    },
+    {
+      "id": "image-331",
+      "pageNumber": 19,
+      "name": "img_p18_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 228,
+        "height": 376
+      }
+    },
+    {
+      "id": "image-332",
+      "pageNumber": 19,
+      "name": "img_p18_13",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 118,
+        "height": 323
+      }
+    },
+    {
+      "id": "image-333",
+      "pageNumber": 19,
+      "name": "img_p18_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 416,
+        "height": 324
+      }
+    },
+    {
+      "id": "image-334",
+      "pageNumber": 19,
+      "name": "img_p18_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 351,
+        "height": 264
+      }
+    },
+    {
+      "id": "image-335",
+      "pageNumber": 19,
+      "name": "img_p18_16",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 164,
+        "height": 160
+      }
+    },
+    {
+      "id": "image-336",
+      "pageNumber": 19,
+      "name": "img_p18_17",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 160,
+        "height": 83
+      }
+    },
+    {
+      "id": "image-337",
+      "pageNumber": 19,
+      "name": "img_p18_18",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 160,
+        "height": 83
+      }
+    },
+    {
+      "id": "image-338",
+      "pageNumber": 19,
+      "name": "g_d0_img_p16_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 420,
+        "height": 283
+      }
+    },
+    {
+      "id": "image-339",
+      "pageNumber": 19,
+      "name": "g_d0_img_p16_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 379,
+        "height": 244
+      }
+    },
+    {
+      "id": "image-340",
+      "pageNumber": 20,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-341",
+      "pageNumber": 20,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-342",
+      "pageNumber": 20,
+      "name": "img_p19_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 200,
+        "height": 380
+      }
+    },
+    {
+      "id": "image-343",
+      "pageNumber": 20,
+      "name": "img_p19_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 139,
+        "height": 326
+      }
+    },
+    {
+      "id": "image-344",
+      "pageNumber": 20,
+      "name": "img_p19_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 184,
+        "height": 304
+      }
+    },
+    {
+      "id": "image-345",
+      "pageNumber": 20,
+      "name": "img_p19_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 123,
+        "height": 248
+      }
+    },
+    {
+      "id": "image-346",
+      "pageNumber": 20,
+      "name": "img_p19_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 196,
+        "height": 324
+      }
+    },
+    {
+      "id": "image-347",
+      "pageNumber": 20,
+      "name": "img_p19_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 134,
+        "height": 272
+      }
+    },
+    {
+      "id": "image-348",
+      "pageNumber": 20,
+      "name": "img_p19_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 113,
+        "height": 34
+      }
+    },
+    {
+      "id": "image-349",
+      "pageNumber": 20,
+      "name": "img_p19_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 188,
+        "height": 400
+      }
+    },
+    {
+      "id": "image-350",
+      "pageNumber": 20,
+      "name": "img_p19_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 125,
+        "height": 333
+      }
+    },
+    {
+      "id": "image-351",
+      "pageNumber": 20,
+      "name": "img_p19_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 204,
+        "height": 400
+      }
+    },
+    {
+      "id": "image-352",
+      "pageNumber": 20,
+      "name": "img_p19_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 142,
+        "height": 333
+      }
+    },
+    {
+      "id": "image-353",
+      "pageNumber": 21,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-354",
+      "pageNumber": 21,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-355",
+      "pageNumber": 21,
+      "name": "img_p20_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 712,
+        "height": 768
+      }
+    },
+    {
+      "id": "image-356",
+      "pageNumber": 22,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-357",
+      "pageNumber": 22,
+      "name": "img_p21_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 392,
+        "height": 480
+      }
+    },
+    {
+      "id": "image-358",
+      "pageNumber": 22,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-359",
+      "pageNumber": 22,
+      "name": "img_p21_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 140,
+        "height": 300
+      }
+    },
+    {
+      "id": "image-360",
+      "pageNumber": 22,
+      "name": "img_p21_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 108,
+        "height": 263
+      }
+    },
+    {
+      "id": "image-361",
+      "pageNumber": 22,
+      "name": "img_p21_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 140,
+        "height": 300
+      }
+    },
+    {
+      "id": "image-362",
+      "pageNumber": 22,
+      "name": "img_p21_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 108,
+        "height": 263
+      }
+    },
+    {
+      "id": "image-363",
+      "pageNumber": 22,
+      "name": "img_p21_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 156,
+        "height": 150
+      }
+    },
+    {
+      "id": "image-364",
+      "pageNumber": 22,
+      "name": "img_p21_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 160,
+        "height": 152
+      }
+    },
+    {
+      "id": "image-365",
+      "pageNumber": 22,
+      "name": "img_p21_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 320,
+        "height": 276
+      }
+    },
+    {
+      "id": "image-366",
+      "pageNumber": 22,
+      "name": "img_p21_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 288,
+        "height": 238
+      }
+    },
+    {
+      "id": "image-367",
+      "pageNumber": 22,
+      "name": "img_p21_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 320,
+        "height": 276
+      }
+    },
+    {
+      "id": "image-368",
+      "pageNumber": 22,
+      "name": "img_p21_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 287,
+        "height": 238
+      }
+    },
+    {
+      "id": "image-369",
+      "pageNumber": 22,
+      "name": "img_p21_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 160,
+        "height": 152
+      }
+    },
+    {
+      "id": "image-370",
+      "pageNumber": 22,
+      "name": "img_p21_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 156,
+        "height": 150
+      }
+    },
+    {
+      "id": "image-371",
+      "pageNumber": 23,
+      "name": "g_d0_img_p2_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 1090
+      }
+    },
+    {
+      "id": "image-372",
+      "pageNumber": 23,
+      "name": "g_d0_img_p22_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 392,
+        "height": 480
+      }
+    },
+    {
+      "id": "image-373",
+      "pageNumber": 23,
+      "name": "g_d0_img_p1_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      }
+    },
+    {
+      "id": "image-374",
+      "pageNumber": 23,
+      "name": "img_p22_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 340,
+        "height": 280
+      }
+    },
+    {
+      "id": "image-375",
+      "pageNumber": 23,
+      "name": "img_p22_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 309,
+        "height": 245
+      }
+    },
+    {
+      "id": "image-376",
+      "pageNumber": 23,
+      "name": "img_p22_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 368,
+        "height": 280
+      }
+    },
+    {
+      "id": "image-377",
+      "pageNumber": 23,
+      "name": "img_p22_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 338,
+        "height": 246
+      }
+    },
+    {
+      "id": "image-378",
+      "pageNumber": 23,
+      "name": "g_d0_img_p22_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 156,
+        "height": 150
+      }
+    },
+    {
+      "id": "image-379",
+      "pageNumber": 23,
+      "name": "g_d0_img_p22_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 160,
+        "height": 152
+      }
+    },
+    {
+      "id": "image-380",
+      "pageNumber": 23,
+      "name": "img_p22_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 276,
+        "height": 280
+      }
+    },
+    {
+      "id": "image-381",
+      "pageNumber": 23,
+      "name": "img_p22_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 244,
+        "height": 244
+      }
+    },
+    {
+      "id": "image-382",
+      "pageNumber": 23,
+      "name": "g_d0_img_p22_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 156,
+        "height": 150
+      }
+    },
+    {
+      "id": "image-383",
+      "pageNumber": 23,
+      "name": "img_p22_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 176,
+        "height": 284
+      }
+    },
+    {
+      "id": "image-384",
+      "pageNumber": 23,
+      "name": "img_p22_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 145,
+        "height": 249
+      }
+    },
+    {
+      "id": "image-385",
+      "pageNumber": 23,
+      "name": "g_d0_img_p22_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 160,
+        "height": 152
+      }
+    },
+    {
+      "id": "image-386",
+      "pageNumber": 24,
+      "name": "img_p23_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 752,
+        "height": 327
+      }
+    },
+    {
+      "id": "image-387",
+      "pageNumber": 24,
+      "name": "img_p23_2",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 618,
+        "height": 251
+      }
+    },
+    {
+      "id": "image-388",
+      "pageNumber": 24,
+      "name": "img_p23_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 752,
+        "height": 327
+      }
+    },
+    {
+      "id": "image-389",
+      "pageNumber": 24,
+      "name": "img_p23_3",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 85,
+        "height": 97
+      }
+    },
+    {
+      "id": "image-390",
+      "pageNumber": 24,
+      "name": "img_p23_4",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 80,
+        "height": 93
+      }
+    },
+    {
+      "id": "image-391",
+      "pageNumber": 24,
+      "name": "img_p23_5",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 87,
+        "height": 81
+      }
+    },
+    {
+      "id": "image-392",
+      "pageNumber": 24,
+      "name": "img_p23_6",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 86,
+        "height": 98
+      }
+    },
+    {
+      "id": "image-393",
+      "pageNumber": 24,
+      "name": "img_p23_7",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 152,
+        "height": 148
+      }
+    },
+    {
+      "id": "image-394",
+      "pageNumber": 24,
+      "name": "img_p23_8",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 127,
+        "height": 132
+      }
+    },
+    {
+      "id": "image-395",
+      "pageNumber": 24,
+      "name": "img_p23_9",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 148,
+        "height": 144
+      }
+    },
+    {
+      "id": "image-396",
+      "pageNumber": 24,
+      "name": "img_p23_10",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 125,
+        "height": 127
+      }
+    },
+    {
+      "id": "image-397",
+      "pageNumber": 24,
+      "name": "img_p23_11",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 144,
+        "height": 132
+      }
+    },
+    {
+      "id": "image-398",
+      "pageNumber": 24,
+      "name": "img_p23_12",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 132,
+        "height": 132
+      }
+    },
+    {
+      "id": "image-399",
+      "pageNumber": 24,
+      "name": "img_p23_1",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 752,
+        "height": 327
+      }
+    },
+    {
+      "id": "image-400",
+      "pageNumber": 24,
+      "name": "img_p23_14",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 73,
+        "height": 73
+      }
+    },
+    {
+      "id": "image-401",
+      "pageNumber": 24,
+      "name": "img_p23_15",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 196,
+        "height": 175
+      }
+    },
+    {
+      "id": "image-402",
+      "pageNumber": 24,
+      "name": "img_p23_16",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 288,
+        "height": 108
+      }
+    },
+    {
+      "id": "image-403",
+      "pageNumber": 24,
+      "name": "img_p23_19",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 112,
+        "height": 96
+      }
+    },
+    {
+      "id": "image-404",
+      "pageNumber": 24,
+      "name": "img_p23_20",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 27,
+        "height": 56
+      }
+    },
+    {
+      "id": "image-405",
+      "pageNumber": 24,
+      "name": "img_p23_21",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 96,
+        "height": 86
+      }
+    },
+    {
+      "id": "image-406",
+      "pageNumber": 24,
+      "name": "img_p23_22",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 47,
+        "height": 51
+      }
+    },
+    {
+      "id": "image-407",
+      "pageNumber": 24,
+      "name": "img_p23_23",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 128,
+        "height": 72
+      }
+    },
+    {
+      "id": "image-408",
+      "pageNumber": 24,
+      "name": "img_p23_24",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 85,
+        "height": 42
+      }
+    },
+    {
+      "id": "image-409",
+      "pageNumber": 24,
+      "name": "img_p23_25",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 104,
+        "height": 80
+      }
+    },
+    {
+      "id": "image-410",
+      "pageNumber": 24,
+      "name": "img_p23_26",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 65,
+        "height": 43
+      }
+    },
+    {
+      "id": "image-411",
+      "pageNumber": 24,
+      "name": "img_p23_27",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 108,
+        "height": 64
+      }
+    },
+    {
+      "id": "image-412",
+      "pageNumber": 24,
+      "name": "img_p23_28",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 65,
+        "height": 28
+      }
+    },
+    {
+      "id": "image-413",
+      "pageNumber": 24,
+      "name": "img_p23_29",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 116,
+        "height": 72
+      }
+    },
+    {
+      "id": "image-414",
+      "pageNumber": 24,
+      "name": "img_p23_30",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 65,
+        "height": 26
+      }
+    },
+    {
+      "id": "image-415",
+      "pageNumber": 24,
+      "name": "img_p23_31",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 124,
+        "height": 113
+      }
+    },
+    {
+      "id": "image-416",
+      "pageNumber": 24,
+      "name": "img_p23_32",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 40,
+        "height": 67
+      }
+    },
+    {
+      "id": "image-417",
+      "pageNumber": 24,
+      "name": "img_p23_33",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 112,
+        "height": 68
+      }
+    },
+    {
+      "id": "image-418",
+      "pageNumber": 24,
+      "name": "img_p23_34",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 62,
+        "height": 28
+      }
+    },
+    {
+      "id": "image-419",
+      "pageNumber": 24,
+      "name": "img_p23_35",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 100,
+        "height": 68
+      }
+    },
+    {
+      "id": "image-420",
+      "pageNumber": 24,
+      "name": "img_p23_36",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 51,
+        "height": 26
+      }
+    },
+    {
+      "id": "image-421",
+      "pageNumber": 24,
+      "name": "img_p23_37",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 72,
+        "height": 53
+      }
+    },
+    {
+      "id": "image-422",
+      "pageNumber": 24,
+      "name": "img_p23_38",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 38,
+        "height": 22
+      }
+    },
+    {
+      "id": "image-423",
+      "pageNumber": 24,
+      "name": "img_p23_39",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 109,
+        "height": 109
+      }
+    },
+    {
+      "id": "image-424",
+      "pageNumber": 24,
+      "name": "img_p23_40",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 84,
+        "height": 80
+      }
+    },
+    {
+      "id": "image-425",
+      "pageNumber": 24,
+      "name": "img_p23_41",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 52,
+        "height": 49
+      }
+    },
+    {
+      "id": "image-426",
+      "pageNumber": 24,
+      "name": "img_p23_42",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 84,
+        "height": 69
+      }
+    },
+    {
+      "id": "image-427",
+      "pageNumber": 24,
+      "name": "img_p23_43",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 52,
+        "height": 43
+      }
+    },
+    {
+      "id": "image-428",
+      "pageNumber": 24,
+      "name": "img_p23_44",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 100,
+        "height": 85
+      }
+    },
+    {
+      "id": "image-429",
+      "pageNumber": 24,
+      "name": "img_p23_45",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 52,
+        "height": 52
+      }
+    },
+    {
+      "id": "image-430",
+      "pageNumber": 24,
+      "name": "img_p23_46",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 92,
+        "height": 68
+      }
+    },
+    {
+      "id": "image-431",
+      "pageNumber": 24,
+      "name": "img_p23_47",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 57,
+        "height": 41
+      }
+    },
+    {
+      "id": "image-432",
+      "pageNumber": 24,
+      "name": "img_p23_48",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 84
+      }
+    },
+    {
+      "id": "image-433",
+      "pageNumber": 24,
+      "name": "img_p23_49",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 52,
+        "height": 53
+      }
+    },
+    {
+      "id": "image-434",
+      "pageNumber": 24,
+      "name": "img_p23_50",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 84
+      }
+    },
+    {
+      "id": "image-435",
+      "pageNumber": 24,
+      "name": "img_p23_51",
+      "mimeType": null,
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 52,
+        "height": 52
+      }
+    }
+  ]
+}

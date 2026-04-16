@@ -25,12 +25,12 @@ describe("CompositePdfEngine (PID.pdf) integration", () => {
         return left.pageNumber - right.pageNumber;
       }
 
-      const deltaY = right.y - left.y;
+      const deltaY = right.boundingBox.position.y - left.boundingBox.position.y;
       if (Math.abs(deltaY) > 2) {
         return deltaY;
       }
 
-      return left.x - right.x;
+      return left.boundingBox.position.x - right.boundingBox.position.x;
     });
 
     const payload = {

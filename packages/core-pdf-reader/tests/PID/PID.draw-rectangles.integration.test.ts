@@ -26,7 +26,13 @@ describe("PID bounding-box overlay integration", () => {
     await writer.write({
       sourcePdfPath,
       outputPdfPath,
-      rectangles: document.fragments,
+      rectangles: document.fragments.map((f) => ({
+        pageNumber: f.pageNumber,
+        x: f.boundingBox.position.x,
+        y: f.boundingBox.position.y,
+        width: f.boundingBox.width,
+        height: f.boundingBox.height,
+      })),
     });
 
     expect(existsSync(outputPdfPath)).toBe(true);

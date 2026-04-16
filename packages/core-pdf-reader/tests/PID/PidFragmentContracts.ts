@@ -5,13 +5,21 @@ export interface IPidFontInformation {
   readonly rawName?: string;
 }
 
+export interface IPidPosition {
+  readonly x: number;
+  readonly y: number;
+}
+
+export interface IPidBoundingBox {
+  readonly position: IPidPosition;
+  readonly width: number;
+  readonly height: number;
+}
+
 export interface IPidFragment {
   readonly pageNumber: number;
   readonly text: string;
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
+  readonly boundingBox: IPidBoundingBox;
   readonly font?: IPidFontInformation;
   readonly fontName?: string;
   readonly fontFamily?: string;

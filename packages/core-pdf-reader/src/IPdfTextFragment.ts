@@ -1,14 +1,12 @@
 // src/IPdfTextFragment.ts
 
 import type { IFontInformation } from "./IFontInformation.js";
+import type { IBoundingBox } from "./contracts/contracts.js";
 
 export interface IPdfTextFragment {
   readonly pageNumber: number;
   readonly text: string;
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
+  readonly boundingBox: IBoundingBox;
   readonly font?: IFontInformation;
   readonly fontName?: string;
   readonly fontFamily?: string;

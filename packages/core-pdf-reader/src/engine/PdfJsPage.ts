@@ -2,6 +2,7 @@ import type { IPdfPageText } from "../IPdfPageText.js";
 import type { IPdfTextFragment } from "../IPdfTextFragment.js";
 import type { IFontInformation } from "../IFontInformation.js";
 import type { IPdfPage } from "./IPdfPage.js";
+ 
 import type {
   IPdfJsPageProxy,
   IPdfJsTextContent,
@@ -56,12 +57,12 @@ export class PdfJsPage implements IPdfPage {
     const text = fragments
       .slice()
       .sort((a, b) => {
-        const dy = b.y - a.y;
+        const dy = b.boundingBox.position.y - a.boundingBox.position.y;
         if (Math.abs(dy) > 2) {
           return dy;
         }
 
-        return a.x - b.x;
+        return a.boundingBox.position.x - b.boundingBox.position.x;
       })
       .map((fragment) => fragment.text)
       .join(" ");
@@ -87,10 +88,14 @@ export class PdfJsPage implements IPdfPage {
     return {
       pageNumber,
       text: this.normalizeText(item.str),
-      x: this.toNumber(transform[4]),
-      y: this.toNumber(transform[5]),
-      width: this.toNumber(item.width) * viewport.scale,
-      height: this.resolveHeight(item, transform),
+      boundingBox: {
+        position: {
+          x: this.toNumber(transform[4]),
+          y: this.toNumber(transform[5]),
+        },
+        width: this.toNumber(item.width) * viewport.scale,
+        height: this.resolveHeight(item, transform),
+      },
       ...(font !== undefined && { font }),
       ...(typeof rawFontName === "string" && { fontName: rawFontName }),
       ...(fontFamily !== undefined && { fontFamily }),

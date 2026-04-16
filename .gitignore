@@ -163,3 +163,4 @@ tmpclaude-*
 .vs/MonoRepro/CopilotIndices/17.14.1593.33849/CodeChunks.db-wal
 .vs/MonoRepro/CopilotIndices/17.14.1593.33849/SemanticSymbols.db
 .vs/MonoRepro/CopilotIndices/17.14.1593.33849/SemanticSymbols.db-wal
+packages/core-pdf-web-app-demo/pdf-reading/.gitignore

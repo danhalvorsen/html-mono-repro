@@ -6,9 +6,10 @@ import type { IPdfMetadata } from "../IPdfMetadata.js";
 import type { IPdfPageText } from "../IPdfPageText.js";
 import type { IPdfStructuredExtractionResult } from "../IPdfStructuredExtractionResult.js";
 import type { IPdfTextFragment } from "../IPdfTextFragment.js";
-import type { IFontInformation } from "../IFontInformation.js";
+
 import type { IPdfStructuredExtractionRequest } from "../services/IPdfStructuredExtractionRequest.js";
 import type { ICompositePdfEngine } from "./ICompositePdfEngine.js";
+import type { IFontInformation } from "../contracts/contracts.js";
 
 // internal only (no self-import)
 interface IPdfJsDocument {
@@ -115,10 +116,14 @@ export class CompositePdfEngine implements ICompositePdfEngine {
           Object.freeze({
             pageNumber,
             text,
-            x: Number(t[4] ?? 0),
-            y: Number(t[5] ?? 0),
-            width: Number(item.width ?? 0),
-            height: Number(item.height ?? 0),
+            boundingBox: {
+              position: {
+                x: Number(t[4] ?? 0),
+                y: Number(t[5] ?? 0),
+              },
+              width: Number(item.width ?? 0),
+              height: Number(item.height ?? 0),
+            },
             ...(font !== undefined && { font }),
             ...(typeof rawFontName === "string" && { fontName: rawFontName }),
             ...(fontFamily !== undefined && { fontFamily }),
@@ -157,12 +162,13 @@ export class CompositePdfEngine implements ICompositePdfEngine {
     return fragments
       .slice()
       .sort((left, right) => {
-        const deltaY = right.y - left.y;
+        const deltaY =
+          right.boundingBox.position.y - left.boundingBox.position.y;
         if (Math.abs(deltaY) > 2) {
           return deltaY;
         }
 
-        return left.x - right.x;
+        return left.boundingBox.position.x - right.boundingBox.position.x;
       })
       .map((fragment) => fragment.text)
       .join(" ");
