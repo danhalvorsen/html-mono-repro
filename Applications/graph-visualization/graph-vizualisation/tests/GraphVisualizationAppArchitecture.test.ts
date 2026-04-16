@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const thisDir = dirname(fileURLToPath(import.meta.url));
-const appFilePath = resolve(thisDir, "../src/GraphVisualizationApp.ts");
+const appFilePath = resolve(thisDir, "../src/views/AppView1/AppView1.ts");
 
 async function readAppSource(): Promise<string> {
   return readFile(appFilePath, "utf8");

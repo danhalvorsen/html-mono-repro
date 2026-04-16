@@ -1,13 +1,17 @@
 import type { IPdfPageText } from "../IPdfPageText.js";
 import type { IPdfTextFragment } from "../IPdfTextFragment.js";
+import type { IFontInformation } from "../IFontInformation.js";
 import type { IPdfPage } from "./IPdfPage.js";
 import type {
   IPdfJsPageProxy,
+  IPdfJsTextContent,
+  IPdfJsTextStyle,
   IPdfJsViewport,
 } from "./PdfJsDocumentFactory.js";
 
 interface IPdfJsTextItem {
   readonly str: string;
+  readonly fontInformation?: IFontInformation;
   readonly transform: readonly number[];
   readonly width?: number;
   readonly height?: number;
@@ -39,7 +43,7 @@ export class PdfJsPage implements IPdfPage {
       }
 
       fragments.push(
-        Object.freeze(this.createFragment(this.pageNumber, item, viewport)),
+        Object.freeze(this.createFragment(this.pageNumber, item, content, viewport)),
       );
     }
 
@@ -71,9 +75,14 @@ export class PdfJsPage implements IPdfPage {
   private createFragment(
     pageNumber: number,
     item: IPdfJsTextItem,
+    content: IPdfJsTextContent,
     viewport: IPdfJsViewport,
   ): IPdfTextFragment {
     const transform = this.transform(viewport.transform, item.transform);
+    const rawFontName = this.resolveRawFontName(item);
+    const fontSize = this.resolveFontSize(transform);
+    const fontFamily = this.resolveFontFamily(rawFontName, content.styles);
+    const font = this.createFontItem(rawFontName, fontFamily, fontSize);
 
     return {
       pageNumber,
@@ -82,6 +91,51 @@ export class PdfJsPage implements IPdfPage {
       y: this.toNumber(transform[5]),
       width: this.toNumber(item.width) * viewport.scale,
       height: this.resolveHeight(item, transform),
+      ...(font !== undefined && { font }),
+      ...(typeof rawFontName === "string" && { fontName: rawFontName }),
+      ...(fontFamily !== undefined && { fontFamily }),
+      ...(fontSize > 0 && { fontSize }),
+    };
+  }
+
+  private resolveRawFontName(item: IPdfJsTextItem): string | undefined {
+    const candidate = (item as { fontInformation?: unknown; fontName?: unknown }).fontInformation
+      ?? (item as { fontName?: unknown }).fontName;
+
+    if (typeof candidate === "string") {
+      return candidate;
+    }
+
+    if (typeof candidate === "object" && candidate !== null) {
+      const withRaw = candidate as Partial<IFontInformation>;
+
+      if (typeof withRaw.rawName === "string") {
+        return withRaw.rawName;
+      }
+
+      if (typeof withRaw.name === "string") {
+        return withRaw.name;
+      }
+    }
+
+    return undefined;
+  }
+
+  private createFontItem(
+    fontName: string | undefined,
+    fontFamily: string | undefined,
+    fontSize: number,
+  ): IFontInformation | undefined {
+    const resolvedName = fontFamily ?? fontName;
+    if (resolvedName === undefined && fontSize <= 0) {
+      return undefined;
+    }
+
+    return {
+      name: resolvedName ?? "unknown",
+      size: Math.max(fontSize, 0),
+      ...(fontFamily !== undefined && { family: fontFamily }),
+      ...(fontName !== undefined && { rawName: fontName }),
     };
   }
 
@@ -98,6 +152,34 @@ export class PdfJsPage implements IPdfPage {
       this.toNumber(transform[2]),
       this.toNumber(transform[3]),
     );
+  }
+
+  private resolveFontSize(transform: readonly number[]): number {
+    const verticalScale = Math.hypot(
+      this.toNumber(transform[2]),
+      this.toNumber(transform[3]),
+    );
+
+    if (verticalScale > 0) {
+      return verticalScale;
+    }
+
+    return Math.hypot(
+      this.toNumber(transform[0]),
+      this.toNumber(transform[1]),
+    );
+  }
+
+  private resolveFontFamily(
+    fontName: string | undefined,
+    styles: IPdfJsTextContent["styles"],
+  ): string | undefined {
+    if (fontName === undefined || styles === undefined) {
+      return undefined;
+    }
+
+    const style: IPdfJsTextStyle | undefined = styles[fontName];
+    return typeof style?.fontFamily === "string" ? style.fontFamily : undefined;
   }
 
   private normalizeText(value: string): string {

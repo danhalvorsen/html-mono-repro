@@ -4,12 +4,14 @@ import domainGraphData from "../data/graphs/domain-graph.json";
 import webComponentHierarchyGraphData from "../data/graphs/web-component-hierarchy-graph.json";
 import reactiveControllerOwnershipGraphData from "../data/graphs/reactive-controller-ownership-graph.json";
 import applicationArchitectureGraphData from "../data/graphs/application-architecture-graph.json";
+import hierarchicalOrganizationGraphData from "../data/graphs/hierarchical-organization-graph.json";
 
 export interface IApplicationGraphFactory {
   createDomainGraph(): IDagGraph;
   createWebComponentHierarchyGraph(): IDagGraph;
   createReactiveControllerOwnershipGraph(): IDagGraph;
   createApplicationArchitectureGraph(): IDagGraph;
+  createHierarchicalOrganizationGraph(): IDagGraph;
   createGraph(): IDagGraph;
 }
 
@@ -34,6 +36,10 @@ export class ApplicationGraphFactory implements IApplicationGraphFactory {
 
   createApplicationArchitectureGraph(): IDagGraph {
     return this.deserializer.deserialize(JSON.stringify(applicationArchitectureGraphData)) as IDagGraph;
+  }
+
+  createHierarchicalOrganizationGraph(): IDagGraph {
+    return this.deserializer.deserialize(JSON.stringify(hierarchicalOrganizationGraphData)) as IDagGraph;
   }
 
   createGraph(): IDagGraph {

@@ -1,12 +1,12 @@
 // packages/core-pdf-reader/src/engine/CompositePdfEngine.ts
 
-import { QuadTreeFactory } from "@monorepo/core-design-pattern-quad-tree";
 import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 
 import type { IPdfMetadata } from "../IPdfMetadata.js";
 import type { IPdfPageText } from "../IPdfPageText.js";
 import type { IPdfStructuredExtractionResult } from "../IPdfStructuredExtractionResult.js";
 import type { IPdfTextFragment } from "../IPdfTextFragment.js";
+import type { IFontInformation } from "../IFontInformation.js";
 import type { IPdfStructuredExtractionRequest } from "../services/IPdfStructuredExtractionRequest.js";
 import type { ICompositePdfEngine } from "./ICompositePdfEngine.js";
 
@@ -18,11 +18,21 @@ interface IPdfJsDocument {
 }
 
 interface IPdfJsPage {
-  getTextContent(): Promise<{ items: readonly unknown[] }>;
+  getTextContent(): Promise<IPdfJsTextContent>;
+}
+
+interface IPdfJsTextStyle {
+  readonly fontFamily?: string;
+}
+
+interface IPdfJsTextContent {
+  readonly items: readonly unknown[];
+  readonly styles?: Readonly<Record<string, IPdfJsTextStyle>>;
 }
 
 interface IPdfJsTextItem {
   readonly str: string;
+  readonly fontInformation?: IFontInformation;
   readonly transform: readonly number[];
   readonly width?: number;
   readonly height?: number;
@@ -70,12 +80,10 @@ export class CompositePdfEngine implements ICompositePdfEngine {
     const pages: IPdfPageText[] = [];
 
     for (const [pageNumber, pageFragments] of [...byPage.entries()].sort((a, b) => a[0] - b[0])) {
-      const lines = this.groupIntoLines(pageFragments);
-
       pages.push(
         Object.freeze({
           pageNumber,
-          text: lines.join("\n"),
+          text: this.toPageText(pageFragments),
         })
       );
     }
@@ -98,6 +106,10 @@ export class CompositePdfEngine implements ICompositePdfEngine {
         if (text.length === 0) continue;
 
         const t = item.transform;
+        const rawFontName = this.resolveRawFontName(item);
+        const fontSize = this.resolveFontSize(t);
+        const fontFamily = this.resolveFontFamily(rawFontName, textContent.styles);
+        const font = this.createFontItem(rawFontName, fontFamily, fontSize);
 
         fragments.push(
           Object.freeze({
@@ -107,6 +119,10 @@ export class CompositePdfEngine implements ICompositePdfEngine {
             y: Number(t[5] ?? 0),
             width: Number(item.width ?? 0),
             height: Number(item.height ?? 0),
+            ...(font !== undefined && { font }),
+            ...(typeof rawFontName === "string" && { fontName: rawFontName }),
+            ...(fontFamily !== undefined && { fontFamily }),
+            ...(fontSize > 0 && { fontSize }),
           })
         );
       }
@@ -134,64 +150,92 @@ export class CompositePdfEngine implements ICompositePdfEngine {
   }
 
   // ─────────────────────────────────────────────
-  // QuadTree grouping (KISS)
-  // ─────────────────────────────────────────────
-
-  private groupIntoLines(fragments: readonly IPdfTextFragment[]): readonly string[] {
-    const tree = this.buildQuadTree(fragments);
-    const visited = new Set<IPdfTextFragment>();
-    const result: string[] = [];
-
-    for (const fragment of fragments) {
-      if (visited.has(fragment)) continue;
-
-      const toleranceY = fragment.height * 0.5;
-
-      const region = {
-        intersects: (b: any) =>
-          !(b.y > fragment.y + toleranceY || b.y + b.height < fragment.y - toleranceY),
-      };
-
-      const candidates = tree.query(region);
-
-      const line = candidates.filter((c: { y: number; }) => Math.abs(c.y - fragment.y) <= toleranceY);
-
-      for (const item of line) visited.add(item);
-
-      line.sort((a: { x: number; }, b: { x: number; }) => a.x - b.x);
-
-      result.push(line.map((x: { text: any; }) => x.text).join(" "));
-    }
-
-    return Object.freeze(result);
-  }
-
-  private buildQuadTree(fragments: readonly IPdfTextFragment[]) {
-    const factory = new QuadTreeFactory<IPdfTextFragment>();
-
-    const tree = factory.create({
-      rootBounds: { x: 0, y: 0, width: 10000, height: 10000 },
-      boundsProvider: {
-        getBounds: (f: { x: any; y: any; width: any; height: any; }) => ({
-          x: f.x,
-          y: f.y,
-          width: f.width,
-          height: f.height,
-        }),
-      },
-      options: {
-        maxDepth: 6,
-        maxItemsPerNode: 8,
-      },
-    });
-
-    tree.insertMany(fragments);
-    return tree;
-  }
-
-  // ─────────────────────────────────────────────
   // Internal helpers
   // ─────────────────────────────────────────────
+
+  private toPageText(fragments: readonly IPdfTextFragment[]): string {
+    return fragments
+      .slice()
+      .sort((left, right) => {
+        const deltaY = right.y - left.y;
+        if (Math.abs(deltaY) > 2) {
+          return deltaY;
+        }
+
+        return left.x - right.x;
+      })
+      .map((fragment) => fragment.text)
+      .join(" ");
+  }
+
+  private resolveFontSize(transform: readonly number[]): number {
+    const verticalScale = Math.hypot(
+      Number(transform[2] ?? 0),
+      Number(transform[3] ?? 0),
+    );
+
+    if (verticalScale > 0) {
+      return verticalScale;
+    }
+
+    return Math.hypot(
+      Number(transform[0] ?? 0),
+      Number(transform[1] ?? 0),
+    );
+  }
+
+  private resolveFontFamily(
+    fontName: string | undefined,
+    styles: IPdfJsTextContent["styles"],
+  ): string | undefined {
+    if (fontName === undefined || styles === undefined) {
+      return undefined;
+    }
+
+    const style = styles[fontName];
+    return typeof style?.fontFamily === "string" ? style.fontFamily : undefined;
+  }
+
+  private resolveRawFontName(item: IPdfJsTextItem): string | undefined {
+    const candidate = (item as { fontInformation?: unknown; fontName?: unknown }).fontInformation
+      ?? (item as { fontName?: unknown }).fontName;
+
+    if (typeof candidate === "string") {
+      return candidate;
+    }
+
+    if (typeof candidate === "object" && candidate !== null) {
+      const withRaw = candidate as Partial<IFontInformation>;
+
+      if (typeof withRaw.rawName === "string") {
+        return withRaw.rawName;
+      }
+
+      if (typeof withRaw.name === "string") {
+        return withRaw.name;
+      }
+    }
+
+    return undefined;
+  }
+
+  private createFontItem(
+    fontName: string | undefined,
+    fontFamily: string | undefined,
+    fontSize: number,
+  ): IFontInformation | undefined {
+    const resolvedName = fontFamily ?? fontName;
+    if (resolvedName === undefined && fontSize <= 0) {
+      return undefined;
+    }
+
+    return {
+      name: resolvedName ?? "unknown",
+      size: Math.max(fontSize, 0),
+      ...(fontFamily !== undefined && { family: fontFamily }),
+      ...(fontName !== undefined && { rawName: fontName }),
+    };
+  }
 
   private async loadDocument(binary: Uint8Array): Promise<IPdfJsDocument> {
     const task = pdfjs.getDocument({

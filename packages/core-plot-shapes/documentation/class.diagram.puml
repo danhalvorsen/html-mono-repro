@@ -1,0 +1,83 @@
+@startuml core-plot-shapes-documentation-class-diagram
+title core-plot-shapes class diagram
+
+package "core-style-system" {
+	interface IStyleReference
+}
+
+package "core-math" {
+	class Rectangle2
+}
+
+package "lit" {
+	class TemplateResult
+}
+
+package "core-plot-shapes" {
+	interface "IStylable<TSelf, TStyle>" as IStylable
+	interface "IShape<TShape>" as IShape
+	interface "Builder<T>" as Builder
+	interface SvgStyle
+	enum StyleState
+
+	class SvgArrow
+	class SvgCanvasObject
+	class SvgCircle
+	class SvgCoordinatePoint
+	class SvgCurve
+	class SvgLabel
+	class SvgLine
+	class SvgRectangle
+	class TickSvg
+
+	class ArrowBuilder
+	class CanvasObjectBuilder
+	class CircleBuilder
+	class CoordinatePointBuilder
+	class CurveBuilder
+	class LabelBuilder
+	class LineBuilder
+	class RectangleBuilder
+	class TickBuilder
+
+	IShape --|> IStylable
+	SvgStyle --|> IStyleReference
+
+	SvgArrow ..|> IShape
+	SvgCanvasObject ..|> IShape
+	SvgCircle ..|> IShape
+	SvgCoordinatePoint ..|> IShape
+	SvgCurve ..|> IShape
+	SvgLabel ..|> IShape
+	SvgLine ..|> IShape
+	SvgRectangle ..|> IShape
+	TickSvg ..|> IShape
+
+	ArrowBuilder ..|> Builder
+	CanvasObjectBuilder ..|> Builder
+	CircleBuilder ..|> Builder
+	CoordinatePointBuilder ..|> Builder
+	CurveBuilder ..|> Builder
+	LabelBuilder ..|> Builder
+	LineBuilder ..|> Builder
+	RectangleBuilder ..|> Builder
+	TickBuilder ..|> Builder
+
+	SvgCanvasObject *-- SvgRectangle : border
+	SvgRectangle ..> Rectangle2
+	SvgCanvasObject ..> Rectangle2
+	SvgArrow ..> TemplateResult
+	SvgCanvasObject ..> TemplateResult
+	SvgCircle ..> TemplateResult
+	SvgCoordinatePoint ..> TemplateResult
+	SvgCurve ..> TemplateResult
+	SvgLabel ..> TemplateResult
+	SvgLine ..> TemplateResult
+	SvgRectangle ..> TemplateResult
+	TickSvg ..> TemplateResult
+	SvgStyle ..> StyleState
+}
+
+@enduml
+@startuml  Master-Plot
+title Sprint 1: Canvas Foundation

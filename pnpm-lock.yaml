@@ -379,6 +379,19 @@ importers:
         specifier: ^8.0.0
         version: 8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
+  Applications/data-processing/vite-project:
+    dependencies:
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.2
+      vite:
+        specifier: ^8.0.4
+        version: 8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
   Applications/default:
     dependencies:
       lit:
@@ -431,12 +444,18 @@ importers:
       '@monorepo/core-graph-visualisation':
         specifier: workspace:*
         version: link:../../../packages/core-graph-visualisation
+      '@monorepo/core-graph-visualisation-hierarchical':
+        specifier: workspace:*
+        version: link:../../../packages/core-graph-visualisation-hierarchical
       '@monorepo/core-graph-visualization-d3':
         specifier: workspace:*
         version: link:../../../packages/core-graph-visualization-d3
       '@monorepo/core-graph-visualization-dgml':
         specifier: workspace:*
         version: link:../../../packages/core-graph-visualization-DGML
+      d3-force:
+        specifier: ^3.0.0
+        version: 3.0.0
       lit:
         specifier: ^3.3.2
         version: 3.3.2
@@ -1146,6 +1165,15 @@ importers:
         specifier: workspace:*
         version: link:../core-filesystem
 
+  packages/core-ai-openapi:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/core-ast:
     dependencies:
       '@monorepo/core-graph':
@@ -1655,6 +1683,22 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/core-graph-visualisation-hierarchical:
+    dependencies:
+      '@monorepo/core-graph-visualisation':
+        specifier: workspace:*
+        version: link:../core-graph-visualisation
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
   packages/core-graph-visualization-DGML:
     dependencies:
       '@monorepo/core-graph-visualisation':
@@ -1964,16 +2008,13 @@ importers:
 
   packages/core-pdf-reader:
     dependencies:
-      '@monorepo/core-design-pattern-quad-tree':
-        specifier: workspace:*
-        version: link:../core-design-pattern-quad-tree
-      '@monorepo/core-math':
-        specifier: workspace:*
-        version: link:../core-math
       pdfjs-dist:
         specifier: ^5.6.205
         version: 5.6.205
     devDependencies:
+      pdf-lib:
+        specifier: ^1.17.1
+        version: 1.17.1
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -1992,6 +2033,25 @@ importers:
 
   packages/core-pdf-reader-pid:
     devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/core-pdf-writer:
+    dependencies:
+      pdf-lib:
+        specifier: ^1.17.1
+        version: 1.17.1
+      pdfjs-dist:
+        specifier: ^5.6.205
+        version: 5.6.205
+    devDependencies:
+      '@types/node':
+        specifier: ^24.10.0
+        version: 24.12.2
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -2053,6 +2113,31 @@ importers:
       '@monorepo/core-plot-curve':
         specifier: workspace:*
         version: link:../core-plot-curve
+      '@monorepo/core-plot-shapes':
+        specifier: workspace:*
+        version: link:../core-plot-shapes
+      '@monorepo/core-style-system':
+        specifier: workspace:*
+        version: link:../core-style-system
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/core-plot-canvas-objects:
+    dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../core-math
       '@monorepo/core-plot-shapes':
         specifier: workspace:*
         version: link:../core-plot-shapes
@@ -3487,6 +3572,12 @@ packages:
   '@oxc-project/types@0.124.0':
     resolution: {integrity: sha512-VBFWMTBvHxS11Z5Lvlr3IWgrwhMTXV+Md+EQF0Xf60+wAdsGFTBx7X7K/hP4pi8N7dcm1RvcHwDxZ16Qx8keUg==}
 
+  '@pdf-lib/standard-fonts@1.0.0':
+    resolution: {integrity: sha512-hU30BK9IUN/su0Mn9VdlVKsWBS6GyhVfqjwl1FjZN4TxP6cCw0jP2w7V3Hf5uX7M0AZJ16vey9yE0ny7Sa59ZA==}
+
+  '@pdf-lib/upng@1.0.1':
+    resolution: {integrity: sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ==}
+
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
@@ -4511,6 +4602,10 @@ packages:
 
   d3-force-3d@3.0.6:
     resolution: {integrity: sha512-4tsKHUPLOVkyfEffZo1v6sFHvGFwAIIjt/W8IThbp08DYAsXZck+2pSHEG5W1+gQgEvFLdZkYvmJAbRM2EzMnA==}
+    engines: {node: '>=12'}
+
+  d3-force@3.0.0:
+    resolution: {integrity: sha512-zxV/SsA+U4yte8051P4ECydjD/S+qeYtnaIyAs9tgHCqfguma/aAQDjo85A9Z6EKhBirHRJHXIgJUlffT4wdLg==}
     engines: {node: '>=12'}
 
   d3-octree@1.1.0:
@@ -5620,6 +5715,9 @@ packages:
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
 
+  pako@1.0.11:
+    resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
+
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
     engines: {node: '>=6'}
@@ -5659,6 +5757,9 @@ packages:
   pathval@2.0.1:
     resolution: {integrity: sha512-//nshmD55c46FuFw26xV/xFAaB5HF9Xdap7HJBBnrKdAd6/GxDBaNA1870O79+9ueg61cZLSVc+OaFlfmObYVQ==}
     engines: {node: '>= 14.16'}
+
+  pdf-lib@1.17.1:
+    resolution: {integrity: sha512-V/mpyJAoTsN4cnP31vc0wfNA1+p20evqqnap0KLoRUN0Yk/p3wN52DOEsL4oBFcLdb76hlpKPtzJIgo67j/XLw==}
 
   pdfjs-dist@5.6.205:
     resolution: {integrity: sha512-tlUj+2IDa7G1SbvBNN74UHRLJybZDWYom+k6p5KIZl7huBvsA4APi6mKL+zCxd3tLjN5hOOEE9Tv7VdzO88pfg==}
@@ -7747,6 +7848,14 @@ snapshots:
 
   '@oxc-project/types@0.124.0': {}
 
+  '@pdf-lib/standard-fonts@1.0.0':
+    dependencies:
+      pako: 1.0.11
+
+  '@pdf-lib/upng@1.0.1':
+    dependencies:
+      pako: 1.0.11
+
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
@@ -8549,7 +8658,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.16
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+      vitest: 3.2.4(@types/node@20.19.39)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   '@vitest/ui@4.1.4(vitest@4.1.4)':
     dependencies:
@@ -8560,7 +8669,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.0
-      vitest: 4.1.4(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@3.2.4(vitest@3.2.4))(@vitest/ui@4.1.4)(happy-dom@20.8.9)(jsdom@26.1.0)(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+      vitest: 4.1.4(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@3.2.4(vitest@3.2.4))(@vitest/ui@4.1.4)(happy-dom@20.8.9)(jsdom@26.1.0)(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -8870,6 +8979,12 @@ snapshots:
       d3-binarytree: 1.0.2
       d3-dispatch: 3.0.1
       d3-octree: 1.1.0
+      d3-quadtree: 3.0.1
+      d3-timer: 3.0.1
+
+  d3-force@3.0.0:
+    dependencies:
+      d3-dispatch: 3.0.1
       d3-quadtree: 3.0.1
       d3-timer: 3.0.1
 
@@ -10133,6 +10248,8 @@ snapshots:
 
   package-json-from-dist@1.0.1: {}
 
+  pako@1.0.11: {}
+
   parent-module@1.0.1:
     dependencies:
       callsites: 3.1.0
@@ -10168,6 +10285,13 @@ snapshots:
   pathe@2.0.3: {}
 
   pathval@2.0.1: {}
+
+  pdf-lib@1.17.1:
+    dependencies:
+      '@pdf-lib/standard-fonts': 1.0.0
+      '@pdf-lib/upng': 1.0.1
+      pako: 1.0.11
+      tslib: 1.14.1
 
   pdfjs-dist@5.6.205:
     optionalDependencies:

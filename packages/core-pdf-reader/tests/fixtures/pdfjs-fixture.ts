@@ -3,11 +3,16 @@
 import type {
   IPdfJsDocumentProxy,
   IPdfJsPageProxy,
+  IPdfJsTextContent,
+  IPdfJsTextStyle,
   IPdfJsViewport,
 } from "../../src/engine/PdfJsDocumentFactory.js";
+import type { IFontInformation } from "../../src/IFontInformation.js";
 
 export interface ITestTextItemInput {
   readonly str: string;
+  readonly fontName?: string;
+  readonly fontInformation?: IFontInformation;
   readonly transform?: readonly number[];
   readonly width?: number;
   readonly height?: number;
@@ -16,6 +21,7 @@ export interface ITestTextItemInput {
 export interface ICreatePageProxyInput {
   readonly pageNumber?: number;
   readonly items?: readonly unknown[];
+  readonly styles?: Readonly<Record<string, IPdfJsTextStyle>>;
   readonly viewport?: IPdfJsViewport;
 }
 
@@ -39,6 +45,10 @@ export class PdfJsTestFixture {
   public createTextItem(input: ITestTextItemInput): unknown {
     return Object.freeze({
       str: input.str,
+      ...(typeof input.fontName === "string" && { fontName: input.fontName }),
+      ...(typeof input.fontInformation === "object" && input.fontInformation !== null && {
+        fontInformation: input.fontInformation,
+      }),
       transform: input.transform ?? [1, 0, 0, 1, 0, 0],
       width: input.width ?? 10,
       height: input.height ?? 12,
@@ -48,12 +58,16 @@ export class PdfJsTestFixture {
   public createPageProxy(input?: ICreatePageProxyInput): IPdfJsPageProxy {
     const pageNumber = input?.pageNumber ?? 1;
     const items = input?.items ?? [];
+    const styles = input?.styles;
     const viewport = input?.viewport ?? this.createViewport();
 
     return {
       pageNumber,
-      async getTextContent(): Promise<{ items: readonly unknown[] }> {
-        return { items };
+      async getTextContent(): Promise<IPdfJsTextContent> {
+        return Object.freeze({
+          items,
+          ...(styles !== undefined && { styles }),
+        });
       },
       getViewport(parameters: { scale: number }): IPdfJsViewport {
         return Object.freeze({

@@ -1,7 +1,7 @@
 # `@monorepo/core-pdf-reader`
 
 PDF reading and spatial text extraction for the monorepo.  
-Built on [`pdfjs-dist`](https://mozilla.github.io/pdf.js/) with a quad-tree spatial index for fragment clustering.
+Built on [`pdfjs-dist`](https://mozilla.github.io/pdf.js/).
 
 ---
 
@@ -9,9 +9,8 @@ Built on [`pdfjs-dist`](https://mozilla.github.io/pdf.js/) with a quad-tree spat
 
 - Load a PDF from a binary source (`Uint8Array`)
 - Extract raw text fragments with **spatial coordinates** (x, y, width, height)
-- Regroup fragments into **reading-order lines** per page
+- Reconstruct per-page text in reading order
 - Provide structured extraction via a named schema request
-- Expose a quad-tree spatial index over fragments for proximity queries
 
 ## Non-responsibilities
 
@@ -53,7 +52,7 @@ This is a private monorepo package. Add it as a workspace dependency:
 
 | Class | Description |
 |---|---|
-| `CompositePdfEngine` | `pdfjs-dist`-backed implementation of `ICompositePdfEngine`. Builds an internal quad-tree spatial index over fragments. |
+| `CompositePdfEngine` | `pdfjs-dist`-backed implementation of `ICompositePdfEngine`. |
 | `DefaultPdfReader` | Wraps `ICompositePdfEngine` to implement `IPdfReader`. |
 | `InMemoryPdfBinarySource` | `IPdfBinarySource` backed by an in-memory `Uint8Array`. |
 
@@ -109,11 +108,11 @@ console.log(metadata.title, metadata.author, metadata.creationDateUtc);
 
 ```ts
 const result = await engine.extractStructured<{ prices: number[] }>(binary, {
-  schemaName: 'price-clusters',
-  prompt: 'Extract all price values from the document.',
+  schemaName: 'document-summary',
+  prompt: 'Return the document text grouped by page.',
 });
 
-console.log(result.schemaName); // 'price-clusters'
+console.log(result.schemaName); // 'document-summary'
 console.log(result.value);      // { prices: [...] }
 ```
 
@@ -130,26 +129,16 @@ ICompositePdfEngine  ◄──────────────────�
       ├── readMetadata()      → IPdfMetadata                    │
       ├── readPageCount()     → number                          │
       ├── readPages()         → IPdfPageText[]                  │   CompositePdfEngine
-      ├── readTextFragments() → IPdfTextFragment[]              │   (pdfjs-dist + QuadTree)
+      ├── readTextFragments() → IPdfTextFragment[]              │   (pdfjs-dist)
       └── extractStructured() → IPdfStructuredExtractionResult  │
                                                                  │
 IPdfReader                                                       │
   └── DefaultPdfReader ──► ICompositePdfEngine ─────────────────┘
 ```
 
-### Spatial indexing
-
-`CompositePdfEngine` builds a `QuadTree<IPdfTextFragment>` (from `@monorepo/core-design-pattern-quad-tree`) over all fragments for a given `Uint8Array`.
-
-- `maxDepth: 6`
-- `maxItemsPerNode: 8`
-- Fragment bounds = `(x, y, width, height)` as reported by `pdfjs-dist`
-
-This index powers proximity queries used for line grouping and structured cluster extraction.
-
 ### Line reconstruction
 
-`readPages()` calls `readTextFragments()` internally, then groups fragments into reading-order lines using a Y-coordinate tolerance heuristic. Lines are joined with `\n` to produce `IPdfPageText.text`.
+    `readPages()` calls `readTextFragments()` internally, sorts fragments by reading order, and joins them into `IPdfPageText.text`.
 
 ---
 
@@ -166,7 +155,7 @@ src/
   IPdfTextFragment.ts
   engine/
     ICompositePdfEngine.ts
-    CompositePdfEngine.ts           ← pdfjs-dist + quad-tree
+    CompositePdfEngine.ts           ← pdfjs-dist adapter
   services/
     IPdfStructuredExtractionRequest.ts
     DefaultPdfReader.ts
@@ -174,10 +163,7 @@ src/
     InMemoryPdfBinarySource.ts
 tests/
   reader.test.ts
-  grouping.test.ts
   engine.integration.test.ts
-  engine.clustering.integration.test.ts
-  engine.price-clusters.integration.test.ts
   engine.textdump.integration.test.ts
   Kiwi.pdf                          ← fixture PDF
 ```
@@ -189,7 +175,6 @@ tests/
 | Package | Role |
 |---|---|
 | `pdfjs-dist` | PDF parsing and text extraction |
-| `@monorepo/core-design-pattern-quad-tree` | Spatial index for fragment clustering |
 
 ---
 

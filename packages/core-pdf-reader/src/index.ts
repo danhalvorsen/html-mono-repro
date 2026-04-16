@@ -1,4 +1,6 @@
 export * from './IPdfBinarySource.js';
+export * from './IFontInformation.js';
+export * from './IFontItem.js';
 export * from './IPdfMetadata.js';
 export * from './IPdfPageText.js';
 export * from './IPdfReader.js';

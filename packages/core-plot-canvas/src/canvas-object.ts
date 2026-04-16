@@ -1,6 +1,8 @@
 import type { TemplateResult } from "lit";
 import type { Rectangle2 } from "@monorepo/core-math";
 import type { RenderContext } from "./render-context.js";
+import { CanvasObjectDragContext } from "./CanvasObjectDragContext.js";
+import { InteractionCapabilities } from "./InteractionCapabilities.js";
 
 export interface HitTestContext {
   readonly x: number;
@@ -8,22 +10,6 @@ export interface HitTestContext {
 }
 
 export type CanvasObjectBounds = Rectangle2;
-
-export interface InteractionCapabilities {
-  readonly clickable?: boolean;
-  readonly draggable?: boolean;
-  readonly doubleClickable?: boolean;
-  readonly scalable?: boolean;
-}
-
-export interface CanvasObjectDragContext {
-  readonly startX: number;
-  readonly startY: number;
-  readonly currentX: number;
-  readonly currentY: number;
-  readonly deltaX: number;
-  readonly deltaY: number;
-}
 
 let nextCanvasObjectId = 0;
 

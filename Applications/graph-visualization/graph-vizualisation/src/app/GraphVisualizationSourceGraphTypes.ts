@@ -2,7 +2,8 @@ export type SourceGraphId =
   | "domain"
   | "web-component-hierarchy"
   | "reactive-controller-ownership"
-  | "application-architecture";
+  | "application-architecture"
+  | "hierarchical-organization";
 
 export interface SourceGraphOption {
   readonly id: SourceGraphId;

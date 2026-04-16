@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vite-project</title>
+    <link rel="stylesheet" href="./src/index.css" />
+  </head>
+  <body>
+    <h2 style="font-family:sans-serif;padding:8px 12px;margin:0">Kiwi — cluster envelopes</h2>
+    <bbox-viewer id="viewer"></bbox-viewer>
+    <script type="module">
+      import '/src/my-element.ts'
+
+      const data = await fetch('/Kiwi.cluster-merge.json').then((r) => r.json())
+
+      const normalizeText = (value) => String(value ?? '').replace(/\s+/g, ' ').trim()
+
+      const toClusterLabel = (cluster) => {
+        const sortedItems = [...cluster.items].sort((left, right) => {
+          if (left.minY !== right.minY) return left.minY - right.minY
+          return left.minX - right.minX
+        })
+
+        const mergedText = sortedItems
+          .map((item) => normalizeText(item.text))
+          .filter((text) => text.length > 0)
+          .join(' ')
+
+        const clusterNumber = String(cluster.id).replace(/^cluster-/, '')
+        return `cluster-${clusterNumber}-${mergedText}`
+      }
+
+      // Flatten all cluster envelopes across every merged group
+      const boxes = data.mergedGroups.flatMap((group) =>
+        group.clusters.map((cluster) => ({
+          id: cluster.id,
+          minX: cluster.envelope.minX,
+          minY: cluster.envelope.minY,
+          maxX: cluster.envelope.maxX,
+          maxY: cluster.envelope.maxY,
+          width: cluster.envelope.width,
+          height: cluster.envelope.height,
+          label: toClusterLabel(cluster),
+        }))
+      )
+
+      const viewer = document.getElementById('viewer')
+      viewer.boxes = boxes
+    </script>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+ {
+  "name": "@monorepo/core-graph-visualisation-hierarchical",
+  "version": "1.0.0",
+  "description": "Deterministic hierarchical graph visualisation constraints and layout strategies.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "graph",
+    "hierarchical",
+    "visualisation",
+    "layout",
+    "tree",
+    "dag",
+    "deterministic"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-graph-visualisation": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

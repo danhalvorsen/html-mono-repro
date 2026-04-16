@@ -1,0 +1,590 @@
+# `@monorepo/core-plot-shapes`
+
+## Canonical Specification
+
+This document is the single source of truth for `packages/core-plot-shapes/src`.
+
+It defines both:
+
+* the package behavior specification
+* the mandatory engineering rules for implementation
+
+If README notes, diagrams, tests, or earlier notes conflict with this document, this document wins.
+
+---
+
+# 1. Scope
+
+The `core-plot-shapes` module shall provide:
+
+* reusable SVG-backed shape objects
+* reusable shape builders
+* immutable shape composition objects
+* token-driven style contracts for SVG rendering
+* no plot-specific controller or canvas orchestration behavior
+
+This module is the authoritative rendering-shape package for the plotting system.
+
+It shall own:
+
+* SVG shape primitives
+* shape composition objects
+* builder contracts for all renderable SVG objects
+* shape-side style contracts
+
+It shall not own:
+
+* plot orchestration
+* canvas object orchestration
+* interaction controllers
+* curve interpolation math
+* coordinate-system mapping policy
+
+---
+
+# 2. Architectural Truth
+
+## 2.1 Package role
+
+`core-plot-shapes` is the rendering-shape layer.
+
+It shall sit below:
+
+* `core-plot`
+* `core-plot-canvas`
+
+It may depend on:
+
+* `lit`
+* `@monorepo/core-math`
+* `@monorepo/core-style-system`
+
+It shall not depend on plot runtime behavior.
+
+## 2.2 Canonical model
+
+The canonical model is:
+
+* a shape is an immutable SVG render object
+* a stylable object implements `IStylable<TSelf, TStyle>`
+* a shape implements `IShape<TShape>`
+* a builder constructs a shape
+* a composed shape is still a shape
+* styling is token-driven through `core-style-system`-compatible references
+
+## 2.3 Shape layering
+
+The package shall follow this separation:
+
+* contracts define shape and style interfaces
+* builders construct shapes
+* SVG classes render shapes
+* factories compose shape sets when needed
+
+No shape shall embed plot-controller logic.
+
+---
+
+# 3. Core Contracts
+
+## 3.1 `IStylable<TSelf, TStyle>`
+
+`IStylable<TSelf, TStyle>` is the canonical immutable style-control contract.
+
+It shall support:
+
+* reading effective style object
+* replacing style immutably
+* patching style immutably
+
+The canonical immutable style-control surface is:
+
+* `getStyle()`
+* `withStyle(style)`
+* `withStylePatch(stylePatch)`
+
+### Scenario: Style contract is immutable
+
+```gherkin
+Given a shape style contract with an existing style
+When the caller requests a style patch
+Then a new shape instance shall be returned
+And the original shape shall remain unchanged
+```
+
+## 3.2 `IShape<TShape>`
+
+A shape is an immutable object that renders SVG and exposes immutable style control.
+
+It shall support:
+
+* rendering
+* `render()`
+* the `IStylable<TShape, SvgStyle>` contract
+
+### Scenario: Shape style is immutable
+
+```gherkin
+Given a shape with an existing style
+When the caller requests a style patch
+Then a new shape instance shall be returned
+And the original shape shall remain unchanged
+```
+
+### Scenario: Shape renders deterministically
+
+```gherkin
+Given a shape with unchanged geometry and style
+When render is called repeatedly
+Then the produced SVG output shall be deterministic
+```
+
+## 3.3 `SvgStyle`
+
+`SvgStyle` is the common style contract for all shapes.
+
+It shall support:
+
+* token-based style references
+* optional direct overrides
+* fill and stroke values
+* opacity
+* typography values where relevant
+* geometry-style values where relevant
+* state flags
+
+The public style contract shall be homogeneous across:
+
+* primitive geometry shapes
+* text shapes
+* composite shapes
+
+The package may define internal helper fragments or resolved style objects, but the public shape-facing style family shall remain compatible with `SvgStyle`.
+
+All shapes shall use `SvgStyle` as their style contract.
+
+All renderable shapes in this package shall be modeled as:
+
+* `IShape<TShape>`
+* `IStylable<TShape, SvgStyle>`
+
+No renderable shape shall introduce an incompatible style contract.
+
+### Scenario: Style tokens are accepted uniformly
+
+```gherkin
+Given any shape in core-plot-shapes
+When a token-based SvgStyle is applied
+Then the shape shall accept that style through the same style contract
+```
+
+## 3.4 Canonical geometry contracts
+
+All shape geometry contracts shall use shared core-math value objects.
+
+The canonical rule is:
+
+* point-bearing shape properties shall use `Point2`
+* rectangle-bearing shape properties shall use `Rectangle2`
+
+This rule applies to public shape properties and canonical shape geometry state.
+
+Examples:
+
+* `SvgLine` shall use `Point2` for start and end
+* `SvgArrow` shall use `Point2` for tip, left, and right
+* `SvgCircle` shall use `Point2` for center
+* `SvgLabel` shall use `Point2` for text position
+* `TickSvg` shall use `Point2` for label position
+* `SvgRectangle` shall use `Rectangle2` for bounds
+* `SvgCanvasObject` shall use `Rectangle2` for bounds
+
+Ad hoc public scalar coordinate fields such as separate `x1`, `y1`, `x2`, `y2` or `cx`, `cy` shall not be the canonical public geometry model for shapes.
+
+### Scenario: Point-bearing geometry uses Point2
+
+```gherkin
+Given a shape exposes point-based geometry
+When the shape's public geometry is inspected
+Then the geometry shall be represented with Point2 value objects
+```
+
+### Scenario: Rectangle-bearing geometry uses Rectangle2
+
+```gherkin
+Given a shape exposes rectangular geometry
+When the shape's public geometry is inspected
+Then the geometry shall be represented with Rectangle2 value objects
+```
+
+## 3.5 Reusable style objects
+
+The token-based style system shall support reuse of style objects across shapes.
+
+This means:
+
+* a resolved style object may be shared by multiple shape instances
+* paint, stroke, typography, and geometry concerns may be composed from reusable style fragments
+* shapes shall not require every caller to construct a brand-new style object for every instance
+
+Examples of reusable style families include:
+
+* shared paint objects across `SvgCircle`, `SvgRectangle`, and `SvgCanvasObject`
+* shared typography objects across `SvgLabel` and `TickSvg`
+* shared stroke objects across `SvgLine`, `SvgArrow`, and `SvgCurve`
+
+The internal implementation may introduce reusable resolved style fragments such as:
+
+* paint style
+* stroke style
+* typography style
+* geometry style
+
+But these helpers shall remain consistent with `core-style-system` token references.
+
+### Scenario: Style objects can be reused across shapes
+
+```gherkin
+Given two or more shapes use the same style token or resolved style object
+When those shapes are constructed
+Then the package shall allow style reuse without requiring incompatible style contracts
+```
+
+## 3.6 Builder coverage
+
+Every renderable SVG object under `src/svg` shall have a corresponding builder under `src/builders`.
+
+Exceptions:
+
+* pure contract files
+* pure type files
+* style utility files
+
+The canonical builder rule applies to all renderable classes, including composite shapes.
+
+### Scenario: Each renderable SVG object has a builder
+
+```gherkin
+Given a renderable SVG class exists under src/svg
+When the package is reviewed
+Then a matching builder shall exist under src/builders
+```
+
+---
+
+# 4. Shape Families
+
+## 4.1 Primitive shapes
+
+Primitive shapes shall include:
+
+* `SvgLine`
+* `SvgCircle`
+* `SvgRectangle`
+* `SvgArrow`
+* `SvgCurve`
+* `SvgLabel`
+
+These shapes shall:
+
+* hold immutable geometry
+* hold immutable style
+* implement `IShape<TShape>`
+* use `Point2` or `Rectangle2` where applicable for canonical geometry properties
+
+## 4.2 Composite shapes
+
+Composite shapes shall include:
+
+* `SvgCoordinatePoint`
+* `SvgCanvasObject`
+* `TickSvg`
+
+Composite shapes shall:
+
+* compose other shapes or shape-like render parts
+* still expose a homogeneous style-control interface
+* render deterministically
+* use `Point2` or `Rectangle2` where applicable for canonical geometry properties
+
+### Scenario: Composite shape preserves child composition
+
+```gherkin
+Given a composite shape contains child shapes
+When the composite shape renders
+Then the child shapes shall render in deterministic order
+And the composition shall remain stable
+```
+
+## 4.3 Canonical current inventory
+
+The current canonical renderable shape inventory is:
+
+* `SvgArrow`
+* `SvgCanvasObject`
+* `SvgCircle`
+* `SvgCoordinatePoint`
+* `SvgCurve`
+* `SvgLabel`
+* `SvgLine`
+* `SvgRectangle`
+* `TickSvg`
+
+The current canonical builder inventory is:
+
+* `ArrowBuilder`
+* `CanvasObjectBuilder`
+* `CircleBuilder`
+* `CoordinatePointBuilder`
+* `CurveBuilder`
+* `LabelBuilder`
+* `LineBuilder`
+* `RectangleBuilder`
+* `TickBuilder`
+
+If new renderable shapes are introduced, their builders shall be added in the same package change.
+
+---
+
+# 5. Shape Builders
+
+Builders shall construct shape objects without mutating earlier builder instances.
+
+Builders shall use copy-on-write semantics.
+
+Builders shall return immutable shape instances.
+
+Builders shall mirror the renderable SVG inventory of the package.
+
+### Scenario: Builder methods do not mutate earlier builder state
+
+```gherkin
+Given a builder instance
+When a withX method is called
+Then a new builder instance shall be returned
+And the previous builder shall remain unchanged
+```
+
+### Scenario: Builder build result is deterministic
+
+```gherkin
+Given the same builder state
+When build is called multiple times
+Then the produced shape values shall be equivalent
+```
+
+---
+
+# 6. Styling Rules
+
+## 6.1 Token-driven styling
+
+The package shall support token-based styling through `@monorepo/core-style-system`.
+
+The shape layer may carry:
+
+* token references
+* state
+* direct overrides
+
+The shape layer shall not invent a second incompatible token model.
+
+Tokens are the default mechanism for declaring appearance.
+
+Direct style overrides are allowed, but shall be treated as overrides on top of the token-driven style model rather than as a separate parallel styling system.
+
+## 6.2 Homogeneous style system
+
+All shapes shall use the same style contract family.
+
+This means:
+
+* geometry shapes shall use `SvgStyle`
+* text shapes shall also use `SvgStyle`
+* composite shapes shall not introduce incompatible text-only or geometry-only style objects as their public API
+
+### Scenario: Text and geometry shapes use the same style contract
+
+```gherkin
+Given a geometry shape and a text shape
+When their public style contract is inspected
+Then both shall expose SvgStyle-based style control
+```
+
+## 6.3 Canonical style categories
+
+The style system shall support these categories in a shape-compatible way:
+
+### Typography
+
+The style system shall be able to express:
+
+* font family
+* font size
+* font weight
+* text color
+
+Typography tokens shall be reusable across text-bearing shapes such as:
+
+* `SvgLabel`
+* `TickSvg`
+
+### Color and fills
+
+The style system shall be able to express:
+
+* fill color
+* stroke color
+* stroke width
+* stroke dash pattern
+* opacity
+
+These style categories shall be reusable across geometry shapes.
+
+### Spacing and geometry
+
+The style system shall be able to express where relevant:
+
+* corner radius
+* width
+* height
+* padding and spacing hints
+
+These properties shall apply only where relevant to the shape type.
+
+### Effects
+
+The style system may express:
+
+* elevation/shadow metadata
+
+If effects are not supported by a concrete SVG renderer yet, the contract may still carry the token metadata for later resolution.
+
+### States
+
+The style system shall support state-aware styling, including:
+
+* enabled/default
+* hover
+* active/pressed
+* disabled
+* highlighted
+
+State-aware styling shall be compatible with token-based resolution.
+
+## 6.4 Default style behavior
+
+If a style property is absent, shapes shall fall back to deterministic defaults.
+
+Examples:
+
+* missing fill defaults to `none` for geometry shapes unless the shape defines a different explicit fallback
+* missing stroke defaults to `none`
+* missing font family defaults to `inherit`
+* missing font size defaults to the package-standard text fallback
+* missing font weight defaults to the package-standard text fallback
+* missing corner radius defaults to the shape-standard geometry fallback
+* missing visible defaults to `true`
+
+Defaults shall be resolved consistently through shared style helpers.
+
+### Scenario: Shared style helpers govern defaults
+
+```gherkin
+Given two different shapes omit the same supported style property
+When their SVG attributes are resolved
+Then the defaults shall be applied through the shared style helper rules
+And the fallback behavior shall remain consistent across shapes
+```
+
+---
+
+# 7. Engineering Rules
+
+## 7.1 Immutability
+
+All shape instances shall be immutable after construction.
+
+Mutable setters are forbidden on shape classes.
+
+## 7.2 Deterministic rendering
+
+Rendering shall not depend on hidden mutable process state.
+
+## 7.3 No plot runtime leakage
+
+`core-plot-shapes` shall not depend on:
+
+* `core-plot/src/...`
+* plot runtime controllers
+* coordinate-system orchestration
+
+If shape factories need styling, they shall use shared style-system contracts rather than importing plot-runtime code.
+
+## 7.4 Composition over inheritance
+
+Composite shapes shall be composed from child shapes where practical.
+
+`SvgCoordinatePoint` is the canonical example of this rule:
+
+* it is a composition of `SvgCircle` and `SvgLabel`
+* label visibility is part of the composite behavior
+
+`SvgCanvasObject` is also a canonical composition:
+
+* it is a composition around a bordered rectangle shape
+* it shall support round and straight corners through geometry style inputs
+
+## 7.5 Tests
+
+The package shall maintain:
+
+* builder tests
+* composition tests
+* factory tests where factories exist
+
+Tests shall remain package-local.
+
+---
+
+# 8. Canonical Package Boundaries
+
+`core-plot-shapes` is responsible for:
+
+* visual primitives
+* visual composites
+* visual builders
+* visual style contracts
+
+`core-plot-canvas` is responsible for:
+
+* canvas contracts
+* canvas object registry
+* render-context contracts
+
+`core-plot-curve` is responsible for:
+
+* point and curve domain contracts
+* interpolation and geometry services
+
+`core-plot` is responsible for:
+
+* plot runtime orchestration
+* coordinate-system behavior
+* controller behavior
+* composition of shapes into plot visuals
+
+---
+
+# 9. Source of Truth Rule
+
+Anything added to `packages/core-plot-shapes/src` shall be consistent with this document.
+
+If implementation changes package behavior or package boundaries, this document shall be updated with the change.
+
+This includes changes agreed during implementation discussion, such as:
+
+* new canonical shapes
+* new builder requirements
+* changes to style-system behavior
+* changes to the immutable shape contract
