@@ -1,8 +1,8 @@
-import type { IPdfBoundingBox } from "./IPdfBoundingBox.js";
+import { IBoundingBox } from "@monorepo/core-pdf-common";
 
 export interface IPdfBoundingBoxNeighborhoodQuery {
   findNeighbors(
-    candidate: IPdfBoundingBox,
+    candidate: IBoundingBox,
     eps: number,
-  ): readonly IPdfBoundingBox[];
+  ): readonly IBoundingBox[];
 }

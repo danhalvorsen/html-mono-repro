@@ -1,6 +1,12 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { PDFArray, PDFDocument, PDFName, PDFRawStream, decodePDFRawStream } from "pdf-lib";
+import {
+  PDFArray,
+  PDFDocument,
+  PDFName,
+  PDFRawStream,
+  decodePDFRawStream,
+} from "pdf-lib";
 import { describe, expect, it } from "vitest";
 import type { IPdfImageFragment } from "../../src/IPdfImageFragment.js";
 
@@ -15,7 +21,9 @@ interface IExportedMetadata {
   readonly pageCount: number;
 }
 
-async function readMetadataFromPdfLib(binary: Uint8Array): Promise<IExportedMetadata> {
+async function readMetadataFromPdfLib(
+  binary: Uint8Array,
+): Promise<IExportedMetadata> {
   const pdfDocument = await PDFDocument.load(binary);
 
   const title = pdfDocument.getTitle();
@@ -32,8 +40,12 @@ async function readMetadataFromPdfLib(binary: Uint8Array): Promise<IExportedMeta
     ...(typeof subject === "string" && subject.length > 0 && { subject }),
     ...(typeof creator === "string" && creator.length > 0 && { creator }),
     ...(typeof producer === "string" && producer.length > 0 && { producer }),
-    ...(creationDate instanceof Date && { creationDateUtc: creationDate.toISOString() }),
-    ...(modificationDate instanceof Date && { modificationDateUtc: modificationDate.toISOString() }),
+    ...(creationDate instanceof Date && {
+      creationDateUtc: creationDate.toISOString(),
+    }),
+    ...(modificationDate instanceof Date && {
+      modificationDateUtc: modificationDate.toISOString(),
+    }),
     pageCount: pdfDocument.getPageCount(),
   });
 }
@@ -46,12 +58,17 @@ async function readMetadataFromPdfLib(binary: Uint8Array): Promise<IExportedMeta
  * The translation components are e (x) and f (y) in PDF user-space coordinates.
  * PDF user-space origin is bottom-left; we keep those raw values here.
  */
-function parseImageCTMs(contentBytes: Uint8Array): Map<string, [number, number, number, number, number, number]> {
+function parseImageCTMs(
+  contentBytes: Uint8Array,
+): Map<string, [number, number, number, number, number, number]> {
   const text = new TextDecoder("latin1").decode(contentBytes);
   // Tokenize: split on whitespace but keep tokens
   const tokens = text.match(/[^\s]+/g) ?? [];
 
-  const placements = new Map<string, [number, number, number, number, number, number]>();
+  const placements = new Map<
+    string,
+    [number, number, number, number, number, number]
+  >();
   // Rolling number stack and last CTM seen
   const numStack: number[] = [];
   let lastCm: [number, number, number, number, number, number] | null = null;
@@ -105,7 +122,9 @@ function parseImageCTMs(contentBytes: Uint8Array): Map<string, [number, number, 
   return placements;
 }
 
-async function readImagesFromPdfLib(binary: Uint8Array): Promise<readonly IPdfImageFragment[]> {
+async function readImagesFromPdfLib(
+  binary: Uint8Array,
+): Promise<readonly IPdfImageFragment[]> {
   const pdfDocument = await PDFDocument.load(binary);
   const firstPage = pdfDocument.getPage(0);
 
@@ -119,7 +138,18 @@ async function readImagesFromPdfLib(binary: Uint8Array): Promise<readonly IPdfIm
     return Object.freeze([]);
   }
 
-  const xObjectDictionary = pdfDocument.context.lookup(xObjectRef) as {
+  const xObjectDictionary = pdfDocument.context.lookup(xObjectRef);
+
+  if (
+    typeof xObjectDictionary !== "object" ||
+    xObjectDictionary === null ||
+    !("entries" in xObjectDictionary) ||
+    !("lookup" in xObjectDictionary)
+  ) {
+    return Object.freeze([]);
+  }
+
+  const dict = xObjectDictionary as {
     entries(): Iterable<[unknown, unknown]>;
     lookup(key: unknown): unknown;
   };
@@ -141,7 +171,9 @@ async function readImagesFromPdfLib(binary: Uint8Array): Promise<readonly IPdfIm
       streams = [resolved];
     }
 
-    const parts: Uint8Array[] = streams.map((s) => decodePDFRawStream(s).decode());
+    const parts: Uint8Array[] = streams.map((s) =>
+      decodePDFRawStream(s).decode(),
+    );
     const totalLength = parts.reduce((acc, p) => acc + p.length, 0);
     const merged = new Uint8Array(totalLength);
     let offset = 0;
@@ -156,10 +188,14 @@ async function readImagesFromPdfLib(binary: Uint8Array): Promise<readonly IPdfIm
 
   const result: IPdfImageFragment[] = [];
 
-  for (const [nameKey] of xObjectDictionary.entries()) {
-    const stream = xObjectDictionary.lookup(nameKey) as {
-      dict?: { get(name: unknown): unknown };
-    };
+  for (const [nameKey] of dict.entries()) {
+    const object = dict.lookup(nameKey);
+
+    if (!(object instanceof PDFRawStream)) {
+      continue;
+    }
+
+    const stream = object;
 
     const dictionary = stream.dict;
     if (dictionary === undefined) {

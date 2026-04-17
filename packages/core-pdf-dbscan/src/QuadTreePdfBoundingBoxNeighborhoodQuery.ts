@@ -1,8 +1,7 @@
 import { QuadTreeFactory } from "@monorepo/core-design-pattern-quad-tree";
 import type { IQuadTree } from "@monorepo/core-design-pattern-quad-tree-abstract";
 import { QuadTreeBounds } from "@monorepo/core-design-pattern-quad-tree-abstract";
-
-import type { IPdfBoundingBox } from "./IPdfBoundingBox.js";
+import type { IBoundingBox } from "@monorepo/core-pdf-common";
 import type { IPdfBoundingBoxDistance } from "./IPdfBoundingBoxDistance.js";
 import type { IPdfBoundingBoxNeighborhoodQuery } from "./IPdfBoundingBoxNeighborhoodQuery.js";
 import { PdfBoundingBoxDistance } from "./PdfBoundingBoxDistance.js";
@@ -11,19 +10,19 @@ import { PdfBoundingBoxQueryRegion } from "./PdfBoundingBoxQueryRegion.js";
 export class QuadTreePdfBoundingBoxNeighborhoodQuery
   implements IPdfBoundingBoxNeighborhoodQuery
 {
-  private readonly tree: IQuadTree<IPdfBoundingBox>;
+  private readonly tree: IQuadTree<IBoundingBox>;
   private readonly distance: IPdfBoundingBoxDistance;
 
   public constructor(
-    boxes: readonly IPdfBoundingBox[],
+    boxes: readonly IBoundingBox[],
     distance: IPdfBoundingBoxDistance = new PdfBoundingBoxDistance(),
   ) {
     this.distance = distance;
-    this.tree = new QuadTreeFactory<IPdfBoundingBox>().create({
+    this.tree = new QuadTreeFactory<IBoundingBox>().create({
       rootBounds: this.createRootBounds(boxes),
       boundsProvider: {
         getBounds: (item) =>
-          new QuadTreeBounds(item.minX, item.minY, item.width, item.height),
+          new QuadTreeBounds(item.min.x, item.min.y, item.width, item.height),
       },
       options: {
         maxDepth: 8,
@@ -35,9 +34,9 @@ export class QuadTreePdfBoundingBoxNeighborhoodQuery
   }
 
   public findNeighbors(
-    candidate: IPdfBoundingBox,
+    candidate: IBoundingBox,
     eps: number,
-  ): readonly IPdfBoundingBox[] {
+  ): readonly IBoundingBox[] {
     const region = PdfBoundingBoxQueryRegion.around(candidate, eps);
     const queried = this.tree.query(region);
 
@@ -49,15 +48,15 @@ export class QuadTreePdfBoundingBoxNeighborhoodQuery
     );
   }
 
-  private createRootBounds(boxes: readonly IPdfBoundingBox[]): QuadTreeBounds {
+  private createRootBounds(boxes: readonly IBoundingBox[]): QuadTreeBounds {
     if (boxes.length === 0) {
       return new QuadTreeBounds(0, 0, 1, 1);
     }
 
-    const minX = Math.min(...boxes.map((box) => box.minX));
-    const minY = Math.min(...boxes.map((box) => box.minY));
-    const maxX = Math.max(...boxes.map((box) => box.maxX));
-    const maxY = Math.max(...boxes.map((box) => box.maxY));
+    const minX = Math.min(...boxes.map((box) => box.min.x));
+    const minY = Math.min(...boxes.map((box) => box.min.y));
+    const maxX = Math.max(...boxes.map((box) => box.max.x));
+    const maxY = Math.max(...boxes.map((box) => box.max.y));
 
     return new QuadTreeBounds(
       minX,

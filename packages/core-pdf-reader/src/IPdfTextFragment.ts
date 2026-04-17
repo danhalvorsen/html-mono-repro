@@ -1,7 +1,7 @@
 // src/IPdfTextFragment.ts
 
 import type { IFontInformation } from "./IFontInformation.js";
-import type { IBoundingBox } from "./contracts/contracts.js";
+import type { IBoundingBox } from "@monorepo/core-pdf-common";
 
 export interface IPdfTextFragment {
   readonly pageNumber: number;

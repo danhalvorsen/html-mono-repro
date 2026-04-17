@@ -1,184 +1,104 @@
-import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
+import { PDFDocument, PDFName, PDFRawStream } from "pdf-lib";
 
 import type { IReaderConfiguration } from "../IReaderConfiguration.js";
 import type { IPdfImageFragment } from "../IPdfImageFragment.js";
 
-interface IPdfJsImage {
-  readonly width?: number;
-  readonly height?: number;
-  readonly mimeType?: string;
-  readonly data?: ArrayLike<number>;
-  readonly src?: Uint8Array | ArrayBuffer;
-}
-
-interface IPdfJsObjectStore {
-  get(name: string): Promise<IPdfJsImage | undefined> | IPdfJsImage | undefined;
-}
-
-interface IPdfJsOperatorList {
-  readonly fnArray: readonly number[];
-  readonly argsArray: readonly unknown[];
-}
-
-interface IPdfJsPage {
-  readonly objs?: IPdfJsObjectStore;
-  readonly commonObjs?: IPdfJsObjectStore;
-  getOperatorList(): Promise<IPdfJsOperatorList>;
-}
-
-interface IPdfJsDocument {
-  readonly numPages: number;
-  getPage(pageNumber: number): Promise<IPdfJsPage>;
-}
-
-interface IPdfJsOps {
-  readonly paintImageXObject?: number;
-  readonly paintJpegXObject?: number;
-  readonly paintInlineImageXObject?: number;
-}
+type KnownMimeType = "image/jpeg" | "image/jp2";
 
 export class PdfImageExtractor {
   public constructor(
     private readonly configuration: IReaderConfiguration,
   ) {}
 
-  public async readImageFragments(binary: Uint8Array): Promise<readonly IPdfImageFragment[]> {
+  public async readImageFragments(
+    binary: Uint8Array,
+  ): Promise<readonly IPdfImageFragment[]> {
     if (!this.configuration.saveReadImages) {
       return Object.freeze([]);
     }
 
-    const ops = this.resolveOps();
-    if (ops.length === 0) {
-      return Object.freeze([]);
-    }
-
-    const document = await this.loadDocument(binary);
+    const pdfDocument = await PDFDocument.load(binary);
     const result: IPdfImageFragment[] = [];
 
-    for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber++) {
-      const page = await document.getPage(pageNumber);
-      const operatorList = await page.getOperatorList();
+    const pageCount = pdfDocument.getPageCount();
 
-      for (let i = 0; i < operatorList.fnArray.length; i++) {
-        const fn = operatorList.fnArray[i];
-        if (typeof fn !== "number" || !ops.includes(fn)) {
-          continue;
-        }
+    for (let pageIndex = 0; pageIndex < pageCount; pageIndex++) {
+      const page = pdfDocument.getPage(pageIndex);
 
-        const args = operatorList.argsArray[i];
-        const name = this.resolveNameArg(args);
-        const image = await this.tryResolveImage(page, name);
-        if (image === undefined) {
-          continue;
-        }
+      const resources = page.node.Resources();
+      if (resources === undefined) continue;
 
-        const bytes = this.resolveBytes(image);
-        if (bytes === undefined || bytes.length === 0) {
-          continue;
-        }
+      const xObjectRef = resources.get(PDFName.of("XObject"));
+      if (xObjectRef === undefined) continue;
 
-        result.push(
-          Object.freeze({
-            pageNumber,
-            boundingBox: {
-              position: { x: 0, y: 0 },
-              width: image.width ?? 0,
-              height: image.height ?? 0,
-            },
-            ...(name !== undefined && { name }),
-            ...(image.mimeType !== undefined && { mimeType: image.mimeType }),
-            bytes,
+      const xObjectDictionary = pdfDocument.context.lookup(xObjectRef) as unknown as {
+        entries(): Iterable<[unknown, unknown]>;
+        lookup(key: unknown): unknown;
+      };
+
+      for (const [nameKey] of xObjectDictionary.entries()) {
+        const object = xObjectDictionary.lookup(nameKey);
+
+        if (!(object instanceof PDFRawStream)) continue;
+
+        const subtype = object.dict.get(PDFName.of("Subtype"));
+        if (String(subtype) !== "/Image") continue;
+
+        const filterValue = object.dict.get(PDFName.of("Filter"));
+        const extension = this.detectImageExtension(filterValue);
+
+        if (extension === "bin") continue;
+
+        const mimeType = this.mapMimeType(extension);
+        if (mimeType === undefined) continue;
+
+        const bytes = object.getContents();
+        if (!bytes || bytes.length === 0) continue;
+
+        const fragment: IPdfImageFragment = Object.freeze({
+          pageNumber: pageIndex + 1,
+          name: this.normalizeName(nameKey),
+          mimeType, // guaranteed string (no undefined)
+          boundingBox: Object.freeze({
+            position: Object.freeze({ x: 0, y: 0 }),
+            width: 0,
+            height: 0,
           }),
-        );
+          bytes: bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes),
+        });
+
+        result.push(fragment);
       }
     }
 
     return Object.freeze(result);
   }
 
-  private resolveBytes(image: IPdfJsImage): Uint8Array | undefined {
-    const source = image.src;
-    if (source instanceof Uint8Array) {
-      return source;
-    }
-    if (source instanceof ArrayBuffer) {
-      return new Uint8Array(source);
-    }
-
-    const data = image.data;
-    if (data !== undefined && data.length > 0) {
-      return Uint8Array.from(data);
-    }
-
-    return undefined;
+  private normalizeName(nameKey: unknown): string {
+    return String(nameKey).replace(/^\//, "");
   }
 
-  private resolveOps(): readonly number[] {
-    const table = (pdfjs as unknown as { OPS?: IPdfJsOps }).OPS;
-    if (table === undefined) {
-      return Object.freeze([]);
-    }
+  private detectImageExtension(filterValue: unknown): string {
+    const normalized = String(filterValue);
 
-    const values = [
-      table.paintImageXObject,
-      table.paintJpegXObject,
-      table.paintInlineImageXObject,
-    ].filter((v): v is number => typeof v === "number");
+    if (normalized.includes("/DCTDecode")) return "jpg";
+    if (normalized.includes("/JPXDecode")) return "jp2";
 
-    return Object.freeze(values);
+    if (normalized.includes("/FlateDecode")) return "bin";
+    if (normalized.includes("/LZWDecode")) return "bin";
+    if (normalized.includes("/CCITTFaxDecode")) return "bin";
+
+    return "bin";
   }
 
-  private resolveNameArg(args: unknown): string | undefined {
-    if (!Array.isArray(args)) {
-      return undefined;
-    }
-
-    const candidate = args[0];
-    return typeof candidate === "string" ? candidate : undefined;
-  }
-
-  private async loadDocument(binary: Uint8Array): Promise<IPdfJsDocument> {
-    const task = pdfjs.getDocument({
-      data: binary,
-      disableWorker: true,
-      useWorkerFetch: false,
-      isEvalSupported: false,
-      isOffscreenCanvasSupported: false,
-      isImageDecoderSupported: false,
-      useSystemFonts: false,
-    } as unknown as Parameters<typeof pdfjs.getDocument>[0]);
-
-    return (await task.promise) as unknown as IPdfJsDocument;
-  }
-
-  private async tryResolveImage(page: IPdfJsPage, name: string | undefined): Promise<IPdfJsImage | undefined> {
-    if (name === undefined) {
-      return undefined;
-    }
-
-    const imageFromPage = await this.tryGet(page.objs, name);
-    if (imageFromPage !== undefined) {
-      return imageFromPage;
-    }
-
-    return this.tryGet(page.commonObjs, name);
-  }
-
-  private async tryGet(
-    store: IPdfJsObjectStore | undefined,
-    name: string,
-  ): Promise<IPdfJsImage | undefined> {
-    if (store === undefined || typeof store.get !== "function") {
-      return undefined;
-    }
-
-    try {
-      const value = await Promise.resolve(store.get(name));
-      return typeof value === "object" && value !== null
-        ? value
-        : undefined;
-    } catch {
-      return undefined;
+  private mapMimeType(extension: string): KnownMimeType | undefined {
+    switch (extension) {
+      case "jpg":
+        return "image/jpeg";
+      case "jp2":
+        return "image/jp2";
+      default:
+        return undefined;
     }
   }
 }

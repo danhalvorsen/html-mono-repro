@@ -1,14 +1,14 @@
-import type { IPdfPageText } from "../IPdfPageText.js";
-import type { IPdfTextFragment } from "../IPdfTextFragment.js";
-import type { IFontInformation } from "../IFontInformation.js";
 import type { IPdfPage } from "./IPdfPage.js";
- 
 import type {
   IPdfJsPageProxy,
   IPdfJsTextContent,
   IPdfJsTextStyle,
   IPdfJsViewport,
 } from "./PdfJsDocumentFactory.js";
+
+import type { IFontInformation } from "../IFontInformation.js";
+import type { IPdfPageText } from "../IPdfPageText.js";
+import type { IPdfTextFragment } from "../IPdfTextFragment.js";
 
 interface IPdfJsTextItem {
   readonly str: string;

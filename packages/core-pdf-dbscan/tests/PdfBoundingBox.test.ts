@@ -7,10 +7,10 @@ describe("PdfBoundingBox", () => {
     const sut = new PdfBoundingBox("box-1", 10, 20, 30, 50);
 
     expect(sut.id).toBe("box-1");
-    expect(sut.minX).toBe(10);
-    expect(sut.minY).toBe(20);
-    expect(sut.maxX).toBe(30);
-    expect(sut.maxY).toBe(50);
+    expect(sut.min.x).toBe(10);
+    expect(sut.min.y).toBe(20);
+    expect(sut.max.x).toBe(30);
+    expect(sut.max.y).toBe(50);
     expect(sut.width).toBe(20);
     expect(sut.height).toBe(30);
   });
@@ -18,10 +18,10 @@ describe("PdfBoundingBox", () => {
   it("should create a bounding box from origin and size", () => {
     const sut = PdfBoundingBox.fromBounds("box-1", 5, 6, 7, 8);
 
-    expect(sut.minX).toBe(5);
-    expect(sut.minY).toBe(6);
-    expect(sut.maxX).toBe(12);
-    expect(sut.maxY).toBe(14);
+    expect(sut.min.x).toBe(5);
+    expect(sut.min.y).toBe(6);
+    expect(sut.max.x).toBe(12);
+    expect(sut.max.y).toBe(14);
     expect(sut.width).toBe(7);
     expect(sut.height).toBe(8);
   });
@@ -31,6 +31,10 @@ describe("PdfBoundingBox", () => {
 
     expect(sut.width).toBe(0);
     expect(sut.height).toBe(0);
+    expect(sut.min.x).toBe(0);
+    expect(sut.min.y).toBe(0);
+    expect(sut.max.x).toBe(0);
+    expect(sut.max.y).toBe(0);
   });
 
   it("should reject empty identifiers", () => {

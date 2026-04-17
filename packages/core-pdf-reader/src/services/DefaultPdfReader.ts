@@ -1,5 +1,3 @@
-// src/services/DefaultPdfReader.ts
-
 import type { IPdfBinarySource } from "../IPdfBinarySource.js";
 import type { IPdfPageText } from "../IPdfPageText.js";
 import type { IPdfReader } from "../IPdfReader.js";
@@ -10,8 +8,10 @@ export class DefaultPdfReader implements IPdfReader {
     private readonly engine: ICompositePdfEngine,
   ) {}
 
-  public async read(source: IPdfBinarySource): Promise<readonly IPdfPageText[]> {
+  public readonly read = async (
+    source: IPdfBinarySource,
+  ): Promise<readonly IPdfPageText[]> => {
     const binary = await source.read();
     return this.engine.readPages(binary);
-  }
+  };
 }

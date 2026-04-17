@@ -1,0 +1,1597 @@
+{
+  "fileName": "Kiwi.pdf",
+  "pageNumber": 1,
+  "page": {
+    "pageNumber": 1,
+    "text": "på ALL fersk frukt og grønt til alle KIWI PLUSS-kunder. helt fram til 26. april Før 199,00 00 149 Pr. kg helt fram til 26. april Før 59,90 90 39 575 g SVIN YTREFILET PIZZA GRANDIOSA Ca. 900 g, skivet, 575 g, original, fryst, Stabburet, Folkets, pr. kg pr. kg 69,39 helt fram til 26. april Før 39,90 40 90 26 16 Pr. pk. Pr. stk. GRILLWURST BROKKOLI 240 g, Texas BBQ, Chorizo, Bratwurst, Ost & Chili, Pr. stk. Folkets, pr. kg 110,00 a i n d e v s u f o k r I u k I W e K 16 Med forbehold om trykkfeil/utsolgtsituasjoner, og begrensning på maks antall ved behov i enkelte butikker i korte perioder. Førpris er laveste pris siste 30 dager ved kampanjestart. Vi tar forbehold om prisendringer mellom trykk og kampanjestart."
+  },
+  "textFragments": [
+    {
+      "pageNumber": 1,
+      "text": "på ALL fersk frukt",
+      "boundingBox": {
+        "position": {
+          "x": 550.1596,
+          "y": 946.5311
+        },
+        "width": 109.8092853,
+        "height": 19.6053
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 19.6053,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 19.6053
+    },
+    {
+      "pageNumber": 1,
+      "text": "og grønt til alle",
+      "boundingBox": {
+        "position": {
+          "x": 559.2956697999999,
+          "y": 925.9455350000001
+        },
+        "width": 91.52930357999985,
+        "height": 19.6053
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 19.6053,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 19.6053
+    },
+    {
+      "pageNumber": 1,
+      "text": "KIWI PLUSS-kunder.",
+      "boundingBox": {
+        "position": {
+          "x": 546.0620922999999,
+          "y": 905.3599700000001
+        },
+        "width": 118.0141033500001,
+        "height": 19.6053
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 19.6053,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 19.6053
+    },
+    {
+      "pageNumber": 1,
+      "text": "PIZZA GRANDIOSA",
+      "boundingBox": {
+        "position": {
+          "x": 455.4761,
+          "y": 435.25
+        },
+        "width": 207.04999999999995,
+        "height": 25
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 25,
+        "family": "sans-serif",
+        "rawName": "g_d1_f2"
+      },
+      "fontName": "g_d1_f2",
+      "fontFamily": "sans-serif",
+      "fontSize": 25
+    },
+    {
+      "pageNumber": 1,
+      "text": "575 g, original, fryst, Stabburet,",
+      "boundingBox": {
+        "position": {
+          "x": 459.3125,
+          "y": 416.05
+        },
+        "width": 199.384,
+        "height": 16
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 16,
+        "family": "sans-serif",
+        "rawName": "g_d1_f3"
+      },
+      "fontName": "g_d1_f3",
+      "fontFamily": "sans-serif",
+      "fontSize": 16
+    },
+    {
+      "pageNumber": 1,
+      "text": "pr. kg 69,39",
+      "boundingBox": {
+        "position": {
+          "x": 521.6805,
+          "y": 396.85
+        },
+        "width": 74.63359999999996,
+        "height": 16
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 16,
+        "family": "sans-serif",
+        "rawName": "g_d1_f3"
+      },
+      "fontName": "g_d1_f3",
+      "fontFamily": "sans-serif",
+      "fontSize": 16
+    },
+    {
+      "pageNumber": 1,
+      "text": "SVIN YTREFILET",
+      "boundingBox": {
+        "position": {
+          "x": 52.3887,
+          "y": 435.25
+        },
+        "width": 181.225,
+        "height": 25
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 25,
+        "family": "sans-serif",
+        "rawName": "g_d1_f2"
+      },
+      "fontName": "g_d1_f2",
+      "fontFamily": "sans-serif",
+      "fontSize": 25
+    },
+    {
+      "pageNumber": 1,
+      "text": "Ca. 900 g, skivet,",
+      "boundingBox": {
+        "position": {
+          "x": 88.4794,
+          "y": 416.05
+        },
+        "width": 109.04800000000002,
+        "height": 16
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 16,
+        "family": "sans-serif",
+        "rawName": "g_d1_f3"
+      },
+      "fontName": "g_d1_f3",
+      "fontFamily": "sans-serif",
+      "fontSize": 16
+    },
+    {
+      "pageNumber": 1,
+      "text": "Folkets, pr. kg",
+      "boundingBox": {
+        "position": {
+          "x": 98.8634,
+          "y": 396.85
+        },
+        "width": 88.28320000000002,
+        "height": 16
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 16,
+        "family": "sans-serif",
+        "rawName": "g_d1_f3"
+      },
+      "fontName": "g_d1_f3",
+      "fontFamily": "sans-serif",
+      "fontSize": 16
+    },
+    {
+      "pageNumber": 1,
+      "text": "K",
+      "boundingBox": {
+        "position": {
+          "x": 25.9393,
+          "y": 46.1563
+        },
+        "width": 5.71683789872261,
+        "height": 8.999991416107017
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 8.999991416107017,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 8.999991416107017
+    },
+    {
+      "pageNumber": 1,
+      "text": "I",
+      "boundingBox": {
+        "position": {
+          "x": 26.4784,
+          "y": 50.1035
+        },
+        "width": 1.7280075333169125,
+        "height": 9.000039236025586
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 9.000039236025586,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 9.000039236025586
+    },
+    {
+      "pageNumber": 1,
+      "text": "W",
+      "boundingBox": {
+        "position": {
+          "x": 26.7616,
+          "y": 52.085
+        },
+        "width": 5.013009811235955,
+        "height": 9.000017614427207
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 9.000017614427207,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 9.000017614427207
+    },
+    {
+      "pageNumber": 1,
+      "text": "I",
+      "boundingBox": {
+        "position": {
+          "x": 29.0185,
+          "y": 56.8321
+        },
+        "width": 1.7279972925845457,
+        "height": 8.999985898877842
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 8.999985898877842,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 8.999985898877842
+    },
+    {
+      "pageNumber": 1,
+      "text": "k",
+      "boundingBox": {
+        "position": {
+          "x": 30.8915,
+          "y": 59.6136
+        },
+        "width": 3.545999154432121,
+        "height": 8.999997853888631
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 8.999997853888631,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 8.999997853888631
+    },
+    {
+      "pageNumber": 1,
+      "text": "u",
+      "boundingBox": {
+        "position": {
+          "x": 33.5063,
+          "y": 62.3532
+        },
+        "width": 3.500997485546319,
+        "height": 8.99999353610879
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 8.99999353610879,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 8.99999353610879
+    },
+    {
+      "pageNumber": 1,
+      "text": "n",
+      "boundingBox": {
+        "position": {
+          "x": 36.4884,
+          "y": 64.4713
+        },
+        "width": 3.5010055657211314,
+        "height": 9.000014307766405
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 9.000014307766405,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 9.000014307766405
+    },
+    {
+      "pageNumber": 1,
+      "text": "d",
+      "boundingBox": {
+        "position": {
+          "x": 39.7766,
+          "y": 66.1513
+        },
+        "width": 3.4829998181099953,
+        "height": 8.999999529999988
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 8.999999529999988,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 8.999999529999988
+    },
+    {
+      "pageNumber": 1,
+      "text": "e",
+      "boundingBox": {
+        "position": {
+          "x": 43.286,
+          "y": 67.1586
+        },
+        "width": 3.3659967896240244,
+        "height": 8.999991416107017
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 8.999991416107017,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 8.999991416107017
+    },
+    {
+      "pageNumber": 1,
+      "text": "a",
+      "boundingBox": {
+        "position": {
+          "x": 46.882,
+          "y": 67.574
+        },
+        "width": 3.347991002961244,
+        "height": 8.999975814411947
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 8.999975814411947,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 8.999975814411947
+    },
+    {
+      "pageNumber": 1,
+      "text": "v",
+      "boundingBox": {
+        "position": {
+          "x": 50.397,
+          "y": 67.5022
+        },
+        "width": 3.240014124969211,
+        "height": 9.000039236025586
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 9.000039236025586,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 9.000039236025586
+    },
+    {
+      "pageNumber": 1,
+      "text": "i",
+      "boundingBox": {
+        "position": {
+          "x": 53.7794,
+          "y": 66.7076
+        },
+        "width": 1.6919995007554818,
+        "height": 8.999997344444052
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 8.999997344444052,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 8.999997344444052
+    },
+    {
+      "pageNumber": 1,
+      "text": "s",
+      "boundingBox": {
+        "position": {
+          "x": 55.5678,
+          "y": 66.1133
+        },
+        "width": 3.078006024134105,
+        "height": 9.000017614427207
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 9.000017614427207,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 9.000017614427207
+    },
+    {
+      "pageNumber": 1,
+      "text": "f",
+      "boundingBox": {
+        "position": {
+          "x": 59.7533,
+          "y": 63.9743
+        },
+        "width": 2.3850023255210884,
+        "height": 9.000008775551276
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 9.000008775551276,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 9.000008775551276
+    },
+    {
+      "pageNumber": 1,
+      "text": "o",
+      "boundingBox": {
+        "position": {
+          "x": 61.8906,
+          "y": 62.4042
+        },
+        "width": 3.365999197354348,
+        "height": 8.999997853888631
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 8.999997853888631,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 8.999997853888631
+    },
+    {
+      "pageNumber": 1,
+      "text": "r",
+      "boundingBox": {
+        "position": {
+          "x": 64.3566,
+          "y": 59.8555
+        },
+        "width": 2.447998241821591,
+        "height": 8.99999353610879
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 8.99999353610879,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 8.99999353610879
+    },
+    {
+      "pageNumber": 1,
+      "text": "u",
+      "boundingBox": {
+        "position": {
+          "x": 66.6815,
+          "y": 56.5077
+        },
+        "width": 3.5010068520121838,
+        "height": 9.000017614427207
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 9.000017614427207,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 9.000017614427207
+    },
+    {
+      "pageNumber": 1,
+      "text": "k",
+      "boundingBox": {
+        "position": {
+          "x": 68.1597,
+          "y": 53.1638
+        },
+        "width": 3.545999814819995,
+        "height": 8.999999529999988
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 8.999999529999988,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 8.999999529999988
+    },
+    {
+      "pageNumber": 1,
+      "text": "e",
+      "boundingBox": {
+        "position": {
+          "x": 69.1409,
+          "y": 49.6038
+        },
+        "width": 3.366002920730955,
+        "height": 9.000007809441056
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 9.000007809441056,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 9.000007809441056
+    },
+    {
+      "pageNumber": 1,
+      "text": "16",
+      "boundingBox": {
+        "position": {
+          "x": 34.988,
+          "y": 31.8552
+        },
+        "width": 25.459999999999997,
+        "height": 38
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 38,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 38
+    },
+    {
+      "pageNumber": 1,
+      "text": "Med forbehold om trykkfeil/utsolgtsituasjoner, og begrensning på maks antall ved behov i enkelte butikker i korte perioder.",
+      "boundingBox": {
+        "position": {
+          "x": 99.0301,
+          "y": 31.2071
+        },
+        "width": 467.1500000000001,
+        "height": 10
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 10,
+        "family": "sans-serif",
+        "rawName": "g_d1_f4"
+      },
+      "fontName": "g_d1_f4",
+      "fontFamily": "sans-serif",
+      "fontSize": 10
+    },
+    {
+      "pageNumber": 1,
+      "text": "Førpris er laveste pris siste 30 dager ved kampanjestart. Vi tar forbehold om prisendringer mellom trykk og kampanjestart.",
+      "boundingBox": {
+        "position": {
+          "x": 100.7401,
+          "y": 19.2071
+        },
+        "width": 463.7489999999999,
+        "height": 10
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 10,
+        "family": "sans-serif",
+        "rawName": "g_d1_f4"
+      },
+      "fontName": "g_d1_f4",
+      "fontFamily": "sans-serif",
+      "fontSize": 10
+    },
+    {
+      "pageNumber": 1,
+      "text": "GRILLWURST",
+      "boundingBox": {
+        "position": {
+          "x": 105.6857,
+          "y": 108.9193
+        },
+        "width": 147.725,
+        "height": 25
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 25,
+        "family": "sans-serif",
+        "rawName": "g_d1_f2"
+      },
+      "fontName": "g_d1_f2",
+      "fontFamily": "sans-serif",
+      "fontSize": 25
+    },
+    {
+      "pageNumber": 1,
+      "text": "240 g, Texas BBQ, Chorizo, Bratwurst, Ost & Chili,",
+      "boundingBox": {
+        "position": {
+          "x": 23.9814,
+          "y": 89.7193
+        },
+        "width": 311.1392000000001,
+        "height": 16
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 16,
+        "family": "sans-serif",
+        "rawName": "g_d1_f3"
+      },
+      "fontName": "g_d1_f3",
+      "fontFamily": "sans-serif",
+      "fontSize": 16
+    },
+    {
+      "pageNumber": 1,
+      "text": "Folkets, pr. kg 110,00",
+      "boundingBox": {
+        "position": {
+          "x": 114.02940000000001,
+          "y": 70.5193
+        },
+        "width": 131.04800000000006,
+        "height": 16
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 16,
+        "family": "sans-serif",
+        "rawName": "g_d1_f3"
+      },
+      "fontName": "g_d1_f3",
+      "fontFamily": "sans-serif",
+      "fontSize": 16
+    },
+    {
+      "pageNumber": 1,
+      "text": "BROKKOLI",
+      "boundingBox": {
+        "position": {
+          "x": 476.9417,
+          "y": 108.9193
+        },
+        "width": 116.425,
+        "height": 25
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 25,
+        "family": "sans-serif",
+        "rawName": "g_d1_f2"
+      },
+      "fontName": "g_d1_f2",
+      "fontFamily": "sans-serif",
+      "fontSize": 25
+    },
+    {
+      "pageNumber": 1,
+      "text": "Pr. stk.",
+      "boundingBox": {
+        "position": {
+          "x": 513.883,
+          "y": 89.7193
+        },
+        "width": 42.535999999999966,
+        "height": 16
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 16,
+        "family": "sans-serif",
+        "rawName": "g_d1_f3"
+      },
+      "fontName": "g_d1_f3",
+      "fontFamily": "sans-serif",
+      "fontSize": 16
+    },
+    {
+      "pageNumber": 1,
+      "text": "16",
+      "boundingBox": {
+        "position": {
+          "x": 410.193,
+          "y": 177.7219
+        },
+        "width": 47.21289999999996,
+        "height": 69.0272
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 69.0272,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 69.0272
+    },
+    {
+      "pageNumber": 1,
+      "text": "90",
+      "boundingBox": {
+        "position": {
+          "x": 457.4059,
+          "y": 199.0518
+        },
+        "width": 31.9126197,
+        "height": 40.2429
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 40.2429,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 40.2429
+    },
+    {
+      "pageNumber": 1,
+      "text": "Pr. stk.",
+      "boundingBox": {
+        "position": {
+          "x": 427.5399,
+          "y": 157.1693
+        },
+        "width": 44.13057915999995,
+        "height": 20.2471
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 20.2471,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 20.2471
+    },
+    {
+      "pageNumber": 1,
+      "text": "149",
+      "boundingBox": {
+        "position": {
+          "x": 32.9723,
+          "y": 663.3156
+        },
+        "width": 76.8663,
+        "height": 70.9779
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 70.9779,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 70.9779
+    },
+    {
+      "pageNumber": 1,
+      "text": "00",
+      "boundingBox": {
+        "position": {
+          "x": 109.8386,
+          "y": 685.2482
+        },
+        "width": 33.10408,
+        "height": 41.3801
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 41.3801,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 41.3801
+    },
+    {
+      "pageNumber": 1,
+      "text": "Før 199,00",
+      "boundingBox": {
+        "position": {
+          "x": 58.7946,
+          "y": 728.4431
+        },
+        "width": 57.16402319999999,
+        "height": 17.9265
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 17.9265,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 17.9265
+    },
+    {
+      "pageNumber": 1,
+      "text": "Pr. kg",
+      "boundingBox": {
+        "position": {
+          "x": 71.5973,
+          "y": 643.0876
+        },
+        "width": 32.71323374999999,
+        "height": 18.8625
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 18.8625,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 18.8625
+    },
+    {
+      "pageNumber": 1,
+      "text": "helt fram til 26. april",
+      "boundingBox": {
+        "position": {
+          "x": 56.3146,
+          "y": 752.704
+        },
+        "width": 68.86826122982595,
+        "height": 10.808120220001255
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 10.808120220001255,
+        "family": "sans-serif",
+        "rawName": "g_d1_f5"
+      },
+      "fontName": "g_d1_f5",
+      "fontFamily": "sans-serif",
+      "fontSize": 10.808120220001255
+    },
+    {
+      "pageNumber": 1,
+      "text": "26",
+      "boundingBox": {
+        "position": {
+          "x": 44.3135,
+          "y": 179.5514
+        },
+        "width": 54.22550000000001,
+        "height": 70.9779
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 70.9779,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 70.9779
+    },
+    {
+      "pageNumber": 1,
+      "text": "40",
+      "boundingBox": {
+        "position": {
+          "x": 98.539,
+          "y": 201.4841
+        },
+        "width": 33.0626999,
+        "height": 41.3801
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 41.3801,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 41.3801
+    },
+    {
+      "pageNumber": 1,
+      "text": "Før 39,90",
+      "boundingBox": {
+        "position": {
+          "x": 61.5354,
+          "y": 244.6789
+        },
+        "width": 51.667758299999996,
+        "height": 17.9265
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 17.9265,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 17.9265
+    },
+    {
+      "pageNumber": 1,
+      "text": "Pr. pk.",
+      "boundingBox": {
+        "position": {
+          "x": 69.6139,
+          "y": 159.3235
+        },
+        "width": 36.6800175,
+        "height": 18.8625
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 18.8625,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 18.8625
+    },
+    {
+      "pageNumber": 1,
+      "text": "helt fram til 26. april",
+      "boundingBox": {
+        "position": {
+          "x": 56.3146,
+          "y": 268.9398
+        },
+        "width": 68.86826122982598,
+        "height": 10.808120220001255
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 10.808120220001255,
+        "family": "sans-serif",
+        "rawName": "g_d1_f5"
+      },
+      "fontName": "g_d1_f5",
+      "fontFamily": "sans-serif",
+      "fontSize": 10.808120220001255
+    },
+    {
+      "pageNumber": 1,
+      "text": "39",
+      "boundingBox": {
+        "position": {
+          "x": 476.3309,
+          "y": 525.5514
+        },
+        "width": 54.438799999999965,
+        "height": 70.9779
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 70.9779,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 70.9779
+    },
+    {
+      "pageNumber": 1,
+      "text": "90",
+      "boundingBox": {
+        "position": {
+          "x": 530.7697,
+          "y": 547.4841
+        },
+        "width": 32.8144193,
+        "height": 41.3801
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 41.3801,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 41.3801
+    },
+    {
+      "pageNumber": 1,
+      "text": "Før 59,90",
+      "boundingBox": {
+        "position": {
+          "x": 493.4547,
+          "y": 590.6789
+        },
+        "width": 51.82909679999996,
+        "height": 17.9265
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 17.9265,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 17.9265
+    },
+    {
+      "pageNumber": 1,
+      "text": "575 g",
+      "boundingBox": {
+        "position": {
+          "x": 504.1848,
+          "y": 505.3235
+        },
+        "width": 31.545644999999965,
+        "height": 18.8625
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 18.8625,
+        "family": "sans-serif",
+        "rawName": "g_d1_f1"
+      },
+      "fontName": "g_d1_f1",
+      "fontFamily": "sans-serif",
+      "fontSize": 18.8625
+    },
+    {
+      "pageNumber": 1,
+      "text": "helt fram til 26. april",
+      "boundingBox": {
+        "position": {
+          "x": 488.3146,
+          "y": 614.9398
+        },
+        "width": 68.86826122982617,
+        "height": 10.808120220001255
+      },
+      "font": {
+        "name": "sans-serif",
+        "size": 10.808120220001255,
+        "family": "sans-serif",
+        "rawName": "g_d1_f5"
+      },
+      "fontName": "g_d1_f5",
+      "fontFamily": "sans-serif",
+      "fontSize": 10.808120220001255
+    }
+  ],
+  "imageCount": 30,
+  "images": [
+    {
+      "index": 1,
+      "pageNumber": 1,
+      "name": "img_p0_1",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 736,
+        "height": 848
+      },
+      "byteLength": 1872384,
+      "fileName": "Kiwi.page1.img_p0_1.bin"
+    },
+    {
+      "index": 2,
+      "pageNumber": 1,
+      "name": "img_p0_2",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 276,
+        "height": 344
+      },
+      "byteLength": 284832,
+      "fileName": "Kiwi.page1.img_p0_2.bin"
+    },
+    {
+      "index": 3,
+      "pageNumber": 1,
+      "name": "img_p0_3",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 219,
+        "height": 310
+      },
+      "byteLength": 271560,
+      "fileName": "Kiwi.page1.img_p0_3.bin"
+    },
+    {
+      "index": 4,
+      "pageNumber": 1,
+      "name": "img_p0_4",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 740,
+        "height": 261
+      },
+      "byteLength": 579420,
+      "fileName": "Kiwi.page1.img_p0_4.bin"
+    },
+    {
+      "index": 5,
+      "pageNumber": 1,
+      "name": "img_p0_5",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 304,
+        "height": 140
+      },
+      "byteLength": 127680,
+      "fileName": "Kiwi.page1.img_p0_5.bin"
+    },
+    {
+      "index": 6,
+      "pageNumber": 1,
+      "name": "img_p0_6",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 36,
+        "height": 35
+      },
+      "byteLength": 3780,
+      "fileName": "Kiwi.page1.img_p0_6.bin"
+    },
+    {
+      "index": 7,
+      "pageNumber": 1,
+      "name": "img_p0_7",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 44,
+        "height": 22
+      },
+      "byteLength": 2904,
+      "fileName": "Kiwi.page1.img_p0_7.bin"
+    },
+    {
+      "index": 8,
+      "pageNumber": 1,
+      "name": "img_p0_8",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 136,
+        "height": 121
+      },
+      "byteLength": 49368,
+      "fileName": "Kiwi.page1.img_p0_8.bin"
+    },
+    {
+      "index": 9,
+      "pageNumber": 1,
+      "name": "img_p0_9",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 308,
+        "height": 288
+      },
+      "byteLength": 266112,
+      "fileName": "Kiwi.page1.img_p0_9.bin"
+    },
+    {
+      "index": 10,
+      "pageNumber": 1,
+      "name": "img_p0_10",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 252,
+        "height": 253
+      },
+      "byteLength": 255024,
+      "fileName": "Kiwi.page1.img_p0_10.bin"
+    },
+    {
+      "index": 11,
+      "pageNumber": 1,
+      "name": "img_p0_11",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 88,
+        "height": 82
+      },
+      "byteLength": 21648,
+      "fileName": "Kiwi.page1.img_p0_11.bin"
+    },
+    {
+      "index": 12,
+      "pageNumber": 1,
+      "name": "img_p0_12",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 620,
+        "height": 471
+      },
+      "byteLength": 876060,
+      "fileName": "Kiwi.page1.img_p0_12.bin"
+    },
+    {
+      "index": 13,
+      "pageNumber": 1,
+      "name": "img_p0_14",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 564,
+        "height": 423
+      },
+      "byteLength": 715716,
+      "fileName": "Kiwi.page1.img_p0_14.bin"
+    },
+    {
+      "index": 14,
+      "pageNumber": 1,
+      "name": "img_p0_15",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 564,
+        "height": 423
+      },
+      "byteLength": 954288,
+      "fileName": "Kiwi.page1.img_p0_15.bin"
+    },
+    {
+      "index": 15,
+      "pageNumber": 1,
+      "name": "img_p0_16",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 144,
+        "height": 137
+      },
+      "byteLength": 59184,
+      "fileName": "Kiwi.page1.img_p0_16.bin"
+    },
+    {
+      "index": 16,
+      "pageNumber": 1,
+      "name": "img_p0_17",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 96,
+        "height": 70
+      },
+      "byteLength": 20160,
+      "fileName": "Kiwi.page1.img_p0_17.bin"
+    },
+    {
+      "index": 17,
+      "pageNumber": 1,
+      "name": "img_p0_19",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 39,
+        "height": 22
+      },
+      "byteLength": 2574,
+      "fileName": "Kiwi.page1.img_p0_19.bin"
+    },
+    {
+      "index": 18,
+      "pageNumber": 1,
+      "name": "img_p0_20",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 39,
+        "height": 22
+      },
+      "byteLength": 3432,
+      "fileName": "Kiwi.page1.img_p0_20.bin"
+    },
+    {
+      "index": 19,
+      "pageNumber": 1,
+      "name": "img_p0_21",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 416,
+        "height": 276
+      },
+      "byteLength": 344448,
+      "fileName": "Kiwi.page1.img_p0_21.bin"
+    },
+    {
+      "index": 20,
+      "pageNumber": 1,
+      "name": "img_p0_22",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 124,
+        "height": 209
+      },
+      "byteLength": 103664,
+      "fileName": "Kiwi.page1.img_p0_22.bin"
+    },
+    {
+      "index": 21,
+      "pageNumber": 1,
+      "name": "img_p0_23",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 123,
+        "height": 209
+      },
+      "byteLength": 102828,
+      "fileName": "Kiwi.page1.img_p0_23.bin"
+    },
+    {
+      "index": 22,
+      "pageNumber": 1,
+      "name": "img_p0_24",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 142,
+        "height": 243
+      },
+      "byteLength": 138024,
+      "fileName": "Kiwi.page1.img_p0_24.bin"
+    },
+    {
+      "index": 23,
+      "pageNumber": 1,
+      "name": "img_p0_25",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 138,
+        "height": 243
+      },
+      "byteLength": 134136,
+      "fileName": "Kiwi.page1.img_p0_25.bin"
+    },
+    {
+      "index": 24,
+      "pageNumber": 1,
+      "name": "img_p0_26",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      },
+      "byteLength": 28350,
+      "fileName": "Kiwi.page1.img_p0_26.bin"
+    },
+    {
+      "index": 25,
+      "pageNumber": 1,
+      "name": "img_p0_27",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      },
+      "byteLength": 37800,
+      "fileName": "Kiwi.page1.img_p0_27.bin"
+    },
+    {
+      "index": 26,
+      "pageNumber": 1,
+      "name": "img_p0_26",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      },
+      "byteLength": 28350,
+      "fileName": "Kiwi.page1.img_p0_26.bin"
+    },
+    {
+      "index": 27,
+      "pageNumber": 1,
+      "name": "img_p0_27",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      },
+      "byteLength": 37800,
+      "fileName": "Kiwi.page1.img_p0_27.bin"
+    },
+    {
+      "index": 28,
+      "pageNumber": 1,
+      "name": "img_p0_26",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      },
+      "byteLength": 28350,
+      "fileName": "Kiwi.page1.img_p0_26.bin"
+    },
+    {
+      "index": 29,
+      "pageNumber": 1,
+      "name": "img_p0_27",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 135,
+        "height": 70
+      },
+      "byteLength": 37800,
+      "fileName": "Kiwi.page1.img_p0_27.bin"
+    },
+    {
+      "index": 30,
+      "pageNumber": 1,
+      "name": "img_p0_28",
+      "boundingBox": {
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "width": 256,
+        "height": 231
+      },
+      "byteLength": 236544,
+      "fileName": "Kiwi.page1.img_p0_28.bin"
+    }
+  ]
+}

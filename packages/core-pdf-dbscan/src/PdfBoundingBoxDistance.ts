@@ -1,10 +1,21 @@
+import type { IBoundingBox } from "@monorepo/core-pdf-common";
 import type { IPdfBoundingBoxDistance } from "./IPdfBoundingBoxDistance.js";
-import type { IPdfBoundingBox } from "./IPdfBoundingBox.js";
 
 export class PdfBoundingBoxDistance implements IPdfBoundingBoxDistance {
-  public measure(left: IPdfBoundingBox, right: IPdfBoundingBox): number {
-    const horizontalGap = this.axisGap(left.minX, left.maxX, right.minX, right.maxX);
-    const verticalGap = this.axisGap(left.minY, left.maxY, right.minY, right.maxY);
+  public measure(left: IBoundingBox, right: IBoundingBox): number {
+    const horizontalGap = this.axisGap(
+      left.min.x,
+      left.max.x,
+      right.min.x,
+      right.max.x,
+    );
+
+    const verticalGap = this.axisGap(
+      left.min.y,
+      left.max.y,
+      right.min.y,
+      right.max.y,
+    );
 
     return Math.hypot(horizontalGap, verticalGap);
   }

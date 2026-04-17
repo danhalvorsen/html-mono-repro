@@ -1,4 +1,4 @@
-import type { IBoundingBox } from "./contracts/contracts.js";
+import type { IBoundingBox } from "@monorepo/core-pdf-common";
 
 export interface IPdfImageFragment {
   readonly pageNumber: number;

@@ -1,6 +1,6 @@
 
 import type { IPdfMetadata } from "../IPdfMetadata.js";
-import { IPdfDocument } from "./IPdfDocument .js";
+import { IPdfDocument } from "./IPdfDocument.js";
 import type { IPdfPage } from "./IPdfPage.js";
 import type { IPdfJsDocumentProxy } from "./PdfJsDocumentFactory.js";
 import { PdfJsPage } from "./PdfJsPage.js";

@@ -4,27 +4,14 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
+import type { IBoundingBox, IFontInformation } from "@monorepo/core-pdf-common";
 import { CompositePdfEngine } from "../../../core-pdf-reader/src/engine/CompositePdfEngine.js";
-import type { IFontInformation } from "../../../core-pdf-reader/src/IFontInformation.js";
+import type { IPdfTextFragment } from "../../../core-pdf-reader/src/IPdfTextFragment.js";
 import { DbscanPdfBoundingBoxClusterer } from "../../src/DbscanPdfBoundingBoxClusterer.js";
-import type { IPdfBoundingBox } from "../../src/IPdfBoundingBox.js";
 
 const thisDirectory = dirname(fileURLToPath(import.meta.url));
 const kiwiPdfPath = join(thisDirectory, "Kiwi.pdf");
 const outputJsonPath = join(thisDirectory, "Kiwi.dbscan.clusters.json");
-
-interface ITextFragmentLike {
-  readonly pageNumber: number;
-  readonly text: string;
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-  readonly font?: IFontInformation;
-  readonly fontName?: string;
-  readonly fontFamily?: string;
-  readonly fontSize?: number;
-}
 
 interface IBoundingBoxMetadata {
   readonly pageNumber: number;
@@ -42,11 +29,11 @@ interface IBoundingBoxMetadata {
 }
 
 interface IBoxRecord {
-  readonly box: IPdfBoundingBox;
+  readonly box: IBoundingBox;
   readonly metadata: IBoundingBoxMetadata;
 }
 
-interface ISerializableBoundingBox extends IPdfBoundingBox {
+interface ISerializableBoundingBox extends IBoundingBox {
   readonly metadata: IBoundingBoxMetadata | null;
 }
 
@@ -56,26 +43,59 @@ interface IPageSelection {
   readonly endPage: number;
 }
 
-function toBoundingBox(fragment: ITextFragmentLike, index: number): IPdfBoundingBox {
-  const width = Math.max(fragment.width, 0);
-  const height = Math.max(fragment.height, 0);
-  const minX = fragment.x;
-  const minY = fragment.y;
-  const maxX = minX + width;
-  const maxY = minY + height;
+type TReaderBoundingBox =
+  | {
+      readonly min: { readonly x: number; readonly y: number };
+      readonly max: { readonly x: number; readonly y: number };
+      readonly width: number;
+      readonly height: number;
+    }
+  | {
+      readonly position: { readonly x: number; readonly y: number };
+      readonly width: number;
+      readonly height: number;
+    };
+
+function hasMinMax(
+  value: TReaderBoundingBox,
+): value is Extract<TReaderBoundingBox, { readonly min: unknown; readonly max: unknown }> {
+  return "min" in value && "max" in value;
+}
+
+function toBoundingBox(fragment: IPdfTextFragment, index: number): IBoundingBox {
+  const bb = fragment.boundingBox as unknown as TReaderBoundingBox;
+
+  const width = Math.max(bb.width, 0);
+  const height = Math.max(bb.height, 0);
+
+  const minX = hasMinMax(bb) ? bb.min.x : bb.position.x;
+  const minY = hasMinMax(bb) ? bb.min.y : bb.position.y;
+  const maxX = hasMinMax(bb) ? bb.max.x : minX + width;
+  const maxY = hasMinMax(bb) ? bb.max.y : minY + height;
+
+  if (
+    !Number.isFinite(minX) ||
+    !Number.isFinite(minY) ||
+    !Number.isFinite(maxX) ||
+    !Number.isFinite(maxY) ||
+    !Number.isFinite(width) ||
+    !Number.isFinite(height)
+  ) {
+    throw new Error(
+      `Invalid text fragment bounds at page ${fragment.pageNumber}, index ${index}.`,
+    );
+  }
 
   return {
     id: `p${fragment.pageNumber}-${index}`,
-    minX,
-    minY,
-    maxX,
-    maxY,
+    min: { x: minX, y: minY },
+    max: { x: maxX, y: maxY },
     width,
     height,
   };
 }
 
-function toBoxRecord(fragment: ITextFragmentLike, index: number): IBoxRecord {
+function toBoxRecord(fragment: IPdfTextFragment, index: number): IBoxRecord {
   const box = toBoundingBox(fragment, index);
   const area = box.width * box.height;
 
@@ -87,8 +107,8 @@ function toBoxRecord(fragment: ITextFragmentLike, index: number): IBoxRecord {
       text: fragment.text,
       textLength: fragment.text.length,
       area,
-      centerX: box.minX + box.width / 2,
-      centerY: box.minY + box.height / 2,
+      centerX: box.min.x + box.width / 2,
+      centerY: box.min.y + box.height / 2,
       aspectRatio: box.height === 0 ? 0 : box.width / box.height,
       fontInformation: fragment.font ?? null,
       fontName: fragment.fontName ?? null,
@@ -102,15 +122,19 @@ function toBoxRecord(fragment: ITextFragmentLike, index: number): IBoxRecord {
 }
 
 function toSerializableBoundingBox(
-  box: IPdfBoundingBox,
+  box: IBoundingBox,
   metadataById: ReadonlyMap<string, IBoundingBoxMetadata>,
 ): ISerializableBoundingBox {
   return {
     id: box.id,
-    minX: box.minX,
-    minY: box.minY,
-    maxX: box.maxX,
-    maxY: box.maxY,
+    min: {
+      x: box.min.x,
+      y: box.min.y,
+    },
+    max: {
+      x: box.max.x,
+      y: box.max.y,
+    },
     width: box.width,
     height: box.height,
     metadata: metadataById.get(box.id) ?? null,
@@ -132,10 +156,15 @@ function parsePageSelection(rawInput: string, maxPage: number): IPageSelection {
 
   if (rangeMatch) {
     const startPage = Number(rangeMatch[1]);
-    const endToken = rangeMatch[2]!;
+    const endToken = rangeMatch[2];
     const endPage = endToken === "all" ? maxPage : Number(endToken);
 
-    if (Number.isInteger(startPage) && Number.isInteger(endPage) && startPage >= 1 && endPage >= startPage) {
+    if (
+      Number.isInteger(startPage) &&
+      Number.isInteger(endPage) &&
+      startPage >= 1 &&
+      endPage >= startPage
+    ) {
       return {
         raw: rawInput,
         startPage,
@@ -151,14 +180,22 @@ function parsePageSelection(rawInput: string, maxPage: number): IPageSelection {
 
 describe("Kiwi PDF clustering integration", () => {
   it("reads Kiwi.pdf and writes DBSCAN clustering JSON in the same folder", async () => {
+    expect(existsSync(kiwiPdfPath)).toBe(true);
+
     const binary = new Uint8Array(readFileSync(kiwiPdfPath));
     const engine = new CompositePdfEngine();
     const textFragments = await engine.readTextFragments(binary);
+
     const maxPage = textFragments.reduce(
       (currentMax, fragment) => Math.max(currentMax, fragment.pageNumber),
       1,
     );
-    const pageSelection = parsePageSelection(process.env.KIWI_PAGE_RANGE ?? "1", maxPage);
+
+    const pageSelection = parsePageSelection(
+      process.env.KIWI_PAGE_RANGE ?? "1",
+      maxPage,
+    );
+
     const selectedTextFragments = textFragments.filter(
       (fragment) =>
         fragment.pageNumber >= pageSelection.startPage &&
@@ -168,10 +205,28 @@ describe("Kiwi PDF clustering integration", () => {
     const records = selectedTextFragments
       .filter((fragment) => fragment.text.trim().length > 0)
       .map((fragment, index) => toBoxRecord(fragment, index));
+
     const boxes = records.map((record) => record.box);
-    const metadataById = new Map(
-      records.map((record) => [record.box.id, record.metadata] as const),
+    const metadataById = new Map<string, IBoundingBoxMetadata>(
+      records.map((record) => [record.box.id, record.metadata]),
     );
+
+    for (const box of boxes) {
+      if (
+        !Number.isFinite(box.min.x) ||
+        !Number.isFinite(box.min.y) ||
+        !Number.isFinite(box.max.x) ||
+        !Number.isFinite(box.max.y) ||
+        !Number.isFinite(box.width) ||
+        !Number.isFinite(box.height)
+      ) {
+        throw new Error(
+          `Invalid box detected for id '${box.id}' min=(${String(box.min.x)}, ${String(box.min.y)}) max=(${String(box.max.x)}, ${String(box.max.y)}) width=${String(box.width)} height=${String(box.height)}.`,
+        );
+      }
+    }
+
+    expect(boxes.length).toBeGreaterThan(0);
 
     const clusterer = new DbscanPdfBoundingBoxClusterer();
     const clustering = clusterer.cluster(boxes, 4, 2);
@@ -190,7 +245,10 @@ describe("Kiwi PDF clustering integration", () => {
         raw: pageSelection.raw,
         startPage: pageSelection.startPage,
         endPage: pageSelection.endPage,
-        mode: pageSelection.startPage === pageSelection.endPage ? "single-page" : "range",
+        mode:
+          pageSelection.startPage === pageSelection.endPage
+            ? "single-page"
+            : "range",
       },
       parameters: {
         eps: 4,
@@ -236,10 +294,10 @@ describe("Kiwi PDF clustering integration", () => {
     expect(selectedTextFragments.length).toBeGreaterThan(0);
     expect(
       selectedTextFragments.some(
-        (fragment) => typeof fragment.fontSize === "number" && fragment.fontSize > 0,
+        (fragment) =>
+          typeof fragment.fontSize === "number" && fragment.fontSize > 0,
       ),
     ).toBe(true);
-    expect(boxes.length).toBeGreaterThan(0);
     expect(
       clustering.clusters.reduce((sum, cluster) => sum + cluster.items.length, 0) +
         clustering.noise.length,

@@ -1,10 +1,12 @@
-
-import { IPdfBinarySource } from "../IPdfBinarySource.js";
+import type { IPdfBinarySource } from "../IPdfBinarySource.js";
 
 export class InMemoryPdfBinarySource implements IPdfBinarySource {
-  constructor(public readonly name: string, private readonly binary: Uint8Array) {}
+  public constructor(
+    public readonly name: string,
+    private readonly binary: Uint8Array,
+  ) {}
 
-  async read(): Promise<Uint8Array> {
+  public async read(): Promise<Uint8Array> {
     return this.binary;
   }
 }

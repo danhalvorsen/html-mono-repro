@@ -18,8 +18,8 @@ import { describe, expect, it } from "vitest";
 import { CompositePdfEngine } from "../../../core-pdf-reader/src/engine/CompositePdfEngine.js";
 import type { IFontInformation } from "../../../core-pdf-reader/src/IFontInformation.js";
 import { DbscanPdfBoundingBoxClusterer } from "../../src/DbscanPdfBoundingBoxClusterer.js";
-import type { IPdfBoundingBox } from "../../src/IPdfBoundingBox.js";
-
+import type { IBoundingBox } from "@monorepo/core-pdf-common";
+import { IPdfTextFragment } from "core-pdf-reader/src/sources/IPdfTextFragment.js";
 // ---------------------------------------------------------------------------
 // Paths
 // ---------------------------------------------------------------------------
@@ -66,7 +66,7 @@ interface IClusterSummary {
   readonly id: string;
   readonly size: number;
   readonly envelope: IEnvelope;
-  readonly items: ReadonlyArray<IPdfBoundingBox & IFragmentDetails>;
+  readonly items: ReadonlyArray<IBoundingBox & IFragmentDetails>;
 }
 
 interface IMergedGroup {
@@ -81,28 +81,75 @@ interface IMergedGroup {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function toBoundingBox(fragment: ITextFragmentLike, index: number): IPdfBoundingBox {
-  const width = Math.max(fragment.width, 0);
-  const height = Math.max(fragment.height, 0);
-  const minX = fragment.x;
-  const minY = fragment.y;
+type TReaderBoundingBox =
+  | {
+      readonly min: { readonly x: number; readonly y: number };
+      readonly max: { readonly x: number; readonly y: number };
+      readonly width: number;
+      readonly height: number;
+    }
+  | {
+      readonly position: { readonly x: number; readonly y: number };
+      readonly width: number;
+      readonly height: number;
+    };
+
+function hasMinMax(
+  value: TReaderBoundingBox,
+): value is Extract<TReaderBoundingBox, { readonly min: unknown; readonly max: unknown }> {
+  return "min" in value && "max" in value;
+}
+
+function toBoundingBox(fragment: IPdfTextFragment, index: number): IBoundingBox {
+  const bb = fragment.boundingBox as unknown as TReaderBoundingBox;
+
+  const width = Math.max(bb.width, 0);
+  const height = Math.max(bb.height, 0);
+
+  const minX = hasMinMax(bb) ? bb.min.x : bb.position.x;
+  const minY = hasMinMax(bb) ? bb.min.y : bb.position.y;
+  const maxX = hasMinMax(bb) ? bb.max.x : minX + width;
+  const maxY = hasMinMax(bb) ? bb.max.y : minY + height;
+
+  if (
+    !Number.isFinite(minX) ||
+    !Number.isFinite(minY) ||
+    !Number.isFinite(maxX) ||
+    !Number.isFinite(maxY) ||
+    !Number.isFinite(width) ||
+    !Number.isFinite(height)
+  ) {
+    throw new Error(
+      `Invalid fragment bounds at page ${fragment.pageNumber}, index ${index}.`,
+    );
+  }
+
   return {
     id: `p${fragment.pageNumber}-${index}`,
-    minX,
-    minY,
-    maxX: minX + width,
-    maxY: minY + height,
+    min: { x: minX, y: minY },
+    max: { x: maxX, y: maxY },
     width,
     height,
   };
 }
+function computeEnvelope(boxes: readonly IBoundingBox[]): IEnvelope {
+  if (boxes.length === 0) {
+    throw new Error("Cannot compute envelope for an empty bounding box collection.");
+  }
 
-function computeEnvelope(boxes: readonly IPdfBoundingBox[]): IEnvelope {
-  const minX = Math.min(...boxes.map((b) => b.minX));
-  const minY = Math.min(...boxes.map((b) => b.minY));
-  const maxX = Math.max(...boxes.map((b) => b.maxX));
-  const maxY = Math.max(...boxes.map((b) => b.maxY));
-  return { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
+  const minX = Math.min(...boxes.map((b) => b.min.x));
+  const minY = Math.min(...boxes.map((b) => b.min.y));
+  const maxX = Math.max(...boxes.map((b) => b.max.x));
+  const maxY = Math.max(...boxes.map((b) => b.max.y));
+
+  return {
+    minX,
+    minY,
+    maxX,
+    maxY,
+    width: maxX - minX,
+    height: maxY - minY,
+  };
 }
 
 /**
@@ -185,7 +232,7 @@ function mergeNeighboringClusters(
   for (const memberIndices of groupMap.values()) {
     const members = memberIndices.map((i) => clusterSummaries[i]!);
     const allBoxes = members.flatMap((c) =>
-      c.items.map((item) => item as IPdfBoundingBox),
+      c.items.map((item) => item as IBoundingBox),
     );
 
     mergedGroups.push({
@@ -205,95 +252,119 @@ function mergeNeighboringClusters(
 // ---------------------------------------------------------------------------
 
 describe("Kiwi PDF cluster-merge integration", () => {
-  it("merges neighbouring product clusters into single bounding boxes and writes JSON", async () => {
-    const mergeEps = Number(process.env.KIWI_MERGE_EPS ?? 20);
+it("merges neighbouring product clusters into single bounding boxes and writes JSON", async () => {
+  const mergeEps = Number(process.env.KIWI_MERGE_EPS ?? 20);
 
-    const binary = new Uint8Array(readFileSync(kiwiPdfPath));
-    const engine = new CompositePdfEngine();
-    const textFragments = await engine.readTextFragments(binary);
+  expect(existsSync(kiwiPdfPath)).toBe(true);
 
-    // Build boxes from all pages
-    const detailsById = new Map<string, IFragmentDetails>();
-    const boxes: IPdfBoundingBox[] = [];
+  const binary = new Uint8Array(readFileSync(kiwiPdfPath));
+  const engine = new CompositePdfEngine();
+  const textFragments = await engine.readTextFragments(binary);
 
-    for (const fragment of textFragments) {
-      if (fragment.text.trim().length === 0) continue;
-      const box = toBoundingBox(fragment, boxes.length);
-      boxes.push(box);
-      detailsById.set(box.id, {
-        text: fragment.text,
-        fontInformation: fragment.font ?? null,
-        fontName: fragment.fontName ?? null,
-        fontFamily: fragment.fontFamily ?? null,
-        fontSize:
-          typeof fragment.fontSize === "number" && Number.isFinite(fragment.fontSize)
-            ? fragment.fontSize
-            : null,
-      });
+  const detailsById = new Map<string, IFragmentDetails>();
+  const boxes: IBoundingBox[] = [];
+
+  for (const fragment of textFragments) {
+    if (fragment.text.trim().length === 0) {
+      continue;
     }
 
-    // DBSCAN pass
-    const clusterer = new DbscanPdfBoundingBoxClusterer();
-    const clustering = clusterer.cluster(boxes, 4, 2);
+    const box = toBoundingBox(fragment, boxes.length);
 
-    // Build cluster summaries (each cluster → one envelope), drop clusters with no text
-    const clusterSummaries: IClusterSummary[] = clustering.clusters
-      .map((cluster) => ({
-        id: cluster.id,
-        size: cluster.items.length,
-        envelope: computeEnvelope(cluster.items),
-        items: cluster.items.map((item) => ({
-          ...item,
-          ...(detailsById.get(item.id) ?? {
-            text: "",
-            fontInformation: null,
-            fontName: null,
-            fontFamily: null,
-            fontSize: null,
-          }),
-        })),
-      }))
-      .filter((summary) =>
-        summary.items.some((item) => (item.text ?? "").trim().length > 0),
+    if (
+      !Number.isFinite(box.min.x) ||
+      !Number.isFinite(box.min.y) ||
+      !Number.isFinite(box.max.x) ||
+      !Number.isFinite(box.max.y) ||
+      !Number.isFinite(box.width) ||
+      !Number.isFinite(box.height)
+    ) {
+      throw new Error(
+        [
+          "Invalid Kiwi bounding box detected.",
+          `text="${fragment.text}"`,
+          `page=${fragment.pageNumber}`,
+          `min=(${String(box.min.x)}, ${String(box.min.y)})`,
+          `max=(${String(box.max.x)}, ${String(box.max.y)})`,
+          `width=${String(box.width)}`,
+          `height=${String(box.height)}`,
+        ].join(" "),
       );
+    }
 
-    // Merge pass
-    const mergedGroups = mergeNeighboringClusters(clusterSummaries, mergeEps);
+    boxes.push(box);
 
-    const payload = {
-      sourcePdf: "Kiwi.pdf",
-      generatedAt: new Date().toISOString(),
-      parameters: {
-        eps: 4,
-        minPts: 2,
-        mergeEps,
-      },
-      totals: {
-        fragments: textFragments.length,
-        boxes: boxes.length,
-        clusters: clustering.clusters.length,
-        clustersWithText: clusterSummaries.length,
-        clustersWithoutText: clustering.clusters.length - clusterSummaries.length,
-        noise: clustering.noise.length,
-        mergedGroups: mergedGroups.length,
-      },
-      mergedGroups,
-    };
+    detailsById.set(box.id, {
+      text: fragment.text,
+      fontInformation: fragment.font ?? null,
+      fontName: fragment.fontName ?? null,
+      fontFamily: fragment.fontFamily ?? null,
+      fontSize:
+        typeof fragment.fontSize === "number" && Number.isFinite(fragment.fontSize)
+          ? fragment.fontSize
+          : null,
+    });
+  }
 
-    writeFileSync(outputJsonPath, `${JSON.stringify(payload, null, 2)}\n`, "utf-8");
+  expect(boxes.length).toBeGreaterThan(0);
 
-    expect(boxes.length).toBeGreaterThan(0);
-    expect(clustering.clusters.length).toBeGreaterThan(0);
-    expect(
-      textFragments.some(
-        (fragment) => typeof fragment.fontSize === "number" && fragment.fontSize > 0,
-      ),
-    ).toBe(true);
-    expect(mergedGroups.length).toBeGreaterThan(0);
-    // All text clusters must appear in exactly one merged group
-    expect(
-      mergedGroups.reduce((sum, g) => sum + g.clusterIds.length, 0),
-    ).toBe(clusterSummaries.length);
-    expect(existsSync(outputJsonPath)).toBe(true);
-  });
+  const clusterer = new DbscanPdfBoundingBoxClusterer();
+  const clustering = clusterer.cluster(boxes, 4, 2);
+
+  const clusterSummaries: IClusterSummary[] = clustering.clusters
+    .map((cluster) => ({
+      id: cluster.id,
+      size: cluster.items.length,
+      envelope: computeEnvelope(cluster.items),
+      items: cluster.items.map((item) => ({
+        ...item,
+        ...(detailsById.get(item.id) ?? {
+          text: "",
+          fontInformation: null,
+          fontName: null,
+          fontFamily: null,
+          fontSize: null,
+        }),
+      })),
+    }))
+    .filter((summary) =>
+      summary.items.some((item) => item.text.trim().length > 0),
+    );
+
+  const mergedGroups = mergeNeighboringClusters(clusterSummaries, mergeEps);
+
+  const payload = {
+    sourcePdf: "Kiwi.pdf",
+    generatedAt: new Date().toISOString(),
+    parameters: {
+      eps: 4,
+      minPts: 2,
+      mergeEps,
+    },
+    totals: {
+      fragments: textFragments.length,
+      boxes: boxes.length,
+      clusters: clustering.clusters.length,
+      clustersWithText: clusterSummaries.length,
+      clustersWithoutText: clustering.clusters.length - clusterSummaries.length,
+      noise: clustering.noise.length,
+      mergedGroups: mergedGroups.length,
+    },
+    mergedGroups,
+  };
+
+  writeFileSync(outputJsonPath, `${JSON.stringify(payload, null, 2)}\n`, "utf-8");
+
+  expect(clustering.clusters.length).toBeGreaterThan(0);
+  expect(
+    textFragments.some(
+      (fragment) => typeof fragment.fontSize === "number" && fragment.fontSize > 0,
+    ),
+  ).toBe(true);
+  expect(mergedGroups.length).toBeGreaterThan(0);
+  expect(
+    mergedGroups.reduce((sum, group) => sum + group.clusterIds.length, 0),
+  ).toBe(clusterSummaries.length);
+  expect(existsSync(outputJsonPath)).toBe(true);
+});
 });

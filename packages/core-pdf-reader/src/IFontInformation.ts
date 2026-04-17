@@ -1,1 +1,1 @@
-export type { IFontInformation } from "./contracts/contracts.js";
+export type { IFontInformation } from "@monorepo/core-pdf-common";

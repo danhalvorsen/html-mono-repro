@@ -4,27 +4,14 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
+import type { IBoundingBox, IFontInformation } from "@monorepo/core-pdf-common";
 import { CompositePdfEngine } from "../../../../core-pdf-reader/src/engine/CompositePdfEngine.js";
-import type { IFontInformation } from "../../../../core-pdf-reader/src/IFontInformation.js";
+import type { IPdfTextFragment } from "../../../../core-pdf-reader/src/IPdfTextFragment.js";
 import { DbscanPdfBoundingBoxClusterer } from "../../../src/DbscanPdfBoundingBoxClusterer.js";
-import type { IPdfBoundingBox } from "../../../src/IPdfBoundingBox.js";
 
 const thisDirectory = dirname(fileURLToPath(import.meta.url));
 const pidPdfPath = join(thisDirectory, "PID.pdf");
 const outputJsonPath = join(thisDirectory, "PID.dbscan.clusters.json");
-
-interface ITextFragmentLike {
-  readonly pageNumber: number;
-  readonly text: string;
-  readonly x: number;
-  readonly y: number;
-  readonly width: number;
-  readonly height: number;
-  readonly font?: IFontInformation;
-  readonly fontName?: string;
-  readonly fontFamily?: string;
-  readonly fontSize?: number;
-}
 
 interface IBoundingBoxMetadata {
   readonly pageNumber: number;
@@ -42,34 +29,39 @@ interface IBoundingBoxMetadata {
 }
 
 interface IBoxRecord {
-  readonly box: IPdfBoundingBox;
+  readonly box: IBoundingBox;
   readonly metadata: IBoundingBoxMetadata;
 }
 
-interface ISerializableBoundingBox extends IPdfBoundingBox {
+interface ISerializableBoundingBox extends IBoundingBox {
   readonly metadata: IBoundingBoxMetadata | null;
 }
 
-function toBoundingBox(fragment: ITextFragmentLike, index: number): IPdfBoundingBox {
-  const width = Math.max(fragment.width, 0);
-  const height = Math.max(fragment.height, 0);
-  const minX = fragment.x;
-  const minY = fragment.y;
+function toBoundingBox(fragment: IPdfTextFragment, index: number): IBoundingBox {
+  const width = Math.max(fragment.boundingBox.width, 0);
+  const height = Math.max(fragment.boundingBox.height, 0);
+
+  const minX = fragment.boundingBox.position.x;
+  const minY = fragment.boundingBox.position.y;
   const maxX = minX + width;
   const maxY = minY + height;
 
   return {
     id: `p${fragment.pageNumber}-${index}`,
-    minX,
-    minY,
-    maxX,
-    maxY,
+    min: {
+      x: minX,
+      y: minY,
+    },
+    max: {
+      x: maxX,
+      y: maxY,
+    },
     width,
     height,
   };
 }
 
-function toBoxRecord(fragment: ITextFragmentLike, index: number): IBoxRecord {
+function toBoxRecord(fragment: IPdfTextFragment, index: number): IBoxRecord {
   const box = toBoundingBox(fragment, index);
   const area = box.width * box.height;
 
@@ -81,8 +73,8 @@ function toBoxRecord(fragment: ITextFragmentLike, index: number): IBoxRecord {
       text: fragment.text,
       textLength: fragment.text.length,
       area,
-      centerX: box.minX + box.width / 2,
-      centerY: box.minY + box.height / 2,
+      centerX: box.min.x + (box.width / 2),
+      centerY: box.min.y + (box.height / 2),
       aspectRatio: box.height === 0 ? 0 : box.width / box.height,
       fontInformation: fragment.font ?? null,
       fontName: fragment.fontName ?? null,
@@ -96,15 +88,19 @@ function toBoxRecord(fragment: ITextFragmentLike, index: number): IBoxRecord {
 }
 
 function toSerializableBoundingBox(
-  box: IPdfBoundingBox,
+  box: IBoundingBox,
   metadataById: ReadonlyMap<string, IBoundingBoxMetadata>,
 ): ISerializableBoundingBox {
   return {
     id: box.id,
-    minX: box.minX,
-    minY: box.minY,
-    maxX: box.maxX,
-    maxY: box.maxY,
+    min: {
+      x: box.min.x,
+      y: box.min.y,
+    },
+    max: {
+      x: box.max.x,
+      y: box.max.y,
+    },
     width: box.width,
     height: box.height,
     metadata: metadataById.get(box.id) ?? null,
@@ -124,9 +120,11 @@ describe("PID PDF clustering integration", () => {
       .map((fragment, index) => toBoxRecord(fragment, index));
 
     const boxes = records.map((record) => record.box);
-    const metadataById = new Map(
-      records.map((record) => [record.box.id, record.metadata] as const),
+    const metadataById = new Map<string, IBoundingBoxMetadata>(
+      records.map((record) => [record.box.id, record.metadata]),
     );
+
+    expect(boxes.length).toBeGreaterThan(0);
 
     const clusterer = new DbscanPdfBoundingBoxClusterer();
     const clustering = clusterer.cluster(boxes, 4, 2);
@@ -186,7 +184,6 @@ describe("PID PDF clustering integration", () => {
         (fragment) => typeof fragment.fontSize === "number" && fragment.fontSize > 0,
       ),
     ).toBe(true);
-    expect(boxes.length).toBeGreaterThan(0);
     expect(
       clustering.clusters.reduce((sum, cluster) => sum + cluster.items.length, 0) +
         clustering.noise.length,

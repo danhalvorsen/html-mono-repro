@@ -1,4 +1,4 @@
-import type { IPdfBoundingBox } from "./IPdfBoundingBox.js";
+import type { IBoundingBox } from "@monorepo/core-pdf-common";
 import type { IPdfBoundingBoxClusterer } from "./IPdfBoundingBoxClusterer.js";
 import type { IPdfBoundingBoxNeighborhoodQuery } from "./IPdfBoundingBoxNeighborhoodQuery.js";
 import { PdfBoundingBoxCluster } from "./PdfBoundingBoxCluster.js";
@@ -9,7 +9,7 @@ export class DbscanPdfBoundingBoxClusterer
   implements IPdfBoundingBoxClusterer
 {
   public cluster(
-    boxes: readonly IPdfBoundingBox[],
+    boxes: readonly IBoundingBox[],
     eps: number,
     minPts: number,
   ): PdfBoundingBoxClusteringResult {
@@ -19,7 +19,7 @@ export class DbscanPdfBoundingBoxClusterer
     const neighborhoodQuery = new QuadTreePdfBoundingBoxNeighborhoodQuery(orderedBoxes);
     const visited = new Set<string>();
     const assignedClusterByBoxId = new Map<string, string>();
-    const clusters = new Map<string, IPdfBoundingBox[]>();
+    const clusters = new Map<string, IBoundingBox[]>();
     const noise = new Set<string>();
     let clusterIndex = 0;
 
@@ -65,8 +65,8 @@ export class DbscanPdfBoundingBoxClusterer
   }
 
   private expandCluster(
-    seed: IPdfBoundingBox,
-    seedNeighbors: readonly IPdfBoundingBox[],
+    seed: IBoundingBox,
+    seedNeighbors: readonly IBoundingBox[],
     clusterId: string,
     eps: number,
     minPts: number,
@@ -74,7 +74,7 @@ export class DbscanPdfBoundingBoxClusterer
     visited: Set<string>,
     assignedClusterByBoxId: Map<string, string>,
     noise: Set<string>,
-    clusters: Map<string, IPdfBoundingBox[]>,
+    clusters: Map<string, IBoundingBox[]>,
   ): void {
     const queue = seedNeighbors.slice();
     this.assignToCluster(seed, clusterId, assignedClusterByBoxId, noise, clusters);
@@ -104,11 +104,11 @@ export class DbscanPdfBoundingBoxClusterer
   }
 
   private assignToCluster(
-    box: IPdfBoundingBox,
+    box: IBoundingBox,
     clusterId: string,
     assignedClusterByBoxId: Map<string, string>,
     noise: Set<string>,
-    clusters: Map<string, IPdfBoundingBox[]>,
+    clusters: Map<string, IBoundingBox[]>,
   ): void {
     assignedClusterByBoxId.set(box.id, clusterId);
     noise.delete(box.id);
@@ -122,8 +122,8 @@ export class DbscanPdfBoundingBoxClusterer
   }
 
   private mergeNeighbors(
-    queue: IPdfBoundingBox[],
-    additional: readonly IPdfBoundingBox[],
+    queue: IBoundingBox[],
+    additional: readonly IBoundingBox[],
   ): void {
     const known = new Set(queue.map((item) => item.id));
 

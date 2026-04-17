@@ -1,12 +1,9 @@
+import { PdfImageExtractor } from "../../src/engine/PdfImageExtractor.js";
+import { CompositePdfEngine, IReaderConfiguration } from "../../src/index.js";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+ 
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-
-import {
-  CompositePdfEngine,
-  PdfImageExtractor,
-  type IReaderConfiguration,
-} from "../../src/index.js";
 
 function resolveExtension(mimeType: string | undefined): string {
   switch (mimeType) {

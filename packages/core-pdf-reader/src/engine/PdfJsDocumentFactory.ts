@@ -1,6 +1,7 @@
 import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 
 import type { IPdfDocumentFactory } from "./IPdfDocumentFactory.js";
+import type { IPdfDocument } from "./IPdfDocument.js";
 import { PdfJsDocument } from "./PdfJsDocument.js";
 
 export interface IPdfJsTextStyle {
@@ -32,7 +33,7 @@ export interface IPdfJsViewport {
 }
 
 export class PdfJsDocumentFactory implements IPdfDocumentFactory {
-  public async open(binary: Uint8Array) {
+  public async open(binary: Uint8Array): Promise<IPdfDocument> {
     const loadingTask = pdfjs.getDocument({
       data: binary,
       useWorkerFetch: false,

@@ -1,17 +1,13 @@
-// packages/core-pdf-reader/src/engine/CompositePdfEngine.ts
-
 import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 
 import type { IPdfMetadata } from "../IPdfMetadata.js";
 import type { IPdfPageText } from "../IPdfPageText.js";
 import type { IPdfStructuredExtractionResult } from "../IPdfStructuredExtractionResult.js";
 import type { IPdfTextFragment } from "../IPdfTextFragment.js";
-
 import type { IPdfStructuredExtractionRequest } from "../services/IPdfStructuredExtractionRequest.js";
 import type { ICompositePdfEngine } from "./ICompositePdfEngine.js";
-import type { IFontInformation } from "../contracts/contracts.js";
+import type { IFontInformation } from "@monorepo/core-pdf-common";
 
-// internal only (no self-import)
 interface IPdfJsDocument {
   readonly numPages: number;
   getPage(pageNumber: number): Promise<IPdfJsPage>;
@@ -41,10 +37,6 @@ interface IPdfJsTextItem {
 
 export class CompositePdfEngine implements ICompositePdfEngine {
   public readonly name = "pdfjs-composite-engine";
-
-  // ─────────────────────────────────────────────
-  // Public API
-  // ─────────────────────────────────────────────
 
   public async readMetadata(binary: Uint8Array): Promise<IPdfMetadata> {
     const document = await this.loadDocument(binary);
@@ -138,7 +130,7 @@ export class CompositePdfEngine implements ICompositePdfEngine {
 
   public async extractStructured<TValue>(
     binary: Uint8Array,
-    request: IPdfStructuredExtractionRequest
+    request: IPdfStructuredExtractionRequest,
   ): Promise<IPdfStructuredExtractionResult<TValue>> {
     const pages = await this.readPages(binary);
 
@@ -154,72 +146,57 @@ export class CompositePdfEngine implements ICompositePdfEngine {
     });
   }
 
-  // ─────────────────────────────────────────────
-  // Internal helpers
-  // ─────────────────────────────────────────────
+private async loadDocument(binary: Uint8Array): Promise<IPdfJsDocument> {
+  const safeBinary = new Uint8Array(binary);
+
+  const task = pdfjs.getDocument({
+    data: safeBinary,
+    disableWorker: true,
+    useWorkerFetch: false,
+    isEvalSupported: false,
+    isOffscreenCanvasSupported: false,
+    isImageDecoderSupported: false,
+    useSystemFonts: false,
+  } as unknown as Parameters<typeof pdfjs.getDocument>[0]);
+
+  return (await task.promise) as unknown as IPdfJsDocument;
+}
 
   private toPageText(fragments: readonly IPdfTextFragment[]): string {
     return fragments
       .slice()
-      .sort((left, right) => {
-        const deltaY =
-          right.boundingBox.position.y - left.boundingBox.position.y;
-        if (Math.abs(deltaY) > 2) {
-          return deltaY;
-        }
-
-        return left.boundingBox.position.x - right.boundingBox.position.x;
+      .sort((l, r) => {
+        const dy = r.boundingBox.position.y - l.boundingBox.position.y;
+        if (Math.abs(dy) > 2) return dy;
+        return l.boundingBox.position.x - r.boundingBox.position.x;
       })
-      .map((fragment) => fragment.text)
+      .map(f => f.text)
       .join(" ");
   }
 
   private resolveFontSize(transform: readonly number[]): number {
-    const verticalScale = Math.hypot(
-      Number(transform[2] ?? 0),
-      Number(transform[3] ?? 0),
-    );
-
-    if (verticalScale > 0) {
-      return verticalScale;
-    }
-
-    return Math.hypot(
-      Number(transform[0] ?? 0),
-      Number(transform[1] ?? 0),
-    );
+    const v = Math.hypot(Number(transform[2] ?? 0), Number(transform[3] ?? 0));
+    if (v > 0) return v;
+    return Math.hypot(Number(transform[0] ?? 0), Number(transform[1] ?? 0));
   }
 
   private resolveFontFamily(
     fontName: string | undefined,
     styles: IPdfJsTextContent["styles"],
   ): string | undefined {
-    if (fontName === undefined || styles === undefined) {
-      return undefined;
-    }
-
+    if (!fontName || !styles) return undefined;
     const style = styles[fontName];
     return typeof style?.fontFamily === "string" ? style.fontFamily : undefined;
   }
 
   private resolveRawFontName(item: IPdfJsTextItem): string | undefined {
-    const candidate = (item as { fontInformation?: unknown; fontName?: unknown }).fontInformation
-      ?? (item as { fontName?: unknown }).fontName;
+    const candidate = (item as any).fontInformation ?? (item as any).fontName;
 
-    if (typeof candidate === "string") {
-      return candidate;
-    }
+    if (typeof candidate === "string") return candidate;
 
     if (typeof candidate === "object" && candidate !== null) {
-      const withRaw = candidate as Partial<IFontInformation>;
-
-      if (typeof withRaw.rawName === "string") {
-        return withRaw.rawName;
-      }
-
-      if (typeof withRaw.name === "string") {
-        return withRaw.name;
-      }
+      if (typeof candidate.rawName === "string") return candidate.rawName;
+      if (typeof candidate.name === "string") return candidate.name;
     }
 
     return undefined;
@@ -230,37 +207,19 @@ export class CompositePdfEngine implements ICompositePdfEngine {
     fontFamily: string | undefined,
     fontSize: number,
   ): IFontInformation | undefined {
-    const resolvedName = fontFamily ?? fontName;
-    if (resolvedName === undefined && fontSize <= 0) {
-      return undefined;
-    }
+    if (!fontName && !fontFamily && fontSize <= 0) return undefined;
 
     return {
-      name: resolvedName ?? "unknown",
+      name: fontFamily ?? fontName ?? "unknown",
       size: Math.max(fontSize, 0),
-      ...(fontFamily !== undefined && { family: fontFamily }),
-      ...(fontName !== undefined && { rawName: fontName }),
+      ...(fontFamily && { family: fontFamily }),
+      ...(fontName && { rawName: fontName }),
     };
-  }
-
-  private async loadDocument(binary: Uint8Array): Promise<IPdfJsDocument> {
-    const task = pdfjs.getDocument({
-      data: binary,
-      useWorkerFetch: false,
-      isEvalSupported: false,
-      useSystemFonts: false,
-    });
-
-    return (await task.promise) as unknown as IPdfJsDocument;
   }
 
   private isTextItem(value: unknown): value is IPdfJsTextItem {
     if (typeof value !== "object" || value === null) return false;
-
     const c = value as Partial<IPdfJsTextItem>;
-
-    return typeof c.str === "string" &&
-      Array.isArray(c.transform) &&
-      c.transform.length >= 6;
+    return typeof c.str === "string" && Array.isArray(c.transform) && c.transform.length >= 6;
   }
 }

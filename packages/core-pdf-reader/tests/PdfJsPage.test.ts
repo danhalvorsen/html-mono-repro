@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PdfJsTestFixture } from "./fixtures/pdfjs-fixture.js";
 import { PdfJsPage } from "../src/engine/PdfJsPage.js";
- 
+
 describe("PdfJsPage", () => {
   const fixture = new PdfJsTestFixture();
 
@@ -50,10 +50,11 @@ describe("PdfJsPage", () => {
       {
         pageNumber: 1,
         text: "Milk",
-        x: 10,
-        y: 100,
-        width: 30,
-        height: 12,
+        boundingBox: {
+          position: { x: 10, y: 100 },
+          width: 30,
+          height: 12,
+        },
         font: {
           name: "Helvetica",
           size: 1,
@@ -67,10 +68,11 @@ describe("PdfJsPage", () => {
       {
         pageNumber: 1,
         text: "19,90",
-        x: 60,
-        y: 100,
-        width: 20,
-        height: 12,
+        boundingBox: {
+          position: { x: 60, y: 100 },
+          width: 20,
+          height: 12,
+        },
         font: {
           name: "unknown",
           size: 1,
@@ -99,10 +101,11 @@ describe("PdfJsPage", () => {
     expect(fragment).toEqual({
       pageNumber: 1,
       text: "Derived",
-      x: 10,
-      y: 20,
-      width: 15,
-      height: 1.5,
+      boundingBox: {
+        position: { x: 10, y: 20 },
+        width: 15,
+        height: 1.5,
+      },
       font: {
         name: "unknown",
         size: 1.5,
@@ -134,10 +137,11 @@ describe("PdfJsPage", () => {
     expect(fragment).toEqual({
       pageNumber: 3,
       text: "Offer",
-      x: 25,
-      y: 50,
-      width: 40,
-      height: 14,
+      boundingBox: {
+        position: { x: 25, y: 50 },
+        width: 40,
+        height: 14,
+      },
       font: {
         name: "Arial",
         size: 14,
@@ -178,10 +182,11 @@ describe("PdfJsPage", () => {
     expect(fragment).toEqual({
       pageNumber: 4,
       text: "ObjectFont",
-      x: 30,
-      y: 80,
-      width: 70,
-      height: 16,
+      boundingBox: {
+        position: { x: 30, y: 80 },
+        width: 70,
+        height: 16,
+      },
       font: {
         name: "Fira Sans",
         size: 16,
@@ -212,18 +217,16 @@ describe("PdfJsPage", () => {
     });
 
     const sut = new PdfJsPage(proxy);
-
-    // Internal implementation uses scale 1 in readTextFragments.
-    // This test locks current behavior so future viewport changes become explicit.
     const [fragment] = await sut.readTextFragments();
 
     expect(fragment).toEqual({
       pageNumber: 1,
       text: "Scaled",
-      x: 10,
-      y: 20,
-      width: 25,
-      height: 12,
+      boundingBox: {
+        position: { x: 10, y: 20 },
+        width: 25,
+        height: 12,
+      },
       font: {
         name: "unknown",
         size: 1,
@@ -286,4 +289,3 @@ describe("PdfJsPage", () => {
     expect(Object.isFrozen(result[0])).toBe(true);
   });
 });
- 

@@ -1,5 +1,4 @@
 export * from "./DbscanPdfBoundingBoxClusterer.js";
-export * from "./IPdfBoundingBox.js";
 export * from "./IPdfBoundingBoxClusterer.js";
 export * from "./IPdfBoundingBoxDistance.js";
 export * from "./IPdfBoundingBoxNeighborhoodQuery.js";

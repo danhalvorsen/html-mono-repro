@@ -1,12 +1,12 @@
-// tests/reader.test.ts
 import { describe, expect, it } from "vitest";
 import { DefaultPdfReader } from "../src/services/DefaultPdfReader.js";
 import { InMemoryPdfBinarySource } from "../src/sources/InMemoryPdfBinarySource.js";
 import type { ICompositePdfEngine } from "../src/engine/ICompositePdfEngine.js";
 import type { IPdfMetadata } from "../src/IPdfMetadata.js";
 import type { IPdfPageText } from "../src/IPdfPageText.js";
-import type { IPdfStructuredExtractionRequest } from "../src/IPdfStructuredExtractionRequest.js";
+import type { IPdfStructuredExtractionRequest } from "../src/services/IPdfStructuredExtractionRequest.js";
 import type { IPdfStructuredExtractionResult } from "../src/IPdfStructuredExtractionResult.js";
+import type { IPdfTextFragment } from "../src/IPdfTextFragment.js";
 
 class FakeCompositePdfEngine implements ICompositePdfEngine {
   public readonly name = "fake";
@@ -24,6 +24,10 @@ class FakeCompositePdfEngine implements ICompositePdfEngine {
       Object.freeze({ pageNumber: 1, text: "Page 1 text" }),
       Object.freeze({ pageNumber: 2, text: "Page 2 text" }),
     ]);
+  }
+
+  public async readTextFragments(_binary: Uint8Array): Promise<readonly IPdfTextFragment[]> {
+    return Object.freeze([]);
   }
 
   public async extractStructured<TValue>(

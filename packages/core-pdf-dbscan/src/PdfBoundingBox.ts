@@ -1,11 +1,9 @@
-import type { IPdfBoundingBox } from "./IPdfBoundingBox.js";
+import type { IBoundingBox, IPosition } from "@monorepo/core-pdf-common";
 
-export class PdfBoundingBox implements IPdfBoundingBox {
+export class PdfBoundingBox implements IBoundingBox {
   public readonly id: string;
-  public readonly minX: number;
-  public readonly minY: number;
-  public readonly maxX: number;
-  public readonly maxY: number;
+  public readonly min: IPosition;
+  public readonly max: IPosition;
   public readonly width: number;
   public readonly height: number;
 
@@ -16,7 +14,7 @@ export class PdfBoundingBox implements IPdfBoundingBox {
     maxX: number,
     maxY: number,
   ) {
-    PdfBoundingBox.ensureFinite(id, "id");
+    PdfBoundingBox.ensureNonEmpty(id, "id");
     PdfBoundingBox.ensureNumber(minX, "minX");
     PdfBoundingBox.ensureNumber(minY, "minY");
     PdfBoundingBox.ensureNumber(maxX, "maxX");
@@ -31,10 +29,8 @@ export class PdfBoundingBox implements IPdfBoundingBox {
     }
 
     this.id = id;
-    this.minX = minX;
-    this.minY = minY;
-    this.maxX = maxX;
-    this.maxY = maxY;
+    this.min = Object.freeze({ x: minX, y: minY });
+    this.max = Object.freeze({ x: maxX, y: maxY });
     this.width = maxX - minX;
     this.height = maxY - minY;
 
@@ -62,7 +58,7 @@ export class PdfBoundingBox implements IPdfBoundingBox {
     return new PdfBoundingBox(id, x, y, x + width, y + height);
   }
 
-  private static ensureFinite(value: string, name: string): void {
+  private static ensureNonEmpty(value: string, name: string): void {
     if (value.trim().length === 0) {
       throw new Error(`PdfBoundingBox ${name} must not be empty.`);
     }
