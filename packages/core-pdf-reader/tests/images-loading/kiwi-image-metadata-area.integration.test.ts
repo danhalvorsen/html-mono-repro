@@ -8,7 +8,7 @@ import {
   CompositePdfEngine,
   PdfImageExtractor,
   type IReaderConfiguration,
-} from "../../src/index.ts";
+} from "../../src/old/index.js";
 
 describe("Kiwi.pdf image metadata consistency", () => {
   it("should prove page 1 image fragments currently have zero-area bounding boxes", async () => {

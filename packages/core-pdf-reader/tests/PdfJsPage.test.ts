@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PdfJsTestFixture } from "./fixtures/pdfjs-fixture.js";
-import { PdfJsPage } from "../src/engine/PdfJsPage.js";
+import { PdfJsPage } from "../src/old/engine/PdfJsPage.js";
 
 describe("PdfJsPage", () => {
   const fixture = new PdfJsTestFixture();

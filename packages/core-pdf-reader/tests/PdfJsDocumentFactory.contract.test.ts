@@ -4,7 +4,7 @@ import { PdfJsTestFixture } from "./fixtures/pdfjs-fixture.js";
 import {
   IPdfJsDocumentProxy,
   PdfJsDocumentFactory,
-} from "../src/engine/PdfJsDocumentFactory.js";
+} from "../src/old/engine/PdfJsDocumentFactory.js";
  
 vi.mock("pdfjs-dist/legacy/build/pdf.mjs", () => {
   return {

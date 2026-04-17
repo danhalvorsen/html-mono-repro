@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Rectangle } from "../src/Rectangle.js";
+import { Rectangle } from "../src/core/Rectangle.js";
 
 /**
  * Fixtures

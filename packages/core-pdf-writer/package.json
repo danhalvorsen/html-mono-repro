@@ -29,11 +29,12 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@monorepo/core-pdf-common": "workspace:*", 
+    "@monorepo/core-pdf-domain": "workspace:*", 
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.6.205"
   },
   "devDependencies": {
+    "@monorepo/core-filesystem": "workspace:*", 
     "@types/node": "^24.10.0",
     "rimraf": "^6.0.1",
     "typescript": "^5.9.3"

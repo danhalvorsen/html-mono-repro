@@ -1,3 +1,0 @@
-given a graphical rectangle, I want to write the shape to ontop of an exising pdf , so that I can see the rectangle
-given a graphical rectangle described a as a IBoundingBox for core-pdf-common, I want the rectangle represetned by the rectangle to show up in the pdf 
-

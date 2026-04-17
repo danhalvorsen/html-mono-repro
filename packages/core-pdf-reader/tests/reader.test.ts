@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { DefaultPdfReader } from "../src/services/DefaultPdfReader.js";
-import { InMemoryPdfBinarySource } from "../src/sources/InMemoryPdfBinarySource.js";
-import type { ICompositePdfEngine } from "../src/engine/ICompositePdfEngine.js";
-import type { IPdfMetadata } from "../src/IPdfMetadata.js";
-import type { IPdfPageText } from "../src/IPdfPageText.js";
-import type { IPdfStructuredExtractionRequest } from "../src/services/IPdfStructuredExtractionRequest.js";
-import type { IPdfStructuredExtractionResult } from "../src/IPdfStructuredExtractionResult.js";
-import type { IPdfTextFragment } from "../src/IPdfTextFragment.js";
+import { DefaultPdfReader } from "../src/old/services/DefaultPdfReader.js";
+import { InMemoryPdfBinarySource } from "../src/old/sources/InMemoryPdfBinarySource.js";
+import type { ICompositePdfEngine } from "../src/old/engine/ICompositePdfEngine.js";
+import type { IPdfMetadata } from "../src/old/IPdfMetadata.js";
+import type { IPdfPageText } from "../src/old/IPdfPageText.js";
+import type { IPdfStructuredExtractionRequest } from "../src/old/services/IPdfStructuredExtractionRequest.js";
+import type { IPdfStructuredExtractionResult } from "../src/old/IPdfStructuredExtractionResult.js";
+import type { IPdfTextFragment } from "../src/old/IPdfTextFragment.js";
 
 class FakeCompositePdfEngine implements ICompositePdfEngine {
   public readonly name = "fake";

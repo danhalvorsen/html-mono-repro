@@ -1,0 +1,20 @@
+﻿import "./drawing/CanvasObjectKind.js";
+import "./drawing/CanvasObject.js";
+import "./drawing/ICanvasObjectIdGenerator.js";
+import "./drawing/IncrementingCanvasObjectIdGenerator.js";
+import "./drawing/ICanvasObjectBuilder.js";
+import "./drawing/CanvasObjectBuilder.js";
+import "./drawing/ICanvasObjectFactory.js";
+import "./drawing/CanvasObjectFactory.js";
+import "./drawing/IDrawingObjectStore.js";
+import "./drawing/InMemoryDrawingObjectStore.js";
+import "./drawing/IGridSnapService.js";
+import "./drawing/GridSnapService.js";
+import "./drawing/MenuShapeCatalog.js";
+import "./drawing/DragPayloadCodec.js";
+import "./drawing/DrawingSystemServices.js";
+import "./drawing/createDrawingSystemServices.js";
+
+import "./Lit/MyMenu.js";
+import "./Lit/MyCanvas.js";
+import "./Lit/MyDrawingSystem.js";

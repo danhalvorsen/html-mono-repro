@@ -1965,40 +1965,6 @@ importers:
         specifier: 'workspace:'
         version: link:../core-template
 
-  packages/core-pdf-bounding-boxes:
-    dependencies:
-      '@monorepo/core-design-pattern-quad-tree':
-        specifier: workspace:*
-        version: link:../core-design-pattern-quad-tree
-      '@monorepo/core-math':
-        specifier: workspace:*
-        version: link:../core-math
-      '@monorepo/core-pdf-reader':
-        specifier: workspace:*
-        version: link:../core-pdf-reader
-      '@turf/clusters-dbscan':
-        specifier: ^7.0.0
-        version: 7.3.4
-      pdfjs-dist:
-        specifier: ^5.6.205
-        version: 5.6.205
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/core-pdf-common:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   packages/core-pdf-dbscan:
     dependencies:
       '@monorepo/core-design-pattern-quad-tree':
@@ -2007,10 +1973,41 @@ importers:
       '@monorepo/core-design-pattern-quad-tree-abstract':
         specifier: workspace:*
         version: link:../core-design-pattern-quad-tree-abstract
-      '@monorepo/core-pdf-common':
+      '@monorepo/core-pdf-domain':
         specifier: workspace:*
-        version: link:../core-pdf-common
+        version: link:../core-pdf-domain
     devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/core-pdf-domain:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/core-pdf-parser-adapter:
+    dependencies:
+      '@monorepo/core-pdf-domain':
+        specifier: workspace:*
+        version: link:../core-pdf-domain
+      pdf-lib:
+        specifier: ^1.17.1
+        version: 1.17.1
+      pdfjs-dist:
+        specifier: ^5.6.205
+        version: 5.6.205
+    devDependencies:
+      '@types/node':
+        specifier: ^24.10.0
+        version: 24.12.2
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -2020,9 +2017,9 @@ importers:
 
   packages/core-pdf-reader:
     dependencies:
-      '@monorepo/core-pdf-common':
+      '@monorepo/core-pdf-domain':
         specifier: workspace:*
-        version: link:../core-pdf-common
+        version: link:../core-pdf-domain
       pdfjs-dist:
         specifier: ^5.6.205
         version: 5.6.205
@@ -2060,6 +2057,9 @@ importers:
       '@monorepo/core-pdf-dbscan':
         specifier: workspace:*
         version: link:../../core-pdf-dbscan
+      '@monorepo/core-pdf-domain':
+        specifier: workspace:*
+        version: link:../../core-pdf-domain
       '@monorepo/core-pdf-reader':
         specifier: workspace:*
         version: link:../../core-pdf-reader
@@ -2076,6 +2076,9 @@ importers:
 
   packages/core-pdf-writer:
     dependencies:
+      '@monorepo/core-pdf-domain':
+        specifier: workspace:*
+        version: link:../core-pdf-domain
       pdf-lib:
         specifier: ^1.17.1
         version: 1.17.1
@@ -2083,6 +2086,9 @@ importers:
         specifier: ^5.6.205
         version: 5.6.205
     devDependencies:
+      '@monorepo/core-filesystem':
+        specifier: workspace:*
+        version: link:../core-filesystem
       '@types/node':
         specifier: ^24.10.0
         version: 24.12.2
@@ -4013,18 +4019,6 @@ packages:
   '@ts-morph/common@0.28.1':
     resolution: {integrity: sha512-W74iWf7ILp1ZKNYXY5qbddNaml7e9Sedv5lvU1V8lftlitkc9Pq1A+jlH23ltDgWYeZFFEqGCD1Ies9hqu3O+g==}
 
-  '@turf/clone@7.3.4':
-    resolution: {integrity: sha512-pwQ+RyQw986uu7IulY/18NRAebwZZScb084bvVqVkTrllwLSv4oVBqUxmUMiwtp+PNdiRGRFOvNyZqtRsiD+Jw==}
-
-  '@turf/clusters-dbscan@7.3.4':
-    resolution: {integrity: sha512-RkuXf767Shk0AfY+fh0PASVw8YR4H8zYR7XQrCgWd/bCuh6CXs7rWZ6UTLu/PiA6y6WsIhyAQv4LhNH5kCzpbA==}
-
-  '@turf/helpers@7.3.4':
-    resolution: {integrity: sha512-U/S5qyqgx3WTvg4twaH0WxF3EixoTCfDsmk98g1E3/5e2YKp7JKYZdz0vivsS5/UZLJeZDEElOSFH4pUgp+l7g==}
-
-  '@turf/meta@7.3.4':
-    resolution: {integrity: sha512-tlmw9/Hs1p2n0uoHVm1w3ugw1I6L8jv9YZrcdQa4SH5FX5UY0ATrKeIvfA55FlL//PGuYppJp+eyg/0eb4goqw==}
-
   '@tweenjs/tween.js@23.1.3':
     resolution: {integrity: sha512-vJmvvwFxYuGnF2axRtPYocag6Clbb5YS7kLL+SO/TeVFzHqDIWrNKYtcsPMibjDx9O+bu+psAy9NKfWklassUA==}
 
@@ -4046,20 +4040,11 @@ packages:
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
-  '@types/geojson@7946.0.16':
-    resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
-
-  '@types/geokdbush@1.1.5':
-    resolution: {integrity: sha512-jIsYnXY+RQ/YCyBqeEHxYN9mh+7PqKJUJUp84wLfZ7T2kqyVPNaXwZuvf1A2uQUkrvVqEbsG94ff8jH32AlLvA==}
-
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
-
-  '@types/kdbush@1.0.7':
-    resolution: {integrity: sha512-QM5iB8m/0mnGOjUKshErIZQ0LseyTieRSYc3yaOpmrRM0xbWiOuJUWlduJx+TPNK7/VFMWphUGwx3nus7eT1Wg==}
 
   '@types/mdx@2.0.13':
     resolution: {integrity: sha512-+OWZQfAYyio6YkJb3HLxDrvnx6SWWDbC0zVPfBRzUk0/nqoDyf6dNxQi3eArPe8rJ473nobTMQ/8Zk+LxJ+Yuw==}
@@ -5071,9 +5056,6 @@ packages:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
 
-  geokdbush@2.1.0:
-    resolution: {integrity: sha512-bMc7mu+SeUxtHwRpVvZ36qnZa/x8YAGuaPNeGDxd9bxp/jYuJ5GrUirUPz6UNiT+nn/79IQ4gCNan0y4alEUxw==}
-
   get-intrinsic@1.3.0:
     resolution: {integrity: sha512-9fSjSaos/fRIVIp+xSJlE6lfwhES7LNtKaCBIamHsjr2na1BiABJPo0mOjjz8GJDURarmCPGqaiVg5mfjb98CQ==}
     engines: {node: '>= 0.4'}
@@ -5463,9 +5445,6 @@ packages:
   jsonpointer@5.0.1:
     resolution: {integrity: sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==}
     engines: {node: '>=0.10.0'}
-
-  kdbush@4.0.2:
-    resolution: {integrity: sha512-WbCVYJ27Sz8zi9Q7Q0xHC+05iwkm3Znipc2XTlrnJbsHMYktW4hPhXUE8Ys1engBrvffoSCqbil1JQAa7clRpA==}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -6265,9 +6244,6 @@ packages:
   tinypool@1.1.1:
     resolution: {integrity: sha512-Zba82s87IFq9A9XmjiX5uZA/ARWDrB03OHlq+Vw1fSdt0I+4/Kutwy8BP4Y/y/aORMo61FQ0vIb5j44vSo5Pkg==}
     engines: {node: ^18.0.0 || >=20.0.0}
-
-  tinyqueue@3.0.0:
-    resolution: {integrity: sha512-gRa9gwYU3ECmQYv3lslts5hxuIa90veaEcxDYuu3QGOIAEM2mOZkVHp48ANJuu1CURtRdHKUBY5Lm1tHV+sD4g==}
 
   tinyrainbow@2.0.0:
     resolution: {integrity: sha512-op4nsTR47R6p0vMUUoYl/a+ljLFVtlfaXkLQmqfLR1qHma1h/ysYk4hEXZ880bf2CYgTskvTa/e196Vd5dDQXw==}
@@ -8223,34 +8199,6 @@ snapshots:
       path-browserify: 1.0.1
       tinyglobby: 0.2.16
 
-  '@turf/clone@7.3.4':
-    dependencies:
-      '@turf/helpers': 7.3.4
-      '@types/geojson': 7946.0.16
-      tslib: 2.8.1
-
-  '@turf/clusters-dbscan@7.3.4':
-    dependencies:
-      '@turf/clone': 7.3.4
-      '@turf/helpers': 7.3.4
-      '@turf/meta': 7.3.4
-      '@types/geojson': 7946.0.16
-      '@types/geokdbush': 1.1.5
-      geokdbush: 2.1.0
-      kdbush: 4.0.2
-      tslib: 2.8.1
-
-  '@turf/helpers@7.3.4':
-    dependencies:
-      '@types/geojson': 7946.0.16
-      tslib: 2.8.1
-
-  '@turf/meta@7.3.4':
-    dependencies:
-      '@turf/helpers': 7.3.4
-      '@types/geojson': 7946.0.16
-      tslib: 2.8.1
-
   '@tweenjs/tween.js@23.1.3': {}
 
   '@tybys/wasm-util@0.10.1':
@@ -8271,17 +8219,9 @@ snapshots:
 
   '@types/estree@1.0.8': {}
 
-  '@types/geojson@7946.0.16': {}
-
-  '@types/geokdbush@1.1.5':
-    dependencies:
-      '@types/kdbush': 1.0.7
-
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
-
-  '@types/kdbush@1.0.7': {}
 
   '@types/mdx@2.0.13': {}
 
@@ -9567,10 +9507,6 @@ snapshots:
 
   gensync@1.0.0-beta.2: {}
 
-  geokdbush@2.1.0:
-    dependencies:
-      tinyqueue: 3.0.0
-
   get-intrinsic@1.3.0:
     dependencies:
       call-bind-apply-helpers: 1.0.2
@@ -10008,8 +9944,6 @@ snapshots:
       graceful-fs: 4.2.11
 
   jsonpointer@5.0.1: {}
-
-  kdbush@4.0.2: {}
 
   keyv@4.5.4:
     dependencies:
@@ -10864,8 +10798,6 @@ snapshots:
       picomatch: 4.0.4
 
   tinypool@1.1.1: {}
-
-  tinyqueue@3.0.0: {}
 
   tinyrainbow@2.0.0: {}
 

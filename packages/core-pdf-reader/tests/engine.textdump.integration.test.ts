@@ -3,7 +3,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { CompositePdfEngine } from "../src/engine/CompositePdfEngine.js";
+import { CompositePdfEngine } from "../src/old/engine/CompositePdfEngine.js";
 
 describe("CompositePdfEngine text dump (Kiwi.pdf)", () => {
   it("should extract and dump full text content", async () => {

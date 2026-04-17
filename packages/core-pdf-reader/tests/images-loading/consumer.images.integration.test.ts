@@ -1,5 +1,5 @@
-import { PdfImageExtractor } from "../../src/engine/PdfImageExtractor.js";
-import { CompositePdfEngine, IReaderConfiguration } from "../../src/index.js";
+import { PdfImageExtractor } from "../../src/old/engine/PdfImageExtractor.js";
+import { CompositePdfEngine, IReaderConfiguration } from "../../src/old/index.js";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
  
 import { join } from "node:path";

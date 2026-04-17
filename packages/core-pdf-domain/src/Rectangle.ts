@@ -1,7 +1,8 @@
-import { Guard } from "./Guard.js";
-import { IPoint } from "./IPoint.js";
-import { Point } from "./Point.js";
- 
+import { Guard } from "./core/Guard.js";
+import { IPoint } from "./core/IPoint.js";
+import { ITextFragment } from "./core/ITextFragment.js";
+import { Point } from "./core/Point.js";
+
 export class Rectangle {
     public readonly id: string;
     public readonly position: Point;
@@ -15,99 +16,85 @@ export class Rectangle {
         height: number;
     }) {
         Guard.nonEmpty(params.id, "Rectangle.id");
-        Guard.nonNegative(params.width, "Rectangle.width");
-        Guard.nonNegative(params.height, "Rectangle.height");
+        Guard.finite(params.width, "Rectangle.width");
+        Guard.finite(params.height, "Rectangle.height");
 
         this.id = params.id;
-        this.position = params.position;
-        this.width = params.width;
-        this.height = params.height;
+        this.position = Point.from(params.position);
+        // Normalize negative dimensions to zero
+        this.width = Math.max(0, params.width);
+        this.height = Math.max(0, params.height);
     }
 
     public static create(params: {
         id: string;
-        position: IPoint;
+        position: Point;
         width: number;
         height: number;
     }): Rectangle {
-        return new Rectangle({
-            id: params.id,
-            position: Point.from(params.position),
-            width: Math.max(0, params.width),
-            height: Math.max(0, params.height),
-        });
-    }
-
-    public static fromFragment(source: IFragment, index: number): Rectangle {
-        Guard.finite(index, "Rectangle.fromFragment.index");
-
-        return Rectangle.create({
-            id: `p${source.pageNumber}-${index}`,
-            position: source.boundingBox.position,
-            width: source.boundingBox.width,
-            height: source.boundingBox.height,
-        });
+        return new Rectangle(params);
     }
 
     public static fromMinMax(params: {
         id: string;
-        min: IPoint;
-        max: IPoint;
+        min: Point;
+        max: Point;
     }): Rectangle {
-        const min = Point.from(params.min);
-        const max = Point.from(params.max);
+        Guard.nonEmpty(params.id, "Rectangle.fromMinMax.id");
 
-        const normalizedMin = Point.create(
-            Math.min(min.x, max.x),
-            Math.min(min.y, max.y)
-        );
-
-        const normalizedMax = Point.create(
-            Math.max(min.x, max.x),
-            Math.max(min.y, max.y)
-        );
+        const minX = Math.min(params.min.x, params.max.x);
+        const minY = Math.min(params.min.y, params.max.y);
+        const maxX = Math.max(params.min.x, params.max.x);
+        const maxY = Math.max(params.min.y, params.max.y);
 
         return new Rectangle({
             id: params.id,
-            position: normalizedMin,
-            width: normalizedMax.x - normalizedMin.x,
-            height: normalizedMax.y - normalizedMin.y,
+            position: Point.create(minX, minY),
+            width: maxX - minX,
+            height: maxY - minY
         });
     }
 
-    public static union(id: string, rectangles: readonly Rectangle[]): Rectangle {
+    public static fromTextFragment(source: ITextFragment, index: number): Rectangle {
+        Guard.nonNegativeInteger(index, "Rectangle.fromTextFragment.index");
+
+        return Rectangle.create({
+            id: `p${source.pageNumber}-${index}`,
+            position: Point.from(source.boundingBox.position),
+            width: source.boundingBox.width,
+            height: source.boundingBox.height
+        });
+    }
+
+    public static union(id: string, rectangles: Rectangle[]): Rectangle {
+        Guard.nonEmpty(id, "Rectangle.union.id");
+
         if (rectangles.length === 0) {
-            throw new Error("Rectangle.union requires at least one rectangle.");
+            throw new Error("Rectangle.union: rectangles array cannot be empty");
         }
 
-        let minX = rectangles[0]!.left;
-        let minY = rectangles[0]!.top;
-        let maxX = rectangles[0]!.right;
-        let maxY = rectangles[0]!.bottom;
+        const first = rectangles[0]!;
+        let minX = first.left;
+        let minY = first.top;
+        let maxX = first.right;
+        let maxY = first.bottom;
 
-        for (let index = 1; index < rectangles.length; index += 1) {
-            const current = rectangles[index]!;
-            minX = Math.min(minX, current.left);
-            minY = Math.min(minY, current.top);
-            maxX = Math.max(maxX, current.right);
-            maxY = Math.max(maxY, current.bottom);
+        for (let i = 1; i < rectangles.length; i++) {
+            const rect = rectangles[i]!;
+            minX = Math.min(minX, rect.left);
+            minY = Math.min(minY, rect.top);
+            maxX = Math.max(maxX, rect.right);
+            maxY = Math.max(maxY, rect.bottom);
         }
 
         return Rectangle.fromMinMax({
             id,
             min: Point.create(minX, minY),
-            max: Point.create(maxX, maxY),
+            max: Point.create(maxX, maxY)
         });
     }
 
-    public get min(): Point {
-        return this.position;
-    }
-
-    public get max(): Point {
-        return Point.create(this.right, this.bottom);
-    }
-
+    // Properties
     public get left(): number {
         return this.position.x;
     }
@@ -130,8 +117,8 @@ export class Rectangle {
 
     public get center(): Point {
         return Point.create(
-            this.position.x + (this.width / 2),
-            this.position.y + (this.height / 2)
+            this.position.x + this.width / 2,
+            this.position.y + this.height / 2
         );
     }
 
@@ -139,6 +126,7 @@ export class Rectangle {
         return this.height === 0 ? 0 : this.width / this.height;
     }
 
+    // Methods
     public contains(point: IPoint): boolean {
         return (
             point.x >= this.left &&
@@ -151,9 +139,9 @@ export class Rectangle {
     public intersects(other: Rectangle): boolean {
         return !(
             this.right < other.left ||
-            this.left > other.right ||
+            other.right < this.left ||
             this.bottom < other.top ||
-            this.top > other.bottom
+            other.bottom < this.top
         );
     }
 
@@ -162,16 +150,15 @@ export class Rectangle {
             return null;
         }
 
+        const minX = Math.max(this.left, other.left);
+        const minY = Math.max(this.top, other.top);
+        const maxX = Math.min(this.right, other.right);
+        const maxY = Math.min(this.bottom, other.bottom);
+
         return Rectangle.fromMinMax({
             id,
-            min: Point.create(
-                Math.max(this.left, other.left),
-                Math.max(this.top, other.top)
-            ),
-            max: Point.create(
-                Math.min(this.right, other.right),
-                Math.min(this.bottom, other.bottom)
-            ),
+            min: Point.create(minX, minY),
+            max: Point.create(maxX, maxY)
         });
     }
 
@@ -183,92 +170,58 @@ export class Rectangle {
             id: this.id,
             position: this.position.translate(dx, dy),
             width: this.width,
-            height: this.height,
+            height: this.height
         });
     }
 
     public scale(factor: number): Rectangle {
-        Guard.nonNegative(factor, "Rectangle.scale.factor");
+        Guard.finite(factor, "Rectangle.scale.factor");
 
         return new Rectangle({
             id: this.id,
             position: this.position.scale(factor),
             width: this.width * factor,
-            height: this.height * factor,
+            height: this.height * factor
         });
     }
 
-    public inflate(horizontal: number, vertical: number): Rectangle {
-        Guard.finite(horizontal, "Rectangle.inflate.horizontal");
-        Guard.finite(vertical, "Rectangle.inflate.vertical");
+    public inflate(dx: number, dy: number): Rectangle {
+        Guard.finite(dx, "Rectangle.inflate.dx");
+        Guard.finite(dy, "Rectangle.inflate.dy");
 
         return new Rectangle({
             id: this.id,
-            position: Point.create(this.left - horizontal, this.top - vertical),
-            width: Math.max(0, this.width + (horizontal * 2)),
-            height: Math.max(0, this.height + (vertical * 2)),
+            position: Point.create(this.left - dx, this.top - dy),
+            width: this.width + 2 * dx,
+            height: this.height + 2 * dy
         });
     }
 
-    public withId(id: string): Rectangle {
-        return new Rectangle({
-            id,
-            position: this.position,
-            width: this.width,
-            height: this.height,
-        });
-    }
+    public round(decimals: number): Rectangle {
+        Guard.nonNegativeInteger(decimals, "Rectangle.round.decimals");
 
-    public round(decimals = 0): Rectangle {
-        Guard.nonNegative(decimals, "Rectangle.round.decimals");
-
-        const factor = 10 ** decimals;
-        const roundValue = (value: number): number => Math.round(value * factor) / factor;
+        const factor = Math.pow(10, decimals);
 
         return new Rectangle({
             id: this.id,
             position: Point.create(
-                roundValue(this.position.x),
-                roundValue(this.position.y)
+                Math.round(this.left * factor) / factor,
+                Math.round(this.top * factor) / factor
             ),
-            width: roundValue(this.width),
-            height: roundValue(this.height),
+            width: Math.round(this.width * factor) / factor,
+            height: Math.round(this.height * factor) / factor
         });
     }
 
-    public toBoundingBox(): Readonly<{
-        position: IPoint;
-        width: number;
-        height: number;
-    }> {
+    public toBoundingBox(): {
+        readonly position: Point;
+        readonly width: number;
+        readonly height: number;
+    } {
         return Object.freeze({
-            position: this.position.toJSON(),
+            position: Point.create(this.position.x, this.position.y),
             width: this.width,
-            height: this.height,
-        });
-    }
-
-    public toRecord(): Readonly<{
-        id: string;
-        position: IPoint;
-        width: number;
-        height: number;
-        min: IPoint;
-        max: IPoint;
-        center: IPoint;
-        area: number;
-        aspectRatio: number;
-    }> {
-        return Object.freeze({
-            id: this.id,
-            position: this.position.toJSON(),
-            width: this.width,
-            height: this.height,
-            min: this.min.toJSON(),
-            max: this.max.toJSON(),
-            center: this.center.toJSON(),
-            area: this.area,
-            aspectRatio: this.aspectRatio,
+            height: this.height
         });
     }
 }

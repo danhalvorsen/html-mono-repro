@@ -1,0 +1,42 @@
+{
+  "name": "@monorepo/core-pdf-parser-adapter",
+  "version": "1.0.0",
+  "description": "Adapter module to integrate pdf-lib with pdf.js for PDF parsing and manipulation.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "module",
+    "typescript",
+    "pdf",
+    "parser",
+    "adapter"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-pdf-domain": "workspace:*",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^5.6.205"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}

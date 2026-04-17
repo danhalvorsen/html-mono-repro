@@ -8,7 +8,7 @@ import {
   decodePDFRawStream,
 } from "pdf-lib";
 import { describe, expect, it } from "vitest";
-import type { IPdfImageFragment } from "../../src/IPdfImageFragment.js";
+import type { IPdfImageFragment } from "../../src/old/IPdfImageFragment.js";
 
 interface IExportedMetadata {
   readonly title?: string;

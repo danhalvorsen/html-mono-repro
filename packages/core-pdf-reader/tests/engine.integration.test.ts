@@ -2,7 +2,7 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { CompositePdfEngine } from "../src/engine/CompositePdfEngine.js";
+import { CompositePdfEngine } from "../src/old/engine/CompositePdfEngine.js";
 
 describe("CompositePdfEngine", () => {
   it("should read a real pdf", async () => {

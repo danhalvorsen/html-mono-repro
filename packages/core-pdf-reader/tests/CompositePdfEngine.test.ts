@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { PdfJsTestFixture } from "./fixtures/pdfjs-fixture.js";
-import { CompositePdfEngine } from "../src/engine/CompositePdfEngine.js";
+import { CompositePdfEngine } from "../src/old/engine/CompositePdfEngine.js";
 
 vi.mock("pdfjs-dist/legacy/build/pdf.mjs", () => {
   return {
