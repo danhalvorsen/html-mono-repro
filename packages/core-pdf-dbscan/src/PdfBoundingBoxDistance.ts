@@ -1,5 +1,5 @@
 import type { IBoundingBox } from "@monorepo/core-pdf-common";
-import type { IPdfBoundingBoxDistance } from "./IPdfBoundingBoxDistance.js";
+import type { IPdfBoundingBoxDistance } from "./contracts/IPdfBoundingBoxDistance.js";
 
 export class PdfBoundingBoxDistance implements IPdfBoundingBoxDistance {
   public measure(left: IBoundingBox, right: IBoundingBox): number {

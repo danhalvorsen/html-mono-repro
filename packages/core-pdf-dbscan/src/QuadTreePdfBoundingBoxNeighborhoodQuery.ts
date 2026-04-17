@@ -2,8 +2,8 @@ import { QuadTreeFactory } from "@monorepo/core-design-pattern-quad-tree";
 import type { IQuadTree } from "@monorepo/core-design-pattern-quad-tree-abstract";
 import { QuadTreeBounds } from "@monorepo/core-design-pattern-quad-tree-abstract";
 import type { IBoundingBox } from "@monorepo/core-pdf-common";
-import type { IPdfBoundingBoxDistance } from "./IPdfBoundingBoxDistance.js";
-import type { IPdfBoundingBoxNeighborhoodQuery } from "./IPdfBoundingBoxNeighborhoodQuery.js";
+import type { IPdfBoundingBoxDistance } from "./contracts/IPdfBoundingBoxDistance.js";
+import type { IPdfBoundingBoxNeighborhoodQuery } from "./contracts/IPdfBoundingBoxNeighborhoodQuery.js";
 import { PdfBoundingBoxDistance } from "./PdfBoundingBoxDistance.js";
 import { PdfBoundingBoxQueryRegion } from "./PdfBoundingBoxQueryRegion.js";
 

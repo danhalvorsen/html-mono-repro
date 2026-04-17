@@ -1,5 +1,10 @@
 import { IPosition } from "./IPosition.js";
 
+export interface IInterval {
+    readonly min: number;
+    readonly max: number;
+}
+
 export interface IBoundingBox {
   readonly id: string;
 

@@ -1,6 +1,6 @@
 import type { IBoundingBox } from "@monorepo/core-pdf-common";
-import type { IPdfBoundingBoxClusterer } from "./IPdfBoundingBoxClusterer.js";
-import type { IPdfBoundingBoxNeighborhoodQuery } from "./IPdfBoundingBoxNeighborhoodQuery.js";
+import type { IPdfBoundingBoxClusterer } from "./contracts/IPdfBoundingBoxClusterer.js";
+import type { IPdfBoundingBoxNeighborhoodQuery } from "./contracts/IPdfBoundingBoxNeighborhoodQuery.js";
 import { PdfBoundingBoxCluster } from "./PdfBoundingBoxCluster.js";
 import { PdfBoundingBoxClusteringResult } from "./PdfBoundingBoxClusteringResult.js";
 import { QuadTreePdfBoundingBoxNeighborhoodQuery } from "./QuadTreePdfBoundingBoxNeighborhoodQuery.js";

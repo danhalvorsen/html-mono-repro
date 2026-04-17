@@ -1,5 +1,5 @@
 {
-  "name": "@monorepo/core-pdf-bounding-boxes",
+  "name": "@monorepo/core-pdf-domain",
   "version": "1.0.0",
   "description": "Finding bounding boxes for PDF text fragments.",
   "type": "module",
