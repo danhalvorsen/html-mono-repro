@@ -1,0 +1,40 @@
+{
+  "name": "@monorepo/core-svg-fabric-products",
+  "version": "1.0.0",
+  "description": "Product SVG shape components built on core-svg-fabric.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "svg",
+    "web-components",
+    "core-svg-fabric"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-svg-fabric": "workspace:*",
+    "@monorepo/core-style-system": "workspace:*",
+    "lit": "^3.3.2"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "3.2.4"
+  }
+}
