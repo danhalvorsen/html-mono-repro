@@ -1,8 +1,8 @@
 ﻿import { describe, it, expect } from "vitest";
-import { CanvasObjectFactory } from "../../src/drawing/CanvasObjectFactory.js";
-import { CanvasObjectBuilder } from "../../src/drawing/CanvasObjectBuilder.js";
-import { IncrementingCanvasObjectIdGenerator } from "../../src/drawing/IncrementingCanvasObjectIdGenerator.js";
-import { CanvasObjectKinds } from "../../src/drawing/CanvasObjectKind.js";
+import { IncrementingCanvasObjectIdGenerator } from "../../src/features/drawing-system/canvas-object/value-objects/IncrementingCanvasObjectIdGenerator.js";
+import { CanvasObjectFactory } from "../../src/features/drawing-system/canvas-object/factories/CanvasObjectFactory.js";
+import { CanvasObjectBuilder } from "../../src/features/drawing-system/canvas-object/builders/CanvasObjectBuilder.js";
+import { CanvasObjectKinds } from "../../src/features/drawing-system/canvas-object/value-objects/CanvasObjectKind.js";
 
 describe("CanvasObjectFactory", () => {
     it("should create a valid canvas object when input is valid", () => {

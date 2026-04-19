@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { ReactiveController } from "lit";
 
+@customElement("shape-triangle-lit")
 export class ShapeTriangleLit extends LitElement {
 	static styles = css`:host{display:inline-block}`;
 	@property({ type: Number }) size = 120;

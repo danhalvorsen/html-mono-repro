@@ -1,0 +1,183 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 678 376"
+  width="678"
+  height="376"
+  role="img"
+  aria-label="One rebuilt piano octave with traced white and black key geometry">
+
+  <defs>
+    <style>
+      .white-key {
+        fill: #ffffff;
+        stroke: #222222;
+        stroke-width: 1.5;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .black-key {
+        fill: #111111;
+        stroke: #222222;
+        stroke-width: 1.5;
+        vector-effect: non-scaling-stroke;
+      }
+    </style>
+  </defs>
+
+  <!-- WHITE KEYS -->
+
+  <!-- C -->
+  <polygon
+    id="key-c"
+    class="white-key"
+    points="
+      0,0
+      58,0
+      58,228
+      97,228
+      97,376
+      0,376
+    " />
+
+  <!-- D -->
+  <polygon
+    id="key-d"
+    class="white-key"
+    points="
+      97,376
+      97,228
+      126,228
+      126,0
+      169,0
+      169,228
+      194,228
+      194,376
+    " />
+
+  <!-- E -->
+  <polygon
+    id="key-e"
+    class="white-key"
+    points="
+      194,376
+      194,228
+      236,228
+      236,0
+      291,0
+      291,376
+    " />
+
+  <!-- F -->
+  <polygon
+    id="key-f"
+    class="white-key"
+    points="
+      291,0
+      341,0
+      341,228
+      388,228
+      388,376
+      291,376
+    " />
+
+  <!-- G -->
+  <polygon
+    id="key-g"
+    class="white-key"
+    points="
+      388,376
+      388,228
+      408,228
+      408,0
+      452,0
+      452,228
+      485,228
+      485,376
+    " />
+
+  <!-- A -->
+  <polygon
+    id="key-a"
+    class="white-key"
+    points="
+      485,376
+      485,228
+      518,228
+      518,0
+      562,0
+      562,228
+      582,228
+      582,376
+    " />
+
+  <!-- H -->
+  <polygon
+    id="key-h"
+    class="white-key"
+    points="
+      582,376
+      582,228
+      628,228
+      628,0
+      678,0
+      678,376
+    " />
+
+  <!-- BLACK KEYS -->
+  <!-- traced to align with the white-key cut geometry -->
+
+  <!-- C# -->
+  <polygon
+    id="key-csharp"
+    class="black-key"
+    points="
+      58,0
+      126,0
+      126,228
+      58,228
+    " />
+
+  <!-- D# -->
+  <polygon
+    id="key-dsharp"
+    class="black-key"
+    points="
+      169,0
+      236,0
+      236,228
+      169,228
+    " />
+
+  <!-- F# -->
+  <polygon
+    id="key-fsharp"
+    class="black-key"
+    points="
+      341,0
+      408,0
+      408,228
+      341,228
+    " />
+
+  <!-- G# -->
+  <polygon
+    id="key-gsharp"
+    class="black-key"
+    points="
+      452,0
+      518,0
+      518,228
+      452,228
+    " />
+
+  <!-- A# -->
+  <polygon
+    id="key-asharp"
+    class="black-key"
+    points="
+      562,0
+      628,0
+      628,228
+      562,228
+    " />
+</svg>

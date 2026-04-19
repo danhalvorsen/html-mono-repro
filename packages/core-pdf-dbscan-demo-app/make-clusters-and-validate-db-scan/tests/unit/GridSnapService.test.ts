@@ -1,5 +1,5 @@
 ﻿import { describe, it, expect } from "vitest";
-import { GridSnapService } from "../../src/drawing/GridSnapService.js";
+import { GridSnapService } from "../../src/features/drawing-system/grid/services/GridSnapService.js";
 
 describe("GridSnapService", () => {
     it("should snap to the expected cell when the pointer is inside the stage", () => {
