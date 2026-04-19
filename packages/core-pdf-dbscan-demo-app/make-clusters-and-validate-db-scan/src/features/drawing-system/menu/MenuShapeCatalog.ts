@@ -4,6 +4,7 @@ export interface IMenuShapeItem {
     readonly kind: CanvasObjectKind;
     readonly title: string;
     readonly fill: string;
+    readonly showLabel?: boolean;
 }
 
 export const MenuShapeCatalog: ReadonlyArray<IMenuShapeItem> = [
@@ -26,5 +27,28 @@ export const MenuShapeCatalog: ReadonlyArray<IMenuShapeItem> = [
         kind: CanvasObjectKinds.diamond,
         title: "Diamond",
         fill: "#8b5cf6"
+    },
+    {
+        kind: CanvasObjectKinds.line,
+        title: "Separator",
+        fill: "#e2e8f0"
+    },
+    {
+        kind: CanvasObjectKinds.saveButton,
+        title: "Save",
+        fill: "#22c55e",
+        showLabel: false
+    },
+    {
+        kind: CanvasObjectKinds.loadButton,
+        title: "Load",
+        fill: "#38bdf8",
+        showLabel: false
+    },
+    {
+        kind: CanvasObjectKinds.deleteButton,
+        title: "Delete",
+        fill: "#f43f5e",
+        showLabel: false
     }
 ];

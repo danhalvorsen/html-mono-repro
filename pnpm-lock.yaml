@@ -121,6 +121,25 @@ importers:
         specifier: 3.2.4
         version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
+  Applications/Playing/core-svg-fabric-behaviour:
+    dependencies:
+      '@monorepo/core-style-system':
+        specifier: workspace:*
+        version: link:../../../packages/core-style-system
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: 3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
   Applications/Playing/core-svg-fabric-products:
     dependencies:
       '@monorepo/core-style-system':
@@ -2059,6 +2078,12 @@ importers:
 
   packages/core-pdf-dbscan-demo-app/make-clusters-and-validate-db-scan:
     dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../../core-design-patterns
+      '@monorepo/core-design-patterns-cqrs':
+        specifier: workspace:*
+        version: link:../../core-design-patterns-cqrs
       '@monorepo/core-fsm':
         specifier: workspace:*
         version: link:../../core-fsm

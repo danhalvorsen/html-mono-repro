@@ -2,7 +2,11 @@
     rectangle: "rectangle",
     circle: "circle",
     triangle: "triangle",
-    diamond: "diamond"
+    diamond: "diamond",
+    line: "line",
+    saveButton: "save-button",
+    loadButton: "load-button",
+    deleteButton: "delete-button"
 } as const;
 
 export type CanvasObjectKind =

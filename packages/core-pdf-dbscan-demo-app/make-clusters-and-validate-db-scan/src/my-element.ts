@@ -31,10 +31,15 @@ import "./features/drawing-system/drag-drop/codecs/DragPayloadCodec.js";
 
 import "./features/drawing-system/menu/MenuShapeCatalog.js";
 
+import "./features/drawing-system/save/IRectangleCellsSaveWriter.js";
+import "./features/drawing-system/save/RectangleCellsSaveFile.js";
+import "./features/drawing-system/save/ApiRectangleCellsSaveWriter.js";
+import "./features/drawing-system/save/BrowserRectangleCellsSaveWriter.js";
+import "./features/drawing-system/save/RectangleCellsSaveAction.js";
+
 import "./features/drawing-system/composition/DrawingSystemServices.js";
 import "./features/drawing-system/composition/createDrawingSystemServices.js";
 
 import "./features/drawing-system/canvas/MyMenu.js";
 import "./features/drawing-system/canvas/MyCanvas.js";
 import "./features/drawing-system/canvas/MyDrawingSystem.js";
-

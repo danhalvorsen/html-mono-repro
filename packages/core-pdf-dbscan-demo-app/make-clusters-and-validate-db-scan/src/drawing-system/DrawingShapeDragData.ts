@@ -28,7 +28,11 @@ export class DrawingShapeDragDataSerializer {
                 parsed.shapeType !== "rectangle" &&
                 parsed.shapeType !== "circle" &&
                 parsed.shapeType !== "triangle" &&
-                parsed.shapeType !== "diamond"
+                parsed.shapeType !== "diamond" &&
+                parsed.shapeType !== "line" &&
+                parsed.shapeType !== "save-button" &&
+                parsed.shapeType !== "load-button" &&
+                parsed.shapeType !== "delete-button"
             ) {
                 return null;
             }

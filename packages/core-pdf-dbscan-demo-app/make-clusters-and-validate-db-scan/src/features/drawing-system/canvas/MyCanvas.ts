@@ -59,7 +59,8 @@ export class MyCanvas extends LitElement {
                     <my-menu
                         .cellWidth=${this.cellWidth}
                         .cellHeight=${this.cellHeight}
-                        .dragPayloadCodec=${this.resolveDragPayloadCodec()}>
+                        .dragPayloadCodec=${this.resolveDragPayloadCodec()}
+                        @save-menu-clicked=${this.handleSaveMenuClick}>
                     </my-menu>
                 </aside>
 
@@ -311,9 +312,96 @@ export class MyCanvas extends LitElement {
                     </polygon>
                 `;
 
+            case CanvasObjectKinds.line:
+                return svg`
+                    <line
+                        data-object-id="${value.id}"
+                        x1="${x + 12}"
+                        y1="${y + (this.cellHeight / 2)}"
+                        x2="${x + this.cellWidth - 12}"
+                        y2="${y + (this.cellHeight / 2)}"
+                        stroke="#e2e8f0"
+                        stroke-width="4"
+                        stroke-linecap="round"
+                        style="cursor: grab; pointer-events: auto;">
+                    </line>
+                `;
+
+            case CanvasObjectKinds.saveButton:
+                return this.renderButtonObject(value, x, y, "Save", "#22c55e", this.handleSaveClick);
+
+            case CanvasObjectKinds.loadButton:
+                return this.renderButtonObject(value, x, y, "Load", "#38bdf8", null);
+
+            case CanvasObjectKinds.deleteButton:
+                return this.renderButtonObject(value, x, y, "Delete", "#f43f5e", null);
+
             default:
                 return svg``;
         }
+    }
+
+    private renderButtonObject(
+        value: ICanvasObject,
+        x: number,
+        y: number,
+        label: string,
+        fill: string,
+        clickHandler: ((event: MouseEvent) => void) | null
+    ): TemplateResult {
+        return svg`
+            <g
+                data-object-id="${value.id}"
+                @click=${clickHandler}
+                style="cursor: grab; pointer-events: auto;">
+                <rect
+                    x="${x + 8}"
+                    y="${y + 26}"
+                    width="${this.cellWidth - 16}"
+                    height="${Math.max(36, this.cellHeight - 52)}"
+                    rx="4"
+                    fill="${fill}"
+                    stroke="#1f1f1f"
+                    stroke-width="2">
+                </rect>
+                <text
+                    x="${x + (this.cellWidth / 2)}"
+                    y="${y + (this.cellHeight / 2)}"
+                    fill="#0f172a"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                    font-size="18"
+                    font-weight="700"
+                    style="pointer-events: none; user-select: none;">${label}</text>
+            </g>
+        `;
+    }
+
+    private readonly handleSaveClick = (event: MouseEvent): void => {
+        event.stopPropagation();
+        void this.saveRectangleCells();
+    };
+
+    private readonly handleSaveMenuClick = (event: Event): void => {
+        event.stopPropagation();
+        void this.saveRectangleCells();
+    };
+
+    private async saveRectangleCells(): Promise<void> {
+        if (this.services === null) {
+            return;
+        }
+
+        const saveFile = await this.services.rectangleCellsSaveAction.execute();
+
+        this.dispatchEvent(new CustomEvent("save-requested", {
+            bubbles: true,
+            composed: true,
+            detail: {
+                saveFile
+            }
+        }));
     }
 
     private handleDragOver(event: DragEvent): void {
@@ -465,4 +553,3 @@ export class MyCanvas extends LitElement {
 if (!customElements.get("my-canvas")) {
     customElements.define("my-canvas", MyCanvas);
 }
-
