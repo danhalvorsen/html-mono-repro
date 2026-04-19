@@ -15,10 +15,18 @@ export abstract class ProductShapeElement extends SvgLitElement<SvgRootNode> {
     strokeWidth: { type: Number, attribute: "stroke-width" },
   };
 
-  public token: ProductShapeStyleTokenName = ProductShapeStyleToken.Base;
-  public fill = "";
-  public stroke = "";
-  public strokeWidth?: number;
+  public declare token: ProductShapeStyleTokenName;
+  public declare fill: string;
+  public declare stroke: string;
+  public declare strokeWidth: number | undefined;
+
+  public constructor() {
+    super();
+    this.token = ProductShapeStyleToken.Base;
+    this.fill = "";
+    this.stroke = "";
+    this.strokeWidth = undefined;
+  }
 
   protected get styleInput(): ProductShapeStyleReference {
     return createProductShapeStyleReference({

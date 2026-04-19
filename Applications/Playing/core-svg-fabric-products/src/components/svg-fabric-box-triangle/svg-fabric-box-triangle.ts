@@ -16,12 +16,20 @@ export class SvgFabricBoxTriangleElement extends ProductShapeElement {
     gap: { type: Number },
   };
 
-  public boxWidth = 96;
-  public boxHeight = 72;
-  public triangleSide = 72;
-  public gap = 16;
-  public override token: ProductShapeStyleTokenName =
-    ProductShapeStyleToken.BoxTriangle;
+  public declare boxWidth: number;
+  public declare boxHeight: number;
+  public declare triangleSide: number;
+  public declare gap: number;
+  public declare token: ProductShapeStyleTokenName;
+
+  public constructor() {
+    super();
+    this.boxWidth = 96;
+    this.boxHeight = 72;
+    this.triangleSide = 72;
+    this.gap = 16;
+    this.token = ProductShapeStyleToken.BoxTriangle;
+  }
 
   public override renderNode(): SvgRootNode {
     return createBoxTriangleShapeRootNode({

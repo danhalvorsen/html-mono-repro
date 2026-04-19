@@ -9,8 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "lit": "^3.3.2",
-    "@monorepo/core-style-system": "workspace:*"
+    "@monorepo/core-style-system": "workspace:*",
+    "@monorepo/core-svg-fabric-products": "workspace:*",
+    "lit": "^3.3.2"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

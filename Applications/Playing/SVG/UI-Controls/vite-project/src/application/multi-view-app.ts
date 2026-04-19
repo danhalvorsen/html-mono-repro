@@ -16,6 +16,7 @@ import '../features/view-menu/view-menu.js'
 import '../features/current-view-presenter/current-view-presenter.js'
 import '../features/distrbuted-distribution/distrbuted-distribution.js'
 import '../features/circle-label-distribution/circle-label-distribution.js'
+import '@monorepo/core-svg-fabric-products'
 import { multiViewAppStyles } from './ui-style-module.js'
 import type { MenuItem, ViewSource } from '../domain/view-navigation.js'
 
@@ -36,6 +37,7 @@ export class MultiViewApp extends LitElement {
     { id: 'combined-demo', label: 'Combined Demo' },
     { id: 'circle-label-distribution', label: 'Circle Label Distribution' },
     { id: 'svg-template-host', label: 'SVG Template Host' },
+    { id: 'core-svg-fabric-products', label: 'Core SVG Fabric Products' },
   ])
 
   private readonly viewSources: ReadonlyArray<ViewSource> = Object.freeze([
@@ -62,6 +64,10 @@ export class MultiViewApp extends LitElement {
       path: '/views/circle-label-distribution.html',
     },
     { id: 'svg-template-host', path: '/views/svg-template-host.html' },
+    {
+      id: 'core-svg-fabric-products',
+      path: '/views/core-svg-fabric-products.html',
+    },
   ])
 
   render() {

@@ -13,9 +13,14 @@ export class SvgFabricCircleElement extends ProductShapeElement {
     radius: { type: Number },
   };
 
-  public radius = 48;
-  public override token: ProductShapeStyleTokenName =
-    ProductShapeStyleToken.Circle;
+  public declare radius: number;
+  public declare token: ProductShapeStyleTokenName;
+
+  public constructor() {
+    super();
+    this.radius = 48;
+    this.token = ProductShapeStyleToken.Circle;
+  }
 
   public override renderNode(): SvgRootNode {
     return createCircleShapeRootNode({

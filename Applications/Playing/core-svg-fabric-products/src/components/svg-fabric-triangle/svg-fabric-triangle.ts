@@ -13,9 +13,14 @@ export class SvgFabricTriangleElement extends ProductShapeElement {
     side: { type: Number },
   };
 
-  public side = 96;
-  public override token: ProductShapeStyleTokenName =
-    ProductShapeStyleToken.Triangle;
+  public declare side: number;
+  public declare token: ProductShapeStyleTokenName;
+
+  public constructor() {
+    super();
+    this.side = 96;
+    this.token = ProductShapeStyleToken.Triangle;
+  }
 
   public override renderNode(): SvgRootNode {
     return createTriangleShapeRootNode({

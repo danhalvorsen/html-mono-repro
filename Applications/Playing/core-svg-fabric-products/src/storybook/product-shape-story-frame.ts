@@ -28,8 +28,8 @@ export const productShapeStoryStyleArgTypes = {
 
 export const productShapeStoryStyleArgs: ProductShapeStoryStyleArgs = {
   token: ProductShapeStyleToken.Base,
-  fill: "",
-  stroke: "",
+  fill: "#1d9bf0",
+  stroke: "#0b5a8f",
   strokeWidth: undefined,
 };
 

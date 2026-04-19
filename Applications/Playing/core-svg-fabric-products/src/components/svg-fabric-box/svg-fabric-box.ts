@@ -14,9 +14,16 @@ export class SvgFabricBoxElement extends ProductShapeElement {
     height: { type: Number },
   };
 
-  public width = 96;
-  public height = 72;
-  public override token: ProductShapeStyleTokenName = ProductShapeStyleToken.Box;
+  public declare width: number;
+  public declare height: number;
+  public declare token: ProductShapeStyleTokenName;
+
+  public constructor() {
+    super();
+    this.width = 96;
+    this.height = 72;
+    this.token = ProductShapeStyleToken.Box;
+  }
 
   public override renderNode(): SvgRootNode {
     return createBoxShapeRootNode({

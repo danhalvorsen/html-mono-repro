@@ -37,6 +37,8 @@ const meta = {
   },
   args: {
     ...productShapeStoryStyleArgs,
+    fill: "#1d9bf0",
+    stroke: "#0b5a8f",
     boxWidth: 96,
     boxHeight: 72,
     triangleSide: 72,
