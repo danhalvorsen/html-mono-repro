@@ -31,6 +31,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@monorepo/core-pdf-domain": "workspace:*",
      "@monorepo/core-design-pattern-quad-tree": "workspace:*",
      "@monorepo/core-design-pattern-quad-tree-abstract": "workspace:*"
   },

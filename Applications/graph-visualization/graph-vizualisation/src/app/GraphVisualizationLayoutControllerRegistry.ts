@@ -14,6 +14,10 @@ import {
   DGMLLayoutReactiveController,
   DGMLLayeredLayoutStrategy,
 } from "@monorepo/core-graph-visualization-dgml";
+import {
+  HierarchicalLayoutReactiveController,
+  TidyTreeLayoutStrategy,
+} from "@monorepo/core-graph-visualisation-hierarchical";
 
 import type { LayoutOptionDescriptor, LayoutOptionId } from "./GraphVisualizationLayoutTypes.js";
 
@@ -67,6 +71,22 @@ export class GraphVisualizationLayoutControllerRegistry implements IGraphVisuali
       }),
     );
     const dgmlForceController = new DGMLLayoutReactiveController(host, new DGMLForceDirectedLayoutStrategy());
+    const hierarchicalTidyTreeController = new HierarchicalLayoutReactiveController(
+      host,
+      new TidyTreeLayoutStrategy({
+        levelGap: 112,
+        siblingGap: 52,
+        subtreeGap: 72,
+      }),
+    );
+    const hierarchicalTidyTreeCompactController = new HierarchicalLayoutReactiveController(
+      host,
+      new TidyTreeLayoutStrategy({
+        levelGap: 92,
+        siblingGap: 28,
+        subtreeGap: 36,
+      }),
+    );
 
     const entries: readonly GraphVisualizationLayoutRegistration[] = [
       {
@@ -132,6 +152,20 @@ export class GraphVisualizationLayoutControllerRegistry implements IGraphVisuali
         label: "DGML Force-Directed",
         algorithmName: dgmlForceController.algorithmName,
         sceneFactory: dgmlForceController.sceneFactory,
+        setActive: () => {},
+      },
+      {
+        id: "hierarchical-tidy-tree",
+        label: "Hierarchical Tidy Tree",
+        algorithmName: hierarchicalTidyTreeController.algorithmName,
+        sceneFactory: new GraphSvgSceneFactory(hierarchicalTidyTreeController.constraintEngine),
+        setActive: () => {},
+      },
+      {
+        id: "hierarchical-tidy-tree-compact",
+        label: "Hierarchical Tidy Tree (Compact)",
+        algorithmName: hierarchicalTidyTreeCompactController.algorithmName,
+        sceneFactory: new GraphSvgSceneFactory(hierarchicalTidyTreeCompactController.constraintEngine),
         setActive: () => {},
       },
     ];

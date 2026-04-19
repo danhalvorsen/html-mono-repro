@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { CanvasObjectRegistry } from "@monorepo/core-plot-canvas";
 
-import { CanvasObjectRegistry } from "../src/core/canvas-object-registry.js";
 import { CorePlotFixture } from "./fixtures/core-plot.fixture.js";
 
 describe("CanvasObjectRegistry", () => {

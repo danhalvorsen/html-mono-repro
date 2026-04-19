@@ -1,0 +1,20 @@
+@startuml  Master-Plot
+title Sprint 1: Canvas Foundation
+
+package "core-plot-shapes"  {
+
+}
+
+package "core-plot-canvas-objects"  {
+    interface ICanvasObject {
+        +id: string
+        +render(context): RenderOutput
+        +hitTest(context): boolean
+    }
+    interface ICanvas {
+        +registerObject(obj: ICanvasObject)
+        +render()
+        +performHitTest(point): ICanvasObject[]
+    }                                   
+    class Canvas implements ICanvas {}
+}

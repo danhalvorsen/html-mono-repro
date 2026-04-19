@@ -1,0 +1,237 @@
+@startuml core-plot-shapes
+title core-plot-shapes Class Diagram
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+hide empty members
+
+package "core-plot-shapes.builders" {
+  interface "Builder<T>" as BuilderT {
+    +build(): T
+  }
+
+  interface "Factory<T>" as FactoryT {
+    +create(): T
+  }
+
+  class ArrowBuilder {
+    -tipX: number
+    -tipY: number
+    -leftX: number
+    -leftY: number
+    -rightX: number
+    -rightY: number
+    -style: Readonly<SvgStyle>
+    +withPoints(tipX: number, tipY: number, leftX: number, leftY: number, rightX: number, rightY: number): ArrowBuilder
+    +withStyle(style: Readonly<SvgStyle>): ArrowBuilder
+    +build(): SvgArrow
+  }
+
+  class CircleBuilder {
+    -cx: number
+    -cy: number
+    -r: number
+    -style: Readonly<SvgStyle>
+    +withCenter(cx: number, cy: number): CircleBuilder
+    +withRadius(r: number): CircleBuilder
+    +withStyle(style: Readonly<SvgStyle>): CircleBuilder
+    +build(): SvgCircle
+  }
+
+  class LineBuilder {
+    -x1: number
+    -y1: number
+    -x2: number
+    -y2: number
+    -style: Readonly<SvgStyle>
+    +withPoints(x1: number, y1: number, x2: number, y2: number): LineBuilder
+    +withStyle(style: Readonly<SvgStyle>): LineBuilder
+    +build(): SvgLine
+  }
+
+  class RectangleBuilder {
+    -bounds: Rectangle2
+    -rx: number
+    -style: Readonly<SvgStyle>
+    +withBounds(x: number, y: number, width: number, height: number): RectangleBuilder
+    +withRectangle(bounds: Rectangle2): RectangleBuilder
+    +withCornerRadius(rx: number): RectangleBuilder
+    +withStyle(style: Readonly<SvgStyle>): RectangleBuilder
+    +build(): SvgRectangle
+  }
+}
+
+package "core-plot-shapes.svg" {
+  class SvgArrow {
+    +tipX: number
+    +tipY: number
+    +leftX: number
+    +leftY: number
+    +rightX: number
+    +rightY: number
+    +style: Readonly<SvgStyle>
+    +render(): TemplateResult
+  }
+
+  class SvgCircle {
+    +cx: number
+    +cy: number
+    +r: number
+    +style: Readonly<SvgStyle>
+    +render(): TemplateResult
+  }
+
+  class SvgCanvasObject {
+    +border: SvgRectangle
+    +corners: "round" | "straight"
+    +cornerRadius: number
+    +render(): TemplateResult
+  }
+
+  class SvgLabel {
+    +position: Point2
+    +text: string
+    +anchor: "start" | "middle" | "end"
+    +fill: string
+    +fontFamily: string
+    +fontSize: number
+    +visible: boolean
+    +render(): TemplateResult
+  }
+
+  class SvgCoordinatePoint {
+    +circle: SvgCircle
+    +label: SvgLabel
+    +labelVisible: boolean
+    +render(): TemplateResult
+  }
+
+  class SvgCurve {
+    +pathData: string
+    +style: Readonly<SvgStyle>
+    +lineCap: "butt" | "round" | "square"
+    +lineJoin: "miter" | "round" | "bevel"
+    +render(): TemplateResult
+  }
+
+  class SvgLine {
+    +x1: number
+    +y1: number
+    +x2: number
+    +y2: number
+    +style: Readonly<SvgStyle>
+    +render(): TemplateResult
+  }
+
+  class SvgRectangle {
+    +bounds: Rectangle2
+    +rx: number
+    +style: Readonly<SvgStyle>
+    +render(): TemplateResult
+  }
+
+  class TickSvg {
+    +line: SvgLine
+    +labelPosition: Point2
+    +label: string
+    +anchor: "start" | "middle" | "end"
+    +fill: string
+    +fontFamily: string
+    +render(): TemplateResult
+  }
+
+  interface SvgStyle {
+    +token?: string
+    +fill?: string
+    +stroke?: string
+    +strokeWidth?: number
+    +strokeDasharray?: string
+    +opacity?: number
+    +state?: StyleState
+  }
+
+  enum StyleState {
+    normal
+    highlighted
+  }
+}
+
+package "core-plot-shapes.factories" {
+  interface AxisVisual {
+    +line: SvgLine
+    +arrows: readonly SvgArrow[]
+    +ticks: readonly TickSvg[]
+  }
+
+  interface AxisVisualInput {
+    +orientation: "horizontal" | "vertical"
+    +startX: number
+    +startY: number
+    +endX: number
+    +endY: number
+    +zeroX: number
+    +zeroY: number
+    +tickValues: readonly number[]
+    +rangeMin: number
+    +rangeMax: number
+    +highlighted: boolean
+  }
+
+  class AxisVisualFactory {
+    +create(input: AxisVisualInput): AxisVisual
+  }
+}
+
+class Rectangle2 <<external>>
+class Point2 <<external>>
+class TemplateResult <<external>>
+class CORE_PLOT_THEME <<external>>
+
+ArrowBuilder ..|> BuilderT
+CircleBuilder ..|> BuilderT
+LineBuilder ..|> BuilderT
+RectangleBuilder ..|> BuilderT
+
+ArrowBuilder --> SvgArrow : builds
+CircleBuilder --> SvgCircle : builds
+LineBuilder --> SvgLine : builds
+RectangleBuilder --> SvgRectangle : builds
+
+SvgArrow --> SvgStyle
+SvgCanvasObject *-- SvgRectangle
+SvgCircle --> SvgStyle
+SvgCoordinatePoint *-- SvgCircle
+SvgCoordinatePoint *-- SvgLabel
+SvgCurve --> SvgStyle
+SvgLabel --> Point2
+SvgLine --> SvgStyle
+SvgRectangle --> SvgStyle
+SvgStyle --> StyleState
+SvgRectangle --> Rectangle2
+RectangleBuilder --> Rectangle2
+TickSvg --> Point2
+
+TickSvg *-- SvgLine
+TickSvg --> TemplateResult
+SvgArrow --> TemplateResult
+SvgCircle --> TemplateResult
+SvgLine --> TemplateResult
+SvgRectangle --> TemplateResult
+
+AxisVisualFactory ..> AxisVisualInput : consumes
+AxisVisualFactory ..> AxisVisual : returns
+AxisVisual --> SvgLine
+AxisVisual --> SvgArrow
+AxisVisual --> TickSvg
+
+AxisVisualFactory ..> ArrowBuilder
+AxisVisualFactory ..> LineBuilder
+AxisVisualFactory ..> TickSvg
+AxisVisualFactory ..> CORE_PLOT_THEME : styles
+
+note right of AxisVisualFactory
+  Current source depends on CORE_PLOT_THEME
+  from core-plot for visual styling.
+end note
+
+@enduml

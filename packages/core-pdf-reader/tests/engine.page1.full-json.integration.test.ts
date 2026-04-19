@@ -3,8 +3,8 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { CompositePdfEngine } from "../src/engine/CompositePdfEngine.js";
-import type { IPdfTextFragment } from "../src/IPdfTextFragment.js";
+import { CompositePdfEngine } from "../src/old/engine/CompositePdfEngine.js";
+import type { IPdfTextFragment } from "../src/old/IPdfTextFragment.js";
 
 describe("CompositePdfEngine (Kiwi.pdf) - page 1 full JSON export", () => {
   it("should export ALL page 1 fragments as raw JSON (no filtering)", async () => {
@@ -23,8 +23,10 @@ describe("CompositePdfEngine (Kiwi.pdf) - page 1 full JSON export", () => {
 
     // deterministic ordering (important for diff/debug)
     const sorted = [...page1].sort((a, b) => {
-      if (b.y !== a.y) return b.y - a.y; // top → bottom
-      return a.x - b.x;                  // left → right
+      const ay = a.boundingBox.position.y;
+      const by = b.boundingBox.position.y;
+      if (by !== ay) return by - ay; // top → bottom
+      return a.boundingBox.position.x - b.boundingBox.position.x; // left → right
     });
 
     await writeFile(

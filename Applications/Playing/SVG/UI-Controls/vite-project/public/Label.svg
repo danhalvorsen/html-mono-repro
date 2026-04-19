@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <bx:grid x="0" y="0" width="10.77" height="8.701"/>
+  </defs>
+  <g transform="matrix(1, 0, 0, 1, 5.318497, 204.461024)">
+    <rect x="131.814" y="15.697" width="225.735" height="59.684" rx="15" ry="15" style="fill: rgb(29, 155, 240); stroke: rgb(11, 90, 143); stroke-width: 1.5; stroke-miterlimit: 1;"/>
+    <text style="white-space: pre; fill: rgb(248, 250, 252); font-family: Arial, sans-serif; font-size: 28px;" x="210.429" y="55.289">Label</text>
+  </g>
+</svg>

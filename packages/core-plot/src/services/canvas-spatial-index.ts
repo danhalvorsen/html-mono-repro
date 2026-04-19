@@ -3,9 +3,7 @@ import {
   QuadTreeBounds,
   QuadTreeRectangleQueryRegion,
 } from "@monorepo/core-design-pattern-quad-tree-abstract";
-
-import type { CanvasObject, CanvasObjectBounds } from "../core/canvas-object.js";
-import type { RenderContext } from "../core/render-context.js";
+import { CanvasObject, CanvasObjectBounds, RenderContext } from "@monorepo/core-plot-canvas";
 
 export interface CanvasSpatialIndex {
   queryPoint(

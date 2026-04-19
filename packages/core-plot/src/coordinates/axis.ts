@@ -1,11 +1,11 @@
 import { svg, type TemplateResult } from "lit";
-
 import {
   CanvasObject,
   type CanvasObjectBounds,
   type HitTestContext,
-} from "../core/canvas-object.js";
-import type { RenderContext } from "../core/render-context.js";
+  type RenderContext,
+} from "@monorepo/core-plot-canvas";
+
 import { AxisVisualFactory } from "../factories/axis-visual-factory.js";
 import { AxisRange } from "./axis-range.js";
 
@@ -76,7 +76,7 @@ export class Axis extends CanvasObject {
     };
   }
 
-  public override render(_context: RenderContext): TemplateResult {
+  public override render(context: RenderContext): TemplateResult {
     if (this.layout === null) {
       return svg``;
     }
@@ -92,7 +92,7 @@ export class Axis extends CanvasObject {
       tickValues: this.layout.tickValues,
       rangeMin: this.range.min,
       rangeMax: this.range.max,
-      highlighted: _context.selectedObjectId === this.id,
+      highlighted: context.selectedObjectId === this.id,
     });
 
     return svg`

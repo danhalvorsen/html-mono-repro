@@ -1,202 +1,371 @@
-# `@monorepo/core-pdf-reader`
+Below is a **developer-grade README** for `core-pdf-dbscan` that is explicitly aligned with `@monorepo/core-pdf-reader` as it exists today (binary source → engine → fragments).
 
-PDF reading and spatial text extraction for the monorepo.  
-Built on [`pdfjs-dist`](https://mozilla.github.io/pdf.js/) with a quad-tree spatial index for fragment clustering.
+It assumes **DBSCAN operates on `IPdfTextFragment`** coming from `CompositePdfEngine`.
+
+---
+
+````md
+# `@monorepo/core-pdf-dbscan`
+
+Spatial clustering for PDF text fragments.
+
+This module builds on `@monorepo/core-pdf-reader` and provides:
+
+- DBSCAN-based clustering of positioned text fragments
+- bounding box generation per cluster
+- grouping of PDF content into logical regions (lines, blocks, tables, etc.)
 
 ---
 
 ## Responsibilities
 
-- Load a PDF from a binary source (`Uint8Array`)
-- Extract raw text fragments with **spatial coordinates** (x, y, width, height)
-- Regroup fragments into **reading-order lines** per page
-- Provide structured extraction via a named schema request
-- Expose a quad-tree spatial index over fragments for proximity queries
+- cluster `IPdfTextFragment` using DBSCAN
+- group spatially related text into clusters
+- compute cluster bounding boxes
+- support deterministic clustering for downstream processing
+
+---
 
 ## Non-responsibilities
 
-- No rendering or canvas output
-- No OCR — text must already be encoded in the PDF
-- No AI inference — `extractStructured` is a pass-through contract for higher layers
-- No file system I/O — callers supply a `IPdfBinarySource`
+- no PDF parsing (delegated to `core-pdf-reader`)
+- no rendering
+- no OCR
+- no AI inference
+- no domain-specific interpretation (tables, invoices, etc.)
 
 ---
 
-## Installation
-
-This is a private monorepo package. Add it as a workspace dependency:
+## Dependency
 
 ```json
-"dependencies": {
-  "@monorepo/core-pdf-reader": "workspace:*"
+{
+  "dependencies": {
+    "@monorepo/core-pdf-reader": "workspace:*"
+  }
+}
+````
+
+---
+
+## Core concept
+
+```
+PDF → core-pdf-reader → IPdfTextFragment[]
+                                 │
+                                 ▼
+                         core-pdf-dbscan
+                                 │
+                                 ▼
+                        clusters + bounding boxes
+```
+
+---
+
+## Data model (conceptual)
+
+### Input
+
+```ts
+interface IPdfTextFragment {
+  pageNumber: number;
+  text: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+```
+
+### Output
+
+```ts
+interface Cluster {
+  id: string;
+  fragments: readonly IPdfTextFragment[];
+  boundingBox: {
+    minX: number;
+    minY: number;
+    maxX: number;
+    maxY: number;
+    width: number;
+    height: number;
+  };
 }
 ```
 
 ---
 
-## Public API
-
-### Contracts
-
-| Interface | Description |
-|---|---|
-| `IPdfBinarySource` | Source of a raw PDF `Uint8Array`. Has a `name` and a `read()` method. |
-| `IPdfReader` | High-level reader. `read(source)` → `readonly IPdfPageText[]` |
-| `IPdfPageText` | Page number + reconstructed plain text for that page |
-| `IPdfTextFragment` | Single positioned text span: `pageNumber`, `text`, `x`, `y`, `width`, `height` |
-| `IPdfMetadata` | Optional document properties: `title`, `author`, `subject`, `creator`, `producer`, `creationDateUtc`, `modificationDateUtc` |
-| `ICompositePdfEngine` | Low-level engine. Provides metadata, page count, pages, fragments, and structured extraction. |
-| `IPdfStructuredExtractionRequest` | Named schema + optional prompt for structured extraction. |
-| `IPdfStructuredExtractionResult<TValue>` | Schema name + typed extracted value. |
-
-### Concrete classes
-
-| Class | Description |
-|---|---|
-| `CompositePdfEngine` | `pdfjs-dist`-backed implementation of `ICompositePdfEngine`. Builds an internal quad-tree spatial index over fragments. |
-| `DefaultPdfReader` | Wraps `ICompositePdfEngine` to implement `IPdfReader`. |
-| `InMemoryPdfBinarySource` | `IPdfBinarySource` backed by an in-memory `Uint8Array`. |
-
----
-
-## Usage
-
-### Read plain text per page
+## 1. End-to-end usage (recommended)
 
 ```ts
-import { readFileSync } from 'node:fs';
+import { readFileSync } from "node:fs";
 import {
   CompositePdfEngine,
-  DefaultPdfReader,
-  InMemoryPdfBinarySource,
-} from '@monorepo/core-pdf-reader';
+  InMemoryPdfBinarySource
+} from "@monorepo/core-pdf-reader";
 
-const binary = readFileSync('document.pdf');
-const source = new InMemoryPdfBinarySource('document.pdf', new Uint8Array(binary));
+import {
+  DbscanClusterer
+} from "@monorepo/core-pdf-dbscan";
 
-const engine = new CompositePdfEngine();
-const reader = new DefaultPdfReader(engine);
+async function main(): Promise<void> {
+  // 1. Load PDF
+  const pdfBytes = new Uint8Array(readFileSync("document.pdf"));
+  const source = new InMemoryPdfBinarySource("document.pdf", pdfBytes);
 
-const pages = await reader.read(source);
+  // 2. Extract fragments
+  const engine = new CompositePdfEngine();
+  const fragments = await engine.readTextFragments(source);
 
-for (const page of pages) {
-  console.log(`--- Page ${page.pageNumber} ---`);
-  console.log(page.text);
+  // 3. Cluster fragments
+  const clusterer = new DbscanClusterer({
+    eps: 4,
+    minPts: 2
+  });
+
+  const clusters = clusterer.cluster(fragments);
+
+  // 4. Inspect clusters
+  for (const cluster of clusters) {
+    console.log("Cluster:", cluster.id);
+    console.log("Bounding box:", cluster.boundingBox);
+
+    for (const f of cluster.fragments) {
+      console.log(" ", f.text);
+    }
+  }
 }
+
+void main();
 ```
 
-### Read raw spatial fragments
+---
 
-```ts
-const binary = new Uint8Array(readFileSync('document.pdf'));
-const engine = new CompositePdfEngine();
+## 2. Parameters
 
-const fragments = await engine.readTextFragments(binary);
+### `eps` (epsilon)
 
-for (const f of fragments) {
-  console.log(`[p${f.pageNumber}] "${f.text}" @ (${f.x}, ${f.y}) ${f.width}×${f.height}`);
-}
+Maximum distance between two fragments to be considered neighbors.
+
+* small → tighter clusters
+* large → merged clusters
+
+Typical range for PDF coordinates:
+
+```
+eps: 2 – 10
 ```
 
-### Read document metadata
+---
 
-```ts
-const metadata = await engine.readMetadata(binary);
-console.log(metadata.title, metadata.author, metadata.creationDateUtc);
+### `minPts`
+
+Minimum number of points to form a cluster.
+
+* low → more clusters, more noise sensitivity
+* high → fewer clusters, more strict grouping
+
+Typical:
+
+```
+minPts: 2 – 5
 ```
 
-### Structured extraction
+---
+
+## 3. Distance model
+
+Clustering operates on spatial proximity.
+
+Typical implementation:
+
+```text
+distance = euclidean(center(fragmentA), center(fragmentB))
+```
+
+Alternative strategies (future extension):
+
+* vertical-only distance (line grouping)
+* Manhattan distance
+* weighted axis distance (x vs y bias)
+
+---
+
+## 4. Cluster bounding box
+
+Each cluster computes a bounding box:
+
+```text
+minX = min(fragment.x)
+minY = min(fragment.y)
+maxX = max(fragment.x + fragment.width)
+maxY = max(fragment.y + fragment.height)
+```
+
+Used for:
+
+* region extraction
+* layout analysis
+* visualization overlays
+
+---
+
+## 5. Noise handling
+
+DBSCAN produces:
+
+* clusters
+* noise points (unclustered fragments)
+
+Depending on implementation, noise may be:
+
+* excluded
+* returned separately
+* included as single-point clusters
+
+Define behavior explicitly in your implementation.
+
+---
+
+## 6. Typical use cases
+
+### Line reconstruction (alternative to reader)
+
+* cluster horizontally aligned fragments
+* sort by x
+* join text
+
+---
+
+### Block detection
+
+* cluster paragraphs
+* group invoice sections
+* detect headers/footers
+
+---
+
+### Table detection (primitive)
+
+* cluster by rows (small `eps.y`)
+* cluster by columns (small `eps.x`)
+
+---
+
+### Layout segmentation
+
+* detect regions of interest
+* isolate product cards
+* isolate pricing blocks
+
+---
+
+## 7. Integration pattern
+
+```
+core-pdf-reader
+   └── extracts fragments
+
+core-pdf-dbscan
+   └── groups fragments
+
+application layer
+   └── interprets clusters
+```
+
+This separation is intentional:
+
+* reader = extraction
+* dbscan = grouping
+* app = meaning
+
+---
+
+## 8. Determinism
+
+Clustering must be:
+
+* deterministic
+* stable for identical inputs
+* independent of iteration order
+
+Ensure:
+
+* consistent distance calculation
+* deterministic iteration
+* stable cluster IDs (optional but recommended)
+
+---
+
+## 9. Example: cluster → text blocks
 
 ```ts
-const result = await engine.extractStructured<{ prices: number[] }>(binary, {
-  schemaName: 'price-clusters',
-  prompt: 'Extract all price values from the document.',
+const blocks = clusters.map(cluster => {
+  const sorted = [...cluster.fragments]
+    .sort((a, b) => a.y - b.y || a.x - b.x);
+
+  const text = sorted.map(f => f.text).join(" ");
+
+  return {
+    id: cluster.id,
+    text,
+    boundingBox: cluster.boundingBox
+  };
 });
-
-console.log(result.schemaName); // 'price-clusters'
-console.log(result.value);      // { prices: [...] }
 ```
 
 ---
 
-## Architecture
-
-```
-IPdfBinarySource
-      │
-      ▼
-ICompositePdfEngine  ◄──────────────────────────────────────────┐
-      │                                                          │
-      ├── readMetadata()      → IPdfMetadata                    │
-      ├── readPageCount()     → number                          │
-      ├── readPages()         → IPdfPageText[]                  │   CompositePdfEngine
-      ├── readTextFragments() → IPdfTextFragment[]              │   (pdfjs-dist + QuadTree)
-      └── extractStructured() → IPdfStructuredExtractionResult  │
-                                                                 │
-IPdfReader                                                       │
-  └── DefaultPdfReader ──► ICompositePdfEngine ─────────────────┘
-```
-
-### Spatial indexing
-
-`CompositePdfEngine` builds a `QuadTree<IPdfTextFragment>` (from `@monorepo/core-design-pattern-quad-tree`) over all fragments for a given `Uint8Array`.
-
-- `maxDepth: 6`
-- `maxItemsPerNode: 8`
-- Fragment bounds = `(x, y, width, height)` as reported by `pdfjs-dist`
-
-This index powers proximity queries used for line grouping and structured cluster extraction.
-
-### Line reconstruction
-
-`readPages()` calls `readTextFragments()` internally, then groups fragments into reading-order lines using a Y-coordinate tolerance heuristic. Lines are joined with `\n` to produce `IPdfPageText.text`.
-
----
-
-## Module structure
+## 10. Module structure (expected)
 
 ```
 src/
-  index.ts                          ← public surface
-  IPdfBinarySource.ts
-  IPdfMetadata.ts
-  IPdfPageText.ts
-  IPdfReader.ts
-  IPdfStructuredExtractionResult.ts
-  IPdfTextFragment.ts
-  engine/
-    ICompositePdfEngine.ts
-    CompositePdfEngine.ts           ← pdfjs-dist + quad-tree
-  services/
-    IPdfStructuredExtractionRequest.ts
-    DefaultPdfReader.ts
-  sources/
-    InMemoryPdfBinarySource.ts
-tests/
-  reader.test.ts
-  grouping.test.ts
-  engine.integration.test.ts
-  engine.clustering.integration.test.ts
-  engine.price-clusters.integration.test.ts
-  engine.textdump.integration.test.ts
-  Kiwi.pdf                          ← fixture PDF
+  DbscanClusterer.ts
+  IDbscanOptions.ts
+  ICluster.ts
+  BoundingBox.ts
+  distance/
+    EuclideanDistance.ts
+  index.ts
 ```
 
 ---
 
-## Dependencies
+## 11. Summary
 
-| Package | Role |
-|---|---|
-| `pdfjs-dist` | PDF parsing and text extraction |
-| `@monorepo/core-design-pattern-quad-tree` | Spatial index for fragment clustering |
+`core-pdf-dbscan` is a **pure spatial grouping module**.
+
+It depends on:
+
+* `core-pdf-reader` → extraction
+
+It provides:
+
+* clustering
+* bounding boxes
+* grouping primitives
+
+It does not:
+
+* interpret meaning
+* perform OCR
+* render output
 
 ---
 
-## Scripts
+## Canonical flow
 
-```bash
-pnpm build      # tsc compile → dist/
-pnpm test       # vitest run
-pnpm clean      # rimraf dist
+```ts
+PDF → fragments → clusters → application logic
+```
+
+```
+
+---
+
+If you want next step, I can:
+
+- align this README exactly to your **actual code signatures**
+- or refactor your DBSCAN module into **strategy-based clustering (open/closed)** (distance strategy, cluster policy, bounding box strategy)
 ```

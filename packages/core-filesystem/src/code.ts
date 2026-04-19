@@ -3,29 +3,19 @@
 import fs from "node:fs";
 import nodePath from "node:path";
 import type { ILogger } from "@monorepo/core-logger-abstract";
-import { LoggerProvider, nullLogger } from "@monorepo/core-logger-abstract"
+import { FileSystemEvent } from "./FileSystemEvent.js";
+import { FileSystemEventType } from "./FileSystemEventType.js";
+
+export { FileSystemEvent } from "./FileSystemEvent.js";
+export { FileSystemEventType } from "./FileSystemEventType.js";
+
+const nullLogger: ILogger = {
+  info() {},
+  warn() {},
+  error() {},
+  debug() {}
+};
  
-// ============================================================================
-// Event Model
-// ============================================================================
-
-export enum FileSystemEventType {
-  FileCreated = "file.created",
-  FileModified = "file.modified",
-  FileDeleted = "file.deleted",
-  DirectoryCreated = "dir.created",
-  DirectoryDeleted = "dir.deleted"
-}
-
-export class FileSystemEvent {
-  public constructor(
-    public readonly type: FileSystemEventType,
-    public readonly path: Path,
-    public readonly relative: string,
-    public readonly timestampUtcMs: number
-  ) {}
-}
-
 // ============================================================================
 // Contracts
 // ============================================================================
@@ -698,7 +688,7 @@ export class CoreFileSystemModule {
   public readonly diagnostics: IDiagnostics;
 
   public constructor(
-    logger: ILogger = LoggerProvider.create("core-filesystem"),
+    logger: ILogger = nullLogger,
     fileSystem: IFileSystem = new NodeFileSystem(),
     clock: IClock = new SystemClock()
   ) {

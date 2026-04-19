@@ -1,6 +1,6 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 
-import type { CanvasObject } from "../core/canvas-object.js";
+import type { CanvasObject } from "@monorepo/core-plot-canvas";
 import type { CanvasHitTestService } from "../services/canvas-hit-test-service.js";
 import type { MouseController } from "./mouse-controller.js";
 

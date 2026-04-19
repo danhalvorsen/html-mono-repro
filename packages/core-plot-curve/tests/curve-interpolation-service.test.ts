@@ -21,11 +21,13 @@ describe("CurveInterpolationService", () => {
 
     expect(first).toHaveLength(second.length);
     expect(first[0]?.x).toBeCloseTo(second[0]?.x ?? 0, 6);
+    expect(first[0]?.y).toBeCloseTo(second[0]?.y ?? 0, 6);
     expect(first[Math.floor(first.length / 2)]?.y).toBeCloseTo(
       second[Math.floor(second.length / 2)]?.y ?? 0,
       6,
     );
     expect(first.at(-1)?.x).toBeCloseTo(second.at(-1)?.x ?? 0, 6);
+    expect(first.at(-1)?.y).toBeCloseTo(second.at(-1)?.y ?? 0, 6);
   });
 
   it("returns no samples for insufficient input", () => {
@@ -40,5 +42,25 @@ describe("CurveInterpolationService", () => {
     );
 
     expect(service.sample(curve)).toHaveLength(0);
+  });
+
+  it("includes endpoints in the sampled curve", () => {
+    const service = new CurveInterpolationService();
+    const curve = new InterpolatedCurve(
+      [
+        { x: -7, y: -3 },
+        { x: -2, y: 5 },
+        { x: 3, y: 2 },
+        { x: 8, y: 7 },
+      ],
+      "g",
+    );
+
+    const samples = service.sample(curve);
+
+    expect(samples[0]?.x).toBeCloseTo(-7, 6);
+    expect(samples[0]?.y).toBeCloseTo(-3, 6);
+    expect(samples.at(-1)?.x).toBeCloseTo(8, 6);
+    expect(samples.at(-1)?.y).toBeCloseTo(7, 6);
   });
 });

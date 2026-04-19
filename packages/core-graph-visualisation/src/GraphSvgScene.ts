@@ -185,7 +185,7 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
               width: constraints.box.width,
               height: constraints.box.height,
             },
-            circle,
+            ...(circle === undefined ? {} : { circle }),
             connectionPoints: this.createConnectionPoints(
               shapeNode.payload.anchor.id,
               center,
@@ -353,9 +353,12 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
   ): GraphSvgNodeVisualDefinition {
     const payloadVisual = this.readNodeVisualDefinition(payload);
 
+    const representation = payloadVisual.representation ?? options.nodeRepresentation ?? "box";
+    const circleConnectors = payloadVisual.circleConnectors ?? options.circleConnectors;
+
     return {
-      representation: payloadVisual.representation ?? options.nodeRepresentation ?? "box",
-      circleConnectors: payloadVisual.circleConnectors ?? options.circleConnectors,
+      representation,
+      ...(circleConnectors === undefined ? {} : { circleConnectors }),
     };
   }
 
@@ -370,14 +373,15 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
     }
 
     const record = visual as Record<string, unknown>;
-    const representation = record.representation === "circle" || record.representation === "box"
+    const representation = record.representation === "circle"
+      || record.representation === "box"
       ? record.representation
       : undefined;
     const circleConnectors = this.readCircleConnectorDefinition(record.circleConnectors);
 
     return {
-      representation,
-      circleConnectors,
+      ...(representation === undefined ? {} : { representation }),
+      ...(circleConnectors === undefined ? {} : { circleConnectors }),
     };
   }
 
@@ -412,9 +416,9 @@ export class GraphSvgSceneFactory implements IGraphSvgSceneFactory {
       : undefined;
 
     return {
-      mode,
-      angles,
-      count,
+      ...(mode === undefined ? {} : { mode }),
+      ...(angles === undefined ? {} : { angles }),
+      ...(count === undefined ? {} : { count }),
     };
   }
 

@@ -1,0 +1,55 @@
+@startuml core-plot-shapes-component
+title core-plot-shapes Component Diagram
+
+skinparam componentStyle rectangle
+
+component "core-plot" as CorePlot
+component "core-plot-canvas" as Canvas
+component "core-plot-shapes" as Shapes
+component "core-plot-curve" as Curve
+component "core-design-system /\ncore-style-system" as DesignSystem
+component "lit" as Lit
+component "core-math" as Math
+
+interface "Canvas Contracts" as ICanvas
+interface "SVG Shape API" as IShapes
+interface "Curve Domain API" as ICurve
+interface "Theme / Style Tokens" as ITheme
+interface "Reactive Controller API" as ILit
+interface "Geometry API" as IMath
+
+Canvas - ICanvas
+Shapes - IShapes
+Curve - ICurve
+DesignSystem - ITheme
+Lit - ILit
+Math - IMath
+
+CorePlot ..> ICanvas
+CorePlot ..> IShapes
+CorePlot ..> ICurve
+CorePlot ..> ITheme
+CorePlot ..> ILit
+CorePlot ..> IMath
+
+Canvas ..> IShapes
+Canvas ..> ITheme
+Canvas ..> ILit
+Canvas ..> IMath
+
+Shapes ..> ITheme
+Shapes ..> ILit
+Shapes ..> IMath
+
+note right of Shapes
+  core-plot-shapes provides reusable
+  SVG primitives and builders.
+end note
+
+note right of Canvas
+  core-plot-canvas should depend on
+  canvas contracts and shared styling,
+  not plot-specific coordinates.
+end note
+
+@enduml

@@ -1,0 +1,14 @@
+@startuml core-plot-shapes
+title core-plot-shape-composistion
+
+package "core-plot-shapes"  {
+    
+}
+
+package "core-plot"  {
+    
+}
+package "core-plot-canvas"  {
+
+} 
+

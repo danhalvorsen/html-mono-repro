@@ -1,0 +1,53 @@
+<h2>Property Panel Feature</h2>
+<div class="demo-grid">
+  <div class="demo-card">
+    <h3>Triangle + Properties</h3>
+    <div class="stack">
+      <triangle-shape side="160" fill="#1d9bf0" stroke="#0b5a8f" stroke-width="2"></triangle-shape>
+      <property-panel
+        title="Shape Properties"
+        shape-name="triangle-shape"
+        entries-json='[
+          {"name":"side","value":160,"type":"number","description":"Length of each triangle side"},
+          {"name":"fill","value":"#1d9bf0","type":"color","description":"Polygon fill color"},
+          {"name":"stroke","value":"#0b5a8f","type":"color","description":"Outline color"},
+          {"name":"stroke-width","value":2,"type":"length","description":"Outline width in px"}
+        ]'
+      ></property-panel>
+    </div>
+  </div>
+
+  <div class="demo-card">
+    <h3>Knob + Properties</h3>
+    <div class="stack">
+      <knob-shape value="0.72" min-angle="-140" max-angle="140"></knob-shape>
+      <property-panel
+        title="Shape Properties"
+        shape-name="knob-shape"
+        entries-json='[
+          {"name":"size","value":140,"type":"length","description":"Knob size in px"},
+          {"name":"value","value":0.72,"type":"number","description":"Normalized position 0..1"},
+          {"name":"min-angle","value":-140,"type":"angle","description":"Minimum sweep angle"},
+          {"name":"max-angle","value":140,"type":"angle","description":"Maximum sweep angle"}
+        ]'
+      ></property-panel>
+    </div>
+  </div>
+
+  <div class="demo-card">
+    <h3>Label + Properties</h3>
+    <div class="stack">
+      <label-feature title="Counter" value="42" scale="1" show-title="true"></label-feature>
+      <property-panel
+        title="Shape Properties"
+        shape-name="label-feature"
+        entries-json='[
+          {"name":"title","value":"Counter","type":"string","description":"Title rendered above label"},
+          {"name":"value","value":"42","type":"string","description":"Text value shown in label"},
+          {"name":"scale","value":1,"type":"number","description":"Scale factor applied to the SVG"},
+          {"name":"show-title","value":true,"type":"boolean","description":"Show or hide heading"}
+        ]'
+      ></property-panel>
+    </div>
+  </div>
+</div>

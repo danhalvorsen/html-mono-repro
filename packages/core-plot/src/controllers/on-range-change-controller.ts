@@ -1,8 +1,27 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 
 import { AxisIntervalScaler } from "../coordinates/axis-interval-scaler.js";
-import { Axis } from "../coordinates/axis.js";
 import type { DragController } from "./drag-controller.js";
+import type { CanvasObject } from "@monorepo/core-plot-canvas";
+
+interface AxisRangeMutableLike {
+  readonly min: number;
+  readonly max: number;
+
+  set(min: number, max: number): void;
+  span(): number;
+}
+
+interface AxisLike extends CanvasObject {
+  getRange(): AxisRangeMutableLike;
+  createWorkingRange(min: number, max: number): AxisRangeMutableLike;
+}
+
+function isAxisLike(target: CanvasObject | null): target is AxisLike {
+  return target !== null &&
+    typeof (target as AxisLike).getRange === "function" &&
+    typeof (target as AxisLike).createWorkingRange === "function";
+}
 
 export class OnRangeChangeController implements ReactiveController {
   private readonly host: ReactiveControllerHost & HTMLElement;
@@ -29,22 +48,23 @@ export class OnRangeChangeController implements ReactiveController {
 
   public applyActiveRangeChange(): void {
     const dragState = this.dragController.state;
-    if (!(dragState.target instanceof Axis) || dragState.isActive === false) {
+    if (!isAxisLike(dragState.target) || dragState.isActive === false) {
       this.reset();
       return;
     }
 
-    if (this.activeAxisId !== dragState.target.id) {
-      this.activeAxisId = dragState.target.id;
-      this.dragStartMin = dragState.target.getRange().min;
-      this.dragStartMax = dragState.target.getRange().max;
+    const axis = dragState.target;
+    if (this.activeAxisId !== axis.id) {
+      this.activeAxisId = axis.id;
+      this.dragStartMin = axis.getRange().min;
+      this.dragStartMax = axis.getRange().max;
     }
 
     const nextRange = this.scaler.scaleFromHorizontalDrag(
-      dragState.target.createWorkingRange(this.dragStartMin, this.dragStartMax),
+      axis.createWorkingRange(this.dragStartMin, this.dragStartMax),
       dragState.deltaX,
     );
-    dragState.target.getRange().set(nextRange.min, nextRange.max);
+    axis.getRange().set(nextRange.min, nextRange.max);
     this.host.requestUpdate();
   }
 
@@ -54,7 +74,7 @@ export class OnRangeChangeController implements ReactiveController {
 
   public cancelRangeChange(): void {
     const dragState = this.dragController.state;
-    if (dragState.target instanceof Axis && this.activeAxisId === dragState.target.id) {
+    if (isAxisLike(dragState.target) && this.activeAxisId === dragState.target.id) {
       dragState.target.getRange().set(this.dragStartMin, this.dragStartMax);
       this.host.requestUpdate();
     }

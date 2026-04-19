@@ -211,4 +211,73 @@ describe("CoordinateSystem", () => {
     expect(tangent?.length()).toBeCloseTo(1, 4);
     expect(normal?.length()).toBeCloseTo(1, 4);
   });
+
+  it("should resolve a point selection from mapped svg coordinates", () => {
+    const points = fixture.createPointSet();
+    const coordinateSystem = new CoordinateSystem(
+      fixture.createReactiveHost(),
+      "coordinate-system-select-point",
+      points,
+    );
+    const renderContext = fixture.createRenderContext();
+    const point = points[0];
+    const mapped = coordinateSystem.mapCartesianPointToSvg(point, renderContext);
+
+    const selectedPointId = coordinateSystem.resolvePointSelectionAt(mapped, renderContext);
+
+    expect(selectedPointId).toBe(point.id);
+  });
+
+  it("should move a selected free movable point through drag updates", () => {
+    const movablePoint = fixture.createFreeMovablePoint(0, 0, "M");
+    const coordinateSystem = new CoordinateSystem(
+      fixture.createReactiveHost(),
+      "coordinate-system-movable-point",
+      [movablePoint],
+    );
+    const renderContext = fixture.createRenderContext();
+    coordinateSystem.render(renderContext);
+    const targetSvg = coordinateSystem.mapCartesianPointToSvg({ x: 4, y: 3 }, renderContext);
+
+    coordinateSystem.applyPointSelection(movablePoint.id);
+    coordinateSystem.onDragStart();
+    coordinateSystem.onDragMove({
+      startX: 0,
+      startY: 0,
+      currentX: targetSvg.x,
+      currentY: targetSvg.y,
+      deltaX: targetSvg.x,
+      deltaY: targetSvg.y,
+    });
+
+    expect(movablePoint.x).toBeCloseTo(4, 1);
+    expect(movablePoint.y).toBeCloseTo(3, 1);
+  });
+
+  it("should restore a selected free movable point when drag is cancelled", () => {
+    const movablePoint = fixture.createFreeMovablePoint(0, 0, "M");
+    const coordinateSystem = new CoordinateSystem(
+      fixture.createReactiveHost(),
+      "coordinate-system-movable-point-cancel",
+      [movablePoint],
+    );
+    const renderContext = fixture.createRenderContext();
+    coordinateSystem.render(renderContext);
+    const targetSvg = coordinateSystem.mapCartesianPointToSvg({ x: 5, y: -2 }, renderContext);
+
+    coordinateSystem.applyPointSelection(movablePoint.id);
+    coordinateSystem.onDragStart();
+    coordinateSystem.onDragMove({
+      startX: 0,
+      startY: 0,
+      currentX: targetSvg.x,
+      currentY: targetSvg.y,
+      deltaX: targetSvg.x,
+      deltaY: targetSvg.y,
+    });
+    coordinateSystem.onDragCancel();
+
+    expect(movablePoint.x).toBeCloseTo(0, 6);
+    expect(movablePoint.y).toBeCloseTo(0, 6);
+  });
 });

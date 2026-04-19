@@ -12,6 +12,12 @@ It owns:
 - curve geometry services
 - SVG path generation for curves
 
+Interpolation math implementations must come from `@monorepo/core-math`.
+
+`core-plot-curve` may orchestrate sampling and adapt curve-domain inputs to math primitives, but it
+must not duplicate spline formulas or reimplement interpolation algorithms that already belong in
+`core-math`.
+
 It does not own:
 - plot canvas orchestration
 - axis behavior

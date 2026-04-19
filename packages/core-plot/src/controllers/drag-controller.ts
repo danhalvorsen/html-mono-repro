@@ -1,6 +1,6 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 
-import type { CanvasObject, CanvasObjectDragContext } from "../core/canvas-object.js";
+import type { CanvasObject, CanvasObjectDragContext } from "@monorepo/core-plot-canvas";
 import type { MouseController } from "./mouse-controller.js";
 
 export interface DragState {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PdfJsTestFixture } from "./fixtures/pdfjs-fixture.js";
-import { PdfJsPage } from "../src/engine/PdfJsPage.js";
- 
+import { PdfJsPage } from "../src/old/engine/PdfJsPage.js";
+
 describe("PdfJsPage", () => {
   const fixture = new PdfJsTestFixture();
 
@@ -16,9 +16,13 @@ describe("PdfJsPage", () => {
   it("should read text fragments from valid text items only", async () => {
     const proxy = fixture.createPageProxy({
       pageNumber: 1,
+      styles: {
+        g_d0_f1: { fontFamily: "Helvetica" },
+      },
       items: [
         fixture.createTextItem({
           str: "Milk",
+          fontName: "g_d0_f1",
           transform: [1, 0, 0, 1, 10, 100],
           width: 30,
           height: 12,
@@ -46,18 +50,34 @@ describe("PdfJsPage", () => {
       {
         pageNumber: 1,
         text: "Milk",
-        x: 10,
-        y: 100,
-        width: 30,
-        height: 12,
+        boundingBox: {
+          position: { x: 10, y: 100 },
+          width: 30,
+          height: 12,
+        },
+        font: {
+          name: "Helvetica",
+          size: 1,
+          family: "Helvetica",
+          rawName: "g_d0_f1",
+        },
+        fontName: "g_d0_f1",
+        fontFamily: "Helvetica",
+        fontSize: 1,
       },
       {
         pageNumber: 1,
         text: "19,90",
-        x: 60,
-        y: 100,
-        width: 20,
-        height: 12,
+        boundingBox: {
+          position: { x: 60, y: 100 },
+          width: 20,
+          height: 12,
+        },
+        font: {
+          name: "unknown",
+          size: 1,
+        },
+        fontSize: 1,
       },
     ]);
   });
@@ -81,10 +101,101 @@ describe("PdfJsPage", () => {
     expect(fragment).toEqual({
       pageNumber: 1,
       text: "Derived",
-      x: 10,
-      y: 20,
-      width: 15,
-      height: 1.5,
+      boundingBox: {
+        position: { x: 10, y: 20 },
+        width: 15,
+        height: 1.5,
+      },
+      font: {
+        name: "unknown",
+        size: 1.5,
+      },
+      fontSize: 1.5,
+    });
+  });
+
+  it("should expose font metadata when pdfjs text content provides it", async () => {
+    const proxy = fixture.createPageProxy({
+      pageNumber: 3,
+      styles: {
+        g_d0_f2: { fontFamily: "Arial" },
+      },
+      items: [
+        fixture.createTextItem({
+          str: "Offer",
+          fontName: "g_d0_f2",
+          transform: [1, 0, 0, 14, 25, 50],
+          width: 40,
+          height: 0,
+        }),
+      ],
+    });
+
+    const sut = new PdfJsPage(proxy);
+    const [fragment] = await sut.readTextFragments();
+
+    expect(fragment).toEqual({
+      pageNumber: 3,
+      text: "Offer",
+      boundingBox: {
+        position: { x: 25, y: 50 },
+        width: 40,
+        height: 14,
+      },
+      font: {
+        name: "Arial",
+        size: 14,
+        family: "Arial",
+        rawName: "g_d0_f2",
+      },
+      fontName: "g_d0_f2",
+      fontFamily: "Arial",
+      fontSize: 14,
+    });
+  });
+
+  it("should read font metadata from fontInformation object", async () => {
+    const proxy = fixture.createPageProxy({
+      pageNumber: 4,
+      styles: {
+        g_d0_f3: { fontFamily: "Fira Sans" },
+      },
+      items: [
+        fixture.createTextItem({
+          str: "ObjectFont",
+          fontInformation: {
+            name: "Fira Sans",
+            size: 16,
+            family: "Fira Sans",
+            rawName: "g_d0_f3",
+          },
+          transform: [1, 0, 0, 16, 30, 80],
+          width: 70,
+          height: 0,
+        }),
+      ],
+    });
+
+    const sut = new PdfJsPage(proxy);
+    const [fragment] = await sut.readTextFragments();
+
+    expect(fragment).toEqual({
+      pageNumber: 4,
+      text: "ObjectFont",
+      boundingBox: {
+        position: { x: 30, y: 80 },
+        width: 70,
+        height: 16,
+      },
+      font: {
+        name: "Fira Sans",
+        size: 16,
+        family: "Fira Sans",
+        rawName: "g_d0_f3",
+      },
+      fontName: "g_d0_f3",
+      fontFamily: "Fira Sans",
+      fontSize: 16,
     });
   });
 
@@ -106,18 +217,21 @@ describe("PdfJsPage", () => {
     });
 
     const sut = new PdfJsPage(proxy);
-
-    // Internal implementation uses scale 1 in readTextFragments.
-    // This test locks current behavior so future viewport changes become explicit.
     const [fragment] = await sut.readTextFragments();
 
     expect(fragment).toEqual({
       pageNumber: 1,
       text: "Scaled",
-      x: 10,
-      y: 20,
-      width: 25,
-      height: 12,
+      boundingBox: {
+        position: { x: 10, y: 20 },
+        width: 25,
+        height: 12,
+      },
+      font: {
+        name: "unknown",
+        size: 1,
+      },
+      fontSize: 1,
     });
   });
 
@@ -175,4 +289,3 @@ describe("PdfJsPage", () => {
     expect(Object.isFrozen(result[0])).toBe(true);
   });
 });
- 

@@ -3,8 +3,8 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { CompositePdfEngine } from "../src/engine/CompositePdfEngine.js";
-import type { IPdfTextFragment } from "../src/IPdfTextFragment.js";
+import { CompositePdfEngine } from "../src/old/engine/CompositePdfEngine.js";
+import type { IPdfTextFragment } from "../src/old/IPdfTextFragment.js";
 
 function normalizeText(value: string): string {
   return value
@@ -38,8 +38,22 @@ describe("CompositePdfEngine (Kiwi.pdf) - page 1 JSON dump", () => {
     const hasSubtitle = normalized.some((t) => t.includes("ca. 900 g, skivet"));
     const hasBrandLine = normalized.some((t) => t.includes("folkets, pr. kg"));
 
+    const withFontName = page1.filter((f) => typeof f.fontName === "string" && f.fontName.length > 0);
+    const withFontFamily = page1.filter((f) => typeof f.fontFamily === "string" && f.fontFamily.length > 0);
+    const withFontSize = page1.filter((f) => typeof f.fontSize === "number" && f.fontSize > 0);
+
+    const largestFontSize = page1.reduce(
+      (max, fragment) =>
+        Math.max(max, typeof fragment.fontSize === "number" ? fragment.fontSize : 0),
+      0,
+    );
+
     expect(hasTitle).toBe(true);
     expect(hasSubtitle).toBe(true);
     expect(hasBrandLine).toBe(true);
+    expect(withFontName.length).toBeGreaterThan(0);
+    expect(withFontFamily.length).toBeGreaterThan(0);
+    expect(withFontSize.length).toBeGreaterThan(0);
+    expect(largestFontSize).toBeGreaterThan(0);
   });
 });

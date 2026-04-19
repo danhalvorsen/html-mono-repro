@@ -10,6 +10,8 @@ export type LayoutOptionId =
   | "dgml-layered-right-to-left"
   | "dgml-clustered"
   | "dgml-force"
+  | "hierarchical-tidy-tree"
+  | "hierarchical-tidy-tree-compact"
   | (string & {});
 
 export interface LayoutOptionDescriptor {

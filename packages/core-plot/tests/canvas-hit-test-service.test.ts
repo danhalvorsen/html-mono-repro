@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { CanvasObjectRegistry } from "@monorepo/core-plot-canvas";
 
-import { CanvasObjectRegistry } from "../src/core/canvas-object-registry.js";
 import { CanvasHitTestService } from "../src/services/canvas-hit-test-service.js";
 import { QuadTreeCanvasSpatialIndex } from "../src/services/canvas-spatial-index.js";
 import { CorePlotFixture } from "./fixtures/core-plot.fixture.js";
@@ -36,4 +36,3 @@ describe("CanvasHitTestService", () => {
     expect(service.queryPoint({ x: 120, y: 120 })).toHaveLength(0);
   });
 });
-

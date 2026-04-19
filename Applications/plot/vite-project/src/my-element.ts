@@ -8,6 +8,7 @@ import "./views/sprint-three-view.ts";
 import "./views/sprint-four-view.ts";
 import "./views/sprint-two-view.ts";
 
+// TODO: Add `sprint-5` route and `sprint-five-view.ts` when Sprint 5 demo features are ready.
 type DemoRoute = "sprint-1" | "sprint-2" | "sprint-3" | "sprint-3-1" | "sprint-4";
 
 function readRoute(): DemoRoute {
