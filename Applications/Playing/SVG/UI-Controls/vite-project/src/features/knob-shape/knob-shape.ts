@@ -11,6 +11,7 @@ import type {
   KnobShapeProperties,
   StrokeLinecap,
 } from '../../domain/shape-properties.js'
+import { svgShapeTemplateFactory } from '../svg-shape-template-factory/svg-shape-template-factory.js'
 import { knobShapeStyles, knobShapeTheme } from '../../application/ui-style-module.js'
 
 @customElement('knob-shape')
@@ -236,34 +237,34 @@ export class KnobShape extends LitElement {
     const inner = this.polarPoint(radius * props.indicator.innerRatio, angle)
     const outer = this.polarPoint(radius * props.indicator.outerRatio, angle)
 
-    const template = html`
-      <svg
-        viewBox=${`0 0 ${size} ${size}`}
-        width=${size}
-        height=${size}
-        role="img"
-        aria-label="Flat knob shape with indicator"
-      >
-        <circle
-          cx=${center}
-          cy=${center}
-          r=${radius}
-          fill=${props.fill}
-          stroke=${props.stroke}
-          stroke-width=${props.strokeWidth}
-        ></circle>
-        <line
-          x1=${center + inner.x}
-          y1=${center + inner.y}
-          x2=${center + outer.x}
-          y2=${center + outer.y}
-          stroke=${props.indicator.color}
-          stroke-width=${props.indicator.width}
-          stroke-linecap=${props.indicator.lineCap}
-          opacity=${props.indicator.opacity}
-        ></line>
-      </svg>
-    `
+    const template = svgShapeTemplateFactory.createSvg(
+      {
+        viewBox: `0 0 ${size} ${size}`,
+        width: size,
+        height: size,
+        role: 'img',
+        ariaLabel: 'Flat knob shape with indicator',
+      },
+      [
+        svgShapeTemplateFactory.createCircle({
+          cx: center,
+          cy: center,
+          r: radius,
+          fill: props.fill,
+          stroke: props.stroke,
+          strokeWidth: props.strokeWidth,
+        }),
+        svgShapeTemplateFactory.createLine({
+          x1: center + inner.x,
+          y1: center + inner.y,
+          x2: center + outer.x,
+          y2: center + outer.y,
+          stroke: props.indicator.color,
+          strokeWidth: props.indicator.width,
+          lineCap: props.indicator.lineCap,
+        }),
+      ],
+    )
 
     return html`
       <svg-template-host compact .templateInput=${template}></svg-template-host>

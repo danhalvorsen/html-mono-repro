@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../svg-template-host/svg-template-host.js'
 import type { TriangleShapeProperties } from '../../domain/shape-properties.js'
+import { svgShapeTemplateFactory } from '../svg-shape-template-factory/svg-shape-template-factory.js'
 import {
   triangleShapeStyles,
   triangleShapeTheme,
@@ -60,22 +61,23 @@ export class TriangleShape extends LitElement {
 
   render() {
     const props = this.shapeProps
-    const template = html`
-      <svg
-        viewBox=${`0 0 ${this.viewWidth} ${this.viewHeight}`}
-        width=${this.viewWidth}
-        height=${this.viewHeight}
-        role="img"
-        aria-label="Equilateral triangle shape"
-      >
-        <polygon
-          points=${this.points}
-          fill=${props.fill}
-          stroke=${props.stroke}
-          stroke-width=${props.strokeWidth}
-        ></polygon>
-      </svg>
-    `
+    const template = svgShapeTemplateFactory.createSvg(
+      {
+        viewBox: `0 0 ${this.viewWidth} ${this.viewHeight}`,
+        width: this.viewWidth,
+        height: this.viewHeight,
+        role: 'img',
+        ariaLabel: 'Equilateral triangle shape',
+      },
+      [
+        svgShapeTemplateFactory.createPolygon({
+          points: this.points,
+          fill: props.fill,
+          stroke: props.stroke,
+          strokeWidth: props.strokeWidth,
+        }),
+      ],
+    )
 
     return html`
       <svg-template-host

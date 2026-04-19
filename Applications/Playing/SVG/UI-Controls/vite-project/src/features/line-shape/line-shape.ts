@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../svg-template-host/svg-template-host.js'
 import type { LineShapeProperties } from '../../domain/shape-properties.js'
+import { svgShapeTemplateFactory } from '../svg-shape-template-factory/svg-shape-template-factory.js'
 import { lineShapeStyles, lineShapeTheme } from '../../application/ui-style-module.js'
 
 @customElement('line-shape')
@@ -61,26 +62,27 @@ export class LineShape extends LitElement {
 
   render() {
     const props = this.shapeProps
-    const template = html`
-      <svg
-        viewBox=${`0 0 ${props.width} ${props.height}`}
-        width=${props.width}
-        height=${props.height}
-        role="img"
-        aria-label="Line feature"
-      >
-        <line
-          x1=${props.x1}
-          y1=${props.y1}
-          x2=${props.x2}
-          y2=${props.y2}
-          stroke=${props.stroke}
-          stroke-width=${props.strokeWidth}
-          stroke-linecap=${props.lineCap}
-          stroke-dasharray=${props.dashArray}
-        ></line>
-      </svg>
-    `
+    const template = svgShapeTemplateFactory.createSvg(
+      {
+        viewBox: `0 0 ${props.width} ${props.height}`,
+        width: props.width,
+        height: props.height,
+        role: 'img',
+        ariaLabel: 'Line feature',
+      },
+      [
+        svgShapeTemplateFactory.createLine({
+          x1: props.x1,
+          y1: props.y1,
+          x2: props.x2,
+          y2: props.y2,
+          stroke: props.stroke,
+          strokeWidth: props.strokeWidth,
+          lineCap: props.lineCap,
+          dashArray: props.dashArray,
+        }),
+      ],
+    )
 
     return html`
       <svg-template-host compact .templateInput=${template}></svg-template-host>

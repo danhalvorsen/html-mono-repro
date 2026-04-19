@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import '../svg-template-host/svg-template-host.js'
 import type { RectangleShapeProperties } from '../../domain/shape-properties.js'
+import { svgShapeTemplateFactory } from '../svg-shape-template-factory/svg-shape-template-factory.js'
 import {
   rectangleShapeStyles,
   rectangleShapeTheme,
@@ -73,27 +74,28 @@ export class RectangleShape extends LitElement {
     const x = props.strokeWidth
     const y = props.strokeWidth
 
-    const template = html`
-      <svg
-        viewBox=${`0 0 ${viewWidth} ${viewHeight}`}
-        width=${viewWidth}
-        height=${viewHeight}
-        role="img"
-        aria-label="Rectangle feature"
-      >
-        <rect
-          x=${x}
-          y=${y}
-          width=${props.width}
-          height=${props.height}
-          rx=${props.rx}
-          ry=${props.ry}
-          fill=${props.fill}
-          stroke=${props.stroke}
-          stroke-width=${props.strokeWidth}
-        ></rect>
-      </svg>
-    `
+    const template = svgShapeTemplateFactory.createSvg(
+      {
+        viewBox: `0 0 ${viewWidth} ${viewHeight}`,
+        width: viewWidth,
+        height: viewHeight,
+        role: 'img',
+        ariaLabel: 'Rectangle feature',
+      },
+      [
+        svgShapeTemplateFactory.createRectangle({
+          x,
+          y,
+          width: props.width,
+          height: props.height,
+          rx: props.rx,
+          ry: props.ry,
+          fill: props.fill,
+          stroke: props.stroke,
+          strokeWidth: props.strokeWidth,
+        }),
+      ],
+    )
 
     return html`
       <svg-template-host .templateInput=${template}></svg-template-host>

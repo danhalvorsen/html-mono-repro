@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js'
 import { CartesianToSvgMapper } from '../../domain/cartesian-to-svg-mapper.js'
 import type { DualSectorShapeProperties } from '../../domain/shape-properties.js'
 import '../svg-template-host/svg-template-host.js'
+import { svgShapeTemplateFactory } from '../svg-shape-template-factory/svg-shape-template-factory.js'
 import {
   dualSectorShapeStyles,
   dualSectorShapeTheme,
@@ -114,23 +115,24 @@ export class DualSectorShape extends LitElement {
   render() {
     const props = this.shapeProps
     const size = this.size
-    const template = html`
-      <svg
-        viewBox=${`0 0 ${size} ${size}`}
-        width=${size}
-        height=${size}
-        role="img"
-        aria-label="Filled area between two arc circles"
-      >
-        <polygon
-          points=${this.arcPoints}
-          fill=${props.fill}
-          stroke=${props.stroke}
-          stroke-width=${props.strokeWidth}
-          vector-effect="non-scaling-stroke"
-        ></polygon>
-      </svg>
-    `
+    const template = svgShapeTemplateFactory.createSvg(
+      {
+        viewBox: `0 0 ${size} ${size}`,
+        width: size,
+        height: size,
+        role: 'img',
+        ariaLabel: 'Filled area between two arc circles',
+      },
+      [
+        svgShapeTemplateFactory.createPolygon({
+          points: this.arcPoints,
+          fill: props.fill,
+          stroke: props.stroke,
+          strokeWidth: props.strokeWidth,
+          vectorEffect: 'non-scaling-stroke',
+        }),
+      ],
+    )
 
     return html`
       <svg-template-host .templateInput=${template}></svg-template-host>
