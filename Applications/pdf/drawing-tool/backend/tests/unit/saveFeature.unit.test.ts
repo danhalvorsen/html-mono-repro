@@ -41,6 +41,11 @@ describe('saveFeature (unit)', () => {
         .createFile(Path.from(saved.path))
         .read('utf8');
       expect(JSON.parse(fileContent)).toEqual(FIXTURE_RECTANGLES);
+
+      const pdfPath = Path.from(path.join(saveDirectory, `save-${FIXED_NOW}.pdf`));
+      const pdfFile = fileSystem.createFile(pdfPath);
+      expect(pdfFile.exists()).toBe(true);
+      expect(pdfFile.read('latin1').length).toBeGreaterThan(0);
     });
   });
 

@@ -17,6 +17,9 @@ function randomRect(): Rectangle {
 }
 
 async function main(): Promise<void> {
+  const saveApiUrl =
+    process.env.SAVE_API_URL ?? 'http://127.0.0.1:3000/api/commands/save';
+
   const payload = {
     rectangles: Array.from({ length: 10 }, randomRect),
   };
@@ -28,7 +31,7 @@ async function main(): Promise<void> {
 
   const request = new HttpRequestMessageBuilder()
     .withMethod('POST')
-    .withPath('http://127.0.0.1:3000/api/commands/save')
+    .withPath(saveApiUrl)
     .withHeaders(headers)
     .withBody(payload)
     .build();
@@ -40,4 +43,7 @@ async function main(): Promise<void> {
   console.log(JSON.stringify(response.body, null, 2));
 }
 
-void main();
+void main().catch((error: unknown) => {
+  console.error(error);
+  process.exit(1);
+});

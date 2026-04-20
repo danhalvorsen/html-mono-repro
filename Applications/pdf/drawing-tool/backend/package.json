@@ -10,11 +10,13 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "send:data": "tsx scripts/send-data.ts",
+    "send:rectangle-data": "tsx scripts/send-rectangle-data.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
     "@monorepo/core-design-patterns": "workspace:*",
+    "@monorepo/core-group-shape-test-data": "workspace:*",
     "@monorepo/core-filesystem": "workspace:*",
     "@monorepo/core-json": "workspace:*",
     "@monorepo/core-http-messages": "workspace:*",  
@@ -22,7 +24,9 @@
     "@monorepo/core-http-messages-http-client": "workspace:*",  
     "@monorepo/core-design-patterns-cqrs": "workspace:*",
     "@monorepo/core-design-patterns-mediator": "workspace:*",
-    "express": "^5.2.1"
+    "@monorepo/core-pdf-writer": "workspace:*",
+    "express": "^5.2.1",
+    "pdf-lib": "^1.17.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

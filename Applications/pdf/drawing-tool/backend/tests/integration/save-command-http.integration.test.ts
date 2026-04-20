@@ -32,10 +32,19 @@ describe('Save command HTTP integration', () => {
             path: expect.stringContaining(saveDirectory),
           },
         });
-        const saveDirectoryRef = new CoreFileSystemModule().createDirectory(Path.from(saveDirectory));
-        const files = saveDirectoryRef.listFiles();
-        expect(files).toHaveLength(1);
-        expect(JSON.parse(files[0].read('utf8'))).toEqual(FIXTURE_RECTANGLES);
+        const fileSystem = new CoreFileSystemModule();
+        const names = fileSystem.fileSystem
+          .readdir(saveDirectory)
+          .map((entry) => (typeof entry === 'string' ? entry : entry.name));
+        const jsonFiles = names.filter((name) => name.endsWith('.json'));
+        const pdfFiles = names.filter((name) => name.endsWith('.pdf'));
+        expect(jsonFiles).toHaveLength(1);
+        expect(pdfFiles).toHaveLength(1);
+
+        const jsonContent = fileSystem
+          .createFile(Path.from(saveDirectory, jsonFiles[0]))
+          .read('utf8');
+        expect(JSON.parse(jsonContent)).toEqual(FIXTURE_RECTANGLES);
       } finally {
         await server.stop();
       }
@@ -86,10 +95,19 @@ describe('Save command HTTP integration', () => {
         );
 
         expect(response.statusCode).toBe(202);
-        const saveDirectoryRef = new CoreFileSystemModule().createDirectory(Path.from(saveDirectory));
-        const files = saveDirectoryRef.listFiles();
-        expect(files).toHaveLength(1);
-        expect(JSON.parse(files[0].read('utf8'))).toEqual(FIXTURE_RECTANGLES);
+        const fileSystem = new CoreFileSystemModule();
+        const names = fileSystem.fileSystem
+          .readdir(saveDirectory)
+          .map((entry) => (typeof entry === 'string' ? entry : entry.name));
+        const jsonFiles = names.filter((name) => name.endsWith('.json'));
+        const pdfFiles = names.filter((name) => name.endsWith('.pdf'));
+        expect(jsonFiles).toHaveLength(1);
+        expect(pdfFiles).toHaveLength(1);
+
+        const jsonContent = fileSystem
+          .createFile(Path.from(saveDirectory, jsonFiles[0]))
+          .read('utf8');
+        expect(JSON.parse(jsonContent)).toEqual(FIXTURE_RECTANGLES);
         expect(handleSpy).toHaveBeenCalledTimes(1);
         expect(JSON.parse(handleSpy.mock.calls[0][0].json)).toEqual(payload);
       } finally {
