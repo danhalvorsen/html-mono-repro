@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drawing Tool Backend Monitor</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="hero panel">
+        <div>
+          <h1>Backend Traffic Monitor</h1>
+          <p>Live incoming HTTP requests, CQRS dispatching, and responses.</p>
+        </div>
+        <div class="stream-state" id="streamState">LIVE</div>
+      </header>
+
+      <section class="stats">
+        <article class="stat-card panel">
+          <h2>Requests</h2>
+          <p id="statRequests">0</p>
+        </article>
+        <article class="stat-card panel">
+          <h2>Dispatches</h2>
+          <p id="statDispatches">0</p>
+        </article>
+        <article class="stat-card panel">
+          <h2>Responses</h2>
+          <p id="statResponses">0</p>
+        </article>
+        <article class="stat-card panel">
+          <h2>Errors</h2>
+          <p id="statErrors">0</p>
+        </article>
+      </section>
+
+      <section class="stats pipeline-stats">
+        <article class="stat-card panel">
+          <h2>Pipeline Command Stages</h2>
+          <p id="pipelineCommandCount">0</p>
+        </article>
+        <article class="stat-card panel">
+          <h2>Pipeline Query Stages</h2>
+          <p id="pipelineQueryCount">0</p>
+        </article>
+        <article class="stat-card panel">
+          <h2>Pipeline Errors</h2>
+          <p id="pipelineErrorCount">0</p>
+        </article>
+        <article class="stat-card panel">
+          <h2>Last Pipeline Stage</h2>
+          <p id="pipelineLastStage">-</p>
+        </article>
+      </section>
+
+      <section class="main-grid">
+        <article class="panel activity-panel">
+          <h2>Live Activity</h2>
+          <ul id="activityList" class="activity-list"></ul>
+          <h2>State Model (JSON)</h2>
+          <pre id="liveActivityStateJson" class="output state-json-output">{}</pre>
+        </article>
+
+        <article class="panel">
+          <h2>CQRS Console</h2>
+          <div class="controls">
+            <label>
+              Message Type
+              <input id="messageType" value="SaveCommand" />
+            </label>
+            <label>
+              JSON Payload
+              <textarea id="payloadInput" rows="8">{"json":{"shape":"rectangle","x":10,"y":20,"w":100,"h":60}}</textarea>
+            </label>
+            <div class="buttons">
+              <button id="sendCommand" type="button">Dispatch Save Command</button>
+              <button id="sendQuery" type="button">Dispatch Status Query</button>
+              <button id="refreshHandlers" type="button">Refresh Handlers</button>
+            </div>
+          </div>
+          <pre id="apiOutput" class="output"></pre>
+          <pre id="handlerOutput" class="output"></pre>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2>Incoming HTTP Requests</h2>
+        <label for="httpLogList" class="listbox-label">HTTP Request and Response Log</label>
+        <select id="httpLogList" class="http-log-listbox" size="10" aria-label="HTTP request and response log"></select>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Method</th>
+                <th>Path</th>
+                <th>Status</th>
+                <th>ms</th>
+                <th>Body</th>
+              </tr>
+            </thead>
+            <tbody id="requestRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Pipeline Information</h2>
+        <label for="pipelineStageList" class="listbox-label">Recent Pipeline Stages</label>
+        <select id="pipelineStageList" class="http-log-listbox" size="10" aria-label="Recent pipeline stages"></select>
+      </section>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

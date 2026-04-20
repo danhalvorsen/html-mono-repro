@@ -2,6 +2,7 @@
 import { vi } from "vitest";
 import { Err, Ok, Result } from "@monorepo/core-design-patterns";
 import {
+  CompositePipeline,
   EventBus,
   IBehavior,
   IBehaviorResult,

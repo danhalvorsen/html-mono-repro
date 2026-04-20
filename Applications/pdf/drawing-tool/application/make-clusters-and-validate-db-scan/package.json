@@ -12,7 +12,9 @@
   "dependencies": {
     "@monorepo/core-design-patterns": "workspace:*",
     "@monorepo/core-design-patterns-cqrs": "workspace:*",
+    "@monorepo/core-filesystem": "workspace:*",
     "@monorepo/core-fsm": "workspace:*",
+    "@monorepo/core-json": "workspace:*",   
     "lit": "^3.3.2"
   },
   "devDependencies": {
