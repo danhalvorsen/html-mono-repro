@@ -9,17 +9,20 @@ export class SequencerShiftButtonElement extends LitElement {
   public static readonly tagName = "sequencer-shift-button";
 
   public static override properties = {
+    on: { type: Boolean, reflect: true },
     label: { type: String, reflect: true },
     width: { type: Number, reflect: true },
     height: { type: Number, reflect: true },
   } as const;
 
+  declare public on: boolean;
   declare public label: string;
   declare public width: number;
   declare public height: number;
 
   public constructor() {
     super();
+    this.on = false;
     this.label = "SHIFT";
     this.width = 88;
     this.height = 56;
@@ -50,6 +53,11 @@ export class SequencerShiftButtonElement extends LitElement {
           cursor: "pointer",
           userSelect: "none",
           WebkitTapHighlightColor: "transparent",
+          opacity: this.on ? "1" : "0.62",
+          filter: this.on
+            ? "saturate(1.1) brightness(1.03)"
+            : "saturate(0.72) brightness(0.88)",
+          transition: "opacity 120ms ease, filter 120ms ease, transform 120ms ease",
         })}
         @click=${this.handleClick}
       >

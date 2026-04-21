@@ -1,0 +1,48 @@
+{
+  "name": "@monorepo/core-sequencer-command-queries",
+  "version": "1.0.0",
+  "description": "Node.js implementation of the core.module.example package.",
+  "type": "module",
+  "sideEffects": false,
+
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+
+  "files": [
+    "dist"
+  ],
+
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+
+  "keywords": [
+    "example",
+    "module",
+    "nodejs"
+  ],
+
+  "author": "",
+  "license": "MIT",
+
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@monorepo/core-design-patterns-cqrs-no-json": "workspace:*"
+    
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}
