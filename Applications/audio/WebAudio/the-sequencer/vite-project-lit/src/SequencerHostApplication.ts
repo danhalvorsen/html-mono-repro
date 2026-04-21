@@ -1,8 +1,8 @@
 import { type ISequencerTransportController, type ISequencerPatternSelectionController, SequencerTransportState } from "../../modules/core-sequencer-application/src";
+import type { IBpmControllableMidiStreamProvider } from "../../modules/core-sequencer/src/index.ts";
 import { SequencerControlEvents, type ISequencerControlTransportRequestedDetail, type ISequencerControlBpmRequestedDetail, type ISequencerControlColumnIndicatorToggleRequestedDetail } from "../../modules/core-sequencer-ui/src/sequencerControl";
 import { SequencerTrackEvents, type ISequencerTrackPatternSelectionToggleRequestedDetail } from "../../modules/core-sequencer-ui/src/sequencerTrack";
 import type { IAudioContextGateway } from "./IAudioContextGateway";
-import type { IBpmControllableMidiStreamProvider } from "./IBpmControllableMidiStreamProvider";
 import type { ISequencerGridElement } from "./ISequencerGridElement";
 import type { ISequencerControlElement } from "./ISequencerControlElement";
 

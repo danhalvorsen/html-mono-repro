@@ -6,6 +6,7 @@ export class ErrorCode extends ValueObject {
   public static readonly NonNegative = new ErrorCode("ERR_NON_NEGATIVE");
   public static readonly Positive = new ErrorCode("ERR_POSITIVE");
   public static readonly OutOfRange = new ErrorCode("ERR_OUT_OF_RANGE");
+  public static readonly InvalidState = new ErrorCode("ERR_INVALID_STATE");
 
   private readonly _value: string;
 

@@ -1,0 +1,8 @@
+{
+  "gitPath": "C:\\Users\\danha\\source\\repos\\git-wather-demo\\demo1\\.git",
+  "includeObjectDirectories": false,
+  "graphOutputJsonPath": "C:\\Users\\danha\\source\\repos\\HTML\\MonoRepro\\Applications\\git-watcher\\node-watcher\\git-history-graph-{timestamp}.json",
+  "ignoredRelativePaths": [
+    "index.lock"
+  ]
+}

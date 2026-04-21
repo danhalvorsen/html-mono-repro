@@ -1,8 +1,7 @@
 import { MidiStringParser, MidiChannel, type ParsedStep, type MidiMessage, createNoteOn, MidiNote, MidiVelocity } from "@monorepo/music-core-midi";
 import type { WebAudioMidiPlayer, MidiPlaybackOptions } from "@monorepo/music-core-midi-playback";
 import type { IMidiStreamPlaybackPort, ISequencerMidiStreamProvider } from "../../modules/core-sequencer-application/src";
-import { Delay } from "./sequencer";
-import { ISequencerPlaybackFrameProvider } from "./ISequencerPlaybackFrameProvider";
+import type { ISequencerPlaybackFrameProvider } from "../../modules/core-sequencer/src/index.ts";
 
 export class WebAudioMidiStreamPlaybackAdapter implements IMidiStreamPlaybackPort {
     private static readonly defaultVelocity = 112;
@@ -46,7 +45,7 @@ export class WebAudioMidiStreamPlaybackAdapter implements IMidiStreamPlaybackPor
                 const frame = this.streamProvider.getPlaybackFrame();
 
                 if (frame.steps.length === 0) {
-                    await Delay.wait(50);
+                    await WebAudioMidiStreamPlaybackAdapter.wait(50);
                     continue;
                 }
 
@@ -70,7 +69,7 @@ export class WebAudioMidiStreamPlaybackAdapter implements IMidiStreamPlaybackPor
                         }
                     }
 
-                    await Delay.wait(step.holdMs);
+                    await WebAudioMidiStreamPlaybackAdapter.wait(step.holdMs);
                 }
 
                 continue;
@@ -80,7 +79,7 @@ export class WebAudioMidiStreamPlaybackAdapter implements IMidiStreamPlaybackPor
             const steps = this.parser.parse(latestStream);
 
             if (steps.length === 0) {
-                await Delay.wait(50);
+                await WebAudioMidiStreamPlaybackAdapter.wait(50);
                 continue;
             }
 
@@ -93,9 +92,13 @@ export class WebAudioMidiStreamPlaybackAdapter implements IMidiStreamPlaybackPor
                     this.player.play(step.message, this.toPlaybackOptions(step));
                 }
 
-                await Delay.wait(step.holdMs);
+                await WebAudioMidiStreamPlaybackAdapter.wait(step.holdMs);
             }
         }
+    }
+
+    private static wait(ms: number): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     private resolveLatestStream(): string {
@@ -117,7 +120,7 @@ export class WebAudioMidiStreamPlaybackAdapter implements IMidiStreamPlaybackPor
 
     private isPlaybackFrameProvider(
         provider: ISequencerMidiStreamProvider | undefined
-    ): provider is ISequencerPlaybackFrameProvider {
+    ): provider is ISequencerMidiStreamProvider & ISequencerPlaybackFrameProvider {
         return provider !== undefined && "getPlaybackFrame" in provider;
     }
 

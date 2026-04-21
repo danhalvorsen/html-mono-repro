@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "id": "head",
+      "payload": {
+        "type": "head",
+        "label": "HEAD"
+      }
+    },
+    {
+      "id": "ref:refs/heads/master",
+      "payload": {
+        "type": "ref",
+        "refName": "refs/heads/master",
+        "shortName": "master",
+        "label": "master"
+      }
+    },
+    {
+      "id": "commit:4747a353e1377bd1319f8c73e332f543725f9672",
+      "payload": {
+        "type": "commit",
+        "sha": "4747a353e1377bd1319f8c73e332f543725f9672",
+        "shortSha": "4747a35",
+        "label": "4747a35 first",
+        "branchTips": [],
+        "tagNames": [],
+        "isHead": false,
+        "message": "first",
+        "author": "Integration Test"
+      }
+    },
+    {
+      "id": "commit:64c6cc1869efc5f9b2be0bddec72e3219b41097a",
+      "payload": {
+        "type": "commit",
+        "sha": "64c6cc1869efc5f9b2be0bddec72e3219b41097a",
+        "shortSha": "64c6cc1",
+        "label": "64c6cc1 second [master]",
+        "branchTips": [
+          "master"
+        ],
+        "tagNames": [],
+        "isHead": true,
+        "message": "second",
+        "author": "Integration Test"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "sourceId": "head",
+      "targetId": "ref:refs/heads/master"
+    },
+    {
+      "sourceId": "commit:64c6cc1869efc5f9b2be0bddec72e3219b41097a",
+      "targetId": "commit:4747a353e1377bd1319f8c73e332f543725f9672"
+    },
+    {
+      "sourceId": "ref:refs/heads/master",
+      "targetId": "commit:64c6cc1869efc5f9b2be0bddec72e3219b41097a"
+    }
+  ]
+}

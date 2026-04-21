@@ -1,0 +1,115 @@
+{
+  "nodes": [
+    {
+      "id": "head",
+      "payload": {
+        "type": "head",
+        "label": "HEAD"
+      }
+    },
+    {
+      "id": "ref:refs/heads/master",
+      "payload": {
+        "type": "ref",
+        "refName": "refs/heads/master",
+        "shortName": "master",
+        "label": "master"
+      }
+    },
+    {
+      "id": "commit:118431314bab1a44433a910caf008dc43507cad6",
+      "payload": {
+        "type": "commit",
+        "sha": "118431314bab1a44433a910caf008dc43507cad6",
+        "shortSha": "1184313",
+        "label": "1184313 base",
+        "branchTips": [],
+        "tagNames": [],
+        "isHead": false,
+        "message": "base",
+        "author": "Integration Test"
+      }
+    },
+    {
+      "id": "ref:refs/heads/feature",
+      "payload": {
+        "type": "ref",
+        "refName": "refs/heads/feature",
+        "shortName": "feature",
+        "label": "feature"
+      }
+    },
+    {
+      "id": "commit:fa4081770dfd7fd27f830f9b1e24ed82a3bbed49",
+      "payload": {
+        "type": "commit",
+        "sha": "fa4081770dfd7fd27f830f9b1e24ed82a3bbed49",
+        "shortSha": "fa40817",
+        "label": "fa40817 feature work",
+        "branchTips": [],
+        "tagNames": [],
+        "isHead": false,
+        "message": "feature work",
+        "author": "Integration Test"
+      }
+    },
+    {
+      "id": "commit:89cbc6dd301f8f969c98453125ac0fef87101ecf",
+      "payload": {
+        "type": "commit",
+        "sha": "89cbc6dd301f8f969c98453125ac0fef87101ecf",
+        "shortSha": "89cbc6d",
+        "label": "89cbc6d main work [master]",
+        "branchTips": [
+          "master"
+        ],
+        "tagNames": [],
+        "isHead": false,
+        "message": "main work",
+        "author": "Integration Test"
+      }
+    },
+    {
+      "id": "commit:00bd5bb77bd79492e635ba9fe8df3fb80e8de1e0",
+      "payload": {
+        "type": "commit",
+        "sha": "00bd5bb77bd79492e635ba9fe8df3fb80e8de1e0",
+        "shortSha": "00bd5bb",
+        "label": "00bd5bb feature work [feature]",
+        "branchTips": [
+          "feature"
+        ],
+        "tagNames": [],
+        "isHead": true,
+        "message": "feature work",
+        "author": "Integration Test"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "sourceId": "commit:fa4081770dfd7fd27f830f9b1e24ed82a3bbed49",
+      "targetId": "commit:118431314bab1a44433a910caf008dc43507cad6"
+    },
+    {
+      "sourceId": "commit:89cbc6dd301f8f969c98453125ac0fef87101ecf",
+      "targetId": "commit:118431314bab1a44433a910caf008dc43507cad6"
+    },
+    {
+      "sourceId": "ref:refs/heads/master",
+      "targetId": "commit:89cbc6dd301f8f969c98453125ac0fef87101ecf"
+    },
+    {
+      "sourceId": "commit:00bd5bb77bd79492e635ba9fe8df3fb80e8de1e0",
+      "targetId": "commit:89cbc6dd301f8f969c98453125ac0fef87101ecf"
+    },
+    {
+      "sourceId": "head",
+      "targetId": "ref:refs/heads/feature"
+    },
+    {
+      "sourceId": "ref:refs/heads/feature",
+      "targetId": "commit:00bd5bb77bd79492e635ba9fe8df3fb80e8de1e0"
+    }
+  ]
+}

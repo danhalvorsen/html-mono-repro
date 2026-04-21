@@ -8,40 +8,27 @@ import {
   TransportButtonEvents,
   type ITransportButtonPressedDetail,
 } from "@monorepo/core.sequencer.ui.resources";
+import {
+  SequencerAddress,
+  SequencerControlDefinitions,
+  SequencerControlState,
+  SequencerEventFactory,
+  SequencerUiEvents,
+  type ISequencerBpmRequestedDetail as ISequencerControlBpmRequestedDetail,
+  type ISequencerFeatureToggleRequestedDetail as ISequencerControlColumnIndicatorToggleRequestedDetail,
+  type ISequencerTransportRequestedDetail as ISequencerControlTransportRequestedDetail,
+  type SequencerBpm as SequencerControlBpm,
+  type SequencerFeatureId as SequencerControlFeatureId,
+  type SequencerTransportId as SequencerControlButtonId,
+} from "./ui-contract.js";
 
-type SequencerTransportVariant = "play" | "stop";
-type SequencerControlButtonId = SequencerTransportVariant;
 type SequencerControlButtonTag = "play-button" | "stop-button";
-type SequencerControlBpm = 100 | 130 | 160;
-type SequencerControlFeatureId = "column-indicator";
-
-const sequencerControlTransportRequestedEventName =
-  "sequencer-control-transport-requested";
-const sequencerControlBpmRequestedEventName = "sequencer-control-bpm-requested";
-const sequencerControlColumnIndicatorToggleRequestedEventName =
-  "sequencer-control-column-indicator-toggle-requested";
 
 export const SequencerControlEvents = Object.freeze({
-  transportRequested: sequencerControlTransportRequestedEventName,
-  bpmRequested: sequencerControlBpmRequestedEventName,
-  columnIndicatorToggleRequested:
-    sequencerControlColumnIndicatorToggleRequestedEventName,
+  transportRequested: SequencerUiEvents.transportRequested,
+  bpmRequested: SequencerUiEvents.bpmRequested,
+  columnIndicatorToggleRequested: SequencerUiEvents.featureToggleRequested,
 } as const);
-
-export interface ISequencerControlTransportRequestedDetail {
-  readonly id: "play" | "stop";
-  readonly address: readonly [column: number, row: number];
-}
-
-export interface ISequencerControlBpmRequestedDetail {
-  readonly bpm: SequencerControlBpm;
-  readonly address: readonly [column: number, row: number];
-}
-
-export interface ISequencerControlColumnIndicatorToggleRequestedDetail {
-  readonly enabled: boolean;
-  readonly address: readonly [column: number, row: number];
-}
 
 const sequencerControlConstants = Object.freeze({
   ariaLabel: "Sequencer transport controls",
@@ -87,10 +74,10 @@ class SequencerControlAddress {
 
 class SequencerControlButtonDefinition {
   public readonly id: SequencerControlButtonId;
-  public readonly address: SequencerControlAddress;
+  public readonly address: SequencerAddress;
   private readonly tagName: SequencerControlButtonTag;
 
-  public constructor(id: SequencerControlButtonId, address: SequencerControlAddress) {
+  public constructor(id: SequencerControlButtonId, address: SequencerAddress) {
     this.id = id;
     this.address = address;
     this.tagName = buttonTagById[id];
@@ -150,9 +137,9 @@ class SequencerControlButtonDefinition {
 
 class SequencerControlBpmDefinition {
   public readonly bpm: SequencerControlBpm;
-  public readonly address: SequencerControlAddress;
+  public readonly address: SequencerAddress;
 
-  public constructor(bpm: SequencerControlBpm, address: SequencerControlAddress) {
+  public constructor(bpm: SequencerControlBpm, address: SequencerAddress) {
     this.bpm = bpm;
     this.address = address;
   }
@@ -181,12 +168,12 @@ class SequencerControlBpmDefinition {
 class SequencerControlFeatureDefinition {
   public readonly id: SequencerControlFeatureId;
   public readonly label: string;
-  public readonly address: SequencerControlAddress;
+  public readonly address: SequencerAddress;
 
   public constructor(
     id: SequencerControlFeatureId,
     label: string,
-    address: SequencerControlAddress,
+    address: SequencerAddress,
   ) {
     this.id = id;
     this.label = label;
@@ -314,20 +301,23 @@ export class SequencerControl extends LitElement {
   `;
 
   private static readonly buttons: readonly SequencerControlButtonDefinition[] = Object.freeze([
-    new SequencerControlButtonDefinition("play", new SequencerControlAddress(0, 4)),
-    new SequencerControlButtonDefinition("stop", new SequencerControlAddress(1, 4)),
+    ...SequencerControlDefinitions.transportButtons.map(
+      (button) => new SequencerControlButtonDefinition(button.id, button.address),
+    ),
   ]);
   private static readonly bpmButtons: readonly SequencerControlBpmDefinition[] = Object.freeze([
-    new SequencerControlBpmDefinition(100, new SequencerControlAddress(2, 4)),
-    new SequencerControlBpmDefinition(130, new SequencerControlAddress(3, 4)),
-    new SequencerControlBpmDefinition(160, new SequencerControlAddress(4, 4)),
+    ...SequencerControlDefinitions.bpmButtons.map(
+      (button) => new SequencerControlBpmDefinition(button.bpm, button.address),
+    ),
   ]);
   private static readonly featureButtons: readonly SequencerControlFeatureDefinition[] =
     Object.freeze([
-      new SequencerControlFeatureDefinition(
-        "column-indicator",
-        "Indicator",
-        new SequencerControlAddress(5, 4),
+      ...SequencerControlDefinitions.featureButtons.map(
+        (button) => new SequencerControlFeatureDefinition(
+          button.id,
+          button.label,
+          button.address,
+        ),
       ),
     ]);
   private static readonly buttonById: Readonly<
@@ -474,7 +464,11 @@ export class SequencerControl extends LitElement {
       new CustomEvent<ISequencerControlTransportRequestedDetail>(
         SequencerControlEvents.transportRequested,
         {
-          detail: button.toTransportRequestDetail(),
+          detail: SequencerEventFactory.transportRequested({
+            id: button.id,
+            tag: buttonTagById[button.id],
+            address: button.address,
+          }).detail,
           bubbles: true,
           composed: true,
         },
@@ -510,10 +504,10 @@ export class SequencerControl extends LitElement {
       new CustomEvent<ISequencerControlBpmRequestedDetail>(
         SequencerControlEvents.bpmRequested,
         {
-          detail: {
+          detail: SequencerEventFactory.bpmRequested({
             bpm,
-            address: buttonDefinition.address.toTuple(),
-          },
+            address: buttonDefinition.address,
+          }).detail,
           bubbles: true,
           composed: true,
         },
@@ -551,10 +545,14 @@ export class SequencerControl extends LitElement {
         new CustomEvent<ISequencerControlColumnIndicatorToggleRequestedDetail>(
           SequencerControlEvents.columnIndicatorToggleRequested,
           {
-            detail: {
-              enabled: this.columnIndicatorEnabled,
-              address: buttonDefinition.address.toTuple(),
-            },
+            detail: SequencerEventFactory.featureToggleRequested(
+              {
+                id: featureId,
+                label: buttonDefinition.label,
+                address: buttonDefinition.address,
+              },
+              this.columnIndicatorEnabled,
+            ).detail,
             bubbles: true,
             composed: true,
           },
@@ -571,29 +569,42 @@ export class SequencerControl extends LitElement {
     id: SequencerControlButtonId,
     playing: boolean,
   ): boolean {
-    if (id === "play") {
-      return playing;
-    }
-
-    return !playing;
+    return SequencerControlState.isTransportActive(
+      {
+        playing,
+        bpm: 130,
+        columnIndicatorEnabled: false,
+      },
+      id,
+    );
   }
 
   private static isBpmActive(
     bpm: SequencerControlBpm,
     selectedBpm: SequencerControlBpm,
   ): boolean {
-    return bpm === selectedBpm;
+    return SequencerControlState.isBpmActive(
+      {
+        playing: false,
+        bpm: selectedBpm,
+        columnIndicatorEnabled: false,
+      },
+      bpm,
+    );
   }
 
   private static isFeatureActive(
     featureId: SequencerControlFeatureId,
     columnIndicatorEnabled: boolean,
   ): boolean {
-    if (featureId === "column-indicator") {
-      return columnIndicatorEnabled;
-    }
-
-    return false;
+    return SequencerControlState.isFeatureActive(
+      {
+        playing: false,
+        bpm: 130,
+        columnIndicatorEnabled,
+      },
+      featureId,
+    );
   }
 
   private static tryParseBpm(

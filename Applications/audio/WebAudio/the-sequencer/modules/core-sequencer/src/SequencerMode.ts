@@ -1,4 +1,4 @@
-// NEW: SequencerMode.ts
+import { DomainContext } from "./infrastructure/DomainContext.js";
 import { ValueObject } from "./infrastructure/ValueObject.js";
 import { Guard } from "./infrastructure/Guard.js";
 
@@ -15,8 +15,7 @@ export class SequencerModeName extends ValueObject {
   private constructor(value: string) {
     super();
 
-    Guard.notBlank(value, "SequencerModeName.Value");
-    this._value = value;
+    this._value = Guard.notBlank(value, DomainContext.SequencerModeName);
   }
 
   public get value(): string {
@@ -57,16 +56,11 @@ export class SequencerMode extends ValueObject {
   private constructor(name: SequencerModeName, maxTrackCount: number) {
     super();
 
-    Guard.notNull(name, "SequencerMode.Name");
-    Guard.integer(maxTrackCount, "SequencerMode.MaxTrackCount");
-    Guard.nonNegative(maxTrackCount, "SequencerMode.MaxTrackCount");
-
-    if (maxTrackCount === 0) {
-      throw new Error("SequencerMode.MaxTrackCount must be greater than zero.");
-    }
-
-    this._name = name;
-    this._maxTrackCount = maxTrackCount;
+    this._name = Guard.notNull(name, DomainContext.SequencerModeName);
+    this._maxTrackCount = Guard.positiveInteger(
+      maxTrackCount,
+      DomainContext.SequencerModeMaxTrackCount,
+    );
   }
 
   public get name(): SequencerModeName {

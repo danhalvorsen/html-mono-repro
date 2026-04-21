@@ -1,13 +1,11 @@
- 
+import { DomainContext } from "./DomainContext.js";
+import { Guard } from "./Guard.js";
+
 export abstract class Entity {
   private readonly _id: string;
 
   protected constructor(id: string) {
-    if (id.trim().length === 0) {
-      throw new Error("Entity id is required.");
-    }
-
-    this._id = id;
+    this._id = Guard.notBlank(id, DomainContext.EntityId);
   }
 
   public get id(): string {

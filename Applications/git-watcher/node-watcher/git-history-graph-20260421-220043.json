@@ -1,0 +1,49 @@
+{
+  "nodes": [
+    {
+      "id": "head",
+      "payload": {
+        "type": "head"
+      }
+    },
+    {
+      "id": "ref:refs/heads/master",
+      "payload": {
+        "type": "ref",
+        "refName": "refs/heads/master"
+      }
+    },
+    {
+      "id": "commit:c7d2537218b3a1068eeab18ce031526ad0297d96",
+      "payload": {
+        "type": "commit",
+        "sha": "c7d2537218b3a1068eeab18ce031526ad0297d96"
+      }
+    },
+    {
+      "id": "commit:976ad4a2352d6b07e0b968ef06fe7cf200106bf4",
+      "payload": {
+        "type": "commit",
+        "sha": "976ad4a2352d6b07e0b968ef06fe7cf200106bf4"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "sourceId": "head",
+      "targetId": "ref:refs/heads/master"
+    },
+    {
+      "sourceId": "ref:refs/heads/master",
+      "targetId": "commit:c7d2537218b3a1068eeab18ce031526ad0297d96"
+    },
+    {
+      "sourceId": "ref:refs/heads/master",
+      "targetId": "commit:976ad4a2352d6b07e0b968ef06fe7cf200106bf4"
+    },
+    {
+      "sourceId": "commit:976ad4a2352d6b07e0b968ef06fe7cf200106bf4",
+      "targetId": "commit:c7d2537218b3a1068eeab18ce031526ad0297d96"
+    }
+  ]
+}

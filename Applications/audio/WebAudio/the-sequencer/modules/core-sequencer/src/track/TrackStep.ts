@@ -1,8 +1,13 @@
+import { DomainContext } from "../infrastructure/DomainContext.js";
+import { DomainError } from "../infrastructure/DomainError.js";
+import { ErrorCode } from "../infrastructure/ErrorCode.js";
 import { Guard } from "../infrastructure/Guard.js";
 
-// ============================
-// Step (domain name, not Cell)
-// ============================
+export interface ITrackStepSnapshot<TValue> {
+  readonly index: number;
+  readonly isActive: boolean;
+  readonly value: TValue | null;
+}
 
 export class TrackStep<TValue> {
   private readonly _index: number;
@@ -10,10 +15,10 @@ export class TrackStep<TValue> {
   private _value: TValue | null;
 
   public constructor(index: number) {
-    Guard.integer(index, "Step index");
-    Guard.nonNegative(index, "Step index");
-
-    this._index = index;
+    this._index = Guard.nonNegative(
+      Guard.integer(index, DomainContext.TrackStepIndex),
+      DomainContext.TrackStepIndex,
+    );
     this._active = false;
     this._value = null;
   }
@@ -30,7 +35,7 @@ export class TrackStep<TValue> {
     return this._value;
   }
 
-  public activate(value: TValue | null): void {
+  public activate(value: TValue | null = null): void {
     this._active = true;
     this._value = value;
   }
@@ -41,10 +46,26 @@ export class TrackStep<TValue> {
   }
 
   public setValue(value: TValue | null): void {
+    if (!this._active) {
+      throw new DomainError(
+        ErrorCode.InvalidState,
+        DomainContext.TrackStepValue,
+        "Cannot set value on an inactive step.",
+      );
+    }
+
     this._value = value;
   }
 
   public clear(): void {
     this.deactivate();
+  }
+
+  public toSnapshot(): ITrackStepSnapshot<TValue> {
+    return Object.freeze({
+      index: this._index,
+      isActive: this._active,
+      value: this._value,
+    });
   }
 }
