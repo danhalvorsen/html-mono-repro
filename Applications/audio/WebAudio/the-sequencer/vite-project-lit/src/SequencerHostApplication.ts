@@ -1,8 +1,7 @@
 import { type ISequencerTransportController, type ISequencerPatternSelectionController, SequencerTransportState } from "../../modules/core-sequencer-application/src";
 import type { IBpmControllableMidiStreamProvider } from "../../modules/core-sequencer/src/index.ts";
-import { SequencerControlEvents, type ISequencerControlTransportRequestedDetail, type ISequencerControlBpmRequestedDetail, type ISequencerControlColumnIndicatorToggleRequestedDetail } from "../../modules/core-sequencer-ui/src/sequencerControl";
-import { SequencerTrackEvents, type ISequencerTrackPatternSelectionToggleRequestedDetail } from "../../modules/core-sequencer-ui/src/sequencerTrack";
-import type { IAudioContextGateway } from "./IAudioContextGateway";
+import { SequencerControlEvents } from "../../modules/core-sequencer-ui/src/sequencerControl.ts";
+import { SequencerUiEvents, type ISequencerBpmRequestedDetail as ISequencerControlBpmRequestedDetail, type ISequencerFeatureToggleRequestedDetail as ISequencerControlColumnIndicatorToggleRequestedDetail, type ISequencerTrackSelectionToggleRequestedDetail as ISequencerTrackPatternSelectionToggleRequestedDetail, type ISequencerTransportRequestedDetail as ISequencerControlTransportRequestedDetail } from "../../modules/core-sequencer-ui/src/ui-contract.ts";
 import type { ISequencerGridElement } from "./ISequencerGridElement";
 import type { ISequencerControlElement } from "./ISequencerControlElement";
 
@@ -12,7 +11,6 @@ export class SequencerHostApplication {
     private readonly transportController: ISequencerTransportController;
     private readonly patternSelectionController: ISequencerPatternSelectionController;
     private readonly midiStreamProvider: IBpmControllableMidiStreamProvider;
-    private readonly audioContextGateway: IAudioContextGateway;
     private transportPlaying = false;
     private columnIndicatorEnabled = false;
     private currentIndicatorColumn = -1;
@@ -21,8 +19,7 @@ export class SequencerHostApplication {
         documentRef: Document,
         transportController: ISequencerTransportController,
         patternSelectionController: ISequencerPatternSelectionController,
-        midiStreamProvider: IBpmControllableMidiStreamProvider,
-        audioContextGateway: IAudioContextGateway
+        midiStreamProvider: IBpmControllableMidiStreamProvider
     ) {
         this.controlElement = documentRef.querySelector(
             "sequencer-control"
@@ -33,7 +30,6 @@ export class SequencerHostApplication {
         this.transportController = transportController;
         this.patternSelectionController = patternSelectionController;
         this.midiStreamProvider = midiStreamProvider;
-        this.audioContextGateway = audioContextGateway;
     }
 
     public start(): void {
@@ -57,7 +53,6 @@ export class SequencerHostApplication {
 
                     if (customEvent.detail.id === "play") {
                         control.playing = true;
-                        await this.audioContextGateway.resumeOnUserGesture();
                         await this.transportController.requestPlay();
                         return;
                     }
@@ -95,7 +90,7 @@ export class SequencerHostApplication {
         }
 
         this.gridElement?.addEventListener(
-            SequencerTrackEvents.patternSelectionToggleRequested,
+            SequencerUiEvents.trackSelectionToggleRequested,
             async (event) => {
                 const customEvent = event as CustomEvent<ISequencerTrackPatternSelectionToggleRequestedDetail>;
 

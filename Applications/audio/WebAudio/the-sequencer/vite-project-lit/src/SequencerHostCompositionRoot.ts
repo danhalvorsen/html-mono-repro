@@ -8,34 +8,8 @@ import {
   SequencerTransportController,
 } from "../../modules/core-sequencer-application/src/index.ts";
 import { SequencerHostApplication } from "./SequencerHostApplication.ts";
-import { WebAudioMidiStreamPlaybackAdapter } from "./WebAudioMidiStreamPlaybackAdapter.ts";
-import { SequencerPlayerFactory } from "./SequencerPlayerFactory.ts";
+import { MidiStreamDispatchPlaybackAdapter } from "./MidiStreamDispatchPlaybackAdapter.ts";
 import type { ISequencerGridElement } from "./ISequencerGridElement.ts";
-import type { IAudioContextGateway } from "./IAudioContextGateway.ts";
-
-class BrowserAudioContextGateway implements IAudioContextGateway {
-  private readonly contextValue: AudioContext;
-
-  public constructor(context?: AudioContext) {
-    this.contextValue = context ?? new AudioContext();
-  }
-
-  public get context(): AudioContext {
-    return this.contextValue;
-  }
-
-  public async resumeOnUserGesture(): Promise<void> {
-    if (this.contextValue.state !== "suspended") {
-      return;
-    }
-
-    try {
-      await this.contextValue.resume();
-    } catch {
-      // Keep transport responsive even if browser policy blocks audio resume.
-    }
-  }
-}
 
 class GridSequencerPlaybackProjectionSource
   implements ISequencerPlaybackProjectionSource
@@ -65,7 +39,6 @@ export class SequencerHostCompositionRoot {
   }
 
   public start(): void {
-    const audioContextGateway = new BrowserAudioContextGateway();
     const playbackProjectionSource = new GridSequencerPlaybackProjectionSource(
       this.documentRef,
     );
@@ -83,20 +56,17 @@ export class SequencerHostCompositionRoot {
     const application = new SequencerHostApplication(
       this.documentRef,
       new SequencerTransportController({
-        midiPlayback: new WebAudioMidiStreamPlaybackAdapter(
-          SequencerPlayerFactory.createDefault(audioContextGateway.context),
-          {
-            streamProvider: midiStreamProvider,
-            onStepChanged: (stepIndex) => {
-              applicationRef?.updateCurrentStep(stepIndex);
-            },
+        midiPlayback: new MidiStreamDispatchPlaybackAdapter({
+          eventTarget: this.documentRef,
+          streamProvider: midiStreamProvider,
+          onStepChanged: (stepIndex) => {
+            applicationRef?.updateCurrentStep(stepIndex);
           },
-        ),
+        }),
         midiStreamProvider,
       }),
       patternSelectionController,
       midiStreamProvider,
-      audioContextGateway,
     );
     applicationRef = application;
 

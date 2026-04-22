@@ -11,10 +11,8 @@
   "dependencies": {
     "@monorepo/core-fsm": "workspace:*",
     "lit": "^3.3.2",
-    "@monorepo/music-core-midi": "workspace:*",
-    "@monorepo/music-core-midi-playback": "workspace:*",
     "@monorepo/core-sequencer": "workspace:*",
-    "@monorepo/core-sequencer-command-queries": "workspace:*",  
+    "@monorepo/core-sequencer-command-queries": "workspace:*",
     "@monorepo/core-sequencer-ui": "workspace:*"
   },
   "devDependencies": {
