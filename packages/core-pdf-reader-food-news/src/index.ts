@@ -1,5 +1,9 @@
-export * from './types/index.js';
-export * from './example.js';
-export * from './fixtures/exampleData.js';
+export interface CorePdfReaderFoodNewsModuleInfo {
+  readonly name: string;
+  readonly version: string;
+}
 
-// Additional exports can be added here as the module develops.
+export const corePdfReaderFoodNewsModuleInfo: CorePdfReaderFoodNewsModuleInfo = Object.freeze({
+  name: "@monorepo/core-pdf-reader-food-news",
+  version: "1.0.0",
+});

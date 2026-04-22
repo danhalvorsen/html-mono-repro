@@ -1,4 +1,4 @@
-import type { ICliUsageTextProvider } from "./CliTypes.js";
+import type { ICliUsageTextProvider } from "../../contracts/cli/ICliUsageTextProvider.js";
 
 export class WatcherCliUsageTextProvider implements ICliUsageTextProvider {
   public getUsageText(): string {

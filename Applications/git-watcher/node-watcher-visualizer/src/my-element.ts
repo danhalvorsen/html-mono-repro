@@ -1,4 +1,5 @@
-import { LitElement, css, html } from 'lit'
+import { LitElement, html } from 'lit'
+import { css } from '@lit/reactive-element/css-tag.js'
 import { customElement, property } from 'lit/decorators.js'
 import litLogo from './assets/lit.svg'
 import viteLogo from './assets/vite.svg'

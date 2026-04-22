@@ -296,7 +296,8 @@ export class MidiStringParser {
   }
 
   private parseTokenToStep(token: string): ParsedStep {
-    const [baseToken, ...modifiers] = token.split("-");
+    const [baseTokenRaw, ...modifiers] = token.split("-");
+    const baseToken = baseTokenRaw ?? "";
     const note = this.parseTokenToMidiNote(baseToken);
     const options = this.parseModifiers(modifiers);
 
@@ -305,31 +306,45 @@ export class MidiStringParser {
     const holdMs = options.holdMs ?? this.defaultHoldMs;
 
     if (note === null) {
-      return {
+      const step: ParsedStep = {
         token,
         message: null,
         holdMs,
         velocity: velocityNumber,
         channel: channelNumber,
-        filterInfo1: options.filterInfo1,
-        filterInfo2: options.filterInfo2,
-        sustain: options.sustain,
       };
+      if (options.filterInfo1 !== undefined) {
+        (step as ParsedStep & { filterInfo1: number }).filterInfo1 = options.filterInfo1;
+      }
+      if (options.filterInfo2 !== undefined) {
+        (step as ParsedStep & { filterInfo2: number }).filterInfo2 = options.filterInfo2;
+      }
+      if (options.sustain !== undefined) {
+        (step as ParsedStep & { sustain: number }).sustain = options.sustain;
+      }
+      return step;
     }
 
     const channel = MidiChannel.create(channelNumber);
     const velocity = MidiVelocity.create(velocityNumber);
 
-    return {
+    const step: ParsedStep = {
       token,
       message: createNoteOn(channel, note, velocity),
       holdMs,
       velocity: velocityNumber,
       channel: channelNumber,
-      filterInfo1: options.filterInfo1,
-      filterInfo2: options.filterInfo2,
-      sustain: options.sustain,
     };
+    if (options.filterInfo1 !== undefined) {
+      (step as ParsedStep & { filterInfo1: number }).filterInfo1 = options.filterInfo1;
+    }
+    if (options.filterInfo2 !== undefined) {
+      (step as ParsedStep & { filterInfo2: number }).filterInfo2 = options.filterInfo2;
+    }
+    if (options.sustain !== undefined) {
+      (step as ParsedStep & { sustain: number }).sustain = options.sustain;
+    }
+    return step;
   }
 
   private parseModifiers(modifiers: readonly string[]): {
@@ -383,14 +398,23 @@ export class MidiStringParser {
       );
     }
 
-    return {
-      holdMs,
-      velocity,
-      channel,
-      filterInfo1,
-      filterInfo2,
-      sustain,
-    };
+    const options: {
+      holdMs?: number;
+      velocity?: number;
+      channel?: number;
+      filterInfo1?: number;
+      filterInfo2?: number;
+      sustain?: number;
+    } = {};
+
+    if (holdMs !== undefined) options.holdMs = holdMs;
+    if (velocity !== undefined) options.velocity = velocity;
+    if (channel !== undefined) options.channel = channel;
+    if (filterInfo1 !== undefined) options.filterInfo1 = filterInfo1;
+    if (filterInfo2 !== undefined) options.filterInfo2 = filterInfo2;
+    if (sustain !== undefined) options.sustain = sustain;
+
+    return options;
   }
 
   private parseTokenToMidiNote(token: string): MidiNote | null {

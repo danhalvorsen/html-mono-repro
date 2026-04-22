@@ -11,7 +11,7 @@ import {
   Mouse,
   Position,
   TimeStamp
-} from "core-drag-controller-abstract";
+} from "@monorepo/core-drag-controller-abstract";
 
 export interface ThreeDragStartData extends IDragStartData {
   readonly worldStart: THREE.Vector3;

@@ -7,6 +7,13 @@
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
     "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@monorepo/core-math": [
+        "../../packages/core-math/dist/index.d.ts",
+        "../../packages/core-math/src/index.ts"
+      ]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",

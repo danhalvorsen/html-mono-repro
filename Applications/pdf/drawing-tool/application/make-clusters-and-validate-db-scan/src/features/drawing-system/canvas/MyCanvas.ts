@@ -1,4 +1,4 @@
-﻿import { LitElement, css, html, svg, type TemplateResult } from "../../../../node_modules/lit/development/index.js";
+﻿import { LitElement, css, html, svg, type TemplateResult } from "lit";
 import type { ICanvasObject, IGridCell } from "../canvas-object/contracts/CanvasObject.js";
 import type { IDrawingSystemServices } from "../composition/DrawingSystemServices.js";
 import { CanvasObjectKinds } from "../canvas-object/value-objects/CanvasObjectKind.js";

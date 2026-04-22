@@ -1,4 +1,4 @@
-﻿import { LitElement, type ReactiveController } from "../../../../../node_modules/lit/development/index.js";
+﻿import { LitElement, type ReactiveController } from "lit";
 import type { IDrawingSystemServices } from "../../composition/DrawingSystemServices.js";
 import type { IGridCell } from "../../canvas-object/contracts/CanvasObject.js";
 import type { ILogger } from "../contracts/ILogger.js";

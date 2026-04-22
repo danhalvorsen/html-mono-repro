@@ -10,6 +10,12 @@ export default defineConfig({
       "@monorepo/core-specifications": fileURLToPath(
         new URL("../../../../../packages/core-specifications/src/index.ts", import.meta.url),
       ),
+      "@monorepo/music-core-midi": fileURLToPath(
+        new URL("../../../../../packages/Audio/music-core-midi/src/index.ts", import.meta.url),
+      ),
+      "@monorepo/music-core-midi-playback": fileURLToPath(
+        new URL("../../../../../packages/Audio/music-core-midi-playback/src/index.ts", import.meta.url),
+      ),
     },
   },
 });

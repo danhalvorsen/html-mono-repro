@@ -1,4 +1,4 @@
-import { IMatrix } from '@my-graphics/core-math';
+import { IMatrix } from '@monorepo/core-math';
 
 export interface IIdentity {
   identity: IMatrix;

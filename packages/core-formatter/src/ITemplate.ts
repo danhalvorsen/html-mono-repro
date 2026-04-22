@@ -1,4 +1,4 @@
-import type { ITemplate as CoreTemplate } from "@my-graphics/core-template";
+import type { ITemplate as CoreTemplate } from "@monorepo/core-template";
 
 export type ITemplate<T = Record<string, any>> = CoreTemplate<T>;
 
@@ -34,3 +34,4 @@ export interface TemplateFormatterOptions<T = Record<string, any>> {
    */
   defaultModel?: T;
 }
+

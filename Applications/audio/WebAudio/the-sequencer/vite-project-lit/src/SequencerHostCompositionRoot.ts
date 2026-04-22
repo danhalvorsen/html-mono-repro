@@ -9,6 +9,7 @@ import {
 } from "../../modules/core-sequencer-application/src/index.ts";
 import { SequencerHostApplication } from "./SequencerHostApplication.ts";
 import { MidiStreamDispatchPlaybackAdapter } from "./MidiStreamDispatchPlaybackAdapter.ts";
+import { SequencerMidiPlaybackPlayerFactory } from "./SequencerMidiPlaybackPlayerFactory.ts";
 import type { ISequencerGridElement } from "./ISequencerGridElement.ts";
 
 class GridSequencerPlaybackProjectionSource
@@ -57,7 +58,7 @@ export class SequencerHostCompositionRoot {
       this.documentRef,
       new SequencerTransportController({
         midiPlayback: new MidiStreamDispatchPlaybackAdapter({
-          eventTarget: this.documentRef,
+          player: SequencerMidiPlaybackPlayerFactory.createDefault(),
           streamProvider: midiStreamProvider,
           onStepChanged: (stepIndex) => {
             applicationRef?.updateCurrentStep(stepIndex);

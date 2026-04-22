@@ -1,6 +1,6 @@
 import { IDataManager } from '../interfaces/IDataManager.js';
 import { DataObject } from './DataObject.js';
-import { Matrix } from '@my-graphics/core-math';
+import { Matrix } from '@monorepo/core-math';
 
 export class DataManager<T> implements IDataManager<T> {
   private objects: Map<string, DataObject<T>> = new Map();

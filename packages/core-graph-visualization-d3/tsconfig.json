@@ -19,7 +19,7 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
-    "types": [],
+    "types": ["d3-force"],
     "skipLibCheck": true
   },
   "include": ["src/**/*.ts"],

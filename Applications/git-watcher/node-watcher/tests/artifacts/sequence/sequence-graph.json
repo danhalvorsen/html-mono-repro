@@ -17,12 +17,12 @@
       }
     },
     {
-      "id": "commit:0bd142cae3c20a16d61bdafa27a00bc6a504b191",
+      "id": "commit:52318067762ec4b5efae36677cde5210c18d8b31",
       "payload": {
         "type": "commit",
-        "sha": "0bd142cae3c20a16d61bdafa27a00bc6a504b191",
-        "shortSha": "0bd142c",
-        "label": "0bd142c base [master]",
+        "sha": "52318067762ec4b5efae36677cde5210c18d8b31",
+        "shortSha": "5231806",
+        "label": "5231806 base [master]",
         "branchTips": [
           "master"
         ],
@@ -42,12 +42,12 @@
       }
     },
     {
-      "id": "commit:dd49fbd266360a9bbd48c050e53062e2036b78fe",
+      "id": "commit:f37b150a35cdfe6349445d7ad0b222c0bbaffbb0",
       "payload": {
         "type": "commit",
-        "sha": "dd49fbd266360a9bbd48c050e53062e2036b78fe",
-        "shortSha": "dd49fbd",
-        "label": "dd49fbd feature commit [feature]",
+        "sha": "f37b150a35cdfe6349445d7ad0b222c0bbaffbb0",
+        "shortSha": "f37b150",
+        "label": "f37b150 feature commit [feature]",
         "branchTips": [
           "feature"
         ],
@@ -61,19 +61,19 @@
   "edges": [
     {
       "sourceId": "ref:refs/heads/master",
-      "targetId": "commit:0bd142cae3c20a16d61bdafa27a00bc6a504b191"
+      "targetId": "commit:52318067762ec4b5efae36677cde5210c18d8b31"
     },
     {
       "sourceId": "head",
       "targetId": "ref:refs/heads/feature"
     },
     {
-      "sourceId": "commit:dd49fbd266360a9bbd48c050e53062e2036b78fe",
-      "targetId": "commit:0bd142cae3c20a16d61bdafa27a00bc6a504b191"
+      "sourceId": "commit:f37b150a35cdfe6349445d7ad0b222c0bbaffbb0",
+      "targetId": "commit:52318067762ec4b5efae36677cde5210c18d8b31"
     },
     {
       "sourceId": "ref:refs/heads/feature",
-      "targetId": "commit:dd49fbd266360a9bbd48c050e53062e2036b78fe"
+      "targetId": "commit:f37b150a35cdfe6349445d7ad0b222c0bbaffbb0"
     }
   ]
 }

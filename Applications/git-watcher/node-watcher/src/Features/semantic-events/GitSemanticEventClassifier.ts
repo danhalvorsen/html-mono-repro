@@ -1,9 +1,11 @@
 import {
-  isTransientGitPath,
+  createGitSemanticEvent,
   type GitFileChange,
+  GitPath,
+  GitRelativePath,
   type GitSemanticEvent,
   type GitSemanticEventKind,
-} from "../../domain/GitDomain.js";
+} from "../../domain/git/index.js";
 
 export interface IGitSemanticEventRule {
   classify(change: GitFileChange): readonly GitSemanticEvent[];
@@ -18,12 +20,22 @@ export interface IGitSemanticEventFactory {
 }
 
 export interface ITransientGitPathPolicy {
-  isTransient(relativePath: string): boolean;
+  isTransient(relativePath: GitRelativePath): boolean;
 }
 
 export class TransientGitPathPolicy implements ITransientGitPathPolicy {
-  public isTransient(relativePath: string): boolean {
-    return isTransientGitPath(relativePath);
+  public isTransient(relativePath: GitRelativePath): boolean {
+    if (relativePath.endsWith(GitPath.LockSuffix)) {
+      return true;
+    }
+
+    const pathValue = relativePath.toString();
+
+    return (
+      pathValue === GitPath.CommitEditMessage ||
+      pathValue === GitPath.MergeMessage ||
+      pathValue === GitPath.SquashMessage
+    );
   }
 }
 
@@ -33,13 +45,13 @@ export class GitSemanticEventFactory implements IGitSemanticEventFactory {
     kind: GitSemanticEventKind,
     description: string,
   ): GitSemanticEvent {
-    return {
+    return createGitSemanticEvent({
       timestampUtc: change.timestampUtc,
       relativePath: change.relativePath,
       absolutePath: change.absolutePath,
       kind,
       description,
-    };
+    });
   }
 }
 
@@ -204,7 +216,7 @@ export class GitSemanticEventClassifier {
   }
 
   public classify(change: GitFileChange): readonly GitSemanticEvent[] {
-    if (this.transientPathPolicy.isTransient(change.relativePath)) {
+    if (this.transientPathPolicy.isTransient(GitRelativePath.create(change.relativePath))) {
       return [];
     }
 

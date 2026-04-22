@@ -11,12 +11,16 @@ export interface CliOptions {
   readonly hasExplicitGraphOutputJsonPath: boolean;
 }
 
-export interface WatcherConfigFile {
+export interface WatcherProjectConfig {
   readonly gitPath?: string;
   readonly repositoryPath?: string;
   readonly includeObjectDirectories?: boolean;
   readonly ignoredRelativePaths?: readonly string[];
   readonly graphOutputJsonPath?: string;
+}
+
+export interface WatcherConfigFile extends WatcherProjectConfig {
+  readonly projects?: readonly WatcherProjectConfig[];
 }
 
 export interface CliOptionDefinition {

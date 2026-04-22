@@ -13,6 +13,17 @@ This folder contains integration tests for `node-watcher` that run real Git comm
   - `tests/scenarios/steps/WriteFileStep.ts`
   - `tests/fixtures/GraphAssertions.ts`
 
+## Learning test scripts
+
+- Add beginner-friendly Git operation examples in `tests/learning/`.
+- Keep one Git operation per file: `<operation>.test.ts`.
+- Reuse the same runtime/helpers/assertions from the integration guide:
+  - `tests/integration/helpers.ts`
+  - `tests/scenarios/GitScenario.ts`
+  - `tests/scenarios/steps/GitCommandStep.ts`
+  - `tests/scenarios/steps/WriteFileStep.ts`
+  - `tests/fixtures/GraphAssertions.ts`
+
 ## Standard test pattern
 
 1. Create runtime with `createIntegrationRuntime(import.meta.url, "<suite-name>")`.
@@ -111,4 +122,10 @@ Run a single file:
 
 ```bash
 pnpm vitest run tests/integration/<operation>.test.ts
+```
+
+Run all learning tests:
+
+```bash
+pnpm vitest run tests/learning
 ```

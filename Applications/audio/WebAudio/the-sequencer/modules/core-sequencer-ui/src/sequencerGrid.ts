@@ -2,7 +2,8 @@ import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import "./sequencerTrack.js";
-import type { ISequencerTrackProjection, SequencerTrack } from "./sequencerTrack.js";
+import type { ISequencerTrackProjection } from "./ui-contract.js";
+import type { SequencerTrack } from "./sequencerTrack.js";
 
 export interface ISequencerGridTrackProjection {
   readonly trackId: number;

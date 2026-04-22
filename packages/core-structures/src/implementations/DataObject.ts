@@ -1,6 +1,6 @@
 
 import { IDataObject } from '../interfaces/IDataObject.js';
-import { Matrix } from '@my-graphics/core-math';
+import { Matrix } from '@monorepo/core-math';
 
 export class DataObject<T> implements IDataObject<T> {
   id: string;

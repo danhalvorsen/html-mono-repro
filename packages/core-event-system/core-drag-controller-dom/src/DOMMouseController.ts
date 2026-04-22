@@ -1,5 +1,5 @@
-import { Mouse } from "core-drag-controller-abstract";
-import { Position } from "core-drag-controller-abstract";
+import { Mouse } from "@monorepo/core-drag-controller-abstract";
+import { Position } from "@monorepo/core-drag-controller-abstract";
 
 export class DOMMouseController extends Mouse.BaseMouseController {
   private readonly target: HTMLElement;

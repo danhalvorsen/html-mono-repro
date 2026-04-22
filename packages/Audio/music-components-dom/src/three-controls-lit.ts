@@ -3,7 +3,7 @@ import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("three-controls-lit")
 export class ThreeControlsLit extends LitElement {
-	static styles = css`
+	static override styles = css`
 		:host { display:block; font-family: system-ui, sans-serif; }
 		.row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
 		label { font-size:12px; display:flex; flex-direction:column; }
@@ -49,7 +49,7 @@ export class ThreeControlsLit extends LitElement {
 		}, 300);
 	}
 
-	render() {
+	protected override render() {
 		return html`
 			<div class="row">
 				<label>

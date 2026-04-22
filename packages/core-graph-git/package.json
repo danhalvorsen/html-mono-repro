@@ -1,0 +1,41 @@
+ 
+{
+  "name": "@monorepo/core-graph-git",
+  "version": "1.0.0",
+  "description": "A module for visualizing git history as a graph.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "module",
+    "typescript",
+    "example"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "d3-force": "^3.0.0",
+    "@monorepo/core-graph-visualisation": "workspace:*",
+    "lit": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/d3-force": "^3.0.10",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}

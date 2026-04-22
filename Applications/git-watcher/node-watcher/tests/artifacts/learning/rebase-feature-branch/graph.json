@@ -1,0 +1,115 @@
+{
+  "nodes": [
+    {
+      "id": "head",
+      "payload": {
+        "type": "head",
+        "label": "HEAD"
+      }
+    },
+    {
+      "id": "ref:refs/heads/master",
+      "payload": {
+        "type": "ref",
+        "refName": "refs/heads/master",
+        "shortName": "master",
+        "label": "master"
+      }
+    },
+    {
+      "id": "commit:5cc38075ad8dffc45280bfd3f52254f3a1e55bf1",
+      "payload": {
+        "type": "commit",
+        "sha": "5cc38075ad8dffc45280bfd3f52254f3a1e55bf1",
+        "shortSha": "5cc3807",
+        "label": "5cc3807 base commit",
+        "branchTips": [],
+        "tagNames": [],
+        "isHead": false,
+        "message": "base commit",
+        "author": "Integration Test"
+      }
+    },
+    {
+      "id": "ref:refs/heads/feature",
+      "payload": {
+        "type": "ref",
+        "refName": "refs/heads/feature",
+        "shortName": "feature",
+        "label": "feature"
+      }
+    },
+    {
+      "id": "commit:075b506c85cac1c5126a55a722dbcff97570a829",
+      "payload": {
+        "type": "commit",
+        "sha": "075b506c85cac1c5126a55a722dbcff97570a829",
+        "shortSha": "075b506",
+        "label": "075b506 feature commit",
+        "branchTips": [],
+        "tagNames": [],
+        "isHead": false,
+        "message": "feature commit",
+        "author": "Integration Test"
+      }
+    },
+    {
+      "id": "commit:f9cf92672a5d7613a25d8be5d3f2a9580fbceb35",
+      "payload": {
+        "type": "commit",
+        "sha": "f9cf92672a5d7613a25d8be5d3f2a9580fbceb35",
+        "shortSha": "f9cf926",
+        "label": "f9cf926 main commit [master]",
+        "branchTips": [
+          "master"
+        ],
+        "tagNames": [],
+        "isHead": false,
+        "message": "main commit",
+        "author": "Integration Test"
+      }
+    },
+    {
+      "id": "commit:ea139fc8d41e5b5ed2468ca747c052971d7352e0",
+      "payload": {
+        "type": "commit",
+        "sha": "ea139fc8d41e5b5ed2468ca747c052971d7352e0",
+        "shortSha": "ea139fc",
+        "label": "ea139fc feature commit [feature]",
+        "branchTips": [
+          "feature"
+        ],
+        "tagNames": [],
+        "isHead": true,
+        "message": "feature commit",
+        "author": "Integration Test"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "sourceId": "commit:075b506c85cac1c5126a55a722dbcff97570a829",
+      "targetId": "commit:5cc38075ad8dffc45280bfd3f52254f3a1e55bf1"
+    },
+    {
+      "sourceId": "commit:f9cf92672a5d7613a25d8be5d3f2a9580fbceb35",
+      "targetId": "commit:5cc38075ad8dffc45280bfd3f52254f3a1e55bf1"
+    },
+    {
+      "sourceId": "ref:refs/heads/master",
+      "targetId": "commit:f9cf92672a5d7613a25d8be5d3f2a9580fbceb35"
+    },
+    {
+      "sourceId": "commit:ea139fc8d41e5b5ed2468ca747c052971d7352e0",
+      "targetId": "commit:f9cf92672a5d7613a25d8be5d3f2a9580fbceb35"
+    },
+    {
+      "sourceId": "head",
+      "targetId": "ref:refs/heads/feature"
+    },
+    {
+      "sourceId": "ref:refs/heads/feature",
+      "targetId": "commit:ea139fc8d41e5b5ed2468ca747c052971d7352e0"
+    }
+  ]
+}

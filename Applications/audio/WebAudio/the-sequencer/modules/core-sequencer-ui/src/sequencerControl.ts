@@ -42,36 +42,6 @@ const buttonTagById: Readonly<Record<SequencerControlButtonId, SequencerControlB
   stop: "stop-button",
 });
 
-class SequencerControlAddress {
-  public readonly column: number;
-  public readonly row: number;
-
-  public constructor(column: number, row: number) {
-    SequencerControlAddress.ensureNonNegativeInteger(column, "column");
-    SequencerControlAddress.ensureNonNegativeInteger(row, "row");
-    this.column = column;
-    this.row = row;
-  }
-
-  public toAttributeValue(): string {
-    return `[${this.column},${this.row}]`;
-  }
-
-  public toIdSuffix(): string {
-    return `${this.column}-${this.row}`;
-  }
-
-  public toTuple(): readonly [column: number, row: number] {
-    return [this.column, this.row] as const;
-  }
-
-  private static ensureNonNegativeInteger(value: number, name: string): void {
-    if (!Number.isInteger(value) || value < 0) {
-      throw new Error(`SequencerControlAddress ${name} must be a non-negative integer.`);
-    }
-  }
-}
-
 class SequencerControlButtonDefinition {
   public readonly id: SequencerControlButtonId;
   public readonly address: SequencerAddress;

@@ -1,38 +1,48 @@
-import type { IMidiStreamPlaybackPort, ISequencerMidiStreamProvider } from "../../modules/core-sequencer-application/src/index.ts";
-import type { ISequencerPlaybackFrame, ISequencerPlaybackFrameProvider } from "../../modules/core-sequencer/src/index.ts";
-
-const SequencerMidiStreamEvent = Object.freeze({
-  Started: "sequencer-midi-stream-started",
-  Stopped: "sequencer-midi-stream-stopped",
-} as const);
-
-interface IStreamStartedDetail {
-  readonly midiStream: string;
-}
-
-interface IStreamStoppedDetail {
-  readonly reason: "stop-requested";
-}
+import {
+  MidiChannel,
+  MidiNote,
+  MidiStringParser,
+  MidiVelocity,
+  createNoteOn,
+  type MidiMessage,
+  type ParsedStep,
+} from "@monorepo/music-core-midi";
+import type {
+  IMidiPlayer,
+  MidiPlaybackOptions,
+} from "@monorepo/music-core-midi-playback";
+import type {
+  IMidiStreamPlaybackPort,
+  ISequencerMidiStreamProvider,
+} from "../../modules/core-sequencer-application/src/index.ts";
+import type {
+  ISequencerPlaybackFrame,
+  ISequencerPlaybackFrameProvider,
+} from "../../modules/core-sequencer/src/index.ts";
 
 interface IMidiStreamDispatchPlaybackAdapterDependencies {
-  readonly eventTarget: EventTarget;
+  readonly player: IMidiPlayer;
   readonly streamProvider?: ISequencerMidiStreamProvider;
   readonly onStepChanged?: (stepIndex: number) => void;
 }
 
 export class MidiStreamDispatchPlaybackAdapter implements IMidiStreamPlaybackPort {
-  private readonly eventTarget: EventTarget;
+  private static readonly defaultVelocity = 112;
+  private readonly parser = new MidiStringParser();
+  private readonly player: IMidiPlayer;
   private readonly streamProvider?: ISequencerMidiStreamProvider;
   private readonly onStepChanged?: (stepIndex: number) => void;
+  private readonly midiChannel: MidiChannel;
   private activeRunId = 0;
   private currentStream = "";
 
   public constructor(
     dependencies: IMidiStreamDispatchPlaybackAdapterDependencies,
   ) {
-    this.eventTarget = dependencies.eventTarget;
+    this.player = dependencies.player;
     this.streamProvider = dependencies.streamProvider;
     this.onStepChanged = dependencies.onStepChanged;
+    this.midiChannel = MidiChannel.create(1);
   }
 
   public async start(midiStream: string): Promise<void> {
@@ -40,33 +50,66 @@ export class MidiStreamDispatchPlaybackAdapter implements IMidiStreamPlaybackPor
     const runId = this.activeRunId;
     this.currentStream = midiStream;
 
-    this.dispatchStarted(this.resolveLatestStream());
     void this.publishPlaybackSteps(runId);
   }
 
   public async stop(): Promise<void> {
     this.activeRunId += 1;
     this.onStepChanged?.(-1);
-    this.dispatchStopped();
   }
 
   private async publishPlaybackSteps(runId: number): Promise<void> {
     while (this.activeRunId === runId) {
       const frame = this.tryGetPlaybackFrame();
 
-      if (frame === undefined || frame.steps.length === 0) {
+      if (frame !== undefined) {
+        if (frame.steps.length === 0) {
+          await MidiStreamDispatchPlaybackAdapter.wait(50);
+          continue;
+        }
+
+        for (const step of frame.steps) {
+          if (this.activeRunId !== runId) {
+            return;
+          }
+
+          this.onStepChanged?.(step.stepIndex);
+          if (step.notes.length > 0) {
+            for (const noteNumber of step.notes) {
+              const noteMessage = this.tryCreateNoteMessage(noteNumber);
+              if (noteMessage === undefined) {
+                continue;
+              }
+
+              this.player.play(noteMessage, {
+                noteLengthSeconds: Math.max(0.03, step.holdMs / 1000),
+              });
+            }
+          }
+
+          await MidiStreamDispatchPlaybackAdapter.wait(step.holdMs);
+        }
+
+        continue;
+      }
+
+      const latestStream = this.resolveLatestStream();
+      const steps = this.parser.parse(latestStream);
+
+      if (steps.length === 0) {
         await MidiStreamDispatchPlaybackAdapter.wait(50);
         continue;
       }
 
-      this.dispatchStarted(this.resolveLatestStream());
-
-      for (const step of frame.steps) {
+      for (const step of steps) {
         if (this.activeRunId !== runId) {
           return;
         }
 
-        this.onStepChanged?.(step.stepIndex);
+        if (step.message !== null) {
+          this.player.play(step.message, this.toPlaybackOptions(step));
+        }
+
         await MidiStreamDispatchPlaybackAdapter.wait(step.holdMs);
       }
     }
@@ -86,26 +129,37 @@ export class MidiStreamDispatchPlaybackAdapter implements IMidiStreamPlaybackPor
     return nextStream;
   }
 
-  private dispatchStarted(midiStream: string): void {
-    this.eventTarget.dispatchEvent(
-      new CustomEvent<IStreamStartedDetail>(SequencerMidiStreamEvent.Started, {
-        detail: { midiStream },
-      }),
-    );
-  }
-
-  private dispatchStopped(): void {
-    this.eventTarget.dispatchEvent(
-      new CustomEvent<IStreamStoppedDetail>(SequencerMidiStreamEvent.Stopped, {
-        detail: { reason: "stop-requested" },
-      }),
-    );
+  private toPlaybackOptions(step: ParsedStep): MidiPlaybackOptions {
+    return {
+      noteLengthSeconds: Math.max(0.03, step.holdMs / 1000),
+      ...(step.filterInfo1 !== undefined
+        ? { filterFrequency: step.filterInfo1 }
+        : {}),
+      ...(step.filterInfo2 !== undefined ? { filterQ: step.filterInfo2 } : {}),
+      ...(step.sustain !== undefined ? { sustain: step.sustain } : {}),
+    };
   }
 
   private isPlaybackFrameProvider(
     provider: ISequencerMidiStreamProvider | undefined,
   ): provider is ISequencerMidiStreamProvider & ISequencerPlaybackFrameProvider {
     return provider !== undefined && "getPlaybackFrame" in provider;
+  }
+
+  private tryCreateNoteMessage(noteNumber: number): MidiMessage | undefined {
+    if (!Number.isFinite(noteNumber)) {
+      return undefined;
+    }
+
+    try {
+      return createNoteOn(
+        this.midiChannel,
+        MidiNote.create(Math.floor(noteNumber)),
+        MidiVelocity.create(MidiStreamDispatchPlaybackAdapter.defaultVelocity),
+      );
+    } catch {
+      return undefined;
+    }
   }
 
   private static wait(ms: number): Promise<void> {

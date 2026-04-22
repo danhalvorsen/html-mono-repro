@@ -1,4 +1,4 @@
-﻿import { LitElement, css, html, type TemplateResult } from "../../../../node_modules/lit/development/index.js";
+﻿import { LitElement, css, html, type TemplateResult } from "lit";
 import type { IDrawingSystemServices } from "../composition/DrawingSystemServices.js";
 import { createDrawingSystemServices } from "../composition/createDrawingSystemServices.js";
 import "./MyCanvas.js";

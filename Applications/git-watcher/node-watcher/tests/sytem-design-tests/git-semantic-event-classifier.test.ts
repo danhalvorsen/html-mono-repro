@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { GitFileChange, GitSemanticEvent } from "../../src/domain/GitDomain.js";
+import type { GitFileChange, GitSemanticEvent } from "../../src/domain/git/index.js";
+import { GitRelativePath } from "../../src/domain/git/index.js";
 import {
   GitSemanticEventClassifier,
   type IGitSemanticEventRule,
@@ -20,7 +21,7 @@ class GitFileChangeFixture {
 }
 
 class AllowAllTransientPathPolicy implements ITransientGitPathPolicy {
-  public isTransient(_relativePath: string): boolean {
+  public isTransient(_relativePath: GitRelativePath): boolean {
     return false;
   }
 }

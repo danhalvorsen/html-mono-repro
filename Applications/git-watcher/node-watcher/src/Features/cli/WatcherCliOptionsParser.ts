@@ -1,9 +1,9 @@
-import { CliParserFactory } from "./CliParserFactory.js";
+import { CliParserFactory } from "../../infrastructure/cli/CliParserFactory.js";
 import type {
   CliOptionSchema,
   CliOptions,
-  IWatcherCliOptionsParser,
-} from "./CliTypes.js";
+} from "../../contracts/cli/CliTypes.js";
+import type { IWatcherCliOptionsParser } from "../../contracts/cli/IWatcherCliOptionsParser.js";
 
 export class WatcherCliOptionsParser implements IWatcherCliOptionsParser {
   private readonly optionSchema: CliOptionSchema = {
@@ -28,6 +28,7 @@ export class WatcherCliOptionsParser implements IWatcherCliOptionsParser {
     const parsed = this.cliParserFactory
       .create()
       .parseOptions([...argumentsVector], this.optionSchema);
+
     let repositoryPath: string | null = null;
     let hasExplicitRepositoryPath = false;
 
@@ -77,10 +78,7 @@ export class WatcherCliOptionsParser implements IWatcherCliOptionsParser {
     }
 
     const includeObjectDirectories = parsed.options["include-objects"] === true;
-    const ignoredRelativePaths = this.optionAsStringArray(
-      parsed.options.ignore,
-      "ignore",
-    );
+    const ignoredRelativePaths = this.optionAsStringArray(parsed.options.ignore, "ignore");
     const graphOutputJsonPath =
       this.optionAsString(parsed.options["graph-json"], "graph-json") ??
       "git-history-graph.json";

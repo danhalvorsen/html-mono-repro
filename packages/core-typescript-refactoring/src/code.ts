@@ -14,7 +14,7 @@ import {
 } from "@monorepo/core-console-cli";
 
 import ts from "typescript";
-
+import { CoreFileSystemModule, Path } from "@monorepo/core-filesystem";
 // ============================================================================
 // Refactoring Contracts
 // ============================================================================
@@ -431,3 +431,4 @@ export class TypeScriptRefactoringCliApplication {
     this.resultWriter.write(result);
   }
 }
+

@@ -1,4 +1,4 @@
-﻿import { LitElement, css, html, type TemplateResult } from "../../../../node_modules/lit/development/index.js";
+﻿import { LitElement, css, html, type TemplateResult } from "lit";
 import type { CanvasObjectKind } from "../canvas-object/value-objects/CanvasObjectKind.js";
 import { CanvasObjectKinds } from "../canvas-object/value-objects/CanvasObjectKind.js";
 import { MenuShapeCatalog, type IMenuShapeItem } from "../menu/MenuShapeCatalog.js";
