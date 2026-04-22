@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "echo \"core-plot build temporarily bypassed\" && exit 0",
+    "build": "tsc -p tsconfig.json",
     "test": "vitest run",
     "test:typecheck": "vitest run --typecheck"
   },

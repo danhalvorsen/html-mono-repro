@@ -1,4 +1,5 @@
 import readline from "node:readline";
+import { pathToFileURL } from "node:url";
  
 import type { ICommandBase } from "@monorepo/core-design-patterns-cqrs";
 import {
@@ -331,4 +332,25 @@ class CompositionRoot {
   }
 }
 
-new CompositionRoot().createHost().start();
+export function evaluateExpression(expression: string): number {
+  const operatorRegistry = new OperatorRegistry([
+    new AdditionOperator(),
+    new SubtractionOperator(),
+    new MultiplicationOperator(),
+    new DivisionOperator(),
+  ]);
+
+  const parser = new ArithmeticExpressionParser();
+  const evaluator = new ArithmeticExpressionEvaluator(parser, operatorRegistry);
+
+  return evaluator.evaluate(expression);
+}
+
+const entryArg = process.argv[1];
+const isDirectExecution =
+  typeof entryArg === "string" &&
+  import.meta.url === pathToFileURL(entryArg).href;
+
+if (isDirectExecution) {
+  new CompositionRoot().createHost().start();
+}

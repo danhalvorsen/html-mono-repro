@@ -33,6 +33,7 @@ lerna-debug.log*
 tmp/
 tmpclaude-*
 **/tmpclaude-*/
+Applications/git-watcher/node-watcher/tests/artifacts/**/*.json
 
 # ----------------------------
 # OS / Editor

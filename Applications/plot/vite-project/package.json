@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "echo \"plot/vite-project build temporarily bypassed\" && exit 0",
+    "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -160,6 +160,7 @@ export class DragController implements ReactiveController, IDragController {
       new OnDragMessage({
         operation,
         targetId: this.draggableIdentity.getId(target),
+        target,
         x: position.x,
         y: position.y,
       }),

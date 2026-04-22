@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "echo \"sequencer/demo build temporarily bypassed\" && exit 0",
+    "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

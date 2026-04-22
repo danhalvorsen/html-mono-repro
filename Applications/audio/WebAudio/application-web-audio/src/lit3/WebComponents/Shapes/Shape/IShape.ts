@@ -2,7 +2,7 @@
 // FILE: src/lit3/WebComponents/Shapes/Shape/IShape.ts
 // ====================================================================================
 
-import { Vector2, Rectangle } from "@monorepo/core-math";
+import { Vector2, Rectangle2 } from "@monorepo/core-math";
 import { ICanvasContext } from "../../ICanvasContext";
 import { ShapeType } from "./Shape";
 
@@ -17,7 +17,7 @@ export interface IShape {
   getWidth(): number;
   setWidth(width: number): void;
 
-  getBoundaries(): Rectangle;
+  getBoundaries(): Rectangle2;
 
   getHeight(): number;
   setHeight(height: number): void;

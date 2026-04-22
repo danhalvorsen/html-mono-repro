@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1776626271861" clover="3.2.0">
-  <project timestamp="1776626271861" name="All files">
+<coverage generated="1776854829401" clover="3.2.0">
+  <project timestamp="1776854829401" name="All files">
     <metrics statements="1722" coveredstatements="364" conditionals="100" coveredconditionals="78" methods="78" coveredmethods="65" elements="1900" coveredelements="507" complexity="0" loc="1722" ncloc="1722" packages="26" files="54" classes="54"/>
     <package name="src">
       <metrics statements="61" coveredstatements="0" conditionals="2" coveredconditionals="1" methods="2" coveredmethods="1"/>
-      <file name="Guard.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\Guard.ts">
+      <file name="Guard.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\Guard.ts">
         <metrics statements="22" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="4" count="0" type="stmt"/>
         <line num="5" count="0" type="stmt"/>
@@ -29,7 +29,7 @@
         <line num="24" count="0" type="stmt"/>
         <line num="25" count="0" type="stmt"/>
       </file>
-      <file name="my-element.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\my-element.ts">
+      <file name="my-element.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\my-element.ts">
         <metrics statements="39" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="2" count="0" type="stmt"/>
@@ -74,7 +74,7 @@
     </package>
     <package name="src.backend">
       <metrics statements="96" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
-      <file name="viteBackendPlugin.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\backend\viteBackendPlugin.ts">
+      <file name="viteBackendPlugin.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\backend\viteBackendPlugin.ts">
         <metrics statements="96" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="3" count="0" type="stmt"/>
@@ -176,7 +176,7 @@
     </package>
     <package name="src.backend.commands">
       <metrics statements="48" coveredstatements="46" conditionals="10" coveredconditionals="8" methods="5" coveredmethods="5"/>
-      <file name="SaveRectangleCellsCommand.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\backend\commands\SaveRectangleCellsCommand.ts">
+      <file name="SaveRectangleCellsCommand.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\backend\commands\SaveRectangleCellsCommand.ts">
         <metrics statements="6" coveredstatements="6" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="3" count="1" type="stmt"/>
         <line num="7" count="1" type="cond" truecount="1" falsecount="0"/>
@@ -185,7 +185,7 @@
         <line num="10" count="2" type="stmt"/>
         <line num="11" count="1" type="stmt"/>
       </file>
-      <file name="SaveRectangleCellsCommandHandler.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\backend\commands\SaveRectangleCellsCommandHandler.ts">
+      <file name="SaveRectangleCellsCommandHandler.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\backend\commands\SaveRectangleCellsCommandHandler.ts">
         <metrics statements="42" coveredstatements="40" conditionals="9" coveredconditionals="7" methods="4" coveredmethods="4"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -233,12 +233,12 @@
     </package>
     <package name="src.backend.queries">
       <metrics statements="15" coveredstatements="0" conditionals="2" coveredconditionals="1" methods="2" coveredmethods="1"/>
-      <file name="GetBackendHealthQuery.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\backend\queries\GetBackendHealthQuery.ts">
+      <file name="GetBackendHealthQuery.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\backend\queries\GetBackendHealthQuery.ts">
         <metrics statements="2" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="3" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
       </file>
-      <file name="GetBackendHealthQueryHandler.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\backend\queries\GetBackendHealthQueryHandler.ts">
+      <file name="GetBackendHealthQueryHandler.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\backend\queries\GetBackendHealthQueryHandler.ts">
         <metrics statements="13" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="2" count="0" type="stmt"/>
@@ -257,10 +257,10 @@
     </package>
     <package name="src.drawing">
       <metrics statements="13" coveredstatements="0" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
-      <file name="ICanvasObjectIdGenerator.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\drawing\ICanvasObjectIdGenerator.ts">
+      <file name="ICanvasObjectIdGenerator.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\drawing\ICanvasObjectIdGenerator.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
-      <file name="IncrementingCanvasObjectIdGenerator.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\drawing\IncrementingCanvasObjectIdGenerator.ts">
+      <file name="IncrementingCanvasObjectIdGenerator.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\drawing\IncrementingCanvasObjectIdGenerator.ts">
         <metrics statements="13" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="3" count="0" type="stmt"/>
         <line num="6" count="0" type="stmt"/>
@@ -279,7 +279,7 @@
     </package>
     <package name="src.drawing-system">
       <metrics statements="53" coveredstatements="0" conditionals="4" coveredconditionals="4" methods="4" coveredmethods="4"/>
-      <file name="DrawingShapeDragData.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\drawing-system\DrawingShapeDragData.ts">
+      <file name="DrawingShapeDragData.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\drawing-system\DrawingShapeDragData.ts">
         <metrics statements="36" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="8" count="0" type="stmt"/>
         <line num="9" count="0" type="stmt"/>
@@ -318,13 +318,13 @@
         <line num="48" count="0" type="stmt"/>
         <line num="49" count="0" type="stmt"/>
       </file>
-      <file name="DrawingShapeType.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\drawing-system\DrawingShapeType.ts">
+      <file name="DrawingShapeType.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\drawing-system\DrawingShapeType.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
-      <file name="DroppedShape.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\drawing-system\DroppedShape.ts">
+      <file name="DroppedShape.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\drawing-system\DroppedShape.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
-      <file name="DroppedShapeFactory.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\drawing-system\DroppedShapeFactory.ts">
+      <file name="DroppedShapeFactory.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\drawing-system\DroppedShapeFactory.ts">
         <metrics statements="17" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="4" count="0" type="stmt"/>
         <line num="5" count="0" type="stmt"/>
@@ -347,7 +347,7 @@
     </package>
     <package name="src.features.drawing-system.canvas">
       <metrics statements="432" coveredstatements="0" conditionals="3" coveredconditionals="0" methods="3" coveredmethods="0"/>
-      <file name="MyCanvas.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas\MyCanvas.ts">
+      <file name="MyCanvas.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas\MyCanvas.ts">
         <metrics statements="332" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="4" count="0" type="stmt"/>
@@ -682,7 +682,7 @@
         <line num="554" count="0" type="stmt"/>
         <line num="555" count="0" type="stmt"/>
       </file>
-      <file name="MyDrawingSystem.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas\MyDrawingSystem.ts">
+      <file name="MyDrawingSystem.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas\MyDrawingSystem.ts">
         <metrics statements="19" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="3" count="0" type="stmt"/>
@@ -704,7 +704,7 @@
         <line num="46" count="0" type="stmt"/>
         <line num="47" count="0" type="stmt"/>
       </file>
-      <file name="MyMenu.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas\MyMenu.ts">
+      <file name="MyMenu.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas\MyMenu.ts">
         <metrics statements="81" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="3" count="0" type="stmt"/>
@@ -791,7 +791,7 @@
     </package>
     <package name="src.features.drawing-system.canvas-object.builders">
       <metrics statements="51" coveredstatements="45" conditionals="11" coveredconditionals="8" methods="8" coveredmethods="8"/>
-      <file name="CanvasObjectBuilder.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\builders\CanvasObjectBuilder.ts">
+      <file name="CanvasObjectBuilder.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\builders\CanvasObjectBuilder.ts">
         <metrics statements="51" coveredstatements="45" conditionals="10" coveredconditionals="7" methods="7" coveredmethods="7"/>
         <line num="3" count="1" type="stmt"/>
         <line num="12" count="1" type="stmt"/>
@@ -845,22 +845,22 @@
         <line num="72" count="6" type="stmt"/>
         <line num="73" count="1" type="stmt"/>
       </file>
-      <file name="ICanvasObjectBuilder.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\builders\ICanvasObjectBuilder.ts">
+      <file name="ICanvasObjectBuilder.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\builders\ICanvasObjectBuilder.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
     </package>
     <package name="src.features.drawing-system.canvas-object.contracts">
       <metrics statements="0" coveredstatements="0" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
-      <file name="CanvasObject.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\contracts\CanvasObject.ts">
+      <file name="CanvasObject.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\contracts\CanvasObject.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
-      <file name="ICanvasObjectIdGenerator.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\contracts\ICanvasObjectIdGenerator.ts">
+      <file name="ICanvasObjectIdGenerator.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\contracts\ICanvasObjectIdGenerator.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
     </package>
     <package name="src.features.drawing-system.canvas-object.factories">
       <metrics statements="17" coveredstatements="17" conditionals="3" coveredconditionals="3" methods="3" coveredmethods="3"/>
-      <file name="CanvasObjectFactory.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\factories\CanvasObjectFactory.ts">
+      <file name="CanvasObjectFactory.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\factories\CanvasObjectFactory.ts">
         <metrics statements="17" coveredstatements="17" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="7" count="1" type="stmt"/>
         <line num="11" count="1" type="cond" truecount="1" falsecount="0"/>
@@ -880,16 +880,16 @@
         <line num="27" count="3" type="stmt"/>
         <line num="28" count="1" type="stmt"/>
       </file>
-      <file name="ICanvasObjectFactory.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\factories\ICanvasObjectFactory.ts">
+      <file name="ICanvasObjectFactory.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\factories\ICanvasObjectFactory.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
     </package>
     <package name="src.features.drawing-system.canvas-object.stores">
       <metrics statements="27" coveredstatements="10" conditionals="3" coveredconditionals="3" methods="5" coveredmethods="3"/>
-      <file name="IDrawingObjectStore.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\stores\IDrawingObjectStore.ts">
+      <file name="IDrawingObjectStore.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\stores\IDrawingObjectStore.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
-      <file name="InMemoryDrawingObjectStore.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\stores\InMemoryDrawingObjectStore.ts">
+      <file name="InMemoryDrawingObjectStore.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\stores\InMemoryDrawingObjectStore.ts">
         <metrics statements="27" coveredstatements="10" conditionals="2" coveredconditionals="2" methods="4" coveredmethods="2"/>
         <line num="4" count="1" type="stmt"/>
         <line num="7" count="1" type="cond" truecount="1" falsecount="0"/>
@@ -922,7 +922,7 @@
     </package>
     <package name="src.features.drawing-system.canvas-object.value-objects">
       <metrics statements="23" coveredstatements="21" conditionals="3" coveredconditionals="2" methods="2" coveredmethods="2"/>
-      <file name="CanvasObjectKind.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\value-objects\CanvasObjectKind.ts">
+      <file name="CanvasObjectKind.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\value-objects\CanvasObjectKind.ts">
         <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -935,7 +935,7 @@
         <line num="9" count="1" type="stmt"/>
         <line num="10" count="1" type="stmt"/>
       </file>
-      <file name="IncrementingCanvasObjectIdGenerator.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\value-objects\IncrementingCanvasObjectIdGenerator.ts">
+      <file name="IncrementingCanvasObjectIdGenerator.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas-object\value-objects\IncrementingCanvasObjectIdGenerator.ts">
         <metrics statements="13" coveredstatements="11" conditionals="3" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="3" count="1" type="stmt"/>
         <line num="6" count="1" type="cond" truecount="1" falsecount="0"/>
@@ -954,10 +954,10 @@
     </package>
     <package name="src.features.drawing-system.composition">
       <metrics statements="24" coveredstatements="0" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
-      <file name="DrawingSystemServices.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\composition\DrawingSystemServices.ts">
+      <file name="DrawingSystemServices.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\composition\DrawingSystemServices.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
-      <file name="createDrawingSystemServices.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\composition\createDrawingSystemServices.ts">
+      <file name="createDrawingSystemServices.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\composition\createDrawingSystemServices.ts">
         <metrics statements="24" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="2" count="0" type="stmt"/>
         <line num="3" count="0" type="stmt"/>
@@ -987,7 +987,7 @@
     </package>
     <package name="src.features.drawing-system.drag-drop.codecs">
       <metrics statements="38" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
-      <file name="DragPayloadCodec.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-drop\codecs\DragPayloadCodec.ts">
+      <file name="DragPayloadCodec.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-drop\codecs\DragPayloadCodec.ts">
         <metrics statements="38" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="2" count="0" type="stmt"/>
         <line num="10" count="0" type="stmt"/>
@@ -1031,13 +1031,13 @@
     </package>
     <package name="src.features.drawing-system.drag-drop.contracts">
       <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
-      <file name="IDragPayloadCodec.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-drop\contracts\IDragPayloadCodec.ts">
+      <file name="IDragPayloadCodec.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-drop\contracts\IDragPayloadCodec.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
     </package>
     <package name="src.features.drawing-system.drag-system.context">
       <metrics statements="8" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
-      <file name="DragOperationContext.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\context\DragOperationContext.ts">
+      <file name="DragOperationContext.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\context\DragOperationContext.ts">
         <metrics statements="8" coveredstatements="8" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="8" count="1" type="stmt"/>
         <line num="9" count="1" type="cond" truecount="1" falsecount="0"/>
@@ -1048,13 +1048,13 @@
         <line num="14" count="12" type="stmt"/>
         <line num="15" count="1" type="stmt"/>
       </file>
-      <file name="DragOperationInput.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\context\DragOperationInput.ts">
+      <file name="DragOperationInput.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\context\DragOperationInput.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
     </package>
     <package name="src.features.drawing-system.drag-system.contracts">
       <metrics statements="22" coveredstatements="0" conditionals="5" coveredconditionals="5" methods="5" coveredmethods="5"/>
-      <file name="ConsoleLogger.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\contracts\ConsoleLogger.ts">
+      <file name="ConsoleLogger.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\contracts\ConsoleLogger.ts">
         <metrics statements="22" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="3" count="0" type="stmt"/>
         <line num="6" count="0" type="stmt"/>
@@ -1079,22 +1079,22 @@
         <line num="28" count="0" type="stmt"/>
         <line num="29" count="0" type="stmt"/>
       </file>
-      <file name="ICell.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\contracts\ICell.ts">
+      <file name="ICell.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\contracts\ICell.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
-      <file name="IDragOperation.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\contracts\IDragOperation.ts">
+      <file name="IDragOperation.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\contracts\IDragOperation.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
-      <file name="IDragTask.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\contracts\IDragTask.ts">
+      <file name="IDragTask.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\contracts\IDragTask.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
-      <file name="ILogger.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\contracts\ILogger.ts">
+      <file name="ILogger.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\contracts\ILogger.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
     </package>
     <package name="src.features.drawing-system.drag-system.controllers">
       <metrics statements="161" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
-      <file name="DragSystemReactiveController.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\controllers\DragSystemReactiveController.ts">
+      <file name="DragSystemReactiveController.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\controllers\DragSystemReactiveController.ts">
         <metrics statements="161" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="5" count="0" type="stmt"/>
@@ -1261,7 +1261,7 @@
     </package>
     <package name="src.features.drawing-system.drag-system.operations">
       <metrics statements="63" coveredstatements="48" conditionals="13" coveredconditionals="9" methods="7" coveredmethods="5"/>
-      <file name="MoveCanvasObjectDragOperation.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\operations\MoveCanvasObjectDragOperation.ts">
+      <file name="MoveCanvasObjectDragOperation.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\operations\MoveCanvasObjectDragOperation.ts">
         <metrics statements="63" coveredstatements="48" conditionals="13" coveredconditionals="9" methods="7" coveredmethods="5"/>
         <line num="5" count="1" type="stmt"/>
         <line num="6" count="1" type="stmt"/>
@@ -1330,13 +1330,13 @@
     </package>
     <package name="src.features.drawing-system.drag-system.outputs">
       <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
-      <file name="DragOperationOutput.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\outputs\DragOperationOutput.ts">
+      <file name="DragOperationOutput.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\outputs\DragOperationOutput.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
     </package>
     <package name="src.features.drawing-system.drag-system.tasks">
       <metrics statements="113" coveredstatements="103" conditionals="11" coveredconditionals="9" methods="8" coveredmethods="8"/>
-      <file name="BeginDragTask.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\tasks\BeginDragTask.ts">
+      <file name="BeginDragTask.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\tasks\BeginDragTask.ts">
         <metrics statements="23" coveredstatements="23" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="8" count="1" type="stmt"/>
         <line num="9" count="1" type="cond" truecount="1" falsecount="0"/>
@@ -1362,7 +1362,7 @@
         <line num="31" count="3" type="stmt"/>
         <line num="32" count="1" type="stmt"/>
       </file>
-      <file name="CancelDragTask.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\tasks\CancelDragTask.ts">
+      <file name="CancelDragTask.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\tasks\CancelDragTask.ts">
         <metrics statements="26" coveredstatements="21" conditionals="3" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="5" count="1" type="stmt"/>
         <line num="9" count="1" type="stmt"/>
@@ -1391,7 +1391,7 @@
         <line num="34" count="1" type="stmt"/>
         <line num="35" count="1" type="stmt"/>
       </file>
-      <file name="CommitDragTask.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\tasks\CommitDragTask.ts">
+      <file name="CommitDragTask.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\tasks\CommitDragTask.ts">
         <metrics statements="38" coveredstatements="33" conditionals="4" coveredconditionals="3" methods="2" coveredmethods="2"/>
         <line num="5" count="1" type="stmt"/>
         <line num="9" count="1" type="stmt"/>
@@ -1432,7 +1432,7 @@
         <line num="47" count="4" type="stmt"/>
         <line num="48" count="1" type="stmt"/>
       </file>
-      <file name="UpdateDragHoverTask.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\tasks\UpdateDragHoverTask.ts">
+      <file name="UpdateDragHoverTask.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\drag-system\tasks\UpdateDragHoverTask.ts">
         <metrics statements="26" coveredstatements="26" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="8" count="1" type="stmt"/>
         <line num="9" count="1" type="cond" truecount="1" falsecount="0"/>
@@ -1464,7 +1464,7 @@
     </package>
     <package name="src.features.drawing-system.grid.controllers">
       <metrics statements="169" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
-      <file name="DraggableHandler.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\grid\controllers\DraggableHandler.ts">
+      <file name="DraggableHandler.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\grid\controllers\DraggableHandler.ts">
         <metrics statements="169" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="11" count="0" type="stmt"/>
@@ -1639,7 +1639,7 @@
     </package>
     <package name="src.features.drawing-system.grid.services">
       <metrics statements="33" coveredstatements="31" conditionals="6" coveredconditionals="5" methods="2" coveredmethods="2"/>
-      <file name="GridSnapService.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\grid\services\GridSnapService.ts">
+      <file name="GridSnapService.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\grid\services\GridSnapService.ts">
         <metrics statements="33" coveredstatements="31" conditionals="5" coveredconditionals="4" methods="1" coveredmethods="1"/>
         <line num="4" count="1" type="stmt"/>
         <line num="5" count="1" type="cond" truecount="1" falsecount="0"/>
@@ -1675,13 +1675,13 @@
         <line num="42" count="3" type="stmt"/>
         <line num="43" count="1" type="stmt"/>
       </file>
-      <file name="IGridSnapService.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\grid\services\IGridSnapService.ts">
+      <file name="IGridSnapService.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\grid\services\IGridSnapService.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
     </package>
     <package name="src.features.drawing-system.menu">
       <metrics statements="46" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
-      <file name="MenuShapeCatalog.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\menu\MenuShapeCatalog.ts">
+      <file name="MenuShapeCatalog.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\menu\MenuShapeCatalog.ts">
         <metrics statements="46" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="10" count="0" type="stmt"/>
@@ -1733,7 +1733,7 @@
     </package>
     <package name="src.features.drawing-system.save">
       <metrics statements="66" coveredstatements="35" conditionals="8" coveredconditionals="8" methods="6" coveredmethods="6"/>
-      <file name="ApiRectangleCellsSaveWriter.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\save\ApiRectangleCellsSaveWriter.ts">
+      <file name="ApiRectangleCellsSaveWriter.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\save\ApiRectangleCellsSaveWriter.ts">
         <metrics statements="20" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="3" count="0" type="stmt"/>
         <line num="6" count="0" type="stmt"/>
@@ -1756,7 +1756,7 @@
         <line num="25" count="0" type="stmt"/>
         <line num="26" count="0" type="stmt"/>
       </file>
-      <file name="BrowserRectangleCellsSaveWriter.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\save\BrowserRectangleCellsSaveWriter.ts">
+      <file name="BrowserRectangleCellsSaveWriter.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\save\BrowserRectangleCellsSaveWriter.ts">
         <metrics statements="11" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="3" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
@@ -1770,10 +1770,10 @@
         <line num="14" count="0" type="stmt"/>
         <line num="15" count="0" type="stmt"/>
       </file>
-      <file name="IRectangleCellsSaveWriter.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\save\IRectangleCellsSaveWriter.ts">
+      <file name="IRectangleCellsSaveWriter.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\save\IRectangleCellsSaveWriter.ts">
         <metrics statements="0" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
       </file>
-      <file name="RectangleCellsSaveAction.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\save\RectangleCellsSaveAction.ts">
+      <file name="RectangleCellsSaveAction.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\save\RectangleCellsSaveAction.ts">
         <metrics statements="18" coveredstatements="18" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
         <line num="3" count="1" type="stmt"/>
         <line num="8" count="1" type="stmt"/>
@@ -1794,7 +1794,7 @@
         <line num="30" count="1" type="stmt"/>
         <line num="31" count="1" type="stmt"/>
       </file>
-      <file name="RectangleCellsSaveFile.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\features\drawing-system\save\RectangleCellsSaveFile.ts">
+      <file name="RectangleCellsSaveFile.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\save\RectangleCellsSaveFile.ts">
         <metrics statements="17" coveredstatements="17" conditionals="3" coveredconditionals="3" methods="1" coveredmethods="1"/>
         <line num="2" count="1" type="stmt"/>
         <line num="14" count="1" type="cond" truecount="1" falsecount="0"/>
@@ -1817,7 +1817,7 @@
     </package>
     <package name="src.primetives">
       <metrics statements="143" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
-      <file name="Primitives.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-dbscan-demo-app\make-clusters-and-validate-db-scan\src\primetives\Primitives.ts">
+      <file name="Primitives.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\primetives\Primitives.ts">
         <metrics statements="143" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="51" count="0" type="stmt"/>
         <line num="52" count="0" type="stmt"/>

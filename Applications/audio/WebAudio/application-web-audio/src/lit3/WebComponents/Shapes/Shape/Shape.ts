@@ -3,7 +3,7 @@
 // ====================================================================================
 
 import { LitElement } from "lit";
-import { Vector2 } from "@monorepo/core-math";
+import { Rectangle2, Vector2 } from "@monorepo/core-math";
 
 import type { IShape } from "./IShape.js";
 import type { ICanvasContext } from "../../ICanvasContext.js";
@@ -64,6 +64,16 @@ export abstract class Shape extends LitElement implements IShape {
   public setSize(width: number, height: number): void {
     this._width = Math.max(0, width);
     this._height = Math.max(0, height);
+  }
+
+  public getBoundaries(): Rectangle2 {
+    const position = this.getPosition();
+    return {
+      x: position.x,
+      y: position.y,
+      width: this.getWidth(),
+      height: this.getHeight(),
+    };
   }
 
   public abstract draw(context: ICanvasContext): void;

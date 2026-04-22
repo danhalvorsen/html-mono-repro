@@ -1,6 +1,8 @@
 import { Point } from "@monorepo/core-math";
 import { Shape } from "./Shapes/Shape/Shape.js";
 
+export type { Point } from "@monorepo/core-math";
+
 export interface IHitTestable {
   containsPoint(point: Point): boolean;
 }

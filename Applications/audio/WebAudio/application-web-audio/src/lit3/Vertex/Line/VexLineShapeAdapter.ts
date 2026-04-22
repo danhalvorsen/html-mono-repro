@@ -1,4 +1,4 @@
-import { Vector2 } from "@monorepo/core-math";
+import { Rectangle2, Vector2 } from "@monorepo/core-math";
 import type { IShape } from "../../WebComponents/Shapes/Shape/IShape";
 import type { ShapeType } from "../../WebComponents/Shapes/Shape/Shape";
 import { PointInsidePrimitiveController } from "../../Controllers/PointInsidePrimetiveController";
@@ -109,6 +109,16 @@ export class VexLineShapeAdapter implements IShape {
         s.y + Math.max(0, height)
       )
     );
+  }
+
+  public getBoundaries(): Rectangle2 {
+    const position = this.getPosition();
+    return {
+      x: position.x,
+      y: position.y,
+      width: this.getWidth(),
+      height: this.getHeight(),
+    };
   }
 
   public pointInsideShape(point: Vector2, _type: ShapeType): boolean {
