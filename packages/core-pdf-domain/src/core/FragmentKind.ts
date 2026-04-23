@@ -1,2 +1,2 @@
 
-export type FragmentKind = "text" | "image";
+export type FragmentKind = "text" | "image" | "rectangle";

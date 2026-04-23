@@ -2,10 +2,13 @@
 
 import { FragmentKind } from "./core/FragmentKind.js";
 import { Guard } from "./core/Guard.js";
+import { IBoundingBox } from "./core/IBoundingBox.js";
+import { IFragment } from "./core/IFragment.js";
 import { IPoint } from "./core/IPoint.js";
 import { Rectangle } from "./Rectangle.js";
 
-export abstract class Fragment<TSelf extends Fragment<TSelf>> {
+export abstract class Fragment<TSelf extends IFragment<TSelf>>
+    implements IFragment<TSelf> {
     public readonly index: number;
     public readonly pageNumber: number;
     public readonly rectangle: Rectangle;
@@ -31,6 +34,10 @@ export abstract class Fragment<TSelf extends Fragment<TSelf>> {
 
     public get id(): string {
         return this.rectangle.id;
+    }
+
+    public get boundingBox(): IBoundingBox {
+        return this.rectangle.toBoundingBox();
     }
 
     public translate(dx: number, dy: number): TSelf {

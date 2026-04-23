@@ -1,10 +1,10 @@
-import type { IBoundingBox } from "../core/IBoundingBox.js";
+import type { IPdfFragmentBase } from "./IPdfFragmentBase.js";
 
-export interface IPdfTextFragment {
-  readonly kind: "text";
-  readonly pageNumber: number;
-  readonly boundingBox: IBoundingBox;
+export interface IPdfTextFragment extends IPdfFragmentBase<"text"> {
+  readonly rawText?: string | undefined;
   readonly text: string;
+  readonly textType?: string | undefined;
+  readonly textSize?: number | undefined;
   readonly fontName?: string | undefined;
   readonly fontFamily?: string | undefined;
   readonly fontSize?: number | undefined;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1776854829401" clover="3.2.0">
-  <project timestamp="1776854829401" name="All files">
-    <metrics statements="1722" coveredstatements="364" conditionals="100" coveredconditionals="78" methods="78" coveredmethods="65" elements="1900" coveredelements="507" complexity="0" loc="1722" ncloc="1722" packages="26" files="54" classes="54"/>
+<coverage generated="1776869111444" clover="3.2.0">
+  <project timestamp="1776869111444" name="All files">
+    <metrics statements="1772" coveredstatements="364" conditionals="100" coveredconditionals="77" methods="78" coveredmethods="64" elements="1950" coveredelements="505" complexity="0" loc="1772" ncloc="1772" packages="26" files="54" classes="54"/>
     <package name="src">
       <metrics statements="61" coveredstatements="0" conditionals="2" coveredconditionals="1" methods="2" coveredmethods="1"/>
       <file name="Guard.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\Guard.ts">
@@ -346,9 +346,9 @@
       </file>
     </package>
     <package name="src.features.drawing-system.canvas">
-      <metrics statements="432" coveredstatements="0" conditionals="3" coveredconditionals="0" methods="3" coveredmethods="0"/>
+      <metrics statements="434" coveredstatements="0" conditionals="3" coveredconditionals="0" methods="3" coveredmethods="0"/>
       <file name="MyCanvas.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas\MyCanvas.ts">
-        <metrics statements="332" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <metrics statements="334" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="4" count="0" type="stmt"/>
         <line num="5" count="0" type="stmt"/>
@@ -584,85 +584,85 @@
         <line num="382" count="0" type="stmt"/>
         <line num="383" count="0" type="stmt"/>
         <line num="384" count="0" type="stmt"/>
-        <line num="386" count="0" type="stmt"/>
+        <line num="385" count="0" type="stmt"/>
         <line num="387" count="0" type="stmt"/>
         <line num="388" count="0" type="stmt"/>
         <line num="389" count="0" type="stmt"/>
+        <line num="390" count="0" type="stmt"/>
         <line num="391" count="0" type="stmt"/>
-        <line num="392" count="0" type="stmt"/>
         <line num="393" count="0" type="stmt"/>
         <line num="394" count="0" type="stmt"/>
+        <line num="395" count="0" type="stmt"/>
         <line num="396" count="0" type="stmt"/>
         <line num="398" count="0" type="stmt"/>
-        <line num="399" count="0" type="stmt"/>
         <line num="400" count="0" type="stmt"/>
         <line num="401" count="0" type="stmt"/>
         <line num="402" count="0" type="stmt"/>
         <line num="403" count="0" type="stmt"/>
         <line num="404" count="0" type="stmt"/>
         <line num="405" count="0" type="stmt"/>
+        <line num="406" count="0" type="stmt"/>
         <line num="407" count="0" type="stmt"/>
-        <line num="408" count="0" type="stmt"/>
         <line num="409" count="0" type="stmt"/>
         <line num="410" count="0" type="stmt"/>
+        <line num="411" count="0" type="stmt"/>
         <line num="412" count="0" type="stmt"/>
-        <line num="413" count="0" type="stmt"/>
         <line num="414" count="0" type="stmt"/>
         <line num="415" count="0" type="stmt"/>
+        <line num="416" count="0" type="stmt"/>
         <line num="417" count="0" type="stmt"/>
-        <line num="418" count="0" type="stmt"/>
         <line num="419" count="0" type="stmt"/>
         <line num="420" count="0" type="stmt"/>
         <line num="421" count="0" type="stmt"/>
+        <line num="422" count="0" type="stmt"/>
         <line num="423" count="0" type="stmt"/>
-        <line num="424" count="0" type="stmt"/>
         <line num="425" count="0" type="stmt"/>
         <line num="426" count="0" type="stmt"/>
+        <line num="427" count="0" type="stmt"/>
         <line num="428" count="0" type="stmt"/>
-        <line num="429" count="0" type="stmt"/>
         <line num="430" count="0" type="stmt"/>
+        <line num="431" count="0" type="stmt"/>
         <line num="432" count="0" type="stmt"/>
-        <line num="433" count="0" type="stmt"/>
         <line num="434" count="0" type="stmt"/>
         <line num="435" count="0" type="stmt"/>
+        <line num="436" count="0" type="stmt"/>
         <line num="437" count="0" type="stmt"/>
-        <line num="438" count="0" type="stmt"/>
         <line num="439" count="0" type="stmt"/>
+        <line num="440" count="0" type="stmt"/>
         <line num="441" count="0" type="stmt"/>
         <line num="443" count="0" type="stmt"/>
-        <line num="444" count="0" type="stmt"/>
         <line num="445" count="0" type="stmt"/>
+        <line num="446" count="0" type="stmt"/>
         <line num="447" count="0" type="stmt"/>
-        <line num="448" count="0" type="stmt"/>
         <line num="449" count="0" type="stmt"/>
         <line num="450" count="0" type="stmt"/>
+        <line num="451" count="0" type="stmt"/>
         <line num="452" count="0" type="stmt"/>
         <line num="454" count="0" type="stmt"/>
-        <line num="455" count="0" type="stmt"/>
         <line num="456" count="0" type="stmt"/>
         <line num="457" count="0" type="stmt"/>
         <line num="458" count="0" type="stmt"/>
+        <line num="459" count="0" type="stmt"/>
         <line num="460" count="0" type="stmt"/>
-        <line num="461" count="0" type="stmt"/>
         <line num="462" count="0" type="stmt"/>
+        <line num="463" count="0" type="stmt"/>
         <line num="464" count="0" type="stmt"/>
-        <line num="465" count="0" type="stmt"/>
         <line num="466" count="0" type="stmt"/>
         <line num="467" count="0" type="stmt"/>
         <line num="468" count="0" type="stmt"/>
+        <line num="469" count="0" type="stmt"/>
         <line num="470" count="0" type="stmt"/>
-        <line num="471" count="0" type="stmt"/>
+        <line num="472" count="0" type="stmt"/>
         <line num="473" count="0" type="stmt"/>
-        <line num="474" count="0" type="stmt"/>
         <line num="475" count="0" type="stmt"/>
         <line num="476" count="0" type="stmt"/>
+        <line num="477" count="0" type="stmt"/>
         <line num="478" count="0" type="stmt"/>
-        <line num="479" count="0" type="stmt"/>
         <line num="480" count="0" type="stmt"/>
         <line num="481" count="0" type="stmt"/>
+        <line num="482" count="0" type="stmt"/>
         <line num="483" count="0" type="stmt"/>
         <line num="485" count="0" type="stmt"/>
-        <line num="486" count="0" type="stmt"/>
         <line num="487" count="0" type="stmt"/>
         <line num="488" count="0" type="stmt"/>
         <line num="489" count="0" type="stmt"/>
@@ -676,11 +676,13 @@
         <line num="497" count="0" type="stmt"/>
         <line num="498" count="0" type="stmt"/>
         <line num="499" count="0" type="stmt"/>
+        <line num="500" count="0" type="stmt"/>
         <line num="501" count="0" type="stmt"/>
-        <line num="551" count="0" type="stmt"/>
+        <line num="503" count="0" type="stmt"/>
         <line num="553" count="0" type="stmt"/>
-        <line num="554" count="0" type="stmt"/>
         <line num="555" count="0" type="stmt"/>
+        <line num="556" count="0" type="stmt"/>
+        <line num="557" count="0" type="stmt"/>
       </file>
       <file name="MyDrawingSystem.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\canvas\MyDrawingSystem.ts">
         <metrics statements="19" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
@@ -1732,29 +1734,77 @@
       </file>
     </package>
     <package name="src.features.drawing-system.save">
-      <metrics statements="66" coveredstatements="35" conditionals="8" coveredconditionals="8" methods="6" coveredmethods="6"/>
+      <metrics statements="114" coveredstatements="35" conditionals="8" coveredconditionals="7" methods="6" coveredmethods="5"/>
       <file name="ApiRectangleCellsSaveWriter.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\save\ApiRectangleCellsSaveWriter.ts">
-        <metrics statements="20" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
-        <line num="3" count="0" type="stmt"/>
+        <metrics statements="68" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="6" count="0" type="stmt"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="10" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="12" count="0" type="stmt"/>
-        <line num="13" count="0" type="stmt"/>
-        <line num="14" count="0" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="19" count="0" type="stmt"/>
-        <line num="20" count="0" type="stmt"/>
-        <line num="22" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="26" count="0" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="35" count="0" type="stmt"/>
+        <line num="37" count="0" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
+        <line num="44" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="46" count="0" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="48" count="0" type="stmt"/>
+        <line num="49" count="0" type="stmt"/>
+        <line num="50" count="0" type="stmt"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="55" count="0" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="58" count="0" type="stmt"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="61" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="64" count="0" type="stmt"/>
+        <line num="65" count="0" type="stmt"/>
+        <line num="66" count="0" type="stmt"/>
+        <line num="67" count="0" type="stmt"/>
+        <line num="69" count="0" type="stmt"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="71" count="0" type="stmt"/>
+        <line num="73" count="0" type="stmt"/>
+        <line num="74" count="0" type="stmt"/>
+        <line num="76" count="0" type="stmt"/>
+        <line num="77" count="0" type="stmt"/>
+        <line num="78" count="0" type="stmt"/>
+        <line num="79" count="0" type="stmt"/>
+        <line num="80" count="0" type="stmt"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="82" count="0" type="stmt"/>
+        <line num="83" count="0" type="stmt"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="85" count="0" type="stmt"/>
+        <line num="86" count="0" type="stmt"/>
+        <line num="87" count="0" type="stmt"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="91" count="0" type="stmt"/>
+        <line num="92" count="0" type="stmt"/>
+        <line num="93" count="0" type="stmt"/>
+        <line num="94" count="0" type="stmt"/>
+        <line num="95" count="0" type="stmt"/>
+        <line num="96" count="0" type="stmt"/>
+        <line num="97" count="0" type="stmt"/>
+        <line num="98" count="0" type="stmt"/>
+        <line num="99" count="0" type="stmt"/>
+        <line num="100" count="0" type="stmt"/>
+        <line num="101" count="0" type="stmt"/>
+        <line num="102" count="0" type="stmt"/>
+        <line num="104" count="0" type="stmt"/>
+        <line num="105" count="0" type="stmt"/>
+        <line num="106" count="0" type="stmt"/>
+        <line num="108" count="0" type="stmt"/>
+        <line num="109" count="0" type="stmt"/>
+        <line num="110" count="0" type="stmt"/>
       </file>
       <file name="BrowserRectangleCellsSaveWriter.ts" path="C:\Users\danha\source\repos\HTML\MonoRepro\Applications\pdf\drawing-tool\application\make-clusters-and-validate-db-scan\src\features\drawing-system\save\BrowserRectangleCellsSaveWriter.ts">
         <metrics statements="11" coveredstatements="0" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>

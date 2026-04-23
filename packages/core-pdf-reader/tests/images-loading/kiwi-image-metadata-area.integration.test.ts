@@ -5,17 +5,17 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import {
-  CompositePdfEngine,
+  PdfEngine,
   PdfImageExtractor,
   type IReaderConfiguration,
-} from "../../src/old/index.js";
+} from "../../src/index.ts";
 
 describe("Kiwi.pdf image metadata consistency", () => {
   it("should prove page 1 image fragments currently have zero-area bounding boxes", async () => {
     const inputPath = join(process.cwd(), "tests", "Kiwi.pdf");
     const binary = new Uint8Array(await readFile(inputPath));
 
-    const engine = new CompositePdfEngine();
+    const engine = new PdfEngine();
 
     const configuration: IReaderConfiguration = Object.freeze({
       saveReadImages: true,

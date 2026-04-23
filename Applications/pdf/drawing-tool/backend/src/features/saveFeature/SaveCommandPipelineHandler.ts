@@ -59,17 +59,12 @@ export class SaveCommandPipelineHandler
     rectangles: ReadonlyArray<SaveCommandMessage['rectangles'][number]>,
     pdfFilePath: Path,
   ): Promise<void> {
-    const pageSize = resolvePageSize(rectangles);
+    const pageSize = resolvePageSize();
     const baseDocument = await PDFDocument.create();
     baseDocument.addPage([pageSize.width, pageSize.height]);
     const basePdfBinary = await baseDocument.save();
 
-    const fragments = rectangles.map((rectangle) => ({
-      x: rectangle.x,
-      y: rectangle.y,
-      width: rectangle.width,
-      height: rectangle.height,
-    }));
+    const fragments = normalizeRectanglesForPdf(rectangles, pageSize);
 
     const pdfWriter = new CorePdfWriter<SavePdfRectangleFragment>(
       new SavePdfRectangleFragmentWriter(pageSize.width, pageSize.height),
@@ -125,19 +120,69 @@ class SavePdfRectangleFragmentWriter
   }
 }
 
-function resolvePageSize(
-  rectangles: ReadonlyArray<SavePdfRectangleFragment>,
-): { width: number; height: number } {
-  let maxX = 800;
-  let maxY = 600;
+function normalizeRectanglesForPdf(
+  rectangles: ReadonlyArray<SaveCommandMessage['rectangles'][number]>,
+  pageSize: { width: number; height: number },
+): ReadonlyArray<SavePdfRectangleFragment> {
+  if (rectangles.length === 0) {
+    return [];
+  }
 
-  for (const rectangle of rectangles) {
+  const valid = rectangles.filter((rectangle) =>
+    Number.isFinite(rectangle.x)
+    && Number.isFinite(rectangle.y)
+    && Number.isFinite(rectangle.width)
+    && Number.isFinite(rectangle.height)
+    && rectangle.width > 0
+    && rectangle.height > 0,
+  );
+
+  if (valid.length === 0) {
+    return [];
+  }
+
+  let minX = Number.POSITIVE_INFINITY;
+  let minY = Number.POSITIVE_INFINITY;
+  let maxX = Number.NEGATIVE_INFINITY;
+  let maxY = Number.NEGATIVE_INFINITY;
+
+  for (const rectangle of valid) {
+    minX = Math.min(minX, rectangle.x);
+    minY = Math.min(minY, rectangle.y);
     maxX = Math.max(maxX, rectangle.x + rectangle.width);
     maxY = Math.max(maxY, rectangle.y + rectangle.height);
   }
 
+  const contentWidth = Math.max(1, maxX - minX);
+  const contentHeight = Math.max(1, maxY - minY);
+  const targetFillRatio = 0.8;
+  const availableWidth = Math.max(1, pageSize.width * targetFillRatio);
+  const availableHeight = Math.max(1, pageSize.height * targetFillRatio);
+  const offsetX = (pageSize.width - availableWidth) / 2;
+  const offsetY = (pageSize.height - availableHeight) / 2;
+  const scaleX = availableWidth / contentWidth;
+  const scaleY = availableHeight / contentHeight;
+  const visualGap = 2;
+
+  return valid.map((rectangle) => {
+    const x = offsetX + ((rectangle.x - minX) * scaleX);
+    const y = offsetY + ((rectangle.y - minY) * scaleY);
+    const width = rectangle.width * scaleX;
+    const height = rectangle.height * scaleY;
+    const inset = Math.min(visualGap / 2, width / 4, height / 4);
+
+    return {
+      x: x + inset,
+      y: y + inset,
+      width: Math.max(0.5, width - (inset * 2)),
+      height: Math.max(0.5, height - (inset * 2)),
+    };
+  });
+}
+
+function resolvePageSize(): { width: number; height: number } {
   return {
-    width: Math.ceil(maxX + 16),
-    height: Math.ceil(maxY + 16),
+    width: 1200,
+    height: 800,
   };
 }

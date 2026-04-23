@@ -61,9 +61,10 @@ export class PdfFragmentWriter extends GuardedAdapter implements IPdfFragmentWri
         const x = box.position.x;
         const width = Math.max(box.width, 0.5);
         const height = Math.max(box.height, 0.5);
+        const pageHeight = this.resolvePageHeight(page);
 
         // Coordinate transform: domain/top-left style to PDF bottom-left style.
-        const y = page.height - box.position.y - box.height;
+        const y = pageHeight - box.position.y - box.height;
 
         page.drawRectangle({
             x,
@@ -74,5 +75,20 @@ export class PdfFragmentWriter extends GuardedAdapter implements IPdfFragmentWri
             borderWidth: 0.6,
             opacity: 0.15,
         });
+    }
+
+    private resolvePageHeight(page: PdfLibDrawPage): number {
+        if (typeof page.getHeight === "function") {
+            const height = page.getHeight();
+            if (Number.isFinite(height)) {
+                return height;
+            }
+        }
+
+        if (typeof page.height === "number" && Number.isFinite(page.height)) {
+            return page.height;
+        }
+
+        throw new Error("Unable to resolve PDF page height.");
     }
 }

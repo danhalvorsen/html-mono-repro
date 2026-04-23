@@ -1,7 +1,3 @@
-import type { IBoundingBox } from "../core/IBoundingBox.js";
+import type { IPdfFragmentBase } from "./IPdfFragmentBase.js";
 
-export interface IPdfRectangleFragment {
-  readonly kind: "rectangle";
-  readonly pageNumber: number;
-  readonly boundingBox: IBoundingBox;
-}
+export interface IPdfRectangleFragment extends IPdfFragmentBase<"rectangle"> {}

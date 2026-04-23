@@ -5,53 +5,44 @@ import express, {
   type Response,
 } from 'express';
 import type { Server as HttpServer } from 'node:http';
-import path from 'node:path';
 import type { ICommand } from '@monorepo/core-design-patterns-cqrs';
 import { Mediator } from '@monorepo/core-design-patterns-mediator';
 import { Json } from '@monorepo/core-json';
 import { SaveCommand } from './features/saveFeature/SaveCommand.js';
 import { SaveCommandHandler } from './features/saveFeature/SaveCommandHandler.js';
 import { SaveCommandPipeline } from './features/saveFeature/SaveCommandPipeline.js';
+import { loadBackendConfiguration, type BackendConfiguration } from './configuration.js';
 
 export interface ServerOptions {
   readonly saveDirectory?: string;
-}
-
-class ServerOptionsModel {
-  public constructor(
-    public readonly saveDirectory?: string,
-  ) {}
-
-  public static from(options: ServerOptions): ServerOptionsModel {
-    return new ServerOptionsModel(options.saveDirectory);
-  }
-
-  public toString(): string {
-    return JSON.stringify({
-      saveDirectory: this.saveDirectory ?? null,
-    });
-  }
+  readonly configuration?: BackendConfiguration;
 }
 
 export class Server {
   private readonly app: Express;
   private readonly port: number;
   private readonly saveCommandHandler: SaveCommandHandler;
-  private readonly clients = new Set<Response>();
   private httpServer: HttpServer | null = null;
 
   public constructor(port: number, options: ServerOptions = {}) {
     this.app = express();
     this.port = port;
 
-    const normalizedOptions = ServerOptionsModel.from(options);
-    console.log(`[Server] Initializing with options: ${normalizedOptions.toString()}`);
+    const configuration =
+      options.configuration ?? loadBackendConfiguration();
+    const effectiveConfiguration = options.saveDirectory
+      ? {
+          ...configuration,
+          saveDirectoryPath: options.saveDirectory,
+        }
+      : configuration;
 
-    const saveDirectory =
-      normalizedOptions.saveDirectory ?? path.resolve(process.cwd(), 'data', 'saves');
+    console.log(
+      `[Server] Initializing with options: ${JSON.stringify(effectiveConfiguration)}`,
+    );
 
     this.saveCommandHandler = new SaveCommandHandler(
-      new Mediator(new SaveCommandPipeline(saveDirectory)),
+      new Mediator(new SaveCommandPipeline(effectiveConfiguration.saveDirectoryPath)),
     );
 
     this.configureMiddleware();
@@ -91,6 +82,15 @@ export class Server {
   }
 
   private configureMiddleware(): void {
+    this.app.use((req, res, next) => {
+      if (req.path.startsWith('/ws/socket.io/')) {
+        res.status(404).end();
+        return;
+      }
+
+      next();
+    });
+
     this.app.use((req, _res, next) => {
       console.log('[Server] HTTP request received', {
         method: req.method,
@@ -116,15 +116,10 @@ export class Server {
         next(error);
       },
     );
-    this.app.use(express.static(this.resolvePublic()));
   }
 
   private mapRoutes(): void {
-    this.app.get('/api/request-stream', (_req, res) => {
-      this.handleSse(res);
-    });
-
-    this.app.post(['/save', '/api/commands/save'], async (req, res) => {
+    this.app.post(['/save', '/api/commands/save', '/api/save'], async (req, res) => {
       await this.handleSaveCommand(req, res);
     });
 
@@ -148,15 +143,15 @@ export class Server {
     }
 
     try {
-      const payload = isRecord(req.body) ? req.body : {};
+      const rectangles = extractRectangles(req.body);
       console.log('[Server] Save command request mapped', {
         method: req.method,
         path: req.path,
-        payloadKeys: Object.keys(payload),
+        rectangleCount: rectangles.length,
       });
 
       const command: ICommand<SaveCommand> = {
-        json: Json.serialize(payload as Json.Value),
+        json: Json.serialize({ rectangles } as Json.Value),
       };
 
       console.log('[Server] Dispatching SaveCommand to command handler.');
@@ -182,28 +177,29 @@ export class Server {
         error: message,
         durationMs: Date.now() - startedAt,
       });
-      res.status(500).json({ ok: false, error: message });
+      const status =
+        message === 'Expected payload with a "rectangles" array.'
+          ? 400
+          : 500;
+      res.status(status).json({ ok: false, error: message });
     }
-  }
-
-  private handleSse(res: Response): void {
-    res.setHeader('content-type', 'text/event-stream');
-    res.setHeader('cache-control', 'no-cache');
-    res.setHeader('connection', 'keep-alive');
-
-    this.clients.add(res);
-    res.on('close', () => {
-      this.clients.delete(res);
-    });
-  }
-
-  private resolvePublic(): string {
-    return path.resolve(process.cwd(), 'public');
   }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function extractRectangles(value: unknown): ReadonlyArray<unknown> {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (isRecord(value) && Array.isArray(value.rectangles)) {
+    return value.rectangles;
+  }
+
+  throw new Error('Expected payload with a "rectangles" array.');
 }
 
 function isJsonParseError(error: unknown): error is SyntaxError & { status: number } {
@@ -277,15 +273,9 @@ function resolveRuntimeConfig(): { port: number; options: ServerOptions } {
       ? portFromEnv
       : 3000;
 
-  const saveDirectory = process.env.SAVE_DIRECTORY;
   return {
     port,
-    options: {
-      saveDirectory:
-        typeof saveDirectory === 'string' && saveDirectory.length > 0
-          ? saveDirectory
-          : undefined,
-    },
+    options: {},
   };
 }
 

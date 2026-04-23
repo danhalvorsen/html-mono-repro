@@ -1,10 +1,13 @@
 import { existsSync } from "node:fs";
+import { readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { PdfBoundingBoxOverlayWriter } from "../../../core-pdf-writer/src/index.js";
+import type { IPdfFragment } from "@monorepo/core-pdf-domain";
+import { PdfWriter } from "../../../core-pdf-writer/src/index.js";
+import { PdfFragmentWriter } from "../../../core-pdf-parser-adapter/src/code.js";
 import { PidFragmentsJsonFileRepository } from "./PidFragmentsJsonFileRepository.js";
 
 const thisDirectory = dirname(fileURLToPath(import.meta.url));
@@ -22,18 +25,22 @@ describe("PID bounding-box overlay integration", () => {
 
     expect(document.fragments.length).toBeGreaterThan(0);
 
-    const writer = new PdfBoundingBoxOverlayWriter();
-    await writer.write({
-      sourcePdfPath,
-      outputPdfPath,
-      rectangles: document.fragments.map((f) => ({
-        pageNumber: f.pageNumber,
-        x: f.boundingBox.position.x,
-        y: f.boundingBox.position.y,
+    const writer = new PdfWriter<IPdfFragment>(new PdfFragmentWriter());
+    const sourcePdfBinary = new Uint8Array(await readFile(sourcePdfPath));
+    const rectangles: IPdfFragment[] = document.fragments.map((f) => ({
+      kind: "rectangle",
+      pageNumber: f.pageNumber,
+      boundingBox: {
+        position: {
+          x: f.boundingBox.position.x,
+          y: f.boundingBox.position.y,
+        },
         width: f.boundingBox.width,
         height: f.boundingBox.height,
-      })),
-    });
+      },
+    }));
+    const outputBinary = await writer.write(sourcePdfBinary, rectangles);
+    await writeFile(outputPdfPath, outputBinary);
 
     expect(existsSync(outputPdfPath)).toBe(true);
   });

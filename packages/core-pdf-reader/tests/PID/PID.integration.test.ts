@@ -4,8 +4,8 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { CompositePdfEngine } from "../../src/old/engine/CompositePdfEngine.js";
-import type { IPdfTextFragment } from "../../src/old/IPdfTextFragment.js";
+import { CompositePdfEngine } from "../../src/engine/CompositePdfEngine.js";
+import type { IPdfTextFragment } from "../../src/IPdfTextFragment.js";
 
 const thisDirectory = dirname(fileURLToPath(import.meta.url));
 const pidPdfPath = join(thisDirectory, "PID.pdf");

@@ -380,11 +380,13 @@ export class MyCanvas extends LitElement {
 
     private readonly handleSaveClick = (event: MouseEvent): void => {
         event.stopPropagation();
+        console.log("Save pressed");
         void this.saveRectangleCells();
     };
 
     private readonly handleSaveMenuClick = (event: Event): void => {
         event.stopPropagation();
+        console.log("Save pressed");
         void this.saveRectangleCells();
     };
 
@@ -393,7 +395,11 @@ export class MyCanvas extends LitElement {
             return;
         }
 
-        const saveFile = await this.services.rectangleCellsSaveAction.execute();
+        const saveFile = await this.services.rectangleCellsSaveAction.execute({
+            cellWidth: this.cellWidth,
+            cellHeight: this.cellHeight,
+            inset: 8
+        });
 
         this.dispatchEvent(new CustomEvent("save-requested", {
             bubbles: true,

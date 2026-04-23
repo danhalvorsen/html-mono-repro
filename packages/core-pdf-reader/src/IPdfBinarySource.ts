@@ -1,0 +1,1 @@
+export interface IPdfBinarySource { readonly name: string; read(): Promise<Uint8Array>; }

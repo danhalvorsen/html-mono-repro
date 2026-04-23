@@ -1,14 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { DefaultPdfReader } from "../src/old/services/DefaultPdfReader.js";
-import { InMemoryPdfBinarySource } from "../src/old/sources/InMemoryPdfBinarySource.js";
-import type { ICompositePdfEngine } from "../src/old/engine/ICompositePdfEngine.js";
-import type { IPdfMetadata } from "../src/old/IPdfMetadata.js";
-import type { IPdfPageText } from "../src/old/IPdfPageText.js";
-import type { IPdfStructuredExtractionRequest } from "../src/old/services/IPdfStructuredExtractionRequest.js";
-import type { IPdfStructuredExtractionResult } from "../src/old/IPdfStructuredExtractionResult.js";
-import type { IPdfTextFragment } from "../src/old/IPdfTextFragment.js";
+import { PdfReader } from "../src/services/PdfReader.js";
+import { InMemoryPdfBinarySource } from "../src/sources/InMemoryPdfBinarySource.js";
+import type { IPdfEngine } from "../src/engine/IPdfEngine.js";
+import type { IPdfMetadata } from "../src/IPdfMetadata.js";
+import type { IPdfPageText } from "../src/IPdfPageText.js";
+import type { IPdfStructuredExtractionRequest } from "../src/services/IPdfStructuredExtractionRequest.js";
+import type { IPdfStructuredExtractionResult } from "../src/IPdfStructuredExtractionResult.js";
+import type { IPdfTextFragment } from "../src/IPdfTextFragment.js";
+import type { IPdfFragment } from "@monorepo/core-pdf-domain";
 
-class FakeCompositePdfEngine implements ICompositePdfEngine {
+class FakePdfEngine implements IPdfEngine {
   public readonly name = "fake";
 
   public async readMetadata(_binary: Uint8Array): Promise<IPdfMetadata> {
@@ -26,6 +27,10 @@ class FakeCompositePdfEngine implements ICompositePdfEngine {
     ]);
   }
 
+  public async readFragments(_binary: Uint8Array): Promise<readonly IPdfFragment[]> {
+    return Object.freeze([]);
+  }
+
   public async readTextFragments(_binary: Uint8Array): Promise<readonly IPdfTextFragment[]> {
     return Object.freeze([]);
   }
@@ -41,9 +46,9 @@ class FakeCompositePdfEngine implements ICompositePdfEngine {
   }
 }
 
-describe("DefaultPdfReader", () => {
+describe("PdfReader", () => {
   it("should read pages from engine", async () => {
-    const reader = new DefaultPdfReader(new FakeCompositePdfEngine());
+    const reader = new PdfReader(new FakePdfEngine());
 
     const source = new InMemoryPdfBinarySource(
       "test.pdf",

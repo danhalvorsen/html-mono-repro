@@ -2,10 +2,13 @@
 import type { ITextFragment } from "./ITextFragment.js";            
 import { Rectangle } from "./Rectangle.js";
 import { Fragment } from "./Fragment.js";           
-import type { IFragmentFactory } from "./IFragmentFactory.js";              
 import type { IPdfTextFragment } from "../pdf-domain/IPdfTextFragment.js";                          
 import { FragmentKind } from "./FragmentKind.js";
 export class TextFragment extends Fragment<TextFragment> {
+    private indexValue!: number;
+    private pageNumberValue!: number;
+    private rectangleValue!: Rectangle;
+
     public readonly text: string;
     public readonly fontName: string | undefined;
     public readonly fontFamily: string | undefined;
@@ -20,7 +23,8 @@ export class TextFragment extends Fragment<TextFragment> {
         fontFamily?: string | null | undefined;
         fontSize?: number | null | undefined;
     }) {
-        super({
+        super();
+        this.initializeFragment({
             index: params.index,
             pageNumber: params.pageNumber,
             rectangle: params.rectangle
@@ -63,7 +67,31 @@ export class TextFragment extends Fragment<TextFragment> {
         return new TextFragment(params);
     }
 
-    public get kind(): FragmentKind {
+    public override get index(): number {
+        return this.indexValue;
+    }
+
+    protected override set index(value: number) {
+        this.indexValue = value;
+    }
+
+    public override get pageNumber(): number {
+        return this.pageNumberValue;
+    }
+
+    protected override set pageNumber(value: number) {
+        this.pageNumberValue = value;
+    }
+
+    public override get rectangle(): Rectangle {
+        return this.rectangleValue;
+    }
+
+    protected override set rectangle(value: Rectangle) {
+        this.rectangleValue = value;
+    }
+
+    public override get kind(): FragmentKind {
         return "text";
     }
 

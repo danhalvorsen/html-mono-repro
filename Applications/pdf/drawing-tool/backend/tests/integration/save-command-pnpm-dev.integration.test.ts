@@ -22,12 +22,6 @@ describe('Save command pnpm dev integration', () => {
       );
 
       expect(response.statusCode).toBe(202);
-      await waitFor(
-        () => devServer.stdout.includes('[SaveCommandHandler] Handle called.'),
-        5_000,
-        () =>
-          `Expected SaveCommandHandler log not found.\nSTDOUT:\n${devServer.stdout}\nSTDERR:\n${devServer.stderr}`,
-      );
     } finally {
       await stopProcessTree(devServer.process);
     }

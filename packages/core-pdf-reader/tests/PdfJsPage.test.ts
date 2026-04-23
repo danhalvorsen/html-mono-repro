@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PdfJsTestFixture } from "./fixtures/pdfjs-fixture.js";
-import { PdfJsPage } from "../src/old/engine/PdfJsPage.js";
+import { PdfJsPage } from "../src/engine/PdfJsPage.js";
 
 describe("PdfJsPage", () => {
   const fixture = new PdfJsTestFixture();
@@ -49,7 +49,10 @@ describe("PdfJsPage", () => {
     expect(result).toEqual([
       {
         pageNumber: 1,
+        rawText: "Milk",
         text: "Milk",
+        textType: "text",
+        textSize: 1,
         boundingBox: {
           position: { x: 10, y: 100 },
           width: 30,
@@ -67,7 +70,10 @@ describe("PdfJsPage", () => {
       },
       {
         pageNumber: 1,
+        rawText: "  19,90  ",
         text: "19,90",
+        textType: "text",
+        textSize: 1,
         boundingBox: {
           position: { x: 60, y: 100 },
           width: 20,
@@ -100,7 +106,10 @@ describe("PdfJsPage", () => {
 
     expect(fragment).toEqual({
       pageNumber: 1,
+      rawText: "Derived",
       text: "Derived",
+      textType: "text",
+      textSize: 1.5,
       boundingBox: {
         position: { x: 10, y: 20 },
         width: 15,
@@ -136,7 +145,10 @@ describe("PdfJsPage", () => {
 
     expect(fragment).toEqual({
       pageNumber: 3,
+      rawText: "Offer",
       text: "Offer",
+      textType: "text",
+      textSize: 14,
       boundingBox: {
         position: { x: 25, y: 50 },
         width: 40,
@@ -181,7 +193,10 @@ describe("PdfJsPage", () => {
 
     expect(fragment).toEqual({
       pageNumber: 4,
+      rawText: "ObjectFont",
       text: "ObjectFont",
+      textType: "text",
+      textSize: 16,
       boundingBox: {
         position: { x: 30, y: 80 },
         width: 70,
@@ -221,7 +236,10 @@ describe("PdfJsPage", () => {
 
     expect(fragment).toEqual({
       pageNumber: 1,
+      rawText: "Scaled",
       text: "Scaled",
+      textType: "text",
+      textSize: 1,
       boundingBox: {
         position: { x: 10, y: 20 },
         width: 25,

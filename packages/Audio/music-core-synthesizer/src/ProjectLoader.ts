@@ -1,7 +1,7 @@
 import type { IJsonDocumentParser } from "./IJsonDocumentParser.js";
 import type { IProjectFactory } from "./IProjectFactory.js";
 import type { IProjectLoader } from "./IProjectLoader.js";
-import type { ISemanticValidator } from "./ISemanticValidator.js";
+import type { ISemanticValidator } from "../../music-core-synthesizer-schema/src/ISemanticValidator.js";
 import type { ISchemaValidator } from "./ISchemaValidator.js";
 
 export class ProjectLoader<TDocument, TProject, TInput = string>

@@ -4,7 +4,7 @@ import { PdfJsTestFixture } from "./fixtures/pdfjs-fixture.js";
 import {
   IPdfJsDocumentProxy,
   PdfJsDocumentFactory,
-} from "../src/old/engine/PdfJsDocumentFactory.js";
+} from "../src/engine/PdfJsDocumentFactory.js";
  
 vi.mock("pdfjs-dist/legacy/build/pdf.mjs", () => {
   return {
@@ -30,12 +30,21 @@ describe("PdfJsDocumentFactory", () => {
     const document = await sut.open(binary);
 
     expect(pdfjs.getDocument).toHaveBeenCalledOnce();
-    expect(pdfjs.getDocument).toHaveBeenCalledWith({
-      data: binary,
-      useWorkerFetch: false,
-      isEvalSupported: false,
-      useSystemFonts: false,
-    });
+    expect(pdfjs.getDocument).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.any(Uint8Array),
+        useWorkerFetch: false,
+        isEvalSupported: false,
+        useSystemFonts: false,
+        isOffscreenCanvasSupported: false,
+        isImageDecoderSupported: false,
+      }),
+    );
+    const calledWith = vi.mocked(pdfjs.getDocument).mock.calls[0]?.[0] as {
+      data: Uint8Array;
+    };
+    expect(calledWith.data).toEqual(binary);
+    expect(calledWith.data).not.toBe(binary);
     expect(document.pageCount).toBe(4);
   });
 });

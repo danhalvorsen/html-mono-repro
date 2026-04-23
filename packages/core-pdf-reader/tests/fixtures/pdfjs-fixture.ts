@@ -6,8 +6,8 @@ import type {
   IPdfJsTextContent,
   IPdfJsTextStyle,
   IPdfJsViewport,
-} from "../../src/old/engine/PdfJsDocumentFactory.js";
-import type { IFontInformation } from "../../src/old/IFontInformation.js";
+} from "../../src/engine/PdfJsDocumentFactory.js";
+import type { IFontInformation } from "../../src/IFontInformation.js";
 
 export interface ITestTextItemInput {
   readonly str: string;

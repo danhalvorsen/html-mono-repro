@@ -1,0 +1,48 @@
+{
+  "name": "@monorepo/core-graph-pathfinding-domain-validators",
+  "version": "1.0.0",
+  "description": "Pathfinding domain validation policies.",
+  "type": "module",
+
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+
+  "files": [
+    "dist"
+  ],
+
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+
+  "keywords": [
+    "pathfinding",
+    "validation",
+    "domain",
+    "typescript"
+  ],
+
+  "license": "MIT",
+
+  "dependencies": {
+    "@monorepo/core-graph-pathfinding-domain": "workspace:*"
+  },
+
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^1.6.0"
+  },
+
+  "sideEffects": false
+}

@@ -1,5 +1,8 @@
 import type { IDrawingObjectStore } from "../canvas-object/stores/IDrawingObjectStore.js";
-import type { IRectangleCellsSaveWriter } from "./IRectangleCellsSaveWriter.js";
+import type {
+    IRectangleCellsSaveWriter,
+    IRectangleSaveCompensation
+} from "./IRectangleCellsSaveWriter.js";
 import {
     createRectangleCellsSaveFile,
     type IRectangleCellsSaveFile
@@ -20,11 +23,11 @@ export class RectangleCellsSaveAction {
         this.fileName = fileName;
     }
 
-    public async execute(): Promise<IRectangleCellsSaveFile> {
+    public async execute(compensation?: IRectangleSaveCompensation): Promise<IRectangleCellsSaveFile> {
         const saveFile = createRectangleCellsSaveFile(this.drawingObjectStore.getAll());
         const json = JSON.stringify(saveFile, null, 2);
 
-        await this.writer.writeJson(this.fileName, json);
+        await this.writer.writeJson(this.fileName, json, compensation);
 
         return saveFile;
     }

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { PdfJsTestFixture } from "./fixtures/pdfjs-fixture.js";
-import { CompositePdfEngine } from "../src/old/engine/CompositePdfEngine.js";
+import { CompositePdfEngine } from "../src/engine/CompositePdfEngine.js";
 
 vi.mock("pdfjs-dist/legacy/build/pdf.mjs", () => {
   return {
@@ -47,7 +47,10 @@ describe("CompositePdfEngine", () => {
     expect(fragments).toEqual([
       {
         pageNumber: 1,
+        rawText: "Kiwi",
         text: "Kiwi",
+        textType: "text",
+        textSize: 18,
         boundingBox: {
           position: { x: 25, y: 40 },
           width: 36,
@@ -106,11 +109,14 @@ describe("CompositePdfEngine", () => {
     expect(fragments).toEqual([
       {
         pageNumber: 1,
+        rawText: "FontObject",
         text: "FontObject",
+        textType: "text",
+        textSize: 11,
         boundingBox: {
           position: { x: 14, y: 22 },
           width: 55,
-          height: 0,
+          height: 11,
         },
         font: {
           name: "Roboto",

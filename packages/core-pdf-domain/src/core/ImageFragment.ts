@@ -5,6 +5,10 @@ import type { FragmentKind } from "./FragmentKind.js";
 import { Rectangle } from "./Rectangle.js";
 
 export class ImageFragment extends Fragment<ImageFragment> {
+    private indexValue!: number;
+    private pageNumberValue!: number;
+    private rectangleValue!: Rectangle;
+
     public readonly name: string | undefined;
     public readonly mimeType: string | undefined;
     public readonly bytes: Uint8Array | undefined;
@@ -17,7 +21,8 @@ export class ImageFragment extends Fragment<ImageFragment> {
         mimeType?: string | null | undefined;
         bytes?: Uint8Array | null | undefined;
     }) {
-        super({
+        super();
+        this.initializeFragment({
             index: params.index,
             pageNumber: params.pageNumber,
             rectangle: params.rectangle
@@ -28,7 +33,31 @@ export class ImageFragment extends Fragment<ImageFragment> {
         this.bytes = params.bytes ?? undefined;
     }
 
-    public get kind(): FragmentKind {
+    public override get index(): number {
+        return this.indexValue;
+    }
+
+    protected override set index(value: number) {
+        this.indexValue = value;
+    }
+
+    public override get pageNumber(): number {
+        return this.pageNumberValue;
+    }
+
+    protected override set pageNumber(value: number) {
+        this.pageNumberValue = value;
+    }
+
+    public override get rectangle(): Rectangle {
+        return this.rectangleValue;
+    }
+
+    protected override set rectangle(value: Rectangle) {
+        this.rectangleValue = value;
+    }
+
+    public override get kind(): FragmentKind {
         return "image";
     }
 

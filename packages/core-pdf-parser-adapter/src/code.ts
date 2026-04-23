@@ -1,5 +1,7 @@
+import { PDFDocument as PdfLibDocument, PDFName as PdfLibName, PDFRawStream as PdfLibRawStream, rgb as pdfLibRgb } from "pdf-lib";
+import * as pdfjsRuntime from "pdfjs-dist/legacy/build/pdf.mjs";
 
-export declare const pdfjs: {
+export const pdfjs = {
   getDocument(options: {
     data: Uint8Array;
     disableWorker?: boolean;
@@ -8,28 +10,37 @@ export declare const pdfjs: {
     isOffscreenCanvasSupported?: boolean;
     isImageDecoderSupported?: boolean;
     useSystemFonts?: boolean;
-  }): {
-    readonly promise: Promise<PdfJsNativeDocument>;
-  };
+  }): { readonly promise: Promise<PdfJsNativeDocument> } {
+    return pdfjsRuntime.getDocument(
+      options as Parameters<typeof pdfjsRuntime.getDocument>[0],
+    ) as unknown as { readonly promise: Promise<PdfJsNativeDocument> };
+  },
 };
 
-export declare const PDFDocument: {
-  load(binary: Uint8Array): Promise<PdfLibNativeDocument>;
+export const PDFDocument = {
+  load(binary: Uint8Array): Promise<PdfLibNativeDocument> {
+    return PdfLibDocument.load(binary) as unknown as Promise<PdfLibNativeDocument>;
+  },
 };
 
-export declare const PDFName: {
-  of(name: string): unknown;
+export const PDFName = {
+  of(name: string): unknown {
+    return PdfLibName.of(name);
+  },
 };
 
-export declare function rgb(red: number, green: number, blue: number): unknown;
-
-export declare class PDFRawStream {
-  public readonly dict: {
-    get(key: unknown): unknown;
-  };
-
-  public getContents(): Uint8Array;
+export function rgb(red: number, green: number, blue: number): unknown {
+  return pdfLibRgb(red, green, blue);
 }
+
+export const PDFRawStream = PdfLibRawStream as unknown as {
+  new (...args: never[]): {
+    readonly dict: {
+      get(key: unknown): unknown;
+    };
+    getContents(): Uint8Array;
+  };
+};
 
 /* =================================================================================================
    Internal vendor-native shapes
@@ -73,8 +84,9 @@ export type PdfJsNativeTextItem = {
 };
 
 export type PdfLibDrawPage = {
-  readonly width: number;
-  readonly height: number;
+  readonly width?: number;
+  readonly height?: number;
+  getHeight?: () => number;
   drawRectangle(options: {
     x: number;
     y: number;
