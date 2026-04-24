@@ -1,0 +1,26 @@
+{
+  "name": "make-clusters-and-validate-db-scan",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && tsc -p tsconfig.backend.json && vite build",
+    "preview": "vite preview",
+    "test": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@monorepo/core-design-patterns": "workspace:*",
+    "@monorepo/core-design-patterns-cqrs": "workspace:*",
+    "@monorepo/core-filesystem": "workspace:*",
+    "@monorepo/core-fsm": "workspace:*",
+    "@monorepo/core-http-messages": "workspace:*",
+    "@monorepo/core-http-messages-http-client": "workspace:*",
+    "@monorepo/core-json": "workspace:*",
+    "lit": "^3.3.2"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2",
+    "vite": "^8.0.4"
+  }
+}

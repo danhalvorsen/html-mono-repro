@@ -1,5 +1,5 @@
 
-import { Vector3, Matrix} from '@my-graphics/core-math';
+import { Vector3, Matrix} from '@monorepo/core-math';
 import { IDimensions } from './dimensions.js';
 import { ILocation } from './location.js';
 import { IShape } from './IShape.js';
@@ -78,3 +78,4 @@ export class Shape implements IShape {
     this.rotation = matrix;
   }
 }
+

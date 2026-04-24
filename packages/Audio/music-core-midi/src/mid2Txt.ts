@@ -352,7 +352,7 @@ class StandardMidiFileParser {
     switch (type) {
       case 0x00: {
         const number =
-          bytes.length >= 2 ? ((bytes[0] << 8) | bytes[1]) : 0;
+          bytes.length >= 2 ? (((bytes[0] ?? 0) << 8) | (bytes[1] ?? 0)) : 0;
         meta = { type: "sequenceNumber", number };
         break;
       }
@@ -378,7 +378,7 @@ class StandardMidiFileParser {
         meta = makeText("cuePoint");
         break;
       case 0x20: {
-        const channel = bytes.length >= 1 ? (bytes[0] & 0x0f) : 0;
+        const channel = bytes.length >= 1 ? ((bytes[0] ?? 0) & 0x0f) : 0;
         meta = { type: "channelPrefix", channel };
         break;
       }
@@ -388,7 +388,7 @@ class StandardMidiFileParser {
       case 0x51: {
         const value =
           bytes.length === 3
-            ? ((bytes[0] << 16) | (bytes[1] << 8) | bytes[2])
+            ? (((bytes[0] ?? 0) << 16) | ((bytes[1] ?? 0) << 8) | (bytes[2] ?? 0))
             : 500000;
         meta = { type: "tempo", microsecondsPerQuarter: value };
         break;
@@ -413,8 +413,8 @@ class StandardMidiFileParser {
         };
         break;
       case 0x59: {
-        const sf = bytes.length >= 1 ? ((bytes[0] << 24) >> 24) : 0;
-        const mi = bytes.length >= 2 ? bytes[1] : 0;
+        const sf = bytes.length >= 1 ? (((bytes[0] ?? 0) << 24) >> 24) : 0;
+        const mi = bytes.length >= 2 ? (bytes[1] ?? 0) : 0;
         meta = { type: "keySignature", sf, mi };
         break;
       }
@@ -534,7 +534,12 @@ class StandardMidiFileParser {
     if (this.offset >= this.data.length) {
       throw new Error("Unexpected EOF while reading byte");
     }
-    return this.data[this.offset++];
+    const value = this.data[this.offset];
+    if (value === undefined) {
+      throw new Error("Unexpected EOF while reading byte");
+    }
+    this.offset++;
+    return value;
   }
 
   private readU16(): number {

@@ -1,8 +1,8 @@
-import type { IPdfFragment } from "@monorepo/core-pdf-domain"
+import type { PdfFragment } from "@monorepo/core-pdf-domain"
 
 export interface IPdfFragmentWriter {
     write(
         pdfBinary: Uint8Array,
-        fragments: readonly IPdfFragment[]
+        fragments: readonly PdfFragment[]
     ): Promise<Uint8Array>;
 }

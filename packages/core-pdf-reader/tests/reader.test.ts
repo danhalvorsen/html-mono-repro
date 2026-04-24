@@ -1,15 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { DefaultPdfReader } from "../src/old/services/DefaultPdfReader.js";
-import { InMemoryPdfBinarySource } from "../src/old/sources/InMemoryPdfBinarySource.js";
-import type { ICompositePdfEngine } from "../src/old/engine/ICompositePdfEngine.js";
-import type { IPdfMetadata } from "../src/old/IPdfMetadata.js";
-import type { IPdfPageText } from "../src/old/IPdfPageText.js";
-import type { IPdfStructuredExtractionRequest } from "../src/old/services/IPdfStructuredExtractionRequest.js";
-import type { IPdfStructuredExtractionResult } from "../src/old/IPdfStructuredExtractionResult.js";
-import type { IPdfTextFragment } from "../src/old/IPdfTextFragment.js";
 
-class FakeCompositePdfEngine implements ICompositePdfEngine {
+import { FragmentKinds, type IPdfFragment } from "@monorepo/core-pdf-domain";
+
+import type { IPdfMetadata } from "../src/IPdfMetadata.js";
+import type { IPdfPageText } from "../src/IPdfPageText.js";
+import type { IPdfTextFragment } from "../src/IPdfTextFragment.js";
+import type { IPdfEngine } from "../src/engine/IPdfEngine.js";
+import { PdfReader } from "../src/services/PdfReader.js";
+import { InMemoryPdfBinarySource } from "../src/sources/InMemoryPdfBinarySource.js";
+
+class FakePdfEngine implements IPdfEngine {
   public readonly name = "fake";
+
+  public constructor(
+    private readonly fragments: readonly IPdfFragment[] = Object.freeze([]),
+  ) {}
 
   public async readMetadata(_binary: Uint8Array): Promise<IPdfMetadata> {
     return {};
@@ -26,25 +31,18 @@ class FakeCompositePdfEngine implements ICompositePdfEngine {
     ]);
   }
 
+  public async readFragments(_binary: Uint8Array): Promise<readonly IPdfFragment[]> {
+    return this.fragments;
+  }
+
   public async readTextFragments(_binary: Uint8Array): Promise<readonly IPdfTextFragment[]> {
     return Object.freeze([]);
   }
-
-  public async extractStructured<TValue>(
-    _binary: Uint8Array,
-    request: IPdfStructuredExtractionRequest,
-  ): Promise<IPdfStructuredExtractionResult<TValue>> {
-    return Object.freeze({
-      schemaName: request.schemaName,
-      value: {} as TValue,
-    });
-  }
 }
 
-describe("DefaultPdfReader", () => {
+describe("PdfReader", () => {
   it("should read pages from engine", async () => {
-    const reader = new DefaultPdfReader(new FakeCompositePdfEngine());
-
+    const reader = new PdfReader(new FakePdfEngine());
     const source = new InMemoryPdfBinarySource(
       "test.pdf",
       new Uint8Array([1, 2, 3]),
@@ -56,5 +54,39 @@ describe("DefaultPdfReader", () => {
       { pageNumber: 1, text: "Page 1 text" },
       { pageNumber: 2, text: "Page 2 text" },
     ]);
+  });
+
+  it("should return fragments exactly as provided by the engine", async () => {
+    const fragments: readonly IPdfFragment[] = Object.freeze([
+      Object.freeze({
+        kind: FragmentKinds.Text,
+        pageNumber: 1,
+        text: "A",
+        boundingBox: Object.freeze({
+          position: Object.freeze({ x: 0, y: 0 }),
+          width: 10,
+          height: 10,
+        }),
+      }),
+      Object.freeze({
+        kind: FragmentKinds.Rectangle,
+        pageNumber: 1,
+        boundingBox: Object.freeze({
+          position: Object.freeze({ x: 20, y: 0 }),
+          width: 5,
+          height: 5,
+        }),
+      }),
+    ]);
+
+    const reader = new PdfReader(new FakePdfEngine(fragments));
+    const source = new InMemoryPdfBinarySource(
+      "test.pdf",
+      new Uint8Array([1, 2, 3]),
+    );
+
+    const result = await reader.readFragments(source);
+
+    expect(result).toEqual(fragments);
   });
 });

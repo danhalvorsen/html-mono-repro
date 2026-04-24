@@ -11,12 +11,6 @@ interface IWebCardSection {
   readonly label: string;
 }
 
-const DEFAULT_SECTIONS: readonly IWebCardSection[] = [
-  { key: "header", label: "HEADER" },
-  { key: "main", label: "MAIN" },
-  { key: "footer", label: "FOOTER" },
-] as const;
-
 const sectionLabelFillColor = "#2b3038";
 
 export class WebCardElement extends LitElement {

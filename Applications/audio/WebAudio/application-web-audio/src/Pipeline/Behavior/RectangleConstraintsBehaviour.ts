@@ -15,14 +15,13 @@ export class RectangleConstraintsBehaviour
     msg: OnDragMessage,
   ): Promise<Result<DragPipelineResult, DragPipelineResult>> {
     const { targetId, target, x, y } = msg.payload;
-    const bounds = target.getBounds?.() ?? null;
+    const bounds = target.shape.getBoundaries();
 
     if (
-      bounds !== null &&
-      (x < bounds.minX ||
-        x > bounds.maxX ||
-        y < bounds.minY ||
-        y > bounds.maxY)
+      x < bounds.x ||
+      x > bounds.x + bounds.width ||
+      y < bounds.y ||
+      y > bounds.y + bounds.height
     ) {
       return Err(
         DragPipelineResult.fail(

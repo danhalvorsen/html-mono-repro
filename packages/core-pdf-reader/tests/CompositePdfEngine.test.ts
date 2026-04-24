@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
+import { FragmentKinds } from "@monorepo/core-pdf-domain";
 import { PdfJsTestFixture } from "./fixtures/pdfjs-fixture.js";
-import { CompositePdfEngine } from "../src/old/engine/CompositePdfEngine.js";
+import { CompositePdfEngine } from "../src/engine/CompositePdfEngine.js";
+import type { IPdfFragment } from "@monorepo/core-pdf-domain";
+import { PdfFragmentJsonSerializer } from "../src/engine/PdfFragmentJsonSerializer.js";
 
 vi.mock("pdfjs-dist/legacy/build/pdf.mjs", () => {
   return {
@@ -46,8 +49,12 @@ describe("CompositePdfEngine", () => {
 
     expect(fragments).toEqual([
       {
+        kind: FragmentKinds.Text,
         pageNumber: 1,
+        rawText: "Kiwi",
         text: "Kiwi",
+        textType: FragmentKinds.Text,
+        textSize: 18,
         boundingBox: {
           position: { x: 25, y: 40 },
           width: 36,
@@ -105,12 +112,16 @@ describe("CompositePdfEngine", () => {
 
     expect(fragments).toEqual([
       {
+        kind: FragmentKinds.Text,
         pageNumber: 1,
+        rawText: "FontObject",
         text: "FontObject",
+        textType: FragmentKinds.Text,
+        textSize: 11,
         boundingBox: {
           position: { x: 14, y: 22 },
           width: 55,
-          height: 0,
+          height: 11,
         },
         font: {
           name: "Roboto",
@@ -123,5 +134,65 @@ describe("CompositePdfEngine", () => {
         fontSize: 11,
       },
     ]);
+  });
+
+  it("should serialize fragments JSON without distance metadata", () => {
+    const serializer = new PdfFragmentJsonSerializer();
+    const fragments: readonly IPdfFragment[] = Object.freeze([
+      Object.freeze({
+        kind: FragmentKinds.Text,
+        pageNumber: 1,
+        text: "A",
+        boundingBox: Object.freeze({
+          position: Object.freeze({ x: 0, y: 0 }),
+          width: 10,
+          height: 10,
+        }),
+      }),
+      Object.freeze({
+        kind: FragmentKinds.Rectangle,
+        pageNumber: 1,
+        boundingBox: Object.freeze({
+          position: Object.freeze({ x: 30, y: 0 }),
+          width: 10,
+          height: 10,
+        }),
+      }),
+      Object.freeze({
+        kind: FragmentKinds.Text,
+        pageNumber: 2,
+        text: "B",
+        boundingBox: Object.freeze({
+          position: Object.freeze({ x: 0, y: 0 }),
+          width: 10,
+          height: 10,
+        }),
+      }),
+    ]);
+
+    const payloadBytes = serializer.serialize("pdfjs-composite-engine", fragments);
+    const parsed = JSON.parse(new TextDecoder().decode(payloadBytes)) as {
+      engine?: string;
+      totals?: { fragments?: number };
+      fragments?: Array<{
+        id?: string;
+        pageNumber?: number;
+        kind?: string;
+      }>;
+    };
+
+    expect(parsed.engine).toBe("pdfjs-composite-engine");
+    expect(parsed.totals?.fragments).toBe(3);
+    expect(parsed.fragments?.length).toBe(3);
+
+    expect(
+      (parsed.fragments ?? []).every(
+        (fragment) =>
+          typeof fragment.id === "string"
+          && typeof fragment.pageNumber === "number"
+          && typeof fragment.kind === "string"
+          && !("internalDistances" in fragment),
+      ),
+    ).toBe(true);
   });
 });

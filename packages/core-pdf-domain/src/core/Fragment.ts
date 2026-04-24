@@ -1,20 +1,26 @@
 // src/Fragment.ts
 
 import { Guard } from "./Guard.js";
-import type { FragmentKind } from "./FragmentKind.js";
+import type { IBoundingBox } from "./IBoundingBox.js";
+import type { PdfFragmentKind } from "../pdf-domain/fragments/PdfFragmentKind.js";
 import type { IPoint } from "./IPoint.js";
 import { Rectangle } from "./Rectangle.js";
 
 export abstract class Fragment<TSelf extends Fragment<TSelf>> {
-    public readonly index: number;
-    public readonly pageNumber: number;
-    public readonly rectangle: Rectangle;
+    public abstract get index(): number;
+    protected abstract set index(value: number);
 
-    protected constructor(params: {
+    public abstract get pageNumber(): number;
+    protected abstract set pageNumber(value: number);
+
+    public abstract get rectangle(): Rectangle;
+    protected abstract set rectangle(value: Rectangle);
+
+    protected initializeFragment(params: {
         index: number;
         pageNumber: number;
         rectangle: Rectangle;
-    }) {
+    }): void {
         Guard.nonNegativeInteger(params.index, "Fragment.index");
         Guard.positiveInteger(params.pageNumber, "Fragment.pageNumber");
 
@@ -27,10 +33,14 @@ export abstract class Fragment<TSelf extends Fragment<TSelf>> {
         this.rectangle = params.rectangle;
     }
 
-    public abstract get kind(): FragmentKind;
+    public abstract get kind(): PdfFragmentKind;
 
     public get id(): string {
         return this.rectangle.id;
+    }
+
+    public get boundingBox(): IBoundingBox {
+        return this.rectangle.toBoundingBox();
     }
 
     public translate(dx: number, dy: number): TSelf {

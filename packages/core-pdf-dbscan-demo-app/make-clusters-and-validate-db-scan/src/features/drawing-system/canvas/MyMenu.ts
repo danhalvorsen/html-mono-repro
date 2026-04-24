@@ -37,14 +37,32 @@ export class MyMenu extends LitElement {
                 class="menu-list-item"
                 draggable="true"
                 @dragstart=${(event: DragEvent) => this.handleDragStart(event, item.kind)}>
-                <button class="menu-item" type="button" title="${item.title}">
+                <button
+                    class="menu-item"
+                    type="button"
+                    title="${item.title}"
+                    @click=${(event: MouseEvent) => this.handleItemClick(event, item)}>
                     <span class="icon-frame" style=${`width:${this.cellWidth}px;height:${this.cellHeight}px;`}>
                         ${this.renderIcon(item)}
                     </span>
-                    <span class="label">${item.title}</span>
+                    ${item.showLabel === false
+                        ? html``
+                        : html`<span class="label">${item.title}</span>`}
                 </button>
             </li>
         `;
+    }
+
+    private handleItemClick(event: MouseEvent, item: IMenuShapeItem): void {
+        if (item.kind !== CanvasObjectKinds.saveButton) {
+            return;
+        }
+
+        event.stopPropagation();
+        this.dispatchEvent(new CustomEvent("save-menu-clicked", {
+            bubbles: true,
+            composed: true
+        }));
     }
 
     private renderIcon(item: IMenuShapeItem): TemplateResult {
@@ -74,6 +92,31 @@ export class MyMenu extends LitElement {
                 return html`
                     <svg viewBox="0 0 100 100" aria-hidden="true">
                         <polygon points="50,14 84,50 50,86 16,50" fill="${item.fill}" stroke="#1f1f1f" stroke-width="4"></polygon>
+                    </svg>
+                `;
+
+            case CanvasObjectKinds.line:
+                return html`
+                    <svg viewBox="0 0 100 100" aria-hidden="true">
+                        <line x1="18" y1="50" x2="82" y2="50" stroke="${item.fill}" stroke-width="8" stroke-linecap="round"></line>
+                    </svg>
+                `;
+
+            case CanvasObjectKinds.saveButton:
+            case CanvasObjectKinds.loadButton:
+            case CanvasObjectKinds.deleteButton:
+                return html`
+                    <svg viewBox="0 0 100 100" aria-hidden="true">
+                        <rect x="14" y="30" width="72" height="40" rx="4" fill="${item.fill}" stroke="#1f1f1f" stroke-width="4"></rect>
+                        <text
+                            x="50"
+                            y="54"
+                            fill="#0f172a"
+                            text-anchor="middle"
+                            dominant-baseline="middle"
+                            font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                            font-size="16"
+                            font-weight="700">${item.title}</text>
                     </svg>
                 `;
         }

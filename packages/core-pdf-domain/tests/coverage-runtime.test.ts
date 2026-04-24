@@ -3,11 +3,12 @@ import {
   Arithmetic,
   Font,
   Guard,
+  GeometryFragment,
   ImageFragment,
   Point,
+  RectangleFragment,
   Rectangle,
   TextFragment,
-  TextFragmentFactory,
 } from "../src/index.js";
 
 function makeRect(id = "r", x = 0, y = 0, width = 10, height = 10): Rectangle {
@@ -177,7 +178,30 @@ describe("runtime coverage", () => {
     expect(() => Rectangle.union("u", [])).toThrow("cannot be empty");
   });
 
-  it("covers TextFragment and TextFragmentFactory branches", () => {
+  it("covers GeometryFragment/RectangleFragment hierarchy", () => {
+    const fragment = new RectangleFragment({
+      index: 4,
+      pageNumber: 2,
+      rectangle: makeRect("r4", 10, 20, 30, 40),
+    });
+
+    const asGeometry: GeometryFragment<RectangleFragment> = fragment;
+    expect(asGeometry.kind).toBe("rectangle");
+    expect(asGeometry.center()).toEqual({ x: 25, y: 40 });
+    expect(asGeometry.area()).toBe(1200);
+
+    const moved = fragment.translate(5, 5);
+    expect(moved.rectangle.left).toBe(15);
+    expect(moved.rectangle.top).toBe(25);
+
+    const source = fragment.toSource();
+    expect(source.kind).toBe("rectangle");
+    expect(source.pageNumber).toBe(2);
+    expect(source.boundingBox.width).toBe(30);
+    expect(source.boundingBox.height).toBe(40);
+  });
+
+  it("covers TextFragment branches", () => {
     const source = {
       pageNumber: 1,
       text: "hello",
@@ -243,8 +267,7 @@ describe("runtime coverage", () => {
     expect(toSourceNoFont.fontName).toBeUndefined();
     expect(toSourceNoFont.fontFamily).toBeUndefined();
 
-    const factory = new TextFragmentFactory();
-    const fromFactory = factory.create({
+    const fromSource = TextFragment.fromSource({
       pageNumber: 1,
       text: "factory",
       boundingBox: {
@@ -257,7 +280,7 @@ describe("runtime coverage", () => {
       fontSize: 9,
     }, 2);
 
-    expect(fromFactory.text).toBe("factory");
-    expect(fromFactory.fontName).toBe("F");
+    expect(fromSource.text).toBe("factory");
+    expect(fromSource.fontName).toBe("F");
   });
 });

@@ -5,15 +5,23 @@ import { IncrementingCanvasObjectIdGenerator } from "../canvas-object/value-obje
 import { InMemoryDrawingObjectStore } from "../canvas-object/stores/InMemoryDrawingObjectStore.js";
 import { GridSnapService } from "../grid/services/GridSnapService.js";
 import { MenuShapeDragPayloadCodec } from "../drag-drop/codecs/DragPayloadCodec.js";
+import { ApiRectangleCellsSaveWriter } from "../save/ApiRectangleCellsSaveWriter.js";
+import { RectangleCellsSaveAction } from "../save/RectangleCellsSaveAction.js";
 
 export function createDrawingSystemServices(): IDrawingSystemServices {
+    const drawingObjectStore = new InMemoryDrawingObjectStore();
+
     return {
         canvasObjectFactory: new CanvasObjectFactory(
             new IncrementingCanvasObjectIdGenerator(),
             () => new CanvasObjectBuilder()
         ),
-        drawingObjectStore: new InMemoryDrawingObjectStore(),
+        drawingObjectStore,
         gridSnapService: new GridSnapService(),
-        dragPayloadCodec: new MenuShapeDragPayloadCodec()
+        dragPayloadCodec: new MenuShapeDragPayloadCodec(),
+        rectangleCellsSaveAction: new RectangleCellsSaveAction(
+            drawingObjectStore,
+            new ApiRectangleCellsSaveWriter()
+        )
     };
 }

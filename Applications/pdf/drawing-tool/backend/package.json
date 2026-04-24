@@ -1,0 +1,37 @@
+{
+  "name": "@monorepo/drawing-tool-backend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "debug": "node --inspect --enable-source-maps --import tsx src/server.ts",
+    "debug:brk": "node --inspect-brk --enable-source-maps --import tsx src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "send:data": "tsx scripts/send-data.ts",
+    "send:rectangle-data": "tsx scripts/send-rectangle-data.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@monorepo/core-design-patterns": "workspace:*",
+    "@monorepo/core-group-shape-test-data": "workspace:*",
+    "@monorepo/core-filesystem": "workspace:*",
+    "@monorepo/core-json": "workspace:*",
+    "@monorepo/core-http-messages": "workspace:*",  
+    "@monorepo/core-http-messages-express": "workspace:*",
+    "@monorepo/core-http-messages-http-client": "workspace:*",  
+    "@monorepo/core-design-patterns-cqrs": "workspace:*",
+    "@monorepo/core-design-patterns-mediator": "workspace:*",
+    "@monorepo/core-pdf-writer": "workspace:*",
+    "express": "^5.2.1",
+    "pdf-lib": "^1.17.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.19.39",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

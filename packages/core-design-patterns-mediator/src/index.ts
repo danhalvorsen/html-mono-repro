@@ -14,4 +14,4 @@ export * from './Pipeline/Handlers/QueryHandler.js';
 export * from './Pipeline/Mediator/Mediator.js';
 export * from './Pipeline/Messages/IMessage.js';
 export * from './Pipeline/Pipeline.js';
-
+export * from './Pipeline/PipelineBuilder.js';

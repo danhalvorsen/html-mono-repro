@@ -1,7 +1,7 @@
 import { IBoundingBox } from "core-pdf-domain/src/core/IBoundingBox.js";
 import { PdfMetadataMapper } from "../src/PdfMetadataMapper.js"
 import { GuardedAdapterTestHarness } from "./GuardedAdapterTestHarness.js";
-import { IPdfRectangleFragment } from "core-pdf-domain/src/pdf-domain/IPdfRectangleFragment.js";
+import { IPdfRectangleFragment } from "core-pdf-domain/src/pdf-domain/fragments/IPdfRectangleFragment.js";
 
 export class PdfParserAdapterFixture {
     public readonly guardedAdapter = new GuardedAdapterTestHarness();

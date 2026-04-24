@@ -8,11 +8,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 export class OrbitCameraController implements IInteractiveCameraController {
   private readonly controls: OrbitControls;
-  private readonly domElement: HTMLElement | SVGElement;
+  private readonly domElement: HTMLElement;
 
   public constructor(
     camera: IThreeCamera,
-    domElement: HTMLElement | SVGElement, // NOT nullable
+    domElement: HTMLElement,
   ) {
     this.domElement = domElement;
     this.controls = new OrbitControls(
@@ -28,7 +28,7 @@ export class OrbitCameraController implements IInteractiveCameraController {
   }
 
   public connect(): void {
-    this.controls.connect(this.domElement);
+    this.controls.connect();
   }
 
   public disconnect(): void {

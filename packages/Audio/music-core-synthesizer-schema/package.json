@@ -1,0 +1,44 @@
+ 
+{
+  "name": "@monorepo/music-core-synthesizer-schema",
+  "version": "1.0.0",
+  "description": "Example module scaffold",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "module",
+    "typescript",
+    "example"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "@types/node": "^25.6.0",
+    "ajv": "^8.18.0",
+    "ajv-formats": "^3.0.1",
+    "openapi-typescript": "^7.13.0",
+    "tsx": "^4.20.6",
+    "yaml": "^2.8.3"
+  }
+}

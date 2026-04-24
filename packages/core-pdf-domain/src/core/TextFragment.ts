@@ -1,121 +1,157 @@
- 
-import type { ITextFragment } from "./ITextFragment.js";            
+import type { ITextFragment } from "./ITextFragment.js";
 import { Rectangle } from "./Rectangle.js";
-import { Fragment } from "./Fragment.js";           
-import type { IFragmentFactory } from "./IFragmentFactory.js";              
-import type { IPdfTextFragment } from "../pdf-domain/IPdfTextFragment.js";                          
-import { FragmentKind } from "./FragmentKind.js";
+import { Fragment } from "./Fragment.js";
+import type { IPdfTextFragment } from "../pdf-domain/fragments/IPdfTextFragment.js";
+import { FragmentKinds } from "../pdf-domain/fragments/PdfFragmentKind.js";
+import type { PdfFragmentKind } from "../pdf-domain/fragments/PdfFragmentKind.js";
 export class TextFragment extends Fragment<TextFragment> {
-    public readonly text: string;
-    public readonly fontName: string | undefined;
-    public readonly fontFamily: string | undefined;
-    public readonly fontSize: number | undefined;
+  private indexValue!: number;
+  private pageNumberValue!: number;
+  private rectangleValue!: Rectangle;
 
-    public constructor(params: {
-        index: number;
-        pageNumber: number;
-        rectangle: Rectangle;
-        text: string;
-        fontName?: string | null | undefined;
-        fontFamily?: string | null | undefined;
-        fontSize?: number | null | undefined;
-    }) {
-        super({
-            index: params.index,
-            pageNumber: params.pageNumber,
-            rectangle: params.rectangle
-        });
+  public readonly text: string;
+  public readonly fontName: string | undefined;
+  public readonly fontFamily: string | undefined;
+  public readonly fontSize: number | undefined;
 
-        this.text = params.text;
-        this.fontName = params.fontName ?? undefined;
-        this.fontFamily = params.fontFamily ?? undefined;
-        this.fontSize = params.fontSize ?? undefined;
+  public constructor(params: {
+    index: number;
+    pageNumber: number;
+    rectangle: Rectangle;
+    text: string;
+    fontName?: string | null | undefined;
+    fontFamily?: string | null | undefined;
+    fontSize?: number | null | undefined;
+  }) {
+    super();
+    this.initializeFragment({
+      index: params.index,
+      pageNumber: params.pageNumber,
+      rectangle: params.rectangle,
+    });
+
+    if (params.text.trim().length === 0) {
+      throw new Error("TextFragment.text is required.");
     }
 
-    public static fromSource(source: IPdfTextFragment, index: number): TextFragment {
-        const params: {
-            index: number;
-            pageNumber: number;
-            rectangle: Rectangle;
-            text: string;
-            fontName?: string;
-            fontFamily?: string;
-            fontSize?: number;
-        } = {
-            index,
-            pageNumber: source.pageNumber,
-            rectangle: Rectangle.fromTextFragment(source, index),
-            text: source.text
-        };
+    this.text = params.text;
+    this.fontName = params.fontName ?? undefined;
+    this.fontFamily = params.fontFamily ?? undefined;
+    this.fontSize = params.fontSize ?? undefined;
+  }
 
-        if (source.fontName !== null && source.fontName !== undefined) {
-            params.fontName = source.fontName;
-        }
+  public static fromSource(
+    source: IPdfTextFragment,
+    index: number,
+  ): TextFragment {
+    const params: {
+      index: number;
+      pageNumber: number;
+      rectangle: Rectangle;
+      text: string;
+      fontName?: string;
+      fontFamily?: string;
+      fontSize?: number;
+    } = {
+      index,
+      pageNumber: source.pageNumber,
+      rectangle: Rectangle.fromTextFragment(source, index),
+      text: source.text,
+    };
 
-        if (source.fontFamily !== null && source.fontFamily !== undefined) {
-            params.fontFamily = source.fontFamily;
-        }
-
-        if (source.fontSize !== null && source.fontSize !== undefined) {
-            params.fontSize = source.fontSize;
-        }
-
-        return new TextFragment(params);
+    if (source.fontName !== null && source.fontName !== undefined) {
+      params.fontName = source.fontName;
     }
 
-    public get kind(): FragmentKind {
-        return "text";
+    if (source.fontFamily !== null && source.fontFamily !== undefined) {
+      params.fontFamily = source.fontFamily;
     }
 
-    public withText(text: string): TextFragment {
-        return new TextFragment({
-            index: this.index,
-            pageNumber: this.pageNumber,
-            rectangle: this.rectangle,
-            text,
-            fontName: this.fontName ?? undefined,
-            fontFamily: this.fontFamily ?? undefined,
-            fontSize: this.fontSize ?? undefined
-        });
+    if (source.fontSize !== null && source.fontSize !== undefined) {
+      params.fontSize = source.fontSize;
     }
 
-    public withFont(params: {
-        fontName?: string | null;
-        fontFamily?: string | null;
-        fontSize?: number | null;
-    }): TextFragment {
-        return new TextFragment({
-            index: this.index,
-            pageNumber: this.pageNumber,
-            rectangle: this.rectangle,
-            text: this.text,
-            fontName: params.fontName === undefined ? this.fontName : params.fontName,
-            fontFamily: params.fontFamily === undefined ? this.fontFamily : params.fontFamily,
-            fontSize: params.fontSize === undefined ? this.fontSize : params.fontSize
-        });
-    }
+    return new TextFragment(params);
+  }
 
-    public toSource(): IPdfTextFragment {
-        return Object.freeze({
-            kind: "text",
-            pageNumber: this.pageNumber,
-            text: this.text,
-            boundingBox: this.rectangle.toBoundingBox(),
-            ...(this.fontName !== undefined && { fontName: this.fontName }),
-            ...(this.fontFamily !== undefined && { fontFamily: this.fontFamily }),
-            ...(this.fontSize !== undefined && { fontSize: this.fontSize })
-        });
-    }
+  public override get index(): number {
+    return this.indexValue;
+  }
 
-    protected withRectangle(rectangle: Rectangle): TextFragment {
-        return new TextFragment({
-            index: this.index,
-            pageNumber: this.pageNumber,
-            rectangle,
-            text: this.text,
-            fontName: this.fontName ?? undefined,
-            fontFamily: this.fontFamily ?? undefined,
-            fontSize: this.fontSize ?? undefined
-        });
-    }
+  protected override set index(value: number) {
+    this.indexValue = value;
+  }
+
+  public override get pageNumber(): number {
+    return this.pageNumberValue;
+  }
+
+  protected override set pageNumber(value: number) {
+    this.pageNumberValue = value;
+  }
+
+  public override get rectangle(): Rectangle {
+    return this.rectangleValue;
+  }
+
+  protected override set rectangle(value: Rectangle) {
+    this.rectangleValue = value;
+  }
+
+  public override get kind(): PdfFragmentKind {
+    return FragmentKinds.Text;
+  }
+
+  public withText(text: string): TextFragment {
+    return new TextFragment({
+      index: this.index,
+      pageNumber: this.pageNumber,
+      rectangle: this.rectangle,
+      text,
+      fontName: this.fontName ?? undefined,
+      fontFamily: this.fontFamily ?? undefined,
+      fontSize: this.fontSize ?? undefined,
+    });
+  }
+
+  public withFont(params: {
+    fontName?: string | null;
+    fontFamily?: string | null;
+    fontSize?: number | null;
+  }): TextFragment {
+    return new TextFragment({
+      index: this.index,
+      pageNumber: this.pageNumber,
+      rectangle: this.rectangle,
+      text: this.text,
+      fontName: params.fontName === undefined ? this.fontName : params.fontName,
+      fontFamily:
+        params.fontFamily === undefined ? this.fontFamily : params.fontFamily,
+      fontSize: params.fontSize === undefined ? this.fontSize : params.fontSize,
+    });
+  }
+
+  public toSource(): IPdfTextFragment {
+    return Object.freeze({
+      kind: FragmentKinds.Text,
+      pageNumber: this.pageNumber,
+      text: this.text,
+      boundingBox: this.rectangle.toBoundingBox(),
+      ...(this.fontName !== undefined && { fontName: this.fontName }),
+      ...(this.fontFamily !== undefined && { fontFamily: this.fontFamily }),
+      ...(this.fontSize !== undefined && { fontSize: this.fontSize }),
+    });
+  }
+
+  protected withRectangle(rectangle: Rectangle): TextFragment {
+    return new TextFragment({
+      index: this.index,
+      pageNumber: this.pageNumber,
+      rectangle,
+      text: this.text,
+      fontName: this.fontName ?? undefined,
+      fontFamily: this.fontFamily ?? undefined,
+      fontSize: this.fontSize ?? undefined,
+    });
+  }
 }

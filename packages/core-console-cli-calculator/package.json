@@ -10,8 +10,8 @@
     "start": "tsx src/index.ts"
   },
   "dependencies": {
-
-    "@monorepo/core-console-cli": "workspace:*" 
+    "@monorepo/core-console-cli": "workspace:*",
+    "@monorepo/core-design-patterns-cqrs": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.19.27",

@@ -1,4 +1,4 @@
-import { Matrix } from '@my-graphics/core-math';
+import { Matrix } from '@monorepo/core-math';
 
 export interface IDataObject<T> {
   id: string;

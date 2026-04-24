@@ -1,8 +1,8 @@
  
 {
-  "name": "@monorepo/core.module.example.web",
+  "name": "@monorepo/core.sequencer.ui.resources",
   "version": "1.0.0",
-  "description": "Example module scaffold.",
+  "description": "Resources for the core.sequencer.ui package.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

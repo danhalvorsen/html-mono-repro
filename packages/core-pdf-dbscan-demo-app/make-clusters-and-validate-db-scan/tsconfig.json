@@ -6,6 +6,8 @@
     "module": "esnext",
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
 
     /* Bundler mode */
@@ -21,6 +23,6 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/backend"]
 }
-

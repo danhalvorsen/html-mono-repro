@@ -1,8 +1,11 @@
+import {
+  FragmentKinds,
+} from "@monorepo/core-pdf-domain";
 import type {
-  IPdfFragment,
   IPdfImageFragment,
   IPdfRectangleFragment,
   IPdfTextFragment,
+  PdfFragment,
 } from "@monorepo/core-pdf-domain";
 import { GuardedAdapter } from "./GuardedAdapter.js";
 import { IPdfJsonProjector } from "./IPdfJsonProjector.js";
@@ -15,18 +18,18 @@ export class PdfFragmentJsonProjector
   extends GuardedAdapter
   implements IPdfJsonProjector
 {
-  public toJson(fragments: readonly IPdfFragment[]): string {
+  public toJson(fragments: readonly PdfFragment[]): string {
     const normalized = fragments.map((fragment, index) => {
       this.ensureFragment(fragment, index);
 
       switch (fragment.kind) {
-        case "image":
+        case FragmentKinds.Image:
           return this.mapImageFragment(fragment);
 
-        case "text":
+        case FragmentKinds.Text:
           return this.mapTextFragment(fragment);
 
-        case "rectangle":
+        case FragmentKinds.Rectangle:
           return this.mapRectangleFragment(fragment);
       }
     });

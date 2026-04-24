@@ -2,4 +2,8 @@
     | "rectangle"
     | "circle"
     | "triangle"
-    | "diamond";
+    | "diamond"
+    | "line"
+    | "save-button"
+    | "load-button"
+    | "delete-button";

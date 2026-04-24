@@ -28,6 +28,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@monorepo/core-math": "workspace:*",
     "@monorepo/core-numeric-math": "workspace:*"
   },
   "devDependencies": {

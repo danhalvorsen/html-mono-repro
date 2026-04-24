@@ -9,7 +9,7 @@ import {
   IDragStartData,
   IDragMoveData,
   IDragEndData,
-} from "core-drag-controller-abstract";
+} from "@monorepo/core-drag-controller-abstract";
 
 export class DOMDragController extends BaseDragController {
   private readonly mouse: Mouse.IMouseController;

@@ -1,0 +1,35 @@
+{
+  "nodes": [
+    {
+      "id": "ref:refs/heads/master.lock",
+      "payload": {
+        "type": "ref",
+        "refName": "refs/heads/master.lock"
+      }
+    },
+    {
+      "id": "commit:9a75924220a218be41dab5a56b3e41aa12ca9260",
+      "payload": {
+        "type": "commit",
+        "sha": "9a75924220a218be41dab5a56b3e41aa12ca9260"
+      }
+    },
+    {
+      "id": "ref:refs/heads/master",
+      "payload": {
+        "type": "ref",
+        "refName": "refs/heads/master"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "sourceId": "ref:refs/heads/master.lock",
+      "targetId": "commit:9a75924220a218be41dab5a56b3e41aa12ca9260"
+    },
+    {
+      "sourceId": "ref:refs/heads/master",
+      "targetId": "commit:9a75924220a218be41dab5a56b3e41aa12ca9260"
+    }
+  ]
+}

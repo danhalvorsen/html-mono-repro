@@ -4,9 +4,11 @@ import { unsafeSVG } from "lit/directives/unsafe-svg.js";
 
 import { TONE_SCALE, type ToneLabel } from "./toneLabel.js";
 import { createSvgLabelSvg } from "./svgLabel.js";
+import { controlStyles } from "./styleSystem.js";
 
 const toneSet = new Set<string>(TONE_SCALE);
 const svgLabelStates = ["active", "inactive"] as const;
+const baseToneLabelStyle = controlStyles.toneLabel.create();
 
 export type SvgLabelState = (typeof svgLabelStates)[number];
 
@@ -16,14 +18,14 @@ const svgLabelStateStyles: Readonly<Record<SvgLabelState, Readonly<{
   textColor: string;
 }>>> = Object.freeze({
   active: Object.freeze({
-    fillColor: "#1a5f38",
+    fillColor: baseToneLabelStyle.fillColor,
     fillOpacity: 1,
-    textColor: "#f2fff7",
+    textColor: baseToneLabelStyle.textColor,
   }),
   inactive: Object.freeze({
-    fillColor: "#2f3542",
-    fillOpacity: 1,
-    textColor: "#8e98ab",
+    fillColor: baseToneLabelStyle.fillColor,
+    fillOpacity: 0.5,
+    textColor: baseToneLabelStyle.textColor,
   }),
 });
 
@@ -70,6 +72,7 @@ export class SvgLabelElement extends LitElement {
     const label = normalizeLabel(this.label, this.tone);
     const buttonWidth = this.resolvePositiveSize(this.buttonWidth, 88);
     const buttonHeight = this.resolvePositiveSize(this.buttonHeight, 88);
+    const styleOverrides = this.resolveStyleOverrides();
     const resource = createSvgLabelSvg({
       id: `${SvgLabelElement.tagName}-${label}`,
       x: 0,
@@ -77,7 +80,7 @@ export class SvgLabelElement extends LitElement {
       buttonWidth,
       buttonHeight: this.resolveSourceButtonHeight(buttonWidth, buttonHeight),
       label,
-      style: this.resolveStyleOverrides(),
+      ...(styleOverrides === undefined ? {} : { style: styleOverrides }),
     });
 
     return html`

@@ -8,15 +8,11 @@ const monorepoRoot = resolve(storybookRoot, "../../..");
 const config: StorybookConfig = {
   framework: "@storybook/web-components-vite",
   stories: [
-    "../../*/src/**/*.stories.ts",
+    "../../../../Applications/audio/WebAudio/the-sequencer/modules/core-sequencer-ui/src/**/*.stories.ts",
     "../../../../Applications/Playing/SVG/UI-Controls/vite-project/src/**/*.stories.ts",
     "../../../../Applications/Playing/core-svg-fabric-products/src/**/*.stories.ts",
-    "!../../core.sequencer.ui.resources/src/sequencer-controls.stories.ts"
   ],
-  addons: [
-    "@storybook/addon-a11y",
-    "@storybook/addon-docs"
-  ],
+  addons: ["@storybook/addon-a11y", "@storybook/addon-docs"],
   viteFinal: async (config) => ({
     ...config,
     resolve: {
@@ -30,6 +26,10 @@ const config: StorybookConfig = {
         "@monorepo/core-style-system": resolve(
           monorepoRoot,
           "packages/core-style-system/src/index.ts",
+        ),
+        "@monorepo/core.sequencer.ui.resources": resolve(
+          monorepoRoot,
+          "packages/Audio/core.sequencer.ui.resources/src/index.ts",
         ),
       },
     },

@@ -1,0 +1,40 @@
+{
+  "name": "@monorepo/core-ai-openapi-ollama",
+  "version": "1.0.0",
+  "description": "Ollama client module using internal HTTP abstractions.",
+  "keywords": [
+    "ollama",
+    "ai",
+    "http",
+    "typescript"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-http-messages-http-client": "workspace:*",
+    "@monorepo/core-http-messages": "workspace:*",
+    "@monorepo/core-http-message-factories": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}

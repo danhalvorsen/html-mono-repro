@@ -1,6 +1,6 @@
 
 import { DataObject } from '../implementations/DataObject.js';
-import { Matrix } from '@my-graphics/core-math';
+import { Matrix } from '@monorepo/core-math';
 
 export interface IDataManager<T> {
   add(object: DataObject<T>): void;

@@ -1,4 +1,4 @@
-import { Vector3 } from '@my-graphics/core-math';
+import { Vector3 } from '@monorepo/core-math';
 
 export interface ILocation {
   x: number;

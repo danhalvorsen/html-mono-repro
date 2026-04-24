@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { RuleBasedSemanticValidator } from "../src/RuleBasedSemanticValidator.js";
-import { SemanticValidationError } from "../src/SemanticValidationError.js";
+import { SemanticValidationError } from "../../music-core-synthesizer-schema/src/SemanticValidationError.js";
 import { SequencerProjectSemanticRuleSet } from "../src/rules/SequencerProjectSemanticRuleSet.js";
 import {
   PatternBuilder,

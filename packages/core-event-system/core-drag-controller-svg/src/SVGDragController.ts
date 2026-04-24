@@ -9,7 +9,7 @@ import {
   Position,
   TimeStamp,
   Mouse
-} from "core-drag-controller-abstract";
+} from "@monorepo/core-drag-controller-abstract";
 
 export namespace SvgDrag {
   export class SVGDragController extends BaseDragController {

@@ -1,0 +1,40 @@
+ 
+{
+  "name": "@monorepo/core-http-messages-express",
+  "version": "1.0.0",
+  "description": "Example HTTP messages module.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "module",
+    "typescript",
+    "example"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.2.1",
+    "@monorepo/core-http-messages": "workspace:*" 
+  },
+  "devDependencies": {
+     "@types/express": "^5.0.6",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}

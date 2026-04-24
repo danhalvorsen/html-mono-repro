@@ -1,0 +1,46 @@
+{
+  "nodes": [
+    {
+      "id": "head",
+      "payload": {
+        "type": "head",
+        "label": "HEAD"
+      }
+    },
+    {
+      "id": "ref:refs/heads/master",
+      "payload": {
+        "type": "ref",
+        "refName": "refs/heads/master",
+        "shortName": "master",
+        "label": "master"
+      }
+    },
+    {
+      "id": "commit:53315036d8a7281ca7dce279b0cbacc7fa37ec16",
+      "payload": {
+        "type": "commit",
+        "sha": "53315036d8a7281ca7dce279b0cbacc7fa37ec16",
+        "shortSha": "5331503",
+        "label": "5331503 readable export [master]",
+        "branchTips": [
+          "master"
+        ],
+        "tagNames": [],
+        "isHead": true,
+        "message": "readable export",
+        "author": "Integration Test"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "sourceId": "head",
+      "targetId": "ref:refs/heads/master"
+    },
+    {
+      "sourceId": "ref:refs/heads/master",
+      "targetId": "commit:53315036d8a7281ca7dce279b0cbacc7fa37ec16"
+    }
+  ]
+}

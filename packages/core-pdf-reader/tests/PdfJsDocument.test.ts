@@ -3,8 +3,8 @@
 
 import { describe, expect, it } from "vitest";
 
-import { PdfJsDocument } from "../src/old/engine/PdfJsDocument.js";
-import { PdfJsPage } from "../src/old/engine/PdfJsPage.js";
+import { PdfJsDocument } from "../src/engine/PdfJsDocument.js";
+import { PdfJsPage } from "../src/engine/PdfJsPage.js";
 import { PdfJsTestFixture } from "./fixtures/pdfjs-fixture.js";
 
 describe("PdfJsDocument", () => {

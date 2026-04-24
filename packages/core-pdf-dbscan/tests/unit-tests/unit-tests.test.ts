@@ -59,6 +59,16 @@ class Fixture {
       this.createFragment(20, 20),
     ]);
   }
+
+  public samePositionDifferentPages() {
+    return Object.freeze([
+      this.createFragment(5, 5),
+      {
+        ...this.createFragment(5, 5),
+        pageNumber: 2 as const,
+      },
+    ]);
+  }
 }
 
 /* =================================================================================================
@@ -141,5 +151,14 @@ describe("DbscanPdfFragmentClusterer", () => {
     );
 
     expect(a.noise.length).toBe(b.noise.length);
+  });
+
+  it("should never cluster across page boundaries", () => {
+    const sut = new DbscanPdfFragmentClusterer();
+
+    const result = sut.cluster(fx.samePositionDifferentPages(), 100, 2);
+
+    expect(result.clusters.length).toBe(0);
+    expect(result.noise.length).toBe(2);
   });
 });

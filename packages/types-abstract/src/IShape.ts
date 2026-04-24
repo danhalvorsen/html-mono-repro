@@ -1,4 +1,4 @@
-import { Vector3, Matrix } from '@my-graphics/core-math';
+import { Vector3, Matrix } from '@monorepo/core-math';
 import { IDimensions } from './IDimensions.js';
 import { ILocation } from './ILocation.js';
  

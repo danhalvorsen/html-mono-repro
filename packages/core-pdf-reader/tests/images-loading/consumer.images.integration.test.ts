@@ -1,5 +1,5 @@
-import { PdfImageExtractor } from "../../src/old/engine/PdfImageExtractor.js";
-import { CompositePdfEngine, IReaderConfiguration } from "../../src/old/index.js";
+import { PdfImageExtractor } from "../../src/engine/PdfImageExtractor.js";
+import { PdfEngine, IReaderConfiguration } from "../../src/index.js";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
  
 import { join } from "node:path";
@@ -28,7 +28,7 @@ describe("core-pdf-reader consumer integration", () => {
 
     const binary = new Uint8Array(await readFile(inputPath));
 
-    const engine = new CompositePdfEngine();
+    const engine = new PdfEngine();
     const configuration: IReaderConfiguration = Object.freeze({
       saveReadImages: true,
     });

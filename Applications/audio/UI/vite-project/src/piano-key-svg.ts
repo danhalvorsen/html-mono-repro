@@ -3,7 +3,6 @@
 import { LitElement, css, html, svg } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import {
-  OnPointerHoldFillTangentReactiveController,
   type IOnPointerHoldFillTangentHost
 } from './OnClickFillTangentReactiveController.js';
 
@@ -39,9 +38,6 @@ export class PianoKeySvgElement extends LitElement implements IOnPointerHoldFill
 
   @property({ type: String })
   public fillColor = '#ffffff';
-
-  private readonly onPointerHoldFillTangentReactiveController =
-    new OnPointerHoldFillTangentReactiveController(this);
 
   public constructor() {
     super();

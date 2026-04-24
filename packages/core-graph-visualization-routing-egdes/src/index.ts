@@ -1,7 +1,9 @@
-export * from "./DGMLLayoutTypes.js";
-export * from "./DGMLEdgeRouting.js";
-export * from "./DGMLLayeredLayoutStrategy.js";
-export * from "./DGMLForceDirectedLayoutStrategy.js";
-export * from "./DGMLLayoutStrategyResolver.js";
-export * from "./MSAGLExternalEngineStrategy.js";
- 
+export interface CoreGraphVisualizationRoutingEdgesModuleInfo {
+  readonly name: string;
+  readonly version: string;
+}
+
+export const coreGraphVisualizationRoutingEdgesModuleInfo: CoreGraphVisualizationRoutingEdgesModuleInfo = Object.freeze({
+  name: "@monorepo/core-graph-visualization-routing-edges",
+  version: "1.0.0",
+});
