@@ -1,11 +1,17 @@
-import { DbscanPdfFragmentClusterer } from "@monorepo/core-pdf-dbscan";
+import {
+  DbscanPdfFragmentClusterer,
+  type IPdfFragmentCluster,
+} from "@monorepo/core-pdf-dbscan";
 import {
   Rectangle,
   type IBoundingBox,
   type PdfFragment,
 } from "@monorepo/core-pdf-domain";
 import { PdfEngine } from "@monorepo/core-pdf-reader";
-import { CorePdfWriter, type IWritePdfFragments } from "@monorepo/core-pdf-writer";
+import {
+  CorePdfWriter,
+  type IWritePdfFragments,
+} from "@monorepo/core-pdf-writer";
 import { PDFDocument, rgb } from "pdf-lib";
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -18,23 +24,15 @@ type ClusterFragment = {
   readonly boundingBox: IBoundingBox;
 };
 
-type ApplicationCluster = {
-  readonly id: string;
-  readonly items: readonly PdfFragment[];
-};
-
 type MidpointProjection = {
   readonly fragments: readonly PdfFragment[];
   readonly originalByProjected: ReadonlyMap<PdfFragment, PdfFragment>;
 };
 
-type BoxSize = {
-  readonly width: number;
-  readonly height: number;
-};
+type FragmentBoxSize = Pick<IBoundingBox, "width" | "height">;
 
 const SourcePdfPath =
-  "C:\\Users\\danha\\source\\repos\\HTML\\MonoRepro\\packages\\core-pdf-reader\\tests\\Selfmade\\save-1776969325465.pdf";
+  "C:/Users/danha/source/repos/HTML/MonoRepro/packages/core-pdf-reader/tests/Selfmade/save-1776969325465.pdf";
 
 const Dbscan = {
   eps: 260,
@@ -51,13 +49,10 @@ const ClusterDrawing = {
 
 const ClusterBoxPolicy = {
   growthRatio: 0.1,
-
   fallbackWidth: 208.52632141113287,
   fallbackHeight: 186.23529052734375,
-
   referenceMinWidth: 160,
   referenceMinHeight: 120,
-
   singletonMaxWidth: 160,
   singletonMaxHeight: 80,
 } as const;
@@ -109,9 +104,7 @@ class MidpointProjector {
 
     const projectedFragments = fragments.map((fragment) => {
       const projected = this.toMidpoint(fragment);
-
       originalByProjected.set(projected, fragment);
-
       return projected;
     });
 
@@ -141,12 +134,12 @@ class MidpointProjector {
 
 class ClusterAssembler {
   public assemble(
-    denseClusters: readonly ApplicationCluster[],
+    denseClusters: readonly IPdfFragmentCluster<PdfFragment>[],
     noise: readonly PdfFragment[],
-  ): readonly ApplicationCluster[] {
+  ): readonly IPdfFragmentCluster<PdfFragment>[] {
     return Object.freeze([
       ...denseClusters,
-      ...noise.map((fragment, index): ApplicationCluster => ({
+      ...noise.map((fragment, index): IPdfFragmentCluster<PdfFragment> => ({
         id: `cluster-${denseClusters.length + index + 1}`,
         items: Object.freeze([fragment]),
       })),
@@ -158,12 +151,12 @@ class ClusterFragmentFactory {
   public constructor(
     private readonly originalResolver: OriginalFragmentResolver,
     private readonly referenceBoxResolver: ReferenceBoxResolver,
-    private readonly boxPolicy: ClusterBoxFactory,
+    private readonly boxFactory: ClusterBoxFactory,
     private readonly guard: ClusterBoxGuard,
   ) {}
 
   public create(
-    clusters: readonly ApplicationCluster[],
+    clusters: readonly IPdfFragmentCluster<PdfFragment>[],
     originalByProjected: ReadonlyMap<PdfFragment, PdfFragment>,
     originalFragments: readonly PdfFragment[],
   ): readonly ClusterFragment[] {
@@ -177,15 +170,15 @@ class ClusterFragmentFactory {
   }
 
   private createOne(
-    cluster: ApplicationCluster,
+    cluster: IPdfFragmentCluster<PdfFragment>,
     originalByProjected: ReadonlyMap<PdfFragment, PdfFragment>,
-    referenceSize: BoxSize,
+    referenceSize: FragmentBoxSize,
   ): ClusterFragment {
     const originals = cluster.items.map((projected) =>
       this.originalResolver.resolve(cluster.id, projected, originalByProjected),
     );
 
-    const clusterRectangle = this.boxPolicy.create(
+    const clusterRectangle = this.boxFactory.create(
       cluster.id,
       originals,
       referenceSize,
@@ -218,7 +211,7 @@ class OriginalFragmentResolver {
 }
 
 class ReferenceBoxResolver {
-  public resolve(fragments: readonly PdfFragment[]): BoxSize {
+  public resolve(fragments: readonly PdfFragment[]): FragmentBoxSize {
     const referenceBoxes = fragments
       .map((fragment) => fragment.boundingBox)
       .filter(
@@ -245,7 +238,7 @@ class ClusterBoxFactory {
   public create(
     clusterId: string,
     fragments: readonly PdfFragment[],
-    referenceSize: BoxSize,
+    referenceSize: FragmentBoxSize,
   ): Rectangle {
     if (fragments.length === 0) {
       throw new Error(`Cluster '${clusterId}' has no fragments.`);
@@ -352,7 +345,7 @@ class PdfRect {
   public static centered(
     id: string,
     center: { readonly x: number; readonly y: number },
-    size: BoxSize,
+    size: FragmentBoxSize,
   ): Rectangle {
     return Rectangle.create({
       id,
