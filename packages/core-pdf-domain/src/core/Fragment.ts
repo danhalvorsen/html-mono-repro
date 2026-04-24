@@ -2,13 +2,11 @@
 
 import { Guard } from "./Guard.js";
 import type { IBoundingBox } from "./IBoundingBox.js";
-import type { FragmentKind } from "./FragmentKind.js";
-import type { IFragment } from "./IFragment.js";
+import type { PdfFragmentKind } from "../pdf-domain/fragments/PdfFragmentKind.js";
 import type { IPoint } from "./IPoint.js";
 import { Rectangle } from "./Rectangle.js";
 
-export abstract class Fragment<TSelf extends IFragment<TSelf>>
-    implements IFragment<TSelf> {
+export abstract class Fragment<TSelf extends Fragment<TSelf>> {
     public abstract get index(): number;
     protected abstract set index(value: number);
 
@@ -35,7 +33,7 @@ export abstract class Fragment<TSelf extends IFragment<TSelf>>
         this.rectangle = params.rectangle;
     }
 
-    public abstract get kind(): FragmentKind;
+    public abstract get kind(): PdfFragmentKind;
 
     public get id(): string {
         return this.rectangle.id;

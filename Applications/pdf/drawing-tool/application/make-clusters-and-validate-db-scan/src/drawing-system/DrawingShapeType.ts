@@ -4,6 +4,7 @@
     | "triangle"
     | "diamond"
     | "line"
+    | "text"
     | "save-button"
     | "load-button"
     | "delete-button";

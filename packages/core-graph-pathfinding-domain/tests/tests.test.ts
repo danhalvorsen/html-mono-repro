@@ -1,140 +1,11 @@
 // core-graph-pathfinding-domain/tests/core-graph-pathfinding-domain.spec.ts
 import { beforeEach, describe, expect, it } from "vitest";  
-import { IReadOnlyPathGraph } from "../src/IReadOnlyPathGraph.js";  
-import { PathfindingDomainComposition } from "core-graph-pathfinding-composistion/src/PathfindingDomainComposition.js";
-import { ZeroHeuristic } from "core-graph-pathfinding-domain/src/ZeroHeuristic.js";
-import { IPathNeighbor, IPathfindingRequestValidator, IPathfindingRequest, PathfindingAlgorithmBase, IPathfindingResult, PathReconstructionService, PathCostCalculator, PathfindingRequest, PathNeighbor, PathfindingResult, PathfindingRequestValidator } from "core-graph-pathfinding/src/code.js";
-import { Path } from "core-graph-pathfinding-domain/src/Path.js";
+import { PathfindingRequest } from "../src/PathfindingRequest.js";
+import { PathNeighbor } from "../src/PathNeighbor.js";
+import { PathfindingResult } from "../src/PathfindingResult.js";
+import { Path } from "../src/Path.js";
+import { PathfindingDomainFixture } from "./PathfindingDomainFixture.js";
  
-class TestPathGraph<TNodeId> implements IReadOnlyPathGraph<TNodeId> {
-  private readonly neighborsByNodeId: Map<TNodeId, readonly IPathNeighbor<TNodeId>[]>;
-  private readonly nodeIds: Set<TNodeId>;
-
-  public constructor(
-    nodeIds: readonly TNodeId[],
-    neighborsByNodeId: ReadonlyMap<TNodeId, readonly IPathNeighbor<TNodeId>[]>,
-  ) {
-    this.nodeIds = new Set(nodeIds);
-    this.neighborsByNodeId = new Map(neighborsByNodeId);
-  }
-
-  public contains(nodeId: TNodeId): boolean {
-    return this.nodeIds.has(nodeId);
-  }
-
-  public getNeighbors(nodeId: TNodeId): readonly IPathNeighbor<TNodeId>[] {
-    return this.neighborsByNodeId.get(nodeId) ?? [];
-  }
-}
-
-class RecordingRequestValidator<TNodeId> implements IPathfindingRequestValidator<TNodeId> {
-  public invocationCount: number = 0;
-
-  public validate(
-    graph: IReadOnlyPathGraph<TNodeId>,
-    request: IPathfindingRequest<TNodeId>,
-  ): void {
-    this.invocationCount += 1;
-
-    if (!graph.contains(request.startNodeId)) {
-      throw new Error("The start node does not exist in the graph.");
-    }
-
-    if (!graph.contains(request.goalNodeId)) {
-      throw new Error("The goal node does not exist in the graph.");
-    }
-  }
-}
-
-class FakePathfindingAlgorithm<TNodeId> extends PathfindingAlgorithmBase<TNodeId> {
-  public invocationCount: number = 0;
-  private readonly resultFactory: (
-    graph: IReadOnlyPathGraph<TNodeId>,
-    request: IPathfindingRequest<TNodeId>,
-  ) => IPathfindingResult<TNodeId>;
-
-  public constructor(
-    requestValidator: IPathfindingRequestValidator<TNodeId>,
-    resultFactory: (
-      graph: IReadOnlyPathGraph<TNodeId>,
-      request: IPathfindingRequest<TNodeId>,
-    ) => IPathfindingResult<TNodeId>,
-  ) {
-    super(requestValidator);
-    this.resultFactory = resultFactory;
-  }
-
-  protected findPathCore(
-    graph: IReadOnlyPathGraph<TNodeId>,
-    request: IPathfindingRequest<TNodeId>,
-  ): IPathfindingResult<TNodeId> {
-    this.invocationCount += 1;
-    return this.resultFactory(graph, request);
-  }
-}
-
-class PathfindingDomainFixture {
-  public readonly requestValidator: RecordingRequestValidator<string>;
-  public readonly pathReconstructionService: PathReconstructionService<string>;
-  public readonly pathCostCalculator: PathCostCalculator<string>;
-  public readonly zeroHeuristic: ZeroHeuristic<string>;
-  public readonly graph: IReadOnlyPathGraph<string>;
-  public readonly requestFromAtoC: PathfindingRequest<string>;
-  public readonly requestFromAtoA: PathfindingRequest<string>;
-
-  public constructor() {
-    this.requestValidator = new RecordingRequestValidator<string>();
-    this.pathReconstructionService = new PathReconstructionService<string>();
-    this.pathCostCalculator = new PathCostCalculator<string>();
-    this.zeroHeuristic = new ZeroHeuristic<string>();
-
-    const neighborsByNodeId = new Map<string, readonly IPathNeighbor<string>[]>([
-      [
-        "A",
-        Object.freeze([
-          new PathNeighbor<string>("B", 2),
-          new PathNeighbor<string>("C", 5),
-        ]),
-      ],
-      [
-        "B",
-        Object.freeze([
-          new PathNeighbor<string>("C", 3),
-        ]),
-      ],
-      [
-        "C",
-        Object.freeze([]),
-      ],
-    ]);
-
-    this.graph = new TestPathGraph<string>(
-      Object.freeze(["A", "B", "C"]),
-      neighborsByNodeId,
-    );
-
-    this.requestFromAtoC = new PathfindingRequest<string>("A", "C");
-    this.requestFromAtoA = new PathfindingRequest<string>("A", "A");
-  }
-
-  public createPath(nodes: readonly string[], totalCost: number): Path<string> {
-    return new Path<string>(nodes, totalCost);
-  }
-
-  public createFoundResult(nodes: readonly string[], totalCost: number): PathfindingResult<string> {
-    return PathfindingResult.success(this.createPath(nodes, totalCost));
-  }
-
-  public createAlgorithm(
-    resultFactory: (
-      graph: IReadOnlyPathGraph<string>,
-      request: IPathfindingRequest<string>,
-    ) => IPathfindingResult<string>,
-  ): FakePathfindingAlgorithm<string> {
-    return new FakePathfindingAlgorithm<string>(this.requestValidator, resultFactory);
-  }
-}
-
 describe("core-graph-pathfinding-domain", () => {
   let fixture: PathfindingDomainFixture;
 
@@ -280,32 +151,6 @@ describe("core-graph-pathfinding-domain", () => {
     });
   });
 
-  describe("PathfindingRequestValidator", () => {
-    it("should accept valid request", () => {
-      const sut = new PathfindingRequestValidator<string>();
-
-      expect(() => sut.validate(fixture.graph, fixture.requestFromAtoC)).not.toThrow();
-    });
-
-    it("should throw when start node does not exist", () => {
-      const sut = new PathfindingRequestValidator<string>();
-      const request = new PathfindingRequest<string>("X", "C");
-
-      expect(() => sut.validate(fixture.graph, request)).toThrowError(
-        "The start node does not exist in the graph.",
-      );
-    });
-
-    it("should throw when goal node does not exist", () => {
-      const sut = new PathfindingRequestValidator<string>();
-      const request = new PathfindingRequest<string>("A", "X");
-
-      expect(() => sut.validate(fixture.graph, request)).toThrowError(
-        "The goal node does not exist in the graph.",
-      );
-    });
-  });
-
   describe("ZeroHeuristic", () => {
     it("should always return zero", () => {
       const result = fixture.zeroHeuristic.estimate("A", "C");
@@ -359,19 +204,4 @@ describe("core-graph-pathfinding-domain", () => {
     });
   });
 
-  describe("PathfindingDomainComposition", () => {
-    it("should create domain services", () => {
-      const sut = new PathfindingDomainComposition();
-
-      const validator = sut.createRequestValidator<string>();
-      const reconstructionService = sut.createPathReconstructionService<string>();
-      const costCalculator = sut.createPathCostCalculator<string>();
-      const heuristic = sut.createZeroHeuristic<string>();
-
-      expect(validator).toBeInstanceOf(PathfindingRequestValidator<string>);
-      expect(reconstructionService).toBeInstanceOf(PathReconstructionService<string>);
-      expect(costCalculator).toBeInstanceOf(PathCostCalculator<string>);
-      expect(heuristic).toBeInstanceOf(ZeroHeuristic<string>);
-    });
-  });
 });

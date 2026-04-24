@@ -4,6 +4,7 @@ import type { IDrawingSystemServices } from "../composition/DrawingSystemService
 import { CanvasObjectKinds } from "../canvas-object/value-objects/CanvasObjectKind.js";
 import { MenuShapeDragPayloadCodec } from "../drag-drop/codecs/DragPayloadCodec.js";
 import { DragSystemReactiveController } from "../drag-system/controllers/DragSystemReactiveController.js";
+import { createDrawingTextLabel } from "../text/createDrawingTextLabel.js";
 import "./MyMenu.js";
 
 export class MyCanvas extends LitElement {
@@ -35,16 +36,11 @@ export class MyCanvas extends LitElement {
 
     protected override firstUpdated(): void {
         this.initializeCanvas();
+        this.ensureDragController();
     }
 
     protected override updated(): void {
-        if (!this.isCanvasSizeInitialized) {
-            this.initializeCanvas();
-        }
-
-        if (this.dragController === null && this.services !== null) {
-            this.dragController = new DragSystemReactiveController(this as MyCanvas, this.services, true);
-        }
+        this.ensureDragController();
     }
 
     public override disconnectedCallback(): void {
@@ -60,7 +56,9 @@ export class MyCanvas extends LitElement {
                         .cellWidth=${this.cellWidth}
                         .cellHeight=${this.cellHeight}
                         .dragPayloadCodec=${this.resolveDragPayloadCodec()}
-                        @save-menu-clicked=${this.handleSaveMenuClick}>
+                        @save-menu-clicked=${this.handleSaveMenuClick}
+                        @load-menu-clicked=${this.handleLoadMenuClick}
+                        @delete-menu-clicked=${this.handleDeleteMenuClick}>
                     </my-menu>
                 </aside>
 
@@ -113,9 +111,9 @@ export class MyCanvas extends LitElement {
     };
 
     private updateCanvasSize(): void {
-        const menuWidthRatio = 0.20;
-        const minimumMenuWidth = 220;
-        const maximumMenuWidth = 360;
+        const menuWidthRatio = 0.10;
+        const minimumMenuWidth = 110;
+        const maximumMenuWidth = 180;
 
         const viewportWidth = Math.max(window.innerWidth, 320);
         const viewportHeight = Math.max(window.innerHeight, 320);
@@ -152,6 +150,14 @@ export class MyCanvas extends LitElement {
         }
 
         return this.services.dragPayloadCodec as MenuShapeDragPayloadCodec;
+    }
+
+    private ensureDragController(): void {
+        if (this.dragController !== null || this.services === null) {
+            return;
+        }
+
+        this.dragController = new DragSystemReactiveController(this as MyCanvas, this.services, true);
     }
 
     private renderGrid(): TemplateResult {
@@ -327,6 +333,9 @@ export class MyCanvas extends LitElement {
                     </line>
                 `;
 
+            case CanvasObjectKinds.text:
+                return this.renderTextObject(value, x, y);
+
             case CanvasObjectKinds.saveButton:
                 return this.renderButtonObject(value, x, y, "Save", "#22c55e", this.handleSaveClick);
 
@@ -339,6 +348,41 @@ export class MyCanvas extends LitElement {
             default:
                 return svg``;
         }
+    }
+
+    private renderTextObject(value: ICanvasObject, x: number, y: number): TemplateResult {
+        const boxWidth = this.cellWidth * 0.8;
+        const boxHeight = this.cellHeight * 0.8;
+        const insetX = (this.cellWidth - boxWidth) / 2;
+        const insetY = (this.cellHeight - boxHeight) / 2;
+        const label = createDrawingTextLabel(value.id);
+        const fontSize = Math.max(12, Math.min(24, Math.floor(Math.min(boxWidth, boxHeight) * 0.24)));
+
+        return svg`
+            <g
+                data-object-id="${value.id}"
+                style="cursor: grab; pointer-events: auto;">
+                <rect
+                    x="${x + insetX}"
+                    y="${y + insetY}"
+                    width="${boxWidth}"
+                    height="${boxHeight}"
+                    fill="rgba(15, 23, 42, 0.18)"
+                    stroke="#f8fafc"
+                    stroke-width="2">
+                </rect>
+                <text
+                    x="${x + (this.cellWidth / 2)}"
+                    y="${y + (this.cellHeight / 2)}"
+                    fill="#f8fafc"
+                    text-anchor="middle"
+                    dominant-baseline="middle"
+                    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+                    font-size="${fontSize}"
+                    font-weight="700"
+                    style="pointer-events: none; user-select: none;">${label}</text>
+            </g>
+        `;
     }
 
     private renderButtonObject(
@@ -390,24 +434,47 @@ export class MyCanvas extends LitElement {
         void this.saveRectangleCells();
     };
 
+    private readonly handleLoadMenuClick = (event: Event): void => {
+        event.stopPropagation();
+        console.log("Load pressed");
+    };
+
+    private readonly handleDeleteMenuClick = (event: Event): void => {
+        event.stopPropagation();
+        console.log("Delete pressed");
+    };
+
     private async saveRectangleCells(): Promise<void> {
         if (this.services === null) {
             return;
         }
 
-        const saveFile = await this.services.rectangleCellsSaveAction.execute({
-            cellWidth: this.cellWidth,
-            cellHeight: this.cellHeight,
-            inset: 8
-        });
+        try {
+            const saveFile = await this.services.rectangleCellsSaveAction.execute({
+                cellWidth: this.cellWidth,
+                cellHeight: this.cellHeight,
+                inset: 8
+            });
 
-        this.dispatchEvent(new CustomEvent("save-requested", {
-            bubbles: true,
-            composed: true,
-            detail: {
-                saveFile
-            }
-        }));
+            this.dispatchEvent(new CustomEvent("save-requested", {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    saveFile
+                }
+            }));
+        }
+        catch (error) {
+            const message = error instanceof Error ? error.message : "Save request failed.";
+            console.error("[MyCanvas] Save failed", error);
+            this.dispatchEvent(new CustomEvent("save-failed", {
+                bubbles: true,
+                composed: true,
+                detail: {
+                    message
+                }
+            }));
+        }
     }
 
     private handleDragOver(event: DragEvent): void {
@@ -520,7 +587,7 @@ export class MyCanvas extends LitElement {
 
         .layout {
             display: grid;
-            grid-template-columns: minmax(220px, 20vw) minmax(0, 1fr);
+            grid-template-columns: minmax(110px, 10vw) minmax(0, 1fr);
             width: 100%;
             height: 100%;
             min-width: 0;

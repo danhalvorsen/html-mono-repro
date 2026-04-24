@@ -1,4 +1,4 @@
-import type { IBoundingBox, IPdfFragment } from "@monorepo/core-pdf-domain";
+import { FragmentKinds, type IBoundingBox, type IPdfFragment } from "@monorepo/core-pdf-domain";
 
 export abstract class GuardedAdapter {
   protected ensureBinary(pdfBinary: Uint8Array, name: string): void {
@@ -48,9 +48,9 @@ export abstract class GuardedAdapter {
     }
 
     switch (fragment.kind) {
-      case "text":
-      case "image":
-      case "rectangle":
+      case FragmentKinds.Text:
+      case FragmentKinds.Image:
+      case FragmentKinds.Rectangle:
         break;
 
       default:

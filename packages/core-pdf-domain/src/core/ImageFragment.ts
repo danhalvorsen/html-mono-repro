@@ -1,7 +1,8 @@
 // src/ImageFragment.ts
 
 import { Fragment } from "./Fragment.js";
-import type { FragmentKind } from "./FragmentKind.js";
+import type { PdfFragmentKind } from "../pdf-domain/fragments/PdfFragmentKind.js";
+import { FragmentKinds } from "../pdf-domain/fragments/PdfFragmentKind.js";
 import { Rectangle } from "./Rectangle.js";
 
 export class ImageFragment extends Fragment<ImageFragment> {
@@ -57,8 +58,8 @@ export class ImageFragment extends Fragment<ImageFragment> {
         this.rectangleValue = value;
     }
 
-    public override get kind(): FragmentKind {
-        return "image";
+    public override get kind(): PdfFragmentKind {
+        return FragmentKinds.Image;
     }
 
     protected withRectangle(rectangle: Rectangle): ImageFragment {

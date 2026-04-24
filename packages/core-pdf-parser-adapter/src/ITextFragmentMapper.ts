@@ -1,4 +1,4 @@
-import type { IPdfFragment } from "@monorepo/core-pdf-domain"
+import type { PdfFragment } from "@monorepo/core-pdf-domain"
 
 /* =================================================================================================
    pdfjs text mapper
@@ -11,5 +11,5 @@ export interface ITextFragmentMapper<TItem, TContent, TViewport> {
         item: TItem,
         content: TContent,
         viewport: TViewport
-    ): IPdfFragment | null;
+    ): PdfFragment | null;
 }

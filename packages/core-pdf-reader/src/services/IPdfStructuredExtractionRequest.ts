@@ -1,4 +1,1 @@
-export interface IPdfStructuredExtractionRequest<TSchemaName extends string = string> {
-  readonly schemaName: TSchemaName;
-  readonly prompt?: string | undefined;
-}
+export type { IPdfStructuredExtractionRequest } from "@monorepo/core-pdf-domain";

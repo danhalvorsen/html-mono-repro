@@ -1,4 +1,5 @@
 import { PDFDocument, PDFName, PDFRawStream } from "pdf-lib";
+import { FragmentKinds } from "@monorepo/core-pdf-domain";
 
 import type { IReaderConfiguration } from "../IReaderConfiguration.js";
 import type { IPdfImageFragment } from "../IPdfImageFragment.js";
@@ -56,6 +57,7 @@ export class PdfImageExtractor {
         if (!bytes || bytes.length === 0) continue;
 
         const fragment: IPdfImageFragment = Object.freeze({
+          kind: FragmentKinds.Image,
           pageNumber: pageIndex + 1,
           name: this.normalizeName(nameKey),
           mimeType, // guaranteed string (no undefined)

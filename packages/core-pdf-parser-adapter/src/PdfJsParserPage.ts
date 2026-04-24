@@ -2,7 +2,7 @@ import { PdfJsNativePage, PdfJsNativeTextItem, PdfJsNativeTextContent, PdfJsNati
 import { ITextFragmentMapper } from "./ITextFragmentMapper.js";
 import { GuardedAdapter } from "./GuardedAdapter.js";
 import { IPdfParserPage } from "./IPdfParserPage.js";
-import type { IPdfFragment } from "@monorepo/core-pdf-domain"
+import type { PdfFragment } from "@monorepo/core-pdf-domain"
 
 /* =================================================================================================
    pdfjs document/page adapter
@@ -20,12 +20,12 @@ export class PdfJsParserPage extends GuardedAdapter implements IPdfParserPage {
         return this.inner.pageNumber;
     }
 
-    public async readFragments(startIndex: number): Promise<readonly IPdfFragment[]> {
+    public async readFragments(startIndex: number): Promise<readonly PdfFragment[]> {
         this.ensureFinite(startIndex, "startIndex");
 
         const content = await this.inner.getTextContent();
         const viewport = this.inner.getViewport({ scale: 1 });
-        const result: IPdfFragment[] = [];
+        const result: PdfFragment[] = [];
 
         let index = startIndex;
 

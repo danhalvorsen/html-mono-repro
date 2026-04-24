@@ -46,7 +46,10 @@ function installBackendMiddleware(
             return;
         }
 
-        if (request.method === "POST" && path === "/api/save-rectangle-cells") {
+        if (
+            request.method === "POST" &&
+            (path === "/api/save-rectangle-cells" || path === "/save-rectangle-cells")
+        ) {
             await handleSaveRectangleCells(request, response, saveRectangleCellsCommandHandler);
             return;
         }

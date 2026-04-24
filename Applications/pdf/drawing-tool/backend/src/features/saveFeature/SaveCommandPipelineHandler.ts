@@ -81,6 +81,7 @@ type SavePdfRectangleFragment = {
   readonly y: number;
   readonly width: number;
   readonly height: number;
+  readonly text: string;
 };
 
 class SavePdfRectangleFragmentWriter
@@ -106,13 +107,35 @@ class SavePdfRectangleFragmentWriter
         continue;
       }
 
+      const rectangleBottomY = this.pageHeight - fragment.y - fragment.height;
+
       page.drawRectangle({
         x: fragment.x,
-        y: this.pageHeight - fragment.y - fragment.height,
+        y: rectangleBottomY,
         width: fragment.width,
         height: fragment.height,
         borderWidth: 1,
         borderColor: rgb(0.95, 0.1, 0.1),
+      });
+
+      const text = fragment.text.trim();
+      if (text.length === 0) {
+        continue;
+      }
+
+      const fontSize = Math.max(
+        8,
+        Math.min(24, fragment.height * 0.45, (fragment.width / Math.max(text.length, 1)) * 1.5),
+      );
+      const estimatedTextWidth = fontSize * text.length * 0.6;
+      const textX = fragment.x + ((fragment.width - estimatedTextWidth) / 2);
+      const textY = rectangleBottomY + ((fragment.height - fontSize) / 2);
+
+      page.drawText(text, {
+        x: Math.max(fragment.x + 2, textX),
+        y: textY,
+        size: fontSize,
+        color: rgb(0.12, 0.12, 0.12),
       });
     }
 
@@ -176,6 +199,10 @@ function normalizeRectanglesForPdf(
       y: y + inset,
       width: Math.max(0.5, width - (inset * 2)),
       height: Math.max(0.5, height - (inset * 2)),
+      text:
+        typeof rectangle.metadata?.text === 'string'
+          ? rectangle.metadata.text
+          : '',
     };
   });
 }

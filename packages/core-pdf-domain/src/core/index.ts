@@ -1,7 +1,6 @@
 export * from './Arithmetic.js';
 export * from './Font.js';
 export * from './Fragment.js';
-export * from './FragmentKind.js';
 export * from './GeometryFragment.js';
 export * from './Guard.js';
 export * from './IFont.js';

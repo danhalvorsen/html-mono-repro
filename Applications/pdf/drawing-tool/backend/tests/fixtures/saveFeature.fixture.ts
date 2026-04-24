@@ -7,8 +7,26 @@ import { SaveCommand, type Rectangle } from '../../src/features/saveFeature/Save
 export const FIXED_NOW = 1_717_000_000_000;
 
 export const FIXTURE_RECTANGLES: ReadonlyArray<Rectangle> = [
-  { x: 10, y: 20, width: 100, height: 40 },
-  { x: 140, y: 30, width: 60, height: 70 },
+  {
+    x: 10,
+    y: 20,
+    width: 100,
+    height: 40,
+    metadata: {
+      type: 'rectangle',
+      text: '',
+    },
+  },
+  {
+    x: 140,
+    y: 30,
+    width: 60,
+    height: 70,
+    metadata: {
+      type: 'text',
+      text: 'TXT42',
+    },
+  },
 ];
 
 export async function withTempSaveDirectory(

@@ -1,1 +1,1 @@
-export interface IPdfPageText { readonly pageNumber: number; readonly text: string; }
+export type { IPdfPageText } from "@monorepo/core-pdf-domain";

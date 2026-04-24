@@ -61,11 +61,10 @@ describe("Rectangle", () => {
     expect(rect.area).toBe(1200);
   });
 
-  it("normalizes negative width/height to zero", () => {
-    const rect = Fixtures.rect("r1", 0, 0, -10, -5);
-
-    expect(rect.width).toBe(0);
-    expect(rect.height).toBe(0);
+  it("throws when width/height is negative", () => {
+    expect(() => Fixtures.rect("r1", 0, 0, -10, -5)).toThrow(
+      "Rectangle.width must be non-negative.",
+    );
   });
 
   it("creates from min/max and normalizes", () => {

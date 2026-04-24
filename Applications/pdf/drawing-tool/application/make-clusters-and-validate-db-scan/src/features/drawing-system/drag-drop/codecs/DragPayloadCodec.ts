@@ -45,9 +45,6 @@ export class MenuShapeDragPayloadCodec implements IDragPayloadCodec<IMenuShapeDr
             value === CanvasObjectKinds.circle ||
             value === CanvasObjectKinds.triangle ||
             value === CanvasObjectKinds.diamond ||
-            value === CanvasObjectKinds.line ||
-            value === CanvasObjectKinds.saveButton ||
-            value === CanvasObjectKinds.loadButton ||
-            value === CanvasObjectKinds.deleteButton;
+            value === CanvasObjectKinds.text;
     }
 }

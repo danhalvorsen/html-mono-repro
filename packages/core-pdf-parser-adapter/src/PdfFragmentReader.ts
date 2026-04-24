@@ -5,7 +5,7 @@ import { IPdfFragmentReader } from "./IPdfFragmentReader.js";
 import { PdfJsParserAdapterFactory } from "./PdfJsParserAdapterFactory.js";
 import { PdfLibImageFragmentReader } from "./PdfLibImageFragmentReader.js";
 import { PdfFragmentJsonProjector } from "./PdfFragmentJsonProjector.js";
-import type { IPdfFragment } from "@monorepo/core-pdf-domain"
+import type { PdfFragment } from "@monorepo/core-pdf-domain"
 
 /* =================================================================================================
    Fragment reader facade
@@ -27,11 +27,11 @@ export class PdfFragmentReader extends GuardedAdapter implements IPdfFragmentRea
         this.jsonProjector = jsonProjector;
     }
 
-    public async read(pdfBinary: Uint8Array): Promise<readonly IPdfFragment[]> {
+    public async read(pdfBinary: Uint8Array): Promise<readonly PdfFragment[]> {
         this.ensureBinary(pdfBinary, "pdfBinary");
 
         const document = await this.parserAdapter.open(pdfBinary);
-        const textFragments: IPdfFragment[] = [];
+        const textFragments: PdfFragment[] = [];
         let index = 0;
 
         for (let pageNumber = 1; pageNumber <= document.pageCount; pageNumber += 1) {

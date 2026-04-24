@@ -1,8 +1,8 @@
-import { IPdfRectangleFragment } from "@monorepo/core-pdf-domain";
+import { FragmentKinds, IPdfRectangleFragment } from "@monorepo/core-pdf-domain";
 import { PDFDocument, PdfLibDrawPage, rgb } from "./code.js";
 import { GuardedAdapter } from "./GuardedAdapter.js";
 import { IPdfFragmentWriter } from "./IPdfFragmentWriter.js";
-import { IPdfFragment } from "@monorepo/core-pdf-domain";
+import type { PdfFragment } from "@monorepo/core-pdf-domain";
 
 /* =================================================================================================
    Fragment writer
@@ -13,7 +13,7 @@ import { IPdfFragment } from "@monorepo/core-pdf-domain";
 export class PdfFragmentWriter extends GuardedAdapter implements IPdfFragmentWriter {
     public async write(
         pdfBinary: Uint8Array,
-        fragments: readonly IPdfFragment[]
+        fragments: readonly PdfFragment[]
     ): Promise<Uint8Array> {
         this.ensureBinary(pdfBinary, "pdfBinary");
 
@@ -33,17 +33,17 @@ export class PdfFragmentWriter extends GuardedAdapter implements IPdfFragmentWri
             this.ensurePageInRange(fragment.pageNumber, pages.length);
 
             switch (fragment.kind) {
-                case "rectangle":
+                case FragmentKinds.Rectangle:
                     this.drawRectangle(
                         pages[fragment.pageNumber - 1]!,
                         fragment as IPdfRectangleFragment
                     );
                     break;
 
-                case "text":
+                case FragmentKinds.Text:
                     throw new Error("Fragment kind 'text' is not supported for write operations.");
 
-                case "image":
+                case FragmentKinds.Image:
                     throw new Error("Fragment kind 'image' is not supported for write operations.");
 
                 default:

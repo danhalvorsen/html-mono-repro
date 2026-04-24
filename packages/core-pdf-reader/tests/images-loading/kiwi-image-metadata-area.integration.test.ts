@@ -6,9 +6,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   PdfEngine,
-  PdfImageExtractor,
   type IReaderConfiguration,
 } from "../../src/index.ts";
+import { PdfImageExtractor } from "../../src/engine/PdfImageExtractor.js";
 
 describe("Kiwi.pdf image metadata consistency", () => {
   it("should prove page 1 image fragments currently have zero-area bounding boxes", async () => {

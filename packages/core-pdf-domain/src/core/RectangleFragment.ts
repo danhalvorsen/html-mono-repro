@@ -1,5 +1,6 @@
-import type { IPdfRectangleFragment } from "../pdf-domain/IPdfRectangleFragment.js";
-import type { FragmentKind } from "./FragmentKind.js";
+import type { IPdfRectangleFragment } from "../pdf-domain/fragments/IPdfRectangleFragment.js";
+import type { PdfFragmentKind } from "../pdf-domain/fragments/PdfFragmentKind.js";
+import { FragmentKinds } from "../pdf-domain/fragments/PdfFragmentKind.js";
 import { GeometryFragment } from "./GeometryFragment.js";
 import { Rectangle } from "./Rectangle.js";
 
@@ -61,13 +62,13 @@ export class RectangleFragment extends GeometryFragment<RectangleFragment> {
         this.rectangleValue = value;
     }
 
-    public override get kind(): FragmentKind {
-        return "rectangle";
+    public override get kind(): PdfFragmentKind {
+        return FragmentKinds.Rectangle;
     }
 
     public toSource(): IPdfRectangleFragment {
         return Object.freeze({
-            kind: "rectangle",
+            kind: FragmentKinds.Rectangle,
             pageNumber: this.pageNumber,
             boundingBox: this.rectangle.toBoundingBox(),
         });

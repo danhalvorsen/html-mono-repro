@@ -29,7 +29,8 @@ import "./features/drawing-system/drag-system/controllers/DragSystemReactiveCont
 import "./features/drawing-system/drag-drop/contracts/IDragPayloadCodec.js";
 import "./features/drawing-system/drag-drop/codecs/DragPayloadCodec.js";
 
-import "./features/drawing-system/menu/MenuShapeCatalog.js";
+import "./features/drawing-system/menu/GraphicalMenuCatalog.js";
+import "./features/drawing-system/menu/OperationMenuCatalog.js";
 
 import "./features/drawing-system/save/IRectangleCellsSaveWriter.js";
 import "./features/drawing-system/save/RectangleCellsSaveFile.js";
@@ -41,5 +42,7 @@ import "./features/drawing-system/composition/DrawingSystemServices.js";
 import "./features/drawing-system/composition/createDrawingSystemServices.js";
 
 import "./features/drawing-system/canvas/MyMenu.js";
+import "./features/drawing-system/canvas/MyGraphicalObjectMenu.js";
+import "./features/drawing-system/canvas/MyOperationsMenu.js";
 import "./features/drawing-system/canvas/MyCanvas.js";
 import "./features/drawing-system/canvas/MyDrawingSystem.js";

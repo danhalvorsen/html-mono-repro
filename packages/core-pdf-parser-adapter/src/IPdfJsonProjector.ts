@@ -1,5 +1,5 @@
-import type { IPdfFragment } from "@monorepo/core-pdf-domain"
+import type { PdfFragment } from "@monorepo/core-pdf-domain"
 
 export interface IPdfJsonProjector {
-    toJson(fragments: readonly IPdfFragment[]): string;
+    toJson(fragments: readonly PdfFragment[]): string;
 }

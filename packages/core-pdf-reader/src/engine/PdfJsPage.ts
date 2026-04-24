@@ -1,3 +1,4 @@
+import { FragmentKinds } from "@monorepo/core-pdf-domain";
 import type { IPdfPage } from "./IPdfPage.js";
 import type {
   IPdfJsPageProxy,
@@ -89,10 +90,11 @@ export class PdfJsPage implements IPdfPage {
     const font = this.createFontItem(rawFontName, fontFamily, fontSize);
 
     return {
+      kind: FragmentKinds.Text,
       pageNumber,
       rawText,
       text,
-      textType: "text",
+      textType: FragmentKinds.Text,
       textSize,
       boundingBox: {
         position: {

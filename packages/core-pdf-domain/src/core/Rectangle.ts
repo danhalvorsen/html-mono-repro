@@ -18,12 +18,13 @@ export class Rectangle {
         Guard.nonEmpty(params.id, "Rectangle.id");
         Guard.finite(params.width, "Rectangle.width");
         Guard.finite(params.height, "Rectangle.height");
+        Guard.nonNegative(params.width, "Rectangle.width");
+        Guard.nonNegative(params.height, "Rectangle.height");
 
         this.id = params.id;
         this.position = Point.from(params.position);
-        // Normalize negative dimensions to zero
-        this.width = Math.max(0, params.width);
-        this.height = Math.max(0, params.height);
+        this.width = params.width;
+        this.height = params.height;
     }
 
     public static create(params: {

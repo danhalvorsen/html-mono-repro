@@ -9,8 +9,9 @@ export * from './IValidationRule.js';
 export * from './IValidator.js';
 export * from './PathfindingDomainValidatorsComposition.js';
 export * from './PathfindingRequestValidationContext.js';
+export * from './PathfindingRequestValidator.js';
 export * from './PathfindingRequestValidatorFactory.js';
- 
+export * from './RequestMustBeDefinedRule.js';
 export * from './StartNodeMustBeDefinedRule.js';
 export * from './StartNodeMustExistInGraphRule.js';
- 
+export * from './ValidationGuard.js';

@@ -18,9 +18,18 @@ type Rectangle = Readonly<{
     y: number;
     width: number;
     height: number;
+    metadata: RectangleMetadata;
+}>;
+
+type RectangleMetadata = Readonly<{
+    type: string;
+    text: string;
 }>;
 
 type RectangleCell = Readonly<{
+    kind?: string;
+    text?: string;
+    metadata?: Partial<RectangleMetadata>;
     cell?: Readonly<{
         column: number;
         row: number;
@@ -32,13 +41,20 @@ type RectangleCell = Readonly<{
 }>;
 
 export class ApiRectangleCellsSaveWriter implements IRectangleCellsSaveWriter {
-    private readonly endpoint: string;
+    private readonly endpoints: ReadonlyArray<string>;
     private readonly client = new HttpClientBuilder()
         .addResponseInterceptor(new ThrowOnErrorResponseInterceptor())
         .build();
 
-    public constructor(endpoint: string = "/api/save") {
-        this.endpoint = endpoint;
+    public constructor(
+        endpoints: string | ReadonlyArray<string> = [
+            "/api/save",
+            "/api/commands/save",
+            "/api/save-rectangle-cells",
+            "/save-rectangle-cells"
+        ]
+    ) {
+        this.endpoints = Array.isArray(endpoints) ? endpoints : [endpoints];
     }
 
     public async writeJson(
@@ -47,19 +63,31 @@ export class ApiRectangleCellsSaveWriter implements IRectangleCellsSaveWriter {
         compensation?: IRectangleSaveCompensation
     ): Promise<void> {
         const payload = this.toRectanglePayload(JSON.parse(json) as unknown, compensation);
+        let lastError: unknown = null;
 
-        const request = new HttpRequestMessageBuilder()
-            .withMethod("POST")
-            .withPath(this.endpoint)
-            .withHeaders(
-                new HeadersBuilder()
-                    .with(HeaderName.ContentType, "application/json")
-                    .build()
-            )
-            .withBody(payload)
-            .build();
+        for (const endpoint of this.endpoints) {
+            try {
+                const request = new HttpRequestMessageBuilder()
+                    .withMethod("POST")
+                    .withPath(endpoint)
+                    .withHeaders(
+                        new HeadersBuilder()
+                            .with(HeaderName.ContentType, "application/json")
+                            .build()
+                    )
+                    .withBody(payload)
+                    .build();
 
-        await this.client.send(request);
+                await this.client.send(request);
+                return;
+            }
+            catch (error) {
+                lastError = error;
+            }
+        }
+
+        const reason = lastError instanceof Error ? lastError.message : "Unknown HTTP failure.";
+        throw new Error(`Failed to save payload using endpoints: ${this.endpoints.join(", ")}. ${reason}`);
     }
 
     private toRectanglePayload(
@@ -87,6 +115,8 @@ export class ApiRectangleCellsSaveWriter implements IRectangleCellsSaveWriter {
         value: RectangleCell,
         compensation?: IRectangleSaveCompensation
     ): Rectangle {
+        const metadata = resolveMetadata(value);
+
         if (
             typeof value.x === "number" &&
             typeof value.y === "number" &&
@@ -97,7 +127,8 @@ export class ApiRectangleCellsSaveWriter implements IRectangleCellsSaveWriter {
                 x: value.x,
                 y: value.y,
                 width: value.width,
-                height: value.height
+                height: value.height,
+                metadata
             };
         }
 
@@ -107,16 +138,23 @@ export class ApiRectangleCellsSaveWriter implements IRectangleCellsSaveWriter {
             typeof value.cell.row === "number"
         ) {
             const metrics = resolveCompensation(compensation);
+            const horizontalInset = metadata.type === "text"
+                ? metrics.cellWidth * 0.1
+                : metrics.horizontalInset;
+            const verticalInset = metadata.type === "text"
+                ? metrics.cellHeight * 0.1
+                : metrics.verticalInset;
             const x = value.cell.column * metrics.cellWidth;
             const y = value.cell.row * metrics.cellHeight;
-            const width = Math.max(1, metrics.cellWidth - (metrics.horizontalInset * 2));
-            const height = Math.max(1, metrics.cellHeight - (metrics.verticalInset * 2));
+            const width = Math.max(1, metrics.cellWidth - (horizontalInset * 2));
+            const height = Math.max(1, metrics.cellHeight - (verticalInset * 2));
 
             return {
-                x: x + metrics.horizontalInset,
-                y: y + metrics.verticalInset,
+                x: x + horizontalInset,
+                y: y + verticalInset,
                 width,
-                height
+                height,
+                metadata
             };
         }
 
@@ -126,6 +164,22 @@ export class ApiRectangleCellsSaveWriter implements IRectangleCellsSaveWriter {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function resolveMetadata(value: RectangleCell): RectangleMetadata {
+    const metadataType = value.metadata?.type;
+    const metadataText = value.metadata?.text;
+
+    return {
+        type: typeof metadataType === "string" && metadataType.trim().length > 0
+            ? metadataType
+            : (typeof value.kind === "string" && value.kind.trim().length > 0
+                ? value.kind
+                : "rectangle"),
+        text: typeof metadataText === "string"
+            ? metadataText
+            : (typeof value.text === "string" ? value.text : "")
+    };
 }
 
 type RectangleCompensation = Readonly<{

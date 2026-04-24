@@ -5,6 +5,7 @@ import type { IRectangleCellsSaveWriter } from "../../../../../src/features/draw
 import { RectangleCellsSaveAction } from "../../../../../src/features/drawing-system/save/RectangleCellsSaveAction.js";
 import { InMemoryDrawingObjectStore } from "../../../../../src/features/drawing-system/canvas-object/stores/InMemoryDrawingObjectStore.js";
 import { CanvasObjectKinds } from "../../../../../src/features/drawing-system/canvas-object/value-objects/CanvasObjectKind.js";
+import { createDrawingTextLabel } from "../../../../../src/features/drawing-system/text/createDrawingTextLabel.js";
 
 class SavedDirectoryRectangleCellsSaveWriter implements IRectangleCellsSaveWriter {
     private readonly directoryPath: string;
@@ -53,6 +54,14 @@ describe("RectangleCellsSaveAction", () => {
                     column: 6,
                     row: 7
                 }
+            },
+            {
+                id: "text-1",
+                kind: CanvasObjectKinds.text,
+                cell: {
+                    column: 1,
+                    row: 8
+                }
             }
         ]);
 
@@ -83,6 +92,15 @@ describe("RectangleCellsSaveAction", () => {
                         column: 6,
                         row: 7
                     }
+                },
+                {
+                    id: "text-1",
+                    kind: CanvasObjectKinds.text,
+                    cell: {
+                        column: 1,
+                        row: 8
+                    },
+                    text: createDrawingTextLabel("text-1")
                 }
             ]
         });

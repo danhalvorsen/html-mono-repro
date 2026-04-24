@@ -18,13 +18,8 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: [
-        "src/DbscanPdfBoundingBoxClusterer.ts",
-        "src/PdfBoundingBox.ts",
-        "src/PdfBoundingBoxCluster.ts",
-        "src/PdfBoundingBoxClusteringResult.ts",
-        "src/PdfBoundingBoxDistance.ts",
-        "src/PdfBoundingBoxQueryRegion.ts",
-        "src/QuadTreePdfBoundingBoxNeighborhoodQuery.ts",
+        "src/code.ts",
+        "src/index.ts",
       ],
       thresholds: {
         statements: 100,

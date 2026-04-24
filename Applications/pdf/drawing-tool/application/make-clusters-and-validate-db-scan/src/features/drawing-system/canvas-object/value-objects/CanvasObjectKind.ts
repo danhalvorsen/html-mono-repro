@@ -4,6 +4,7 @@
     triangle: "triangle",
     diamond: "diamond",
     line: "line",
+    text: "text",
     saveButton: "save-button",
     loadButton: "load-button",
     deleteButton: "delete-button"

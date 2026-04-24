@@ -1,4 +1,4 @@
-import type { IPdfImageFragment } from "@monorepo/core-pdf-domain";
+import { FragmentKinds, type IPdfImageFragment } from "@monorepo/core-pdf-domain";
 import { PDFDocument, PDFName, PDFRawStream } from "./code.js";
 import { GuardedAdapter } from "./GuardedAdapter.js";
 
@@ -48,7 +48,7 @@ export class PdfLibImageFragmentReader extends GuardedAdapter {
                 }
 
                 const fragment: IPdfImageFragment = {
-                    kind: "image",
+                    kind: FragmentKinds.Image,
                     pageNumber: pageIndex + 1,
                     boundingBox: {
                         position: { x: 0, y: 0 },

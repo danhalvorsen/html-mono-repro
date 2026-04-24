@@ -30,6 +30,7 @@ export class DrawingShapeDragDataSerializer {
                 parsed.shapeType !== "triangle" &&
                 parsed.shapeType !== "diamond" &&
                 parsed.shapeType !== "line" &&
+                parsed.shapeType !== "text" &&
                 parsed.shapeType !== "save-button" &&
                 parsed.shapeType !== "load-button" &&
                 parsed.shapeType !== "delete-button"

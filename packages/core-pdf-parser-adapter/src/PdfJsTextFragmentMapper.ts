@@ -2,7 +2,7 @@ import { TextFragment, Rectangle, Point } from "@monorepo/core-pdf-domain";
 import { PdfJsNativeTextItem, PdfJsNativeTextContent, PdfJsNativeViewport, PdfJsNativeTextStyle } from "./code.js";
 import { GuardedAdapter } from "./GuardedAdapter.js";
 import { ITextFragmentMapper } from "./ITextFragmentMapper.js";
-import type { IPdfFragment } from "@monorepo/core-pdf-domain"
+import type { PdfFragment } from "@monorepo/core-pdf-domain"
 
 export class PdfJsTextFragmentMapper extends GuardedAdapter
     implements ITextFragmentMapper<PdfJsNativeTextItem, PdfJsNativeTextContent, PdfJsNativeViewport> {
@@ -13,7 +13,7 @@ export class PdfJsTextFragmentMapper extends GuardedAdapter
         item: PdfJsNativeTextItem,
         content: PdfJsNativeTextContent,
         viewport: PdfJsNativeViewport
-    ): IPdfFragment | null {
+    ): PdfFragment | null {
         if (!this.isTextItem(item)) {
             return null;
         }

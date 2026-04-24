@@ -1,15 +1,14 @@
- 
 {
   "name": "@monorepo/core-graph-pathfinding-a-star",
   "version": "1.0.0",
-  "description": "Example module scaffold.",
+  "description": "A* pathfinding algorithm over core graph pathfinding abstractions.",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "files": [
@@ -22,17 +21,22 @@
     "test:typecheck": "vitest run --typecheck"
   },
   "keywords": [
-    "module",
-    "typescript",
-    "example"
+    "pathfinding",
+    "a-star",
+    "graph",
+    "typescript"
   ],
-  "author": "",
   "license": "MIT",
   "dependencies": {
-    "@monorepo/core-graph-pathfinding": "workspace:*"
+    "@monorepo/core-graph-pathfinding": "workspace:*",
+    "@monorepo/core-graph-pathfinding-domain": "workspace:*",
+    "@monorepo/core-graph-pathfinding-domain-validators": "workspace:*",
+    "@monorepo/core-graph-pathfinding-composition": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
-    "typescript": "^5.9.3"
-  }
+    "typescript": "^5.9.3",
+    "vitest": "^1.6.0"
+  },
+  "sideEffects": false
 }

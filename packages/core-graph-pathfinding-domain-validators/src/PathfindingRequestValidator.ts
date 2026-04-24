@@ -24,11 +24,18 @@ export class PathfindingRequestValidator<TNodeId>
     Object.freeze(this);
   }
 
-  public validate(
+  public ValidateTypeAndPayloadBehavior(
     graph: IReadOnlyPathGraph<TNodeId>,
     request: IPathfindingRequest<TNodeId>,
   ): void {
     const context = new PathfindingRequestValidationContext<TNodeId>(graph, request);
     this.validator.validate(context);
+  }
+
+  public validate(
+    graph: IReadOnlyPathGraph<TNodeId>,
+    request: IPathfindingRequest<TNodeId>,
+  ): void {
+    this.ValidateTypeAndPayloadBehavior(graph, request);
   }
 }

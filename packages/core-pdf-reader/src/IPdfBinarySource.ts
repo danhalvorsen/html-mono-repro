@@ -1,1 +1,1 @@
-export interface IPdfBinarySource { readonly name: string; read(): Promise<Uint8Array>; }
+export type { IPdfBinarySource } from "@monorepo/core-pdf-domain";

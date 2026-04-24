@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { FragmentKinds } from "@monorepo/core-pdf-domain";
 import { PdfJsTestFixture } from "./fixtures/pdfjs-fixture.js";
 import { PdfJsPage } from "../src/engine/PdfJsPage.js";
 
@@ -48,10 +49,11 @@ describe("PdfJsPage", () => {
 
     expect(result).toEqual([
       {
+        kind: FragmentKinds.Text,
         pageNumber: 1,
         rawText: "Milk",
         text: "Milk",
-        textType: "text",
+        textType: FragmentKinds.Text,
         textSize: 1,
         boundingBox: {
           position: { x: 10, y: 100 },
@@ -69,10 +71,11 @@ describe("PdfJsPage", () => {
         fontSize: 1,
       },
       {
+        kind: FragmentKinds.Text,
         pageNumber: 1,
         rawText: "  19,90  ",
         text: "19,90",
-        textType: "text",
+        textType: FragmentKinds.Text,
         textSize: 1,
         boundingBox: {
           position: { x: 60, y: 100 },
@@ -105,10 +108,11 @@ describe("PdfJsPage", () => {
     const [fragment] = await sut.readTextFragments();
 
     expect(fragment).toEqual({
+      kind: FragmentKinds.Text,
       pageNumber: 1,
       rawText: "Derived",
       text: "Derived",
-      textType: "text",
+      textType: FragmentKinds.Text,
       textSize: 1.5,
       boundingBox: {
         position: { x: 10, y: 20 },
@@ -144,10 +148,11 @@ describe("PdfJsPage", () => {
     const [fragment] = await sut.readTextFragments();
 
     expect(fragment).toEqual({
+      kind: FragmentKinds.Text,
       pageNumber: 3,
       rawText: "Offer",
       text: "Offer",
-      textType: "text",
+      textType: FragmentKinds.Text,
       textSize: 14,
       boundingBox: {
         position: { x: 25, y: 50 },
@@ -192,10 +197,11 @@ describe("PdfJsPage", () => {
     const [fragment] = await sut.readTextFragments();
 
     expect(fragment).toEqual({
+      kind: FragmentKinds.Text,
       pageNumber: 4,
       rawText: "ObjectFont",
       text: "ObjectFont",
-      textType: "text",
+      textType: FragmentKinds.Text,
       textSize: 16,
       boundingBox: {
         position: { x: 30, y: 80 },
@@ -235,10 +241,11 @@ describe("PdfJsPage", () => {
     const [fragment] = await sut.readTextFragments();
 
     expect(fragment).toEqual({
+      kind: FragmentKinds.Text,
       pageNumber: 1,
       rawText: "Scaled",
       text: "Scaled",
-      textType: "text",
+      textType: FragmentKinds.Text,
       textSize: 1,
       boundingBox: {
         position: { x: 10, y: 20 },
