@@ -7,7 +7,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "dev:plot": "tsx src/index.ts && start .output\\plots\\two-groups-eight-fragments.html"
+    "dev:plot": "tsx src/index.ts && start .output\\plots\\two-groups-plus-20-random-fragments.html"
   },
   "dependencies": {
     "@monorepo/core-pdf-reader": "workspace:*",

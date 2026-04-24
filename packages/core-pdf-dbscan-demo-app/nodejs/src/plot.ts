@@ -1,11 +1,17 @@
+// src/plot.ts
+
 import type { PdfFragment } from "@monorepo/core-pdf-domain";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type { PdfFragmentPlotCluster } from "./PdfFragmentPlotCluster.js";
 
 interface AxisRange {
   readonly x: readonly [number, number];
   readonly y: readonly [number, number];
+}
+
+interface PdfFragmentPlotCluster {
+  readonly id: string;
+  readonly items: readonly PdfFragment[];
 }
 
 interface PlotShape {
@@ -27,15 +33,18 @@ export class Plot {
     fileName: string,
     fragments: readonly PdfFragment[],
     clusters: readonly PdfFragmentPlotCluster[],
+    axisRange?: AxisRange,
   ): string {
-    const clusterBoxes = clusters.map((cluster) => this.clusterBox(cluster.items));
+    const clusterBoxes = clusters.map((cluster) =>
+      this.clusterBox(cluster.items),
+    );
 
     const shapes: readonly PlotShape[] = [
       ...fragments.map((fragment) => this.rectangle(fragment, 2, "solid")),
       ...clusterBoxes.map((box) => this.rectangle(box, 5, "dash")),
     ];
 
-    const range = this.range([...fragments, ...clusterBoxes]);
+    const range = axisRange ?? this.range([...fragments, ...clusterBoxes]);
     const centerTrace = this.centerTrace(fragments);
 
     const outputDirectory = resolve(process.cwd(), ".output", "plots");
@@ -90,13 +99,24 @@ export class Plot {
       throw new Error("Cannot create plot cluster box from an empty cluster.");
     }
 
-    const left = Math.min(...items.map((item) => item.boundingBox.position.x));
-    const top = Math.min(...items.map((item) => item.boundingBox.position.y));
-    const right = Math.max(
-      ...items.map((item) => item.boundingBox.position.x + item.boundingBox.width),
+    const left = Math.min(
+      ...items.map((item) => item.boundingBox.position.x),
     );
+
+    const top = Math.min(
+      ...items.map((item) => item.boundingBox.position.y),
+    );
+
+    const right = Math.max(
+      ...items.map(
+        (item) => item.boundingBox.position.x + item.boundingBox.width,
+      ),
+    );
+
     const bottom = Math.max(
-      ...items.map((item) => item.boundingBox.position.y + item.boundingBox.height),
+      ...items.map(
+        (item) => item.boundingBox.position.y + item.boundingBox.height,
+      ),
     );
 
     return {
@@ -121,16 +141,25 @@ export class Plot {
       };
     }
 
-    const left = Math.min(...fragments.map((fragment) => fragment.boundingBox.position.x));
-    const top = Math.min(...fragments.map((fragment) => fragment.boundingBox.position.y));
+    const left = Math.min(
+      ...fragments.map((fragment) => fragment.boundingBox.position.x),
+    );
+
+    const top = Math.min(
+      ...fragments.map((fragment) => fragment.boundingBox.position.y),
+    );
+
     const right = Math.max(
       ...fragments.map(
-        (fragment) => fragment.boundingBox.position.x + fragment.boundingBox.width,
+        (fragment) =>
+          fragment.boundingBox.position.x + fragment.boundingBox.width,
       ),
     );
+
     const bottom = Math.max(
       ...fragments.map(
-        (fragment) => fragment.boundingBox.position.y + fragment.boundingBox.height,
+        (fragment) =>
+          fragment.boundingBox.position.y + fragment.boundingBox.height,
       ),
     );
 
@@ -150,7 +179,11 @@ export class Plot {
     return fragment.boundingBox.position.y + fragment.boundingBox.height / 2;
   }
 
-  private html(centerTrace: object, shapes: readonly PlotShape[], range: AxisRange): string {
+  private html(
+    centerTrace: object,
+    shapes: readonly PlotShape[],
+    range: AxisRange,
+  ): string {
     return `<!doctype html>
 <html>
 <head>
