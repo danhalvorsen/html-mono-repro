@@ -1,0 +1,24 @@
+{
+  "name": "@your-scope/pdf-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "dev:plot": "tsx src/index.ts && start .output\\plots\\two-groups-eight-fragments.html"
+  },
+  "dependencies": {
+    "@monorepo/core-pdf-reader": "workspace:*",
+    "@monorepo/core-pdf-dbscan": "workspace:*",
+    "@monorepo/core-pdf-writer": "workspace:*",
+    "@monorepo/core-pdf-domain": "workspace:*",
+    "pdf-lib": "^1.17.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.9.0",
+    "tsx": "^4.21.0"
+  }
+}

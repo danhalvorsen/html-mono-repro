@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+  <div id="plot" style="width:100%;height:900px"></div>
+  <script>
+    Plotly.newPlot("plot", [{"type":"scatter","mode":"lines","name":"Fragment 0","x":[-2,-1,-1,-2,-2],"y":[0,0,1,1,0],"line":{"width":2,"dash":"solid"},"showlegend":false},{"type":"scatter","mode":"lines","name":"Fragment 1","x":[0,1,1,0,0],"y":[2,2,3,3,2],"line":{"width":2,"dash":"solid"},"showlegend":false},{"type":"scatter","mode":"lines","name":"Fragment 2","x":[0,1,1,0,0],"y":[-2,-2,-1,-1,-2],"line":{"width":2,"dash":"solid"},"showlegend":false},{"type":"scatter","mode":"lines","name":"Fragment 3","x":[2,3,3,2,2],"y":[0,0,1,1,0],"line":{"width":2,"dash":"solid"},"showlegend":false},{"type":"scatter","mode":"lines","name":"Cluster cluster-1","x":[-2,3,3,-2,-2],"y":[-2,-2,3,3,-2],"line":{"width":4,"dash":"dash"},"showlegend":true},{"type":"scatter","mode":"markers+text","name":"Centers","x":[-1.5,0.5,0.5,2.5],"y":[0.5,2.5,-1.5,0.5],"text":["#0","#1","#2","#3"],"textposition":"top center","marker":{"size":8}}], {
+      xaxis: { scaleanchor: "y", scaleratio: 1, zeroline: true },
+      yaxis: { zeroline: true },
+      showlegend: true
+    });
+  </script>
+</body>
+</html>
