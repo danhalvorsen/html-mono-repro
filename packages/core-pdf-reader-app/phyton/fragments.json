@@ -1,0 +1,405 @@
+[
+  {
+    "index": 11,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 652.6923076923077,
+        "y": 370.8113217623729
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 12,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 741.3076923076924,
+        "y": 370.8113217623729
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 13,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 652.6923076923077,
+        "y": 443.26415195105216
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 14,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 741.3076923076924,
+        "y": 443.26415195105216
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 15,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 475.46153846153845,
+        "y": 370.8113217623729
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 16,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 475.46153846153845,
+        "y": 443.26415195105216
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 17,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 386.84615384615387,
+        "y": 370.8113217623729
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 18,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 386.84615384615387,
+        "y": 443.26415195105216
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 19,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 386.84615384615387,
+        "y": 81.0000010076559
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 20,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 475.46153846153845,
+        "y": 81.0000010076559
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 21,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 386.84615384615387,
+        "y": 153.45283119633518
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 22,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 475.46153846153845,
+        "y": 153.45283119633518
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 23,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 121,
+        "y": 298.35849157369364
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 24,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 121,
+        "y": 370.8113217623729
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 25,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 209.6153846153846,
+        "y": 298.35849157369364
+      },
+      "width": 71.84615325927737,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 26,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 209.6153846153846,
+        "y": 370.8113217623729
+      },
+      "width": 71.84615325927737,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 27,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 918.5384615384615,
+        "y": 225.90566138501447
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 28,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 918.5384615384615,
+        "y": 298.35849157369364
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 29,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 918.5384615384615,
+        "y": 443.26415195105216
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 30,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 1007.1538461538462,
+        "y": 443.26415195105216
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 31,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 918.5384615384615,
+        "y": 515.7169821397314
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 32,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 1007.1538461538462,
+        "y": 515.7169821397314
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 33,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 121,
+        "y": 588.1698123284107
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 34,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 209.6153846153846,
+        "y": 588.1698123284107
+      },
+      "width": 71.84615325927737,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 35,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 386.84615384615387,
+        "y": 660.62264251709
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 36,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 475.46153846153845,
+        "y": 660.62264251709
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 37,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 1007.1538461538462,
+        "y": 660.62264251709
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 38,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 741.3076923076924,
+        "y": 660.62264251709
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 39,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 1007.1538461538462,
+        "y": 81.0000010076559
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 40,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 918.5384615384615,
+        "y": 81.0000010076559
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  },
+  {
+    "index": 41,
+    "kind": "rectangle",
+    "pageNumber": 1,
+    "boundingBox": {
+      "position": {
+        "x": 121,
+        "y": 81.0000010076559
+      },
+      "width": 71.84615325927734,
+      "height": 58.377357482910156
+    }
+  }
+]

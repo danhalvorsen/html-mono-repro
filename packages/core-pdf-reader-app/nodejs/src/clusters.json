@@ -1,0 +1,129 @@
+[
+  {
+    "id": "cluster-1",
+    "pageNumber": 1,
+    "sourceIndexes": [
+      19,
+      20,
+      21,
+      22
+    ],
+    "boundingBox": {
+      "position": {
+        "x": 378.84615384615387,
+        "y": 73.0000010076559
+      },
+      "width": 176.46153787466193,
+      "height": 146.83018767158944
+    }
+  },
+  {
+    "id": "cluster-2",
+    "pageNumber": 1,
+    "sourceIndexes": [
+      40,
+      39,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      37
+    ],
+    "boundingBox": {
+      "position": {
+        "x": 910.5384615384615,
+        "y": 73.0000010076559
+      },
+      "width": 176.46153787466199,
+      "height": 653.9999989923442
+    }
+  },
+  {
+    "id": "cluster-3",
+    "pageNumber": 1,
+    "sourceIndexes": [
+      23,
+      25,
+      24,
+      26
+    ],
+    "boundingBox": {
+      "position": {
+        "x": 113,
+        "y": 290.35849157369364
+      },
+      "width": 176.46153787466199,
+      "height": 146.83018767158944
+    }
+  },
+  {
+    "id": "cluster-4",
+    "pageNumber": 1,
+    "sourceIndexes": [
+      17,
+      15,
+      18,
+      16
+    ],
+    "boundingBox": {
+      "position": {
+        "x": 378.84615384615387,
+        "y": 362.8113217623729
+      },
+      "width": 176.46153787466193,
+      "height": 146.83018767158939
+    }
+  },
+  {
+    "id": "cluster-5",
+    "pageNumber": 1,
+    "sourceIndexes": [
+      11,
+      12,
+      13,
+      14
+    ],
+    "boundingBox": {
+      "position": {
+        "x": 644.6923076923077,
+        "y": 362.8113217623729
+      },
+      "width": 176.46153787466199,
+      "height": 146.83018767158939
+    }
+  },
+  {
+    "id": "cluster-6",
+    "pageNumber": 1,
+    "sourceIndexes": [
+      33,
+      34
+    ],
+    "boundingBox": {
+      "position": {
+        "x": 113,
+        "y": 580.1698123284107
+      },
+      "width": 176.46153787466199,
+      "height": 74.37735748291016
+    }
+  },
+  {
+    "id": "cluster-7",
+    "pageNumber": 1,
+    "sourceIndexes": [
+      35,
+      36
+    ],
+    "boundingBox": {
+      "position": {
+        "x": 378.84615384615387,
+        "y": 652.62264251709
+      },
+      "width": 176.46153787466193,
+      "height": 74.37735748291016
+    }
+  }
+]

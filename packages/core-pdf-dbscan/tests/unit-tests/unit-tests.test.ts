@@ -2,12 +2,13 @@
 
 import { describe, expect, it } from "vitest";
 import { DbscanPdfFragmentClusterer } from "../../src/code.js";
+import { Point } from "core-math/dist/index.js";
 
 /* =================================================================================================
    Fixture (ONLY test data — no domain redefinitions)
    ================================================================================================= */
 
-class Fixture {
+export class Fixture {
   public createFragment(x: number, y: number) {
     return {
       kind: "rectangle" as const,
@@ -19,8 +20,18 @@ class Fixture {
       },
     };
   }
+  
+public cross(): ReadonlyArray<ReturnType<Fixture["createFragment"]>> {
+    return Object.freeze([
+      
+      this.createFragment(-2, 0),
+      this.createFragment(0, 2),
+      this.createFragment(0,-2),
+      this.createFragment(2,0 ),
+    ]);
+}
 
-  public fourSeparated() {
+public fourSeparated() {
     return Object.freeze([
       this.createFragment(1, 2),
       this.createFragment(3, 2),

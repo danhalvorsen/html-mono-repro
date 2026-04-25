@@ -2830,6 +2830,34 @@ importers:
         specifier: ^8.0.4
         version: 8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
+  packages/core-pdf-dbscan-demo-app/nodejs:
+    dependencies:
+      '@monorepo/core-pdf-dbscan':
+        specifier: workspace:*
+        version: link:../../core-pdf-dbscan
+      '@monorepo/core-pdf-domain':
+        specifier: workspace:*
+        version: link:../../core-pdf-domain
+      '@monorepo/core-pdf-reader':
+        specifier: workspace:*
+        version: link:../../core-pdf-reader
+      '@monorepo/core-pdf-writer':
+        specifier: workspace:*
+        version: link:../../core-pdf-writer
+      pdf-lib:
+        specifier: ^1.17.1
+        version: 1.17.1
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.9.0
+        version: 5.9.3
+
   packages/core-pdf-domain:
     devDependencies:
       rimraf:
@@ -2881,6 +2909,34 @@ importers:
         version: 5.9.3
 
   packages/core-pdf-reader-app/nodejs:
+    dependencies:
+      '@monorepo/core-pdf-dbscan':
+        specifier: workspace:*
+        version: link:../../core-pdf-dbscan
+      '@monorepo/core-pdf-domain':
+        specifier: workspace:*
+        version: link:../../core-pdf-domain
+      '@monorepo/core-pdf-reader':
+        specifier: workspace:*
+        version: link:../../core-pdf-reader
+      '@monorepo/core-pdf-writer':
+        specifier: workspace:*
+        version: link:../../core-pdf-writer
+      pdf-lib:
+        specifier: ^1.17.1
+        version: 1.17.1
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.39
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
+      typescript:
+        specifier: ^5.9.0
+        version: 5.9.3
+
+  packages/core-pdf-reader-app/nodejs-pid-sample:
     dependencies:
       '@monorepo/core-pdf-dbscan':
         specifier: workspace:*
