@@ -1,4 +1,3 @@
- 
 {
   "name": "@monorepo/music-core-synthesizer-oscillators",
   "version": "1.0.0",
@@ -28,7 +27,10 @@
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "@monorepo/music-core-synthesizer-contracts": "workspace:*",
+    "@monorepo/music-core-synthesizer-engine": "workspace:*"
+  },
   "devDependencies": {
     "rimraf": "^6.0.1",
     "typescript": "^5.9.3"

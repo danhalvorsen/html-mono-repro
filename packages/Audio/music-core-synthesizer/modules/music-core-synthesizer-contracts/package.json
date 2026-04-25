@@ -28,7 +28,9 @@
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "@monorepo/music-core-midi": "workspace:*"
+  },
   "devDependencies": {
     "rimraf": "^6.0.1",
     "typescript": "^5.9.3"

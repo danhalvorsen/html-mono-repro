@@ -1,6 +1,6 @@
  
 {
-  "name": "@monorepo/Music-core-synthesizer-parameters",
+  "name": "@monorepo/music-core-synthesizer-parameters",
   "version": "1.0.0",
   "description": "Example module scaffold.",
   "type": "module",

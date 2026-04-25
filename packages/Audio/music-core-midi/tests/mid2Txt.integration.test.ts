@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 
 import { describe, expect, it } from "vitest";
 
-import { midiToText, SimpleMidiTextFormatter } from "../src/mid2Txt";
+import { midiToText, SimpleMidiTextFormatter } from "../src/mid2Txt.js";
 
 describe("midiToText integration", () => {
   it("reads a real .mid file fixture and converts it to deterministic text", () => {

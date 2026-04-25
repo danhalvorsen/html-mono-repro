@@ -1,7 +1,7 @@
 // FILE: packages/Audio/music-core-midi/test/mid2Txt.spec.ts
 
 import { describe, it, expect } from "vitest";
-import { midiToText, SimpleMidiTextFormatter } from "../src/mid2Txt";
+import { midiToText, SimpleMidiTextFormatter } from "../src/mid2Txt.js";
 
 function buildMinimalFormat0SingleNote(): Uint8Array {
   // MThd, length=6, format=0, tracks=1, division=96
