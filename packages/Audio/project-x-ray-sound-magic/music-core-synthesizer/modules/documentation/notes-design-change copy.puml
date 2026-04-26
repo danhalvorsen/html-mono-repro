@@ -1,0 +1,118 @@
+@startuml
+title Music Synthesizer Contracts-Centered Module Diagram
+
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+
+left to right direction
+
+' =============================================================================
+' CONTRACTS
+' =============================================================================
+
+package "music-core-synthesizer-contracts" as ContractsPackage {
+  component "music-core-synthesizer-contracts" as SynthContracts
+}
+
+' =============================================================================
+' CORE SUPPORT
+' =============================================================================
+
+package "music-core-synthesizer-parameters" as ParametersPackage {
+  component "music-core-synthesizer-parameters" as Parameters
+}
+
+package "music-core-midi" as MidiPackage {
+  component "music-core-midi" as Midi
+}
+
+' =============================================================================
+' MODULES THAT DEPEND ON CONTRACTS
+' =============================================================================
+
+package "DSP Modules" as DspModules {
+  component "music-core-synthesizer-oscillators" as Oscillators
+  component "music-core-synthesizer-envelopes" as Envelopes
+  component "music-core-synthesizer-filters" as Filters
+  component "music-core-synthesizer-distortion" as Distortion
+  component "music-core-synthesizer-noise" as Noise
+  component "music-core-synthesizer-modulation" as Modulation
+}
+
+package "Synthesizer Orchestration Modules" as SynthModules {
+  component "music-core-synthesizer-voice" as Voice
+  component "music-core-synthesizer-voice-allocator" as VoiceAllocator
+  component "music-core-synthesizer-engine" as Engine
+  component "music-core-synthesizer-presets" as Presets
+}
+
+package "Infrastructure Adapter Modules" as InfrastructureModules {
+  component "music-core-synthesizer-web-audio" as WebAudio
+}
+
+package "UI Modules" as UiModules {
+  component "music-ui-synthesizer" as UiSynth
+}
+
+' =============================================================================
+' CONTRACT DEPENDENCY DIRECTION
+' =============================================================================
+
+Parameters ..> SynthContracts
+
+Oscillators ..> SynthContracts
+Oscillators ..> Parameters
+
+Envelopes ..> SynthContracts
+Envelopes ..> Parameters
+
+Filters ..> SynthContracts
+Filters ..> Parameters
+
+Distortion ..> SynthContracts
+Distortion ..> Parameters
+
+Noise ..> SynthContracts
+Noise ..> Parameters
+
+Modulation ..> SynthContracts
+Modulation ..> Parameters
+
+Voice ..> SynthContracts
+VoiceAllocator ..> SynthContracts
+
+Engine ..> SynthContracts
+Engine ..> Midi
+
+Presets ..> SynthContracts
+Presets ..> Parameters
+
+WebAudio ..> SynthContracts
+WebAudio ..> Parameters
+
+UiSynth ..> SynthContracts
+
+' =============================================================================
+' ARCHITECTURAL NOTES
+' =============================================================================
+
+note bottom of SynthContracts
+This is the stable dependency root for synthesizer contracts.
+
+It must not depend on:
+- Web Audio
+- UI
+- concrete DSP implementations
+- sequencer
+- application composition root
+end note
+
+note right of Midi
+MIDI stays separate.
+The synth engine consumes MIDI messages,
+but synthesizer contracts do not own MIDI parsing.
+end note
+
+@enduml

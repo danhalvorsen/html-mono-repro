@@ -1,0 +1,46 @@
+﻿{
+    "name": "@monorepo/music-core-synthesizer-distortion-contracts",
+    "version": "1.0.0",
+    "description": "Distortion contract definitions, shared value types, and distortion-specific specifications for the synthesizer domain.",
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "clean": "rimraf dist",
+        "build": "tsc -p tsconfig.json",
+        "test": "vitest run",
+        "test:typecheck": "vitest run --typecheck"
+    },
+    "keywords": [
+        "synthesizer",
+        "audio",
+        "dsp",
+        "distortion",
+        "contracts",
+        "specifications",
+        "value-types",
+        "typescript",
+        "esm",
+        "monorepo"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "@monorepo/music-core-synthesizer-parameters": "workspace:*",
+        "@monorepo/core-specifications": "workspace:*"
+    },
+    "devDependencies": {
+        "rimraf": "^6.0.1",
+        "typescript": "^5.9.3",
+        "vitest": "^3.2.4"
+    }
+}

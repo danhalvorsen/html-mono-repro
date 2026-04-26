@@ -1,0 +1,196 @@
+```plantuml id="83ojgu"
+@startuml
+title Music Synthesizer Module Component Diagram
+
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+
+left to right direction
+
+' =============================================================================
+' CORE MODULES
+' =============================================================================
+
+package "music-core-midi" as MidiPackage {
+  component "music-core-midi" as Midi
+}
+
+package "music-core-transport\n<<optional>>" as TransportPackage {
+  component "music-core-transport" as Transport
+}
+
+package "music-core-synthesizer-contracts" as ContractsPackage {
+  component "music-core-synthesizer-contracts" as SynthContracts
+}
+
+package "music-core-synthesizer-parameters" as ParametersPackage {
+  component "music-core-synthesizer-parameters" as Parameters
+}
+
+' =============================================================================
+' SYNTHESIZER DSP MODULES
+' =============================================================================
+
+package "music-core-synthesizer-oscillators\n<<thin/planned>>" as OscillatorsPackage {
+  component "music-core-synthesizer-oscillators" as Oscillators
+}
+
+package "music-core-synthesizer-envelopes\n<<thin/planned>>" as EnvelopesPackage {
+  component "music-core-synthesizer-envelopes" as Envelopes
+}
+
+package "music-core-synthesizer-filters\n<<thin/planned>>" as FiltersPackage {
+  component "music-core-synthesizer-filters" as Filters
+}
+
+package "music-core-synthesizer-distortion\n<<thin/planned>>" as DistortionPackage {
+  component "music-core-synthesizer-distortion" as Distortion
+}
+
+package "music-core-synthesizer-noise\n<<thin/planned>>" as NoisePackage {
+  component "music-core-synthesizer-noise" as Noise
+}
+
+package "music-core-synthesizer-modulation\n<<thin/planned>>" as ModulationPackage {
+  component "music-core-synthesizer-modulation" as Modulation
+}
+
+' =============================================================================
+' SYNTHESIZER ORCHESTRATION MODULES
+' =============================================================================
+
+package "music-core-synthesizer-voice" as VoicePackage {
+  component "music-core-synthesizer-voice" as Voice
+}
+
+package "music-core-synthesizer-voice-allocator" as VoiceAllocatorPackage {
+  component "music-core-synthesizer-voice-allocator" as VoiceAllocator
+}
+
+package "music-core-synthesizer-engine" as EnginePackage {
+  component "music-core-synthesizer-engine" as Engine
+}
+
+package "music-core-synthesizer-presets\n<<optional/planned>>" as PresetsPackage {
+  component "music-core-synthesizer-presets" as Presets
+}
+
+package "music-core-synthesizer-web-audio" as WebAudioPackage {
+  component "music-core-synthesizer-web-audio" as WebAudio
+}
+
+' =============================================================================
+' CONTROL MODULES
+' =============================================================================
+
+package "music-core-sequencer" as SequencerPackage {
+  component "music-core-sequencer" as Sequencer
+}
+
+' =============================================================================
+' UI MODULES
+' =============================================================================
+
+package "music-ui-shared" as UiSharedPackage {
+  component "music-ui-shared" as UiShared
+}
+
+package "music-ui-synthesizer" as UiSynthPackage {
+  component "music-ui-synthesizer" as UiSynth
+}
+
+package "music-ui-sequencer" as UiSequencerPackage {
+  component "music-ui-sequencer" as UiSequencer
+}
+
+' =============================================================================
+' APPLICATION MODULE
+' =============================================================================
+
+package "music-synthesizer-app" as AppPackage {
+  component "music-synthesizer-app" as App
+}
+
+' =============================================================================
+' DEPENDENCIES
+' =============================================================================
+
+Parameters ..> SynthContracts
+
+Oscillators ..> SynthContracts
+Oscillators ..> Parameters
+
+Envelopes ..> SynthContracts
+Envelopes ..> Parameters
+
+Filters ..> SynthContracts
+Filters ..> Parameters
+
+Distortion ..> SynthContracts
+Distortion ..> Parameters
+
+Noise ..> SynthContracts
+Noise ..> Parameters
+
+Modulation ..> SynthContracts
+Modulation ..> Parameters
+Modulation ..> Envelopes
+
+Voice ..> SynthContracts
+Voice ..> Oscillators
+Voice ..> Envelopes
+Voice ..> Filters
+Voice ..> Distortion
+Voice ..> Noise
+Voice ..> Modulation
+
+VoiceAllocator ..> SynthContracts
+
+Engine ..> SynthContracts
+Engine ..> Midi
+Engine ..> Voice
+Engine ..> VoiceAllocator
+
+Presets ..> SynthContracts
+Presets ..> Parameters
+Presets ..> Oscillators
+Presets ..> Envelopes
+Presets ..> Filters
+Presets ..> Distortion
+Presets ..> Noise
+Presets ..> Modulation
+
+WebAudio ..> SynthContracts
+WebAudio ..> Parameters
+WebAudio ..> Oscillators
+WebAudio ..> Envelopes
+WebAudio ..> Filters
+WebAudio ..> Distortion
+WebAudio ..> Noise
+WebAudio ..> Modulation
+
+Sequencer ..> Midi
+Sequencer ..> Transport
+
+UiSynth ..> UiShared
+UiSynth ..> Engine
+UiSynth ..> SynthContracts
+UiSynth ..> Presets
+
+UiSequencer ..> UiShared
+UiSequencer ..> Sequencer
+UiSequencer ..> Midi
+
+App ..> UiSynth
+App ..> UiSequencer
+App ..> Engine
+App ..> WebAudio
+App ..> VoiceAllocator
+App ..> Presets
+
+@enduml
+```
+
+Removed all interface declarations and interface realization arrows. This is now module-only.

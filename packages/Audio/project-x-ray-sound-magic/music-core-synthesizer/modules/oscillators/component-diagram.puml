@@ -1,0 +1,67 @@
+@startuml
+title Oscillator Component Diagram
+
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+
+package "Oscillators" {
+  component "music-core-synthesizer-oscillators-contracts" as OscContracts
+  component "music-core-synthesizer-oscillators" as OscDomain
+  component "music-core-synthesizer-oscillators-web-audio" as OscWebAudio
+  component "music-core-synthesizer-oscillators-web-ui" as OscWebUi
+}
+
+package "Synth Control" {
+  component "music-core-synthesizer-control-abstractions" as ControlAbstractions
+  interface "ISynthControlPort" as ISynthControlPort
+  interface "ISynthCommand" as ISynthCommand
+}
+
+package "User Interface" {
+  package "Web Components" {
+    component "Oscillator Control" as OscillatorControl
+    component "Sound Test Component" as SoundTestComponent
+  }
+}
+
+package "Communication" {
+  package "MIDI" {
+    component "Midi Message Mediator" as MidiMessageMediator
+  }
+
+  package "Web Audio" {
+    component "WebAudio Synth Control Port" as WebAudioControlPort
+  }
+
+  package "SPI / Hardware" {
+    component "SPI Synth Control Port" as SpiControlPort
+    component "Teensy MCU" as TeensyMcu
+    component "ESP32 Synth" as Esp32Synth
+  }
+}
+
+OscDomain ..> OscContracts : uses contracts
+OscWebAudio ..> OscContracts : reads definitions
+OscWebAudio ..> OscDomain : uses mix plans
+
+OscWebUi ..> OscContracts : edits oscillator definitions
+OscWebUi ..> ControlAbstractions : emits commands
+
+OscillatorControl ..> OscWebUi : wraps / uses
+SoundTestComponent ..> OscillatorControl : hosts
+
+OscillatorControl ..> ISynthControlPort : sends commands
+ISynthControlPort .. ControlAbstractions
+ISynthCommand .. ControlAbstractions
+
+MidiMessageMediator ..> ISynthCommand : maps MIDI to commands
+MidiMessageMediator ..> ISynthControlPort : dispatches
+
+WebAudioControlPort ..|> ISynthControlPort
+SpiControlPort ..|> ISynthControlPort
+
+WebAudioControlPort ..> OscWebAudio : applies to Web Audio graph
+SpiControlPort --> TeensyMcu : SPI frames
+SpiControlPort --> Esp32Synth : SPI frames
+
+@enduml

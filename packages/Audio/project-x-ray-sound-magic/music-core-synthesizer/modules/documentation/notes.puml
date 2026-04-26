@@ -1,0 +1,19 @@
+ought for a few seconds
+@startuml
+title Synthesizer Package Dependencies
+
+package "music-core-synthesizer-contracts" as Contracts {
+ 
+}
+
+package "music-core-synthesizer-engine" as Engine {
+ 
+}
+
+package "music-core-synthesizer-web-audio" as WebAudio {
+ 
+}
+
+Contracts--> Engine
+Engine--> WebAudio
+@enduml

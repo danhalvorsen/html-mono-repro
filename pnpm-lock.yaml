@@ -1017,270 +1017,6 @@ importers:
         specifier: ^2.8.3
         version: 2.8.3
 
-  packages/Audio/music-core-synthesizer/module-basic-tester:
-    dependencies:
-      '@monorepo/music-core-midi':
-        specifier: workspace:*
-        version: link:../../music-core-midi
-      '@monorepo/music-core-synthesizer-contracts':
-        specifier: workspace:*
-        version: link:../modules/music-core-synthesizer-contracts
-      '@monorepo/music-core-synthesizer-engine':
-        specifier: workspace:*
-        version: link:../modules/music-core-synthesizer-engine
-      '@monorepo/music-core-synthesizer-web-audio':
-        specifier: workspace:*
-        version: link:../modules/music-core-synthesizer-web-audio
-      lit:
-        specifier: ^3.3.2
-        version: 3.3.2
-    devDependencies:
-      typescript:
-        specifier: ~6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.0.10
-        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-contracts:
-    dependencies:
-      '@monorepo/music-core-midi':
-        specifier: workspace:*
-        version: link:../../../music-core-midi
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-distortion:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-engine:
-    dependencies:
-      '@monorepo/music-core-midi':
-        specifier: workspace:*
-        version: link:../../../music-core-midi
-      '@monorepo/music-core-synthesizer-contracts':
-        specifier: workspace:*
-        version: link:../music-core-synthesizer-contracts
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-envelopes:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-filters:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-midi:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-modulation:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-noise:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-oscillators:
-    dependencies:
-      '@monorepo/music-core-synthesizer-contracts':
-        specifier: workspace:*
-        version: link:../music-core-synthesizer-contracts
-      '@monorepo/music-core-synthesizer-engine':
-        specifier: workspace:*
-        version: link:../music-core-synthesizer-engine
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-parameters:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-presets:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-voice:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-voice-allocator:
-    dependencies:
-      '@monorepo/music-core-synthesizer-contracts':
-        specifier: workspace:*
-        version: link:../music-core-synthesizer-contracts
-      '@monorepo/music-core-synthesizer-engine':
-        specifier: workspace:*
-        version: link:../music-core-synthesizer-engine
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-web-audio:
-    dependencies:
-      '@monorepo/music-core-synthesizer-contracts':
-        specifier: workspace:*
-        version: link:../music-core-synthesizer-contracts
-      '@monorepo/music-core-synthesizer-engine':
-        specifier: workspace:*
-        version: link:../music-core-synthesizer-engine
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/sequencer/music-core-sequencer:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/shared/music-core-transport:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/ui/music-ui-sequencer:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/ui/music-ui-synthesizer:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/ui/music-ui-synthesizer-distortion:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/ui/music-ui-synthesizer-envelopes:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/ui/music-ui-synthesizer-filters:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/ui/music-ui-synthesizer-oscillators:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/Audio/music-core-synthesizer/modules/ui/music-ui-synthesizer-voice:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   packages/Audio/music-note-sheet-abstract: {}
 
   packages/Audio/music-note-sheet-dom: {}
@@ -1333,6 +1069,560 @@ importers:
       lit:
         specifier: ^3.0.0
         version: 3.3.2
+
+  packages/Audio/project-x-ray-sound-magic/audio-core-engine/music-core-synthesizer-contracts:
+    dependencies:
+      '@monorepo/music-core-midi':
+        specifier: workspace:*
+        version: link:../../../music-core-midi
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/audio-core-engine/music-core-synthesizer-engine:
+    dependencies:
+      '@monorepo/music-core-midi':
+        specifier: workspace:*
+        version: link:../../../music-core-midi
+      '@monorepo/music-core-synthesizer-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-contracts
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/sequencer/music-core-sequencer:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-distortion:
+    dependencies:
+      '@monorepo/music-core-synthesizer-distortion-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-distortion-contracts
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-distortion-contracts:
+    dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
+      '@monorepo/music-core-synthesizer-parameters':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-parameters
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-distortion-ui:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-distortion-web-audio:
+    dependencies:
+      '@monorepo/music-core-synthesizer-distortion':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-distortion
+      '@monorepo/music-core-synthesizer-distortion-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-distortion-contracts
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-envelopes:
+    dependencies:
+      '@monorepo/music-core-synthesizer-envelopes-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-contracts
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-envelopes-contracts:
+    dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
+      '@monorepo/music-core-synthesizer-parameters':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-parameters
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-envelopes-ui:
+    dependencies:
+      '@monorepo/music-core-synthesizer-contracts':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-contracts
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-envelopes-web-audio:
+    dependencies:
+      '@monorepo/music-core-synthesizer-contracts':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-contracts
+      '@monorepo/music-core-synthesizer-envelopes-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-contracts
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-filters:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-filters-contracts:
+    dependencies:
+      '@monorepo/music-core-synthesizer-parameters':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-parameters
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-midi:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-midi-contracts:
+    dependencies:
+      '@monorepo/music-core-synthesizer-parameters':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-parameters
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-modulation:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-modulation-contracts:
+    dependencies:
+      '@monorepo/music-core-synthesizer-parameters':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-parameters
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-noise:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-noise-contracts:
+    dependencies:
+      '@monorepo/music-core-synthesizer-parameters':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-parameters
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-oscillators:
+    dependencies:
+      '@monorepo/music-core-synthesizer-contracts':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-contracts
+      '@monorepo/music-core-synthesizer-engine':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-engine
+      '@monorepo/music-core-synthesizer-oscillators-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-contracts
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-oscillators-contracts:
+    dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
+      '@monorepo/music-core-synthesizer-parameters':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-parameters
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-oscillators-web-audio:
+    dependencies:
+      '@monorepo/music-core-synthesizer-contracts':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-contracts
+      '@monorepo/music-core-synthesizer-engine':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-engine
+      '@monorepo/music-core-synthesizer-oscillators-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-contracts
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-oscillators-web-ui:
+    dependencies:
+      '@monorepo/music-core-synthesizer-contracts':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-contracts
+      '@monorepo/music-core-synthesizer-engine':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-engine
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-parameters:
+    dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@26.1.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-parameters-contracts:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-presets:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-presets-contracts:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-allocator:
+    dependencies:
+      '@monorepo/music-core-synthesizer-contracts':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-contracts
+      '@monorepo/music-core-synthesizer-engine':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-engine
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-allocator copy:
+    dependencies:
+      '@monorepo/music-core-synthesizer-contracts':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-contracts
+      '@monorepo/music-core-synthesizer-engine':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-engine
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-allocator-contracts:
+    dependencies:
+      '@monorepo/music-core-synthesizer-contracts':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-contracts
+      '@monorepo/music-core-synthesizer-engine':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-engine
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-contracts:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-web-audio:
+    dependencies:
+      '@monorepo/music-core-synthesizer-contracts':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-contracts
+      '@monorepo/music-core-synthesizer-engine':
+        specifier: workspace:*
+        version: link:../../../audio-core-engine/music-core-synthesizer-engine
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/shared/music-core-transport:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/ui/music-ui-sequencer:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/ui/music-ui-synthesizer:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/ui/music-ui-synthesizer-distortion:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/ui/music-ui-synthesizer-envelopes:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/ui/music-ui-synthesizer-filters:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/ui/music-ui-synthesizer-oscillators:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/ui/music-ui-synthesizer-voice:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/Audio/project-x-ray-sound-magic/test-playground/modules-basic-tester:
+    dependencies:
+      '@monorepo/music-core-midi':
+        specifier: workspace:*
+        version: link:../../../music-core-midi
+      '@monorepo/music-core-synthesizer-contracts':
+        specifier: workspace:*
+        version: link:../../audio-core-engine/music-core-synthesizer-contracts
+      '@monorepo/music-core-synthesizer-engine':
+        specifier: workspace:*
+        version: link:../../audio-core-engine/music-core-synthesizer-engine
+      '@monorepo/music-core-synthesizer-envelopes':
+        specifier: workspace:*
+        version: link:../../music-core-synthesizer/modules/music-core-synthesizer-envelopes
+      '@monorepo/music-core-synthesizer-oscillators-web-ui':
+        specifier: workspace:*
+        version: link:../../music-core-synthesizer/modules/music-core-synthesizer-oscillators-web-ui
+      '@monorepo/music-core-synthesizer-web-audio':
+        specifier: workspace:*
+        version: link:../../music-core-synthesizer/modules/music-core-synthesizer-web-audio
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.10
+        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/Audio/storybook:
     devDependencies:

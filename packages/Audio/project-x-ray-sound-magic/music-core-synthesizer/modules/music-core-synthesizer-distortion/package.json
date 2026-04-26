@@ -1,0 +1,48 @@
+﻿{
+  "name": "@monorepo/music-core-synthesizer-distortion",
+  "version": "1.0.0",
+  "description": "Distortion implementations for the synthesizer domain using the distortion contracts package.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "synthesizer",
+    "audio",
+    "dsp",
+    "distortion",
+    "implementation",
+    "hard-clip",
+    "soft-clip",
+    "tanh",
+    "foldback",
+    "bit-crush",
+    "typescript",
+    "esm",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/music-core-synthesizer-distortion-contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

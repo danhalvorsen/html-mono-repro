@@ -1,0 +1,45 @@
+﻿{
+  "name": "@monorepo/music-core-synthesizer-distortion-web-audio",
+  "version": "1.0.0",
+  "description": "Web Audio adapter for synthesizer distortion definitions and contracts.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "synthesizer",
+    "audio",
+    "web-audio",
+    "distortion",
+    "adapter",
+    "dsp",
+    "typescript",
+    "esm",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/music-core-synthesizer-distortion": "workspace:*",
+    "@monorepo/music-core-synthesizer-distortion-contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

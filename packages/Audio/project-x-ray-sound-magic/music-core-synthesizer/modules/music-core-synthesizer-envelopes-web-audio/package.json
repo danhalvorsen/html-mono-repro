@@ -1,0 +1,46 @@
+﻿{
+  "name": "@monorepo/music-core-synthesizer-envelopes-web-audio",
+  "version": "1.0.0",
+  "description": "Web Audio adapter for synthesizer envelope definitions and automation contracts.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "synthesizer",
+    "audio",
+    "web-audio",
+    "envelope",
+    "adsr",
+    "automation",
+    "adapter",
+    "typescript",
+    "esm",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/music-core-synthesizer-contracts": "workspace:*",
+    "@monorepo/music-core-synthesizer-envelopes-contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
