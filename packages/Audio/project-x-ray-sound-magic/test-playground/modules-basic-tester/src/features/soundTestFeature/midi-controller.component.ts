@@ -128,12 +128,12 @@ export class MidiControllerComponent extends LitElement {
       this.isPlaying = false;
       this.currentStepIndex = -1;
 
-      this.dispatchEvent(
-        new CustomEvent(MidiControllerEvents.completed, {
-          bubbles: true,
-          composed: true,
-        }),
-      );
+    this.dispatchEvent(
+      new CustomEvent(MidiControllerEvents.started, {
+        bubbles: true,
+        composed: true,
+      }),
+    );
     }, offsetMs);
 
     this.scheduledTimerIds.add(completedTimerId);

@@ -1,4 +1,3 @@
- 
 {
   "name": "@monorepo/music-core-synthesizer-envelopes-ui",
   "version": "1.0.0",
@@ -29,8 +28,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@monorepo/music-core-synthesizer-contracts": "workspace:*"
-    
+    "@monorepo/music-core-synthesizer-contracts": "workspace:*",
+    "@monorepo/music-core-synthesizer-envelopes-contracts": "workspace:*",
+    "lit": "^3.0.0"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",

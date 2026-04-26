@@ -1,387 +1,6 @@
-# FILE: export-npm-modules-for-ai.ps1
-
-[CmdletBinding()]
-param(
-    [Parameter(Mandatory = $false)]
-    [ValidateNotNullOrEmpty()]
-    [string]$Root = (Get-Location).Path,
-
-    [Parameter(Mandatory = $false)]
-    [ValidateNotNullOrEmpty()]
-    [string]$OutputRoot = (Join-Path (Get-Location).Path ".ai-share"),
-
-    [Parameter(Mandatory = $false)]
-    [ValidateNotNullOrEmpty()]
-    [string]$OutputFileName = "npm-modules.ai-code.txt",
-
-    [Parameter(Mandatory = $false)]
-    [switch]$IncludeTests,
-
-    [Parameter(Mandatory = $false)]
-    [switch]$IncludeConfigs,
-
-    [Parameter(Mandatory = $false)]
-    [string[]]$SourceFolderNames = @("src"),
-
-    [Parameter(Mandatory = $false)]
-    [string[]]$TestFolderNames = @("test", "tests"),
-
-    [Parameter(Mandatory = $false)]
-    [string[]]$ConfigFileNames = @(
-        "package.json",
-        "tsconfig.json",
-        "tsconfig.build.json",
-        "vite.config.ts",
-        "vite.config.mts",
-        "vite.config.js",
-        "vitest.config.ts",
-        "vitest.config.mts",
-        "vitest.ts"
-    ),
-
-    [Parameter(Mandatory = $false)]
-    [string[]]$AllowedExtensions = @(
-        ".ts",
-        ".tsx",
-        ".js",
-        ".jsx",
-        ".mts",
-        ".cts",
-        ".mjs",
-        ".cjs",
-        ".json",
-        ".html",
-        ".css",
-        ".scss",
-        ".sass",
-        ".md",
-        ".yml",
-        ".yaml"
-    ),
-
-    [Parameter(Mandatory = $false)]
-    [string[]]$ExcludedDirectoryNames = @(
-        ".git",
-        ".turbo",
-        ".vite",
-        ".next",
-        ".nuxt",
-        ".cache",
-        ".output",
-        ".ai-share",
-        "node_modules",
-        "dist",
-        "build",
-        "coverage"
-    )
-)
-
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-
-function Test-IsExcludedPath {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Path,
-
-        [Parameter(Mandatory = $true)]
-        [string[]]$ExcludedNames
-    )
-
-    $parts = $Path -split '[\\/]' | Where-Object { $_ -ne "" }
-
-    foreach ($part in $parts) {
-        if ($ExcludedNames -contains $part) {
-            return $true
-        }
-    }
-
-    return $false
-}
-
-function Get-PackageName {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$PackageJsonPath
-    )
-
-    try {
-        $json = Get-Content -LiteralPath $PackageJsonPath -Raw | ConvertFrom-Json
-
-        if ($null -ne $json.name -and -not [string]::IsNullOrWhiteSpace([string]$json.name)) {
-            return [string]$json.name
-        }
-    }
-    catch {
-        return [System.IO.Path]::GetFileName((Split-Path -Parent $PackageJsonPath))
-    }
-
-    return [System.IO.Path]::GetFileName((Split-Path -Parent $PackageJsonPath))
-}
-
-function Get-RelativePath {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$BasePath,
-
-        [Parameter(Mandatory = $true)]
-        [string]$TargetPath
-    )
-
-    $baseUri = [System.Uri]::new((Resolve-Path -LiteralPath $BasePath).Path.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar)
-    $targetUri = [System.Uri]::new((Resolve-Path -LiteralPath $TargetPath).Path)
-
-    return [System.Uri]::UnescapeDataString(
-        $baseUri.MakeRelativeUri($targetUri).ToString()
-    ).Replace("/", [System.IO.Path]::DirectorySeparatorChar)
-}
-
-function Get-CommentHeader {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$RelativePath
-    )
-
-    $extension = [System.IO.Path]::GetExtension($RelativePath).ToLowerInvariant()
-
-    switch ($extension) {
-        ".html" { return "<!-- FILE: $RelativePath -->" }
-        ".xml"  { return "<!-- FILE: $RelativePath -->" }
-        ".md"   { return "<!-- FILE: $RelativePath -->" }
-        ".css"  { return "/* FILE: $RelativePath */" }
-        ".scss" { return "/* FILE: $RelativePath */" }
-        ".sass" { return "/* FILE: $RelativePath */" }
-        ".ps1"  { return "# FILE: $RelativePath" }
-        ".psm1" { return "# FILE: $RelativePath" }
-        ".sh"   { return "# FILE: $RelativePath" }
-        ".yml"  { return "# FILE: $RelativePath" }
-        ".yaml" { return "# FILE: $RelativePath" }
-        default { return "// FILE: $RelativePath" }
-    }
-}
-
-function Get-FilesFromFolder {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$FolderPath,
-
-        [Parameter(Mandatory = $true)]
-        [string[]]$AllowedExtensions,
-
-        [Parameter(Mandatory = $true)]
-        [string[]]$ExcludedDirectoryNames
-    )
-
-    if (-not (Test-Path -LiteralPath $FolderPath -PathType Container)) {
-        return @()
-    }
-
-    return Get-ChildItem -LiteralPath $FolderPath -Recurse -File |
-        Where-Object {
-            -not (Test-IsExcludedPath -Path $_.FullName -ExcludedNames $ExcludedDirectoryNames) -and
-            ($AllowedExtensions -contains $_.Extension.ToLowerInvariant())
-        }
-}
-
-function Get-ConfigFiles {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$ModulePath,
-
-        [Parameter(Mandatory = $true)]
-        [string[]]$ConfigFileNames
-    )
-
-    $files = New-Object System.Collections.Generic.List[System.IO.FileInfo]
-
-    foreach ($fileName in $ConfigFileNames) {
-        $path = Join-Path $ModulePath $fileName
-
-        if (Test-Path -LiteralPath $path -PathType Leaf) {
-            $files.Add([System.IO.FileInfo]::new($path))
-        }
-    }
-
-    return $files
-}
-
-function Get-ModuleFiles {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$ModulePath,
-
-        [Parameter(Mandatory = $true)]
-        [string[]]$SourceFolderNames,
-
-        [Parameter(Mandatory = $true)]
-        [string[]]$TestFolderNames,
-
-        [Parameter(Mandatory = $true)]
-        [bool]$ShouldIncludeTests,
-
-        [Parameter(Mandatory = $true)]
-        [bool]$ShouldIncludeConfigs,
-
-        [Parameter(Mandatory = $true)]
-        [string[]]$ConfigFileNames,
-
-        [Parameter(Mandatory = $true)]
-        [string[]]$AllowedExtensions,
-
-        [Parameter(Mandatory = $true)]
-        [string[]]$ExcludedDirectoryNames
-    )
-
-    $files = New-Object System.Collections.Generic.List[System.IO.FileInfo]
-
-    if ($ShouldIncludeConfigs) {
-        foreach ($file in (Get-ConfigFiles -ModulePath $ModulePath -ConfigFileNames $ConfigFileNames)) {
-            $files.Add($file)
-        }
-    }
-
-    foreach ($folderName in $SourceFolderNames) {
-        $folderPath = Join-Path $ModulePath $folderName
-
-        foreach ($file in (Get-FilesFromFolder -FolderPath $folderPath -AllowedExtensions $AllowedExtensions -ExcludedDirectoryNames $ExcludedDirectoryNames)) {
-            $files.Add($file)
-        }
-    }
-
-    if ($ShouldIncludeTests) {
-        foreach ($folderName in $TestFolderNames) {
-            $folderPath = Join-Path $ModulePath $folderName
-
-            foreach ($file in (Get-FilesFromFolder -FolderPath $folderPath -AllowedExtensions $AllowedExtensions -ExcludedDirectoryNames $ExcludedDirectoryNames)) {
-                $files.Add($file)
-            }
-        }
-    }
-
-    return $files | Sort-Object FullName -Unique
-}
-
-function Get-NpmModules {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Root,
-
-        [Parameter(Mandatory = $true)]
-        [string[]]$ExcludedDirectoryNames
-    )
-
-    return Get-ChildItem -LiteralPath $Root -Recurse -File -Filter "package.json" |
-        Where-Object {
-            -not (Test-IsExcludedPath -Path $_.FullName -ExcludedNames $ExcludedDirectoryNames)
-        } |
-        ForEach-Object {
-            [PSCustomObject]@{
-                PackageJsonPath = $_.FullName
-                ModulePath      = Split-Path -Parent $_.FullName
-                PackageName     = Get-PackageName -PackageJsonPath $_.FullName
-            }
-        } |
-        Sort-Object ModulePath
-}
-
-function Add-ModuleToOutput {
-    param(
-        [Parameter(Mandatory = $true)]
-        [System.Text.StringBuilder]$Builder,
-
-        [Parameter(Mandatory = $true)]
-        [string]$ModulePath,
-
-        [Parameter(Mandatory = $true)]
-        [string]$PackageName,
-
-        [Parameter(Mandatory = $true)]
-        [System.IO.FileInfo[]]$Files
-    )
-
-    [void]$Builder.AppendLine()
-    [void]$Builder.AppendLine("################################################################################")
-    [void]$Builder.AppendLine("// MODULE: $PackageName")
-    [void]$Builder.AppendLine("// MODULE_PATH: $ModulePath")
-    [void]$Builder.AppendLine("################################################################################")
-    [void]$Builder.AppendLine()
-
-    foreach ($file in $Files) {
-        $relativePath = Get-RelativePath -BasePath $ModulePath -TargetPath $file.FullName
-        $header = Get-CommentHeader -RelativePath $relativePath
-        $content = Get-Content -LiteralPath $file.FullName -Raw
-
-        [void]$Builder.AppendLine("================================================================================")
-        [void]$Builder.AppendLine($header)
-        [void]$Builder.AppendLine()
-        [void]$Builder.AppendLine($content.TrimEnd())
-        [void]$Builder.AppendLine()
-    }
-}
-
-$resolvedRoot = (Resolve-Path -LiteralPath $Root).Path
-
-if (-not (Test-Path -LiteralPath $resolvedRoot -PathType Container)) {
-    throw "Root path does not exist: $resolvedRoot"
-}
-
-if (-not (Test-Path -LiteralPath $OutputRoot -PathType Container)) {
-    New-Item -ItemType Directory -Path $OutputRoot | Out-Null
-}
-
-$outputPath = Join-Path $OutputRoot $OutputFileName
-$builder = [System.Text.StringBuilder]::new()
-
-[void]$builder.AppendLine("// AI CODE EXPORT")
-[void]$builder.AppendLine("// ROOT: $resolvedRoot")
-[void]$builder.AppendLine("// GENERATED: $((Get-Date).ToString("yyyy-MM-ddTHH:mm:ssK"))")
-[void]$builder.AppendLine("// INCLUDE_TESTS: $($IncludeTests.IsPresent)")
-[void]$builder.AppendLine("// INCLUDE_CONFIGS: $($IncludeConfigs.IsPresent)")
-
-$modules = @(Get-NpmModules -Root $resolvedRoot -ExcludedDirectoryNames $ExcludedDirectoryNames)
-$exportedModuleCount = 0
-$exportedFileCount = 0
-
-foreach ($module in $modules) {
-    $files = @(
-        Get-ModuleFiles `
-            -ModulePath $module.ModulePath `
-            -SourceFolderNames $SourceFolderNames `
-            -TestFolderNames $TestFolderNames `
-            -ShouldIncludeTests $IncludeTests.IsPresent `
-            -ShouldIncludeConfigs $IncludeConfigs.IsPresent `
-            -ConfigFileNames $ConfigFileNames `
-            -AllowedExtensions $AllowedExtensions `
-            -ExcludedDirectoryNames $ExcludedDirectoryNames
-    )
-
-    if ($files.Count -eq 0) {
-        continue
-    }
-
-    Add-ModuleToOutput `
-        -Builder $builder `
-        -ModulePath $module.ModulePath `
-        -PackageName $module.PackageName `
-        -Files $files
-
-    $exportedModuleCount++
-    $exportedFileCount += $files.Count
-}
-
-[System.IO.File]::WriteAllText(
-    $outputPath,
-    $builder.ToString(),
-    [System.Text.UTF8Encoding]::new($false)
-)
-
-Write-Host "Exported modules: $exportedModuleCount"
-Write-Host "Exported files:   $exportedFileCount"
-Write-Host "Output:           $outputPath"
-
 // AI CODE EXPORT
 // ROOT: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules
-// GENERATED: 2026-04-26T18:59:11+02:00
+// GENERATED: 2026-04-26T20:47:38+02:00
 // INCLUDE_TESTS: False
 // INCLUDE_CONFIGS: False
 
@@ -891,6 +510,7 @@ export class DistortionFactory implements IDistortionFactory {
 export * from "./Distortion.js";
 export * from "./DistortionFactory.js";
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-distortion-contracts
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-distortion-contracts
@@ -1353,6 +973,7 @@ export class DistortionDefinitionValidator implements IDistortionDefinitionValid
   }
 }
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-distortion-ui
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-distortion-ui
@@ -1362,6 +983,7 @@ export class DistortionDefinitionValidator implements IDistortionDefinitionValid
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-distortion-web-audio
@@ -1780,6 +1402,7 @@ export interface IWebAudioDistortionGraph {
 export interface IWebAudioDistortionGraphFactory {
   create(definition: DistortionDefinition): IWebAudioDistortionGraph;
 }
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-envelopes
@@ -2352,6 +1975,7 @@ export class EnvelopeFactory implements IEnvelopeFactory {
 
 export * from "./code.js";
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-envelopes-contracts
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-envelopes-contracts
@@ -2687,15 +2311,210 @@ export class EnvelopeDefinitionValidator implements IEnvelopeDefinitionValidator
 
 export * from "./code.js";
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-envelopes-ui
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-envelopes-ui
 ################################################################################
 
 ================================================================================
+// FILE: src\adsr-envelope-control.component.ts
+
+import { LitElement, css, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
+import {
+  EnvelopeCurveKind,
+  EnvelopeKind,
+  type IAdsrEnvelopeDefinition,
+} from "@monorepo/music-core-synthesizer-envelopes-contracts";
+
+export const AdsrEnvelopeControlEvent = {
+  Changed: "adsr-envelope-control-changed",
+} as const;
+
+export interface IAdsrEnvelopeControlChangedDetail {
+  readonly definition: IAdsrEnvelopeDefinition;
+}
+
+@customElement("adsr-envelope-control")
+export class AdsrEnvelopeControlComponent extends LitElement {
+  @property({ attribute: false })
+  public definition: IAdsrEnvelopeDefinition =
+    DefaultAdsrEnvelopeDefinitionFactory.create();
+
+  public static override readonly styles = css`
+    :host {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid #333;
+      border-radius: 8px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .row {
+      display: grid;
+      gap: 4px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+    }
+
+    output {
+      font-variant-numeric: tabular-nums;
+    }
+  `;
+
+  protected override render() {
+    return html`
+      <section>
+        <div class="header">
+          <strong>ADSR Envelope</strong>
+          <span>${this.definition.kind}</span>
+        </div>
+
+        ${this.renderSecondsSlider("Attack", "attackSeconds", 0, 2, 0.01)}
+        ${this.renderSecondsSlider("Decay", "decaySeconds", 0, 2, 0.01)}
+        ${this.renderLevelSlider("Sustain", "sustainLevel", 0, 1, 0.01)}
+        ${this.renderSecondsSlider("Release", "releaseSeconds", 0, 4, 0.01)}
+      </section>
+    `;
+  }
+
+  private renderSecondsSlider(
+    label: string,
+    key: keyof Pick<IAdsrEnvelopeDefinition, "attackSeconds" | "decaySeconds" | "releaseSeconds">,
+    minimum: number,
+    maximum: number,
+    step: number,
+  ) {
+    const value = this.definition[key];
+
+    return html`
+      <div class="row">
+        <label>
+          ${label}: <output>${value.toFixed(2)}s</output>
+        </label>
+        <input
+          type="range"
+          min=${String(minimum)}
+          max=${String(maximum)}
+          step=${String(step)}
+          .value=${String(value)}
+          @input=${(event: Event) => this.patchNumber(key, event)}
+        />
+      </div>
+    `;
+  }
+
+  private renderLevelSlider(
+    label: string,
+    key: keyof Pick<IAdsrEnvelopeDefinition, "sustainLevel">,
+    minimum: number,
+    maximum: number,
+    step: number,
+  ) {
+    const value = this.definition[key];
+
+    return html`
+      <div class="row">
+        <label>
+          ${label}: <output>${value.toFixed(2)}</output>
+        </label>
+        <input
+          type="range"
+          min=${String(minimum)}
+          max=${String(maximum)}
+          step=${String(step)}
+          .value=${String(value)}
+          @input=${(event: Event) => this.patchNumber(key, event)}
+        />
+      </div>
+    `;
+  }
+
+  private patchNumber(
+    key: keyof Pick<
+      IAdsrEnvelopeDefinition,
+      "attackSeconds" | "decaySeconds" | "sustainLevel" | "releaseSeconds"
+    >,
+    event: Event,
+  ): void {
+    const input = event.target as HTMLInputElement;
+    const value = Number(input.value);
+
+    if (!Number.isFinite(value)) {
+      return;
+    }
+
+    this.definition = {
+      ...this.definition,
+      [key]: value,
+    };
+
+    this.dispatchChanged();
+  }
+
+  private dispatchChanged(): void {
+    this.dispatchEvent(
+      new CustomEvent<IAdsrEnvelopeControlChangedDetail>(
+        AdsrEnvelopeControlEvent.Changed,
+        {
+          bubbles: true,
+          composed: true,
+          detail: {
+            definition: this.definition,
+          },
+        },
+      ),
+    );
+  }
+}
+
+export class DefaultAdsrEnvelopeDefinitionFactory {
+  public static create(): IAdsrEnvelopeDefinition {
+    return {
+      kind: EnvelopeKind.Adsr,
+      attackSeconds: 0.02,
+      decaySeconds: 0.14,
+      sustainLevel: 0.62,
+      releaseSeconds: 0.35,
+      attackCurve: { kind: EnvelopeCurveKind.Linear },
+      decayCurve: { kind: EnvelopeCurveKind.Linear },
+      releaseCurve: { kind: EnvelopeCurveKind.Linear },
+    };
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "adsr-envelope-control": AdsrEnvelopeControlComponent;
+  }
+}
+
+================================================================================
+// FILE: src\code.ts
+
+export * from "./adsr-envelope-control.component.js";
+
+================================================================================
 // FILE: src\index.ts
 
-{}
+export * from "./adsr-envelope-control.component.js";
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-envelopes-web-audio
@@ -3366,6 +3185,7 @@ export interface IWebAudioEnvelopeGainGraphFactory {
   create(definition: EnvelopeDefinition): IWebAudioEnvelopeGainGraph;
 }
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-filters
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-filters
@@ -3375,6 +3195,7 @@ export interface IWebAudioEnvelopeGainGraphFactory {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-filters-contracts
@@ -3386,6 +3207,7 @@ export interface IWebAudioEnvelopeGainGraphFactory {
 
 {}
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-midi
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-midi
@@ -3395,6 +3217,7 @@ export interface IWebAudioEnvelopeGainGraphFactory {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-midi-contracts
@@ -3406,6 +3229,7 @@ export interface IWebAudioEnvelopeGainGraphFactory {
 
 {}
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-modulation
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-modulation
@@ -3415,6 +3239,7 @@ export interface IWebAudioEnvelopeGainGraphFactory {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-modulation-contracts
@@ -3426,6 +3251,7 @@ export interface IWebAudioEnvelopeGainGraphFactory {
 
 {}
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-noise
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-noise
@@ -3436,6 +3262,7 @@ export interface IWebAudioEnvelopeGainGraphFactory {
 
 {}
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-presets-contracts
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-noise-contracts
@@ -3445,6 +3272,7 @@ export interface IWebAudioEnvelopeGainGraphFactory {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-oscillators
@@ -4132,6 +3960,7 @@ export class OscillatorDefinitionValidator implements IOscillatorDefinitionValid
   }
 }
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-oscillators-contracts
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-oscillators-contracts
@@ -4599,6 +4428,7 @@ export class OscillatorDefinitionValidator implements IOscillatorDefinitionValid
     }
   }
 }
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-oscillators-web-audio
@@ -5244,6 +5074,7 @@ export class WebAudioOscillatorDefinitionValidator
   }
 }
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-oscillators-web-ui
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-oscillators-web-ui
@@ -5252,31 +5083,58 @@ export class WebAudioOscillatorDefinitionValidator
 ================================================================================
 // FILE: src\index.ts
 
-export * from './oscillator-control.component.js';
+
+export * from "./oscillator-control.component.js";
 
 ================================================================================
 // FILE: src\oscillator-control.component.ts
 
-// packages/Audio/music-core-synthesizer/module-basic-tester/src/features/soundTestFeature/oscillator-control.component.ts
+// FILE: music-core-synthesizer/modules/music-core-synthesizer-oscillators-web-ui/src/oscillator-control.component.ts
 
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import type { IVoiceDefinition } from "@monorepo/music-core-synthesizer-contracts";
-import { OscillatorWaveform } from "@monorepo/music-core-synthesizer-contracts";
+import type {
+  IBasicOscillatorDefinition,
+  OscillatorDefinition,
+} from "@monorepo/music-core-synthesizer-oscillators-contracts";
+import {
+  OscillatorKind,
+  OscillatorWaveformKind,
+} from "@monorepo/music-core-synthesizer-oscillators-contracts";
 
-export const OscillatorControlEvents = {
-  voiceDefinitionChanged: "voice-definition-changed",
+export const OscillatorControlEvent = {
+  DefinitionChanged: "oscillator-control-definition-changed",
+  MidiNoteOnReceived: "oscillator-control-midi-note-on-received",
+  MidiNoteOffReceived: "oscillator-control-midi-note-off-received",
 } as const;
 
-export type VoiceDefinitionChangedEvent = CustomEvent<{
-  readonly definition: IVoiceDefinition;
-}>;
+export interface IOscillatorDefinitionChangedDetail {
+  readonly definition: OscillatorDefinition;
+}
+
+export interface IOscillatorMidiNoteOnDetail {
+  readonly channel: number;
+  readonly midiNote: number;
+  readonly frequencyHz: number;
+  readonly velocity: number;
+  readonly timeSeconds: number;
+}
+
+export interface IOscillatorMidiNoteOffDetail {
+  readonly channel: number;
+  readonly midiNote: number;
+  readonly frequencyHz: number;
+  readonly timeSeconds: number;
+}
 
 @customElement("oscillator-control")
 export class OscillatorControlComponent extends LitElement {
+  @property({ type: String })
+  public label = "Oscillator";
+
   @property({ attribute: false })
-  public definition: IVoiceDefinition | null = null;
+  public definition: OscillatorDefinition | null = null;
 
   public static override readonly styles = css`
     :host {
@@ -5286,6 +5144,11 @@ export class OscillatorControlComponent extends LitElement {
       border-radius: 8px;
       max-width: 360px;
       font-family: system-ui, sans-serif;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
     }
 
     .row {
@@ -5305,47 +5168,84 @@ export class OscillatorControlComponent extends LitElement {
     }
   `;
 
+  public override connectedCallback(): void {
+    super.connectedCallback();
+
+    this.addEventListener(
+      "midi-song-player-note-on",
+      this.onMidiNoteOn as EventListener,
+    );
+
+    this.addEventListener(
+      "midi-song-player-note-off",
+      this.onMidiNoteOff as EventListener,
+    );
+  }
+
+  public override disconnectedCallback(): void {
+    this.removeEventListener(
+      "midi-song-player-note-on",
+      this.onMidiNoteOn as EventListener,
+    );
+
+    this.removeEventListener(
+      "midi-song-player-note-off",
+      this.onMidiNoteOff as EventListener,
+    );
+
+    super.disconnectedCallback();
+  }
+
   protected override render() {
-    if (!this.definition) {
-      return html`<p>No voice definition.</p>`;
+    if (this.definition === null) {
+      return html`<p>No oscillator definition.</p>`;
+    }
+
+    if (this.definition.kind !== OscillatorKind.Basic) {
+      return html`
+        <section>
+          <h2>${this.label}</h2>
+          <p>Unsupported oscillator kind: ${this.definition.kind}</p>
+        </section>
+      `;
     }
 
     return html`
       <section>
-        <h2>Oscillator</h2>
+        <h2>${this.label}</h2>
 
         <div class="row">
           <label for="waveform">Waveform</label>
           <select id="waveform" @change=${this.onWaveformChanged}>
-            ${this.renderWaveformOption(OscillatorWaveform.Sine, "Sine")}
-            ${this.renderWaveformOption(OscillatorWaveform.Square, "Square")}
-            ${this.renderWaveformOption(OscillatorWaveform.Sawtooth, "Sawtooth")}
-            ${this.renderWaveformOption(OscillatorWaveform.Triangle, "Triangle")}
+            ${this.renderWaveformOption(this.definition, OscillatorWaveformKind.Sine, "Sine")}
+            ${this.renderWaveformOption(this.definition, OscillatorWaveformKind.Square, "Square")}
+            ${this.renderWaveformOption(this.definition, OscillatorWaveformKind.Sawtooth, "Sawtooth")}
+            ${this.renderWaveformOption(this.definition, OscillatorWaveformKind.Triangle, "Triangle")}
           </select>
         </div>
 
         <div class="row">
-          <label for="gain">Gain: ${this.definition.oscillator.gain.toFixed(2)}</label>
+          <label for="gain">Gain: ${this.definition.gain.toFixed(2)}</label>
           <input
             id="gain"
             type="range"
             min="0"
             max="1"
             step="0.01"
-            .value=${String(this.definition.oscillator.gain)}
+            .value=${String(this.definition.gain)}
             @input=${this.onGainChanged}
           />
         </div>
 
         <div class="row">
-          <label for="detune">Detune cents: ${this.definition.oscillator.detuneCents}</label>
+          <label for="detune">Detune cents: ${this.definition.detuneCents}</label>
           <input
             id="detune"
             type="range"
             min="-1200"
             max="1200"
             step="1"
-            .value=${String(this.definition.oscillator.detuneCents)}
+            .value=${String(this.definition.detuneCents)}
             @input=${this.onDetuneChanged}
           />
         </div>
@@ -5353,64 +5253,104 @@ export class OscillatorControlComponent extends LitElement {
     `;
   }
 
-  private renderWaveformOption(value: OscillatorWaveform, label: string) {
+  private renderWaveformOption(
+    definition: IBasicOscillatorDefinition,
+    waveform: IBasicOscillatorDefinition["waveform"],
+    label: string,
+  ) {
     return html`
-      <option
-        value=${value}
-        ?selected=${this.definition?.oscillator.waveform === value}
-      >
+      <option value=${waveform} ?selected=${definition.waveform === waveform}>
         ${label}
       </option>
     `;
   }
 
-  private onWaveformChanged = (event: Event): void => {
+  private readonly onWaveformChanged = (event: Event): void => {
     const select = event.target as HTMLSelectElement;
-    this.patchOscillator({
-      waveform: select.value as OscillatorWaveform,
+
+    this.patchBasicOscillator({
+      waveform: select.value as IBasicOscillatorDefinition["waveform"],
     });
   };
 
-  private onGainChanged = (event: Event): void => {
+  private readonly onGainChanged = (event: Event): void => {
     const input = event.target as HTMLInputElement;
-    this.patchOscillator({
+
+    this.patchBasicOscillator({
       gain: Number(input.value),
     });
   };
 
-  private onDetuneChanged = (event: Event): void => {
+  private readonly onDetuneChanged = (event: Event): void => {
     const input = event.target as HTMLInputElement;
-    this.patchOscillator({
+
+    this.patchBasicOscillator({
       detuneCents: Number(input.value),
     });
   };
 
-  private patchOscillator(
-    patch: Partial<IVoiceDefinition["oscillators"]>,
-  ): void {
-    if (!this.definition) {
+  private readonly onMidiNoteOn = (
+    event: CustomEvent<IOscillatorMidiNoteOnDetail>,
+  ): void => {
+    this.dispatchEvent(
+      new CustomEvent<IOscillatorMidiNoteOnDetail>(
+        OscillatorControlEvent.MidiNoteOnReceived,
+        {
+          bubbles: true,
+          composed: true,
+          detail: event.detail,
+        },
+      ),
+    );
+  };
+
+  private readonly onMidiNoteOff = (
+    event: CustomEvent<IOscillatorMidiNoteOffDetail>,
+  ): void => {
+    this.dispatchEvent(
+      new CustomEvent<IOscillatorMidiNoteOffDetail>(
+        OscillatorControlEvent.MidiNoteOffReceived,
+        {
+          bubbles: true,
+          composed: true,
+          detail: event.detail,
+        },
+      ),
+    );
+  };
+
+  private patchBasicOscillator(patch: Partial<IBasicOscillatorDefinition>): void {
+    if (this.definition === null || this.definition.kind !== OscillatorKind.Basic) {
       return;
     }
 
-    const next: IVoiceDefinition = {
+    this.definition = {
       ...this.definition,
-      oscillators: {
-        ...this.definition.oscillators,
-        ...patch,
-      },
+      ...patch,
+      kind: OscillatorKind.Basic,
     };
 
-    this.definition = next;
-
     this.dispatchEvent(
-      new CustomEvent(OscillatorControlEvents.voiceDefinitionChanged, {
-        detail: { definition: next },
-        bubbles: true,
-        composed: true,
-      }),
+      new CustomEvent<IOscillatorDefinitionChangedDetail>(
+        OscillatorControlEvent.DefinitionChanged,
+        {
+          bubbles: true,
+          composed: true,
+          detail: {
+            definition: this.definition,
+          },
+        },
+      ),
     );
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "oscillator-control": OscillatorControlComponent;
+  }
+}
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-parameters
@@ -6794,6 +6734,7 @@ export class ModulationDepth {
   }
 }
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-parameters-contracts
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-parameters-contracts
@@ -6803,6 +6744,7 @@ export class ModulationDepth {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-presets
@@ -6814,6 +6756,7 @@ export class ModulationDepth {
 
 {}
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-presets
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-presets-contracts
@@ -6823,6 +6766,7 @@ export class ModulationDepth {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-voice
@@ -6834,6 +6778,7 @@ export class ModulationDepth {
 
 {}
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-voice-allocator
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-voice-allocator
@@ -6843,6 +6788,7 @@ export class ModulationDepth {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-voice-allocator
@@ -6854,6 +6800,7 @@ export class ModulationDepth {
 
 {}
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-voice-allocator
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-voice-allocator-contracts
@@ -6864,6 +6811,7 @@ export class ModulationDepth {
 
 {}
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-voice-contracts
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\music-core-synthesizer-voice-contracts
@@ -6873,6 +6821,7 @@ export class ModulationDepth {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-core-synthesizer-web-audio
@@ -7432,6 +7381,7 @@ class WebAudioGuards {
   }
 }
 
+
 ################################################################################
 // MODULE: @monorepo/music-core-transport
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\shared\music-core-transport
@@ -7441,6 +7391,7 @@ class WebAudioGuards {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-ui-sequencer
@@ -7452,6 +7403,7 @@ class WebAudioGuards {
 
 {}
 
+
 ################################################################################
 // MODULE: @monorepo/music-ui-synthesizer
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\ui\music-ui-synthesizer
@@ -7461,6 +7413,7 @@ class WebAudioGuards {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-ui-synthesizer-distortion
@@ -7472,6 +7425,7 @@ class WebAudioGuards {
 
 {}
 
+
 ################################################################################
 // MODULE: @monorepo/music-ui-synthesizer-envelopes
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\ui\music-ui-synthesizer-envelopes
@@ -7481,6 +7435,7 @@ class WebAudioGuards {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-ui-synthesizer-filters
@@ -7492,6 +7447,7 @@ class WebAudioGuards {
 
 {}
 
+
 ################################################################################
 // MODULE: @monorepo/music-ui-synthesizer-oscillators
 // MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\Audio\project-x-ray-sound-magic\music-core-synthesizer\modules\ui\music-ui-synthesizer-oscillators
@@ -7501,6 +7457,7 @@ class WebAudioGuards {
 // FILE: src\code.ts
 
 {}
+
 
 ################################################################################
 // MODULE: @monorepo/music-ui-synthesizer-voice

@@ -1,4 +1,6 @@
 ﻿import { LitElement, html } from "lit";
+
+import "./custom-elements.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { customElement, state } from "lit/decorators.js";
 

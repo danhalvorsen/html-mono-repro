@@ -1,92 +1,194 @@
-// packages/Audio/music-core-synthesizer/module-basic-tester/src/features/soundTestFeature/oscillator-control.component.ts
+// FILE: src/oscillator-control.component.ts
 
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import type { IVoiceDefinition } from "@monorepo/music-core-synthesizer-contracts";
-import { OscillatorWaveform } from "@monorepo/music-core-synthesizer-contracts";
+import type {
+  IBasicOscillatorDefinition,
+  OscillatorDefinition,
+} from "@monorepo/music-core-synthesizer-oscillators-contracts";
+import {
+  OscillatorKind,
+  OscillatorWaveformKind,
+} from "@monorepo/music-core-synthesizer-oscillators-contracts";
 
-export const OscillatorControlEvents = {
-  voiceDefinitionChanged: "voice-definition-changed",
+const IncomingMidiEvent = {
+  NoteOn: "midi-song-player-note-on",
+  NoteOff: "midi-song-player-note-off",
 } as const;
 
-export type VoiceDefinitionChangedEvent = CustomEvent<{
-  readonly definition: IVoiceDefinition;
-}>;
+export const OscillatorControlEvent = {
+  DefinitionChanged: "oscillator-control-definition-changed",
+  MidiNoteOnReceived: "oscillator-control-midi-note-on-received",
+  MidiNoteOffReceived: "oscillator-control-midi-note-off-received",
+} as const;
+
+export interface IOscillatorDefinitionChangedDetail {
+  readonly definition: OscillatorDefinition;
+}
+
+export interface IOscillatorMidiNoteOnDetail {
+  readonly channel: number;
+  readonly midiNote: number;
+  readonly frequencyHz: number;
+  readonly velocity: number;
+  readonly timeSeconds: number;
+}
+
+export interface IOscillatorMidiNoteOffDetail {
+  readonly channel: number;
+  readonly midiNote: number;
+  readonly frequencyHz: number;
+  readonly timeSeconds: number;
+}
 
 @customElement("oscillator-control")
 export class OscillatorControlComponent extends LitElement {
+  @property({ type: String })
+  public label = "Oscillator";
+
   @property({ attribute: false })
-  public definition: IVoiceDefinition | null = null;
+  public definition: OscillatorDefinition | null = null;
+
+  public override connectedCallback(): void {
+    super.connectedCallback();
+
+    this.addEventListener(
+      IncomingMidiEvent.NoteOn,
+      this.forwardMidiNoteOn as EventListener,
+    );
+
+    this.addEventListener(
+      IncomingMidiEvent.NoteOff,
+      this.forwardMidiNoteOff as EventListener,
+    );
+  }
+
+  public override disconnectedCallback(): void {
+    this.removeEventListener(
+      IncomingMidiEvent.NoteOn,
+      this.forwardMidiNoteOn as EventListener,
+    );
+
+    this.removeEventListener(
+      IncomingMidiEvent.NoteOff,
+      this.forwardMidiNoteOff as EventListener,
+    );
+
+    super.disconnectedCallback();
+  }
 
   public static override readonly styles = css`
-    :host {
-      display: block;
-      padding: 12px;
-      border: 1px solid #333;
-      border-radius: 8px;
-      max-width: 360px;
-      font-family: system-ui, sans-serif;
-    }
+  :host {
+    display: block;
+    min-height: 100%;
+    color: #f4f4f5;
+    background: #0f1117;
+    font-family: system-ui, sans-serif;
+  }
 
-    .row {
-      display: grid;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
+  .layout {
+    display: grid;
+    gap: 16px;
+    min-height: 100%;
+    padding: 24px;
+    border-radius: 12px;
+    background: #0f1117;
+  }
 
-    label {
-      font-size: 13px;
-      font-weight: 600;
-    }
+  h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 28px;
+  }
 
-    select,
-    input {
-      padding: 6px;
-    }
-  `;
+  .toolbar,
+  .controls {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  button {
+    padding: 8px 12px;
+    border: 1px solid #3f4454;
+    border-radius: 8px;
+    background: #1a1d29;
+    color: #f4f4f5;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #242838;
+  }
+
+  .status {
+    padding: 8px 12px;
+    border: 1px solid #3f4454;
+    border-radius: 8px;
+    background: #151823;
+    color: #d4d4d8;
+    font-size: 13px;
+  }
+
+  oscillator-control,
+  midi-controller {
+    color: #f4f4f5;
+  }
+`;
 
   protected override render() {
-    if (!this.definition) {
-      return html`<p>No voice definition.</p>`;
+    if (this.definition === null) {
+      return html`<p>No oscillator definition.</p>`;
+    }
+
+    if (this.definition.kind !== OscillatorKind.Basic) {
+      return html`
+        <section>
+          <h2>${this.label}</h2>
+          <p>Unsupported oscillator kind: ${this.definition.kind}</p>
+        </section>
+      `;
     }
 
     return html`
       <section>
-        <h2>Oscillator</h2>
+        <h2>${this.label}</h2>
 
         <div class="row">
           <label for="waveform">Waveform</label>
           <select id="waveform" @change=${this.onWaveformChanged}>
-            ${this.renderWaveformOption(OscillatorWaveform.Sine, "Sine")}
-            ${this.renderWaveformOption(OscillatorWaveform.Square, "Square")}
-            ${this.renderWaveformOption(OscillatorWaveform.Sawtooth, "Sawtooth")}
-            ${this.renderWaveformOption(OscillatorWaveform.Triangle, "Triangle")}
+            ${this.renderWaveformOption(this.definition, OscillatorWaveformKind.Sine, "Sine")}
+            ${this.renderWaveformOption(this.definition, OscillatorWaveformKind.Square, "Square")}
+            ${this.renderWaveformOption(this.definition, OscillatorWaveformKind.Sawtooth, "Sawtooth")}
+            ${this.renderWaveformOption(this.definition, OscillatorWaveformKind.Triangle, "Triangle")}
           </select>
         </div>
 
         <div class="row">
-          <label for="gain">Gain: ${this.definition.oscillator.gain.toFixed(2)}</label>
+          <label for="gain">Gain: ${this.definition.gain.toFixed(2)}</label>
           <input
             id="gain"
             type="range"
             min="0"
             max="1"
             step="0.01"
-            .value=${String(this.definition.oscillator.gain)}
+            .value=${String(this.definition.gain)}
             @input=${this.onGainChanged}
           />
         </div>
 
         <div class="row">
-          <label for="detune">Detune cents: ${this.definition.oscillator.detuneCents}</label>
+          <label for="detune">Detune cents: ${this.definition.detuneCents}</label>
           <input
             id="detune"
             type="range"
             min="-1200"
             max="1200"
             step="1"
-            .value=${String(this.definition.oscillator.detuneCents)}
+            .value=${String(this.definition.detuneCents)}
             @input=${this.onDetuneChanged}
           />
         </div>
@@ -94,61 +196,100 @@ export class OscillatorControlComponent extends LitElement {
     `;
   }
 
-  private renderWaveformOption(value: OscillatorWaveform, label: string) {
+  private renderWaveformOption(
+    definition: IBasicOscillatorDefinition,
+    waveform: IBasicOscillatorDefinition["waveform"],
+    label: string,
+  ) {
     return html`
-      <option
-        value=${value}
-        ?selected=${this.definition?.oscillator.waveform === value}
-      >
+      <option value=${waveform} ?selected=${definition.waveform === waveform}>
         ${label}
       </option>
     `;
   }
 
-  private onWaveformChanged = (event: Event): void => {
+  private readonly onWaveformChanged = (event: Event): void => {
     const select = event.target as HTMLSelectElement;
-    this.patchOscillator({
-      waveform: select.value as OscillatorWaveform,
+
+    this.patchBasicOscillator({
+      waveform: select.value as IBasicOscillatorDefinition["waveform"],
     });
   };
 
-  private onGainChanged = (event: Event): void => {
+  private readonly onGainChanged = (event: Event): void => {
     const input = event.target as HTMLInputElement;
-    this.patchOscillator({
+
+    this.patchBasicOscillator({
       gain: Number(input.value),
     });
   };
 
-  private onDetuneChanged = (event: Event): void => {
+  private readonly onDetuneChanged = (event: Event): void => {
     const input = event.target as HTMLInputElement;
-    this.patchOscillator({
+
+    this.patchBasicOscillator({
       detuneCents: Number(input.value),
     });
   };
 
-  private patchOscillator(
-    patch: Partial<IVoiceDefinition["oscillators"]>,
-  ): void {
-    if (!this.definition) {
+  private readonly forwardMidiNoteOn = (
+    event: CustomEvent<IOscillatorMidiNoteOnDetail>,
+  ): void => {
+    this.dispatchEvent(
+      new CustomEvent<IOscillatorMidiNoteOnDetail>(
+        OscillatorControlEvent.MidiNoteOnReceived,
+        {
+          bubbles: true,
+          composed: true,
+          detail: event.detail,
+        },
+      ),
+    );
+  };
+
+  private readonly forwardMidiNoteOff = (
+    event: CustomEvent<IOscillatorMidiNoteOffDetail>,
+  ): void => {
+    this.dispatchEvent(
+      new CustomEvent<IOscillatorMidiNoteOffDetail>(
+        OscillatorControlEvent.MidiNoteOffReceived,
+        {
+          bubbles: true,
+          composed: true,
+          detail: event.detail,
+        },
+      ),
+    );
+  };
+
+  private patchBasicOscillator(patch: Partial<IBasicOscillatorDefinition>): void {
+    if (this.definition === null || this.definition.kind !== OscillatorKind.Basic) {
       return;
     }
 
-    const next: IVoiceDefinition = {
+    this.definition = {
       ...this.definition,
-      oscillators: {
-        ...this.definition.oscillators,
-        ...patch,
-      },
+      ...patch,
+      kind: OscillatorKind.Basic,
     };
 
-    this.definition = next;
-
     this.dispatchEvent(
-      new CustomEvent(OscillatorControlEvents.voiceDefinitionChanged, {
-        detail: { definition: next },
-        bubbles: true,
-        composed: true,
-      }),
+      new CustomEvent<IOscillatorDefinitionChangedDetail>(
+        OscillatorControlEvent.DefinitionChanged,
+        {
+          bubbles: true,
+          composed: true,
+          detail: {
+            definition: this.definition,
+          },
+        },
+      ),
     );
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "oscillator-control": OscillatorControlComponent;
   }
 }
