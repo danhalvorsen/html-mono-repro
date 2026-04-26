@@ -1604,24 +1604,12 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/test-playground/modules-basic-tester:
     dependencies:
-      '@monorepo/music-core-midi':
-        specifier: workspace:*
-        version: link:../../../music-core-midi
-      '@monorepo/music-core-synthesizer-envelopes':
-        specifier: workspace:*
-        version: link:../../music-core-synthesizer/modules/music-core-synthesizer-envelopes
       '@monorepo/music-core-synthesizer-envelopes-contracts':
         specifier: workspace:*
         version: link:../../music-core-synthesizer/modules/music-core-synthesizer-envelopes-contracts
-      '@monorepo/music-core-synthesizer-envelopes-ui':
-        specifier: workspace:*
-        version: link:../../music-core-synthesizer/modules/music-core-synthesizer-envelopes-ui
       '@monorepo/music-core-synthesizer-envelopes-web-audio':
         specifier: workspace:*
         version: link:../../music-core-synthesizer/modules/music-core-synthesizer-envelopes-web-audio
-      '@monorepo/music-core-synthesizer-oscillators':
-        specifier: workspace:*
-        version: link:../../music-core-synthesizer/modules/music-core-synthesizer-oscillators
       '@monorepo/music-core-synthesizer-oscillators-contracts':
         specifier: workspace:*
         version: link:../../music-core-synthesizer/modules/music-core-synthesizer-oscillators-contracts
