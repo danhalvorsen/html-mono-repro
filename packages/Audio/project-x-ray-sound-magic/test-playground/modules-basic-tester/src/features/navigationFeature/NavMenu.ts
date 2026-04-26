@@ -1,9 +1,7 @@
-// src/features/navigationFeature/NavMenu.ts
-
-import { LitElement, html } from "lit";
+﻿import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { Style } from "../../infrastructure/Style";
+import { Style } from "../../infrastructure/Style.js";
 
 @customElement("nav-menu")
 export class NavMenu extends LitElement {

@@ -1,10 +1,8 @@
-// packages/Audio/music-core-synthesizer/module-basic-tester/src/features/soundTestFeature/soundTestFeature.ts
+﻿import { html, type TemplateResult } from "lit";
 
-import { html, type TemplateResult } from "lit";
+import type { IViewFeature } from "../../infrastructure/IViewFeature.js";
 
-import type { IViewFeature } from "../../infrastructure/IViewFeature";
-
-import "./sound-test.component";
+import "./sound-test.component.js";
 
 export class SoundTestFeature implements IViewFeature {
   public readonly id = "sound-test";

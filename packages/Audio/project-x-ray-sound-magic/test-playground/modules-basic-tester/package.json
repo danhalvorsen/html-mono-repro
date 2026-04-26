@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "description": "Lit 3 sandbox for composing synthesizer modules without the centralized synth engine.",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -10,13 +11,16 @@
   },
   "dependencies": {
     "lit": "^3.3.2",
-    "@monorepo/music-core-synthesizer-oscillators-web-ui": "workspace:*", 
-    "@monorepo/music-core-midi": "workspace:*",
-    "@monorepo/music-core-synthesizer-contracts": "workspace:*",
-    "@monorepo/music-core-synthesizer-engine": "workspace:*",
-    "@monorepo/music-core-synthesizer-web-audio": "workspace:*",
-    "@monorepo/music-core-synthesizer-envelopes": "workspace:*"
+     "@monorepo/music-core-midi": "workspace:*",
 
+    "@monorepo/music-core-synthesizer-oscillators-contracts": "workspace:*",
+    "@monorepo/music-core-synthesizer-oscillators": "workspace:*",
+    "@monorepo/music-core-synthesizer-oscillators-web-audio": "workspace:*",
+
+    "@monorepo/music-core-synthesizer-envelopes-contracts": "workspace:*",
+    "@monorepo/music-core-synthesizer-envelopes": "workspace:*",
+    "@monorepo/music-core-synthesizer-envelopes-web-audio": "workspace:*",
+    "@monorepo/music-core-synthesizer-envelopes-ui": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

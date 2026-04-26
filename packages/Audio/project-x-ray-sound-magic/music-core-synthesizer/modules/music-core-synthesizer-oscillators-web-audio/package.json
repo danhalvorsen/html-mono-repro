@@ -35,8 +35,8 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "@monorepo/music-core-synthesizer-contracts": "workspace:*",
-        "@monorepo/music-core-synthesizer-engine": "workspace:*",
+        "@monorepo/music-core-synthesizer-oscillators": "workspace:*",
+        "@monorepo/music-core-synthesizer-envelopes": "workspace:*",
         "@monorepo/music-core-synthesizer-oscillators-contracts": "workspace:*"
     },
     "devDependencies": {

@@ -1,10 +1,8 @@
-// src/features/navigationFeature/NavMenuItem.ts
-
-import { LitElement, html, type TemplateResult } from "lit";
+﻿import { LitElement, html, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { NavigationEvents } from "../../infrastructure/NavigationEvents.js"
-import { Style } from "../../infrastructure/Style";
+import { NavigationEvents } from "../../infrastructure/NavigationEvents.js";
+import { Style } from "../../infrastructure/Style.js";
 
 export interface NavMenuItemSelectedDetail {
   readonly view: string;

@@ -1,23 +1,27 @@
+// tsconfig.json
+
 {
   "compilerOptions": {
-    "target": "es2023",
-    "experimentalDecorators": true,
-    "useDefineForClassFields": false,
-    "module": "esnext",
-    "lib": ["ES2023", "DOM"],
-    "types": ["vite/client"],
-    "skipLibCheck": true,
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["DOM", "ES2022"],
 
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": false,
-    "moduleDetection": "force",
-    "noEmit": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
 
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "erasableSyntaxOnly": false,
-    "noFallthroughCasesInSwitch": true
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+
+    "strict": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    "types": [],
+    "skipLibCheck": true
   },
-  "include": ["src", "../modules/oscillators/music-core-synthesizer-oscillators-web-ui/src/oscillator-control.component.ts"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", "node_modules", "tests"]
 }

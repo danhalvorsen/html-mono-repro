@@ -1,9 +1,5 @@
-﻿import {
-  OscillatorKind,
-  OscillatorWaveformKind,
-  type IOscillatorDefinitionValidator,
-  type OscillatorDefinition,
-} from "@monorepo/music-core-synthesizer-oscillators-contracts";
+﻿import { OscillatorDefinition, IOscillatorDefinitionValidator, OscillatorKind, OscillatorWaveformKind }
+ from '@monorepo/music-core-synthesizer-oscillators-contracts';
 
 export class OscillatorDefinitionValidator implements IOscillatorDefinitionValidator {
   public validate(definition: OscillatorDefinition): void {

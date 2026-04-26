@@ -1,6 +1,4 @@
-// src/infrastructure/NavigationEvents.ts
-
-export const NavigationEvents = {
+﻿export const NavigationEvents = {
   ViewChange: "view-change",
 } as const;
 

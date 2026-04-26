@@ -1,11 +1,8 @@
-// src/infrastructure/ViewFeatureCatalog.ts
+﻿import type { IViewFeature } from "./IViewFeature.js";
 
-import type { IViewFeature } from "./IViewFeature";
-
-import { AboutFeature } from "../features/aboutFeature/aboutFeature";
-import { HomeFeature } from "../features/homeFeature/homeFeature";
-import { SettingsFeature } from "../features/settingsFeature/settingsFeature";
-import { SoundTestFeature } from "../features/soundTestFeature/soundTestFeature";
+import { AboutFeature } from "../features/aboutFeature/aboutFeature.js";
+import { HomeFeature } from "../features/homeFeature/homeFeature.js";
+import { SoundTestFeature } from "../features/soundTestFeature/soundTestFeature.js";
 
 export class ViewFeatureCatalog {
   private readonly featuresById: ReadonlyMap<string, IViewFeature>;
@@ -39,7 +36,6 @@ export function createViewFeatureCatalog(): ViewFeatureCatalog {
   return new ViewFeatureCatalog([
     new HomeFeature(),
     new AboutFeature(),
-    new SettingsFeature(),
-    new SoundTestFeature()
+    new SoundTestFeature(),
   ]);
 }

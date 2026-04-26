@@ -1,0 +1,45 @@
+// src/infrastructure/ViewFeatureCatalog.ts
+
+import type { IViewFeature } from "./IViewFeature";
+
+import { AboutFeature } from "../features/aboutFeature/aboutFeature";
+import { HomeFeature } from "../features/homeFeature/homeFeature";
+import { SettingsFeature } from "../features/settingsFeature/settingsFeature";
+import { SoundTestFeature } from "../features/soundTestFeature/soundTestFeature";
+
+export class ViewFeatureCatalog {
+  private readonly featuresById: ReadonlyMap<string, IViewFeature>;
+
+  public constructor(private readonly registeredFeatures: readonly IViewFeature[]) {
+    this.featuresById = new Map(
+      registeredFeatures.map((feature) => [feature.id, feature]),
+    );
+  }
+
+  public get defaultFeature(): IViewFeature {
+    const firstFeature = this.registeredFeatures[0];
+
+    if (firstFeature === undefined) {
+      throw new Error("At least one view feature must be registered.");
+    }
+
+    return firstFeature;
+  }
+
+  public get features(): readonly IViewFeature[] {
+    return this.registeredFeatures;
+  }
+
+  public findById(id: string): IViewFeature | undefined {
+    return this.featuresById.get(id);
+  }
+}
+
+export function createViewFeatureCatalog(): ViewFeatureCatalog {
+  return new ViewFeatureCatalog([
+    new HomeFeature(),
+    new AboutFeature(),
+    new SettingsFeature(),
+    new SoundTestFeature()
+  ]);
+}

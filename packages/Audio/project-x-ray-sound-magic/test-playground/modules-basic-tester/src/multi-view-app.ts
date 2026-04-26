@@ -1,16 +1,14 @@
-// src/multi-view-app.ts
-
-import { LitElement, html } from "lit";
+﻿import { LitElement, html } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { customElement, state } from "lit/decorators.js";
 
-import type { IViewFeature } from "./infrastructure/IViewFeature";
-import type { ViewChangeDetail } from "./infrastructure/NavigationEvents.ts";
-import { Style } from "./infrastructure/Style";
-import { createViewFeatureCatalog } from "./infrastructure/ViewFeatureCatalog";
+import type { IViewFeature } from "./infrastructure/IViewFeature.js";
+import type { ViewChangeDetail } from "./infrastructure/NavigationEvents.js";
+import { Style } from "./infrastructure/Style.js";
+import { createViewFeatureCatalog } from "./infrastructure/ViewFeatureCatalog.js";
 
-import "./features/navigationFeature/NavMenu";
-import "./features/navigationFeature/NavMenuItem";
+import "./features/navigationFeature/NavMenu.js";
+import "./features/navigationFeature/NavMenuItem.js";
 
 const featureCatalog = createViewFeatureCatalog();
 

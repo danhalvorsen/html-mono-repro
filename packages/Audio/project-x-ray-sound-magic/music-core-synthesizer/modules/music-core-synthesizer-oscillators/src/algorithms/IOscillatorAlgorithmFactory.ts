@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   OscillatorDefinition,
 } from "@monorepo/music-core-synthesizer-oscillators-contracts";
 

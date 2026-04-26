@@ -1,6 +1,4 @@
-// packages/Audio/music-core-synthesizer/module-basic-tester/src/infrastructure/Style.ts
-
-import { css } from "lit";
+﻿import { css } from "lit";
 
 export class Style {
   private static readonly globalStyleElementId = "module-basic-global-style";
@@ -70,10 +68,6 @@ export class Style {
       padding: 2rem;
       background: #ffffff;
       color: #222222;
-    }
-
-    .red {
-      color: red;
     }
 
     @media (prefers-color-scheme: dark) {

@@ -1,30 +1,26 @@
-// FILE: modules/parts/oscillators/music-core-synthesizer-oscillators-contracts/tests/tests.test.ts
-
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 
 import {
+  BasicOscillatorDefinitionSpecification,
+  OscillatorDefinitionSpecification,
+  OscillatorDefinitionValidator,
+  OscillatorFrequencySpecification,
   OscillatorKind,
+  OscillatorVelocitySpecification,
   OscillatorWaveformKind,
-  type AudioSampleValue,
+  PulseOscillatorDefinitionSpecification,
+  PulseWidthSpecification,
   type IBasicOscillatorDefinition,
-  type IOscillator,
-  type IOscillatorFactory,
-  type IOscillatorNoteOffRequest,
-  type IOscillatorNoteOnRequest,
-  type IOscillatorSample,
-  type IOscillatorSampleRequest,
-  type IOscillatorStateSnapshot,
   type IPulseOscillatorDefinition,
   type ISampleOscillatorDefinition,
   type IWavetableOscillatorDefinition,
-  type OscillatorDefinition,
-} from "../src/code.js";
+} from "../src/index.js";
 
 class OscillatorContractsFixture {
   public createBasicDefinition(): IBasicOscillatorDefinition {
     return {
       kind: OscillatorKind.Basic,
-      waveform: OscillatorWaveformKind.Sawtooth,
+      waveform: OscillatorWaveformKind.Sine,
       frequencyHz: 440,
       detuneCents: 0,
       phaseRadians: 0,
@@ -36,9 +32,9 @@ class OscillatorContractsFixture {
     return {
       kind: OscillatorKind.Pulse,
       frequencyHz: 110,
-      detuneCents: -12,
-      phaseRadians: Math.PI,
-      gain: 0.75,
+      detuneCents: 0,
+      phaseRadians: 0,
+      gain: 0.5,
       pulseWidth: 0.5,
     };
   }
@@ -46,110 +42,36 @@ class OscillatorContractsFixture {
   public createWavetableDefinition(): IWavetableOscillatorDefinition {
     return {
       kind: OscillatorKind.Wavetable,
-      tableId: "supersaw-table",
+      tableId: "table-alpha",
       frequencyHz: 220,
-      detuneCents: 3,
+      detuneCents: 0,
       phaseRadians: 0,
-      gain: 0.8,
+      gain: 0.75,
     };
   }
 
   public createSampleDefinition(): ISampleOscillatorDefinition {
     return {
       kind: OscillatorKind.Sample,
-      sampleId: "sample-kick-001",
+      sampleId: "sample-alpha",
       rootFrequencyHz: 440,
       playbackFrequencyHz: 880,
-      gain: 0.6,
-      loop: false,
+      gain: 1,
+      loop: true,
     };
-  }
-}
-
-class TestOscillator implements IOscillator {
-  private active = false;
-  private currentFrequencyHz: number;
-  private currentSampleValue: AudioSampleValue = 0;
-
-  public constructor(public readonly definition: OscillatorDefinition) {
-    this.currentFrequencyHz =
-      definition.kind === OscillatorKind.Sample
-        ? definition.playbackFrequencyHz
-        : definition.frequencyHz;
-  }
-
-  public noteOn(request: IOscillatorNoteOnRequest): void {
-    this.active = true;
-    this.currentFrequencyHz = request.frequencyHz;
-    this.currentSampleValue = request.velocity;
-  }
-
-  public noteOff(_request: IOscillatorNoteOffRequest): void {
-    this.active = false;
-  }
-
-  public sample(request: IOscillatorSampleRequest): IOscillatorSample {
-    return {
-      timeSeconds: request.timeSeconds,
-      value: this.currentSampleValue,
-    };
-  }
-
-  public snapshot(): IOscillatorStateSnapshot {
-    return {
-      definition: this.definition,
-      frequencyHz: this.currentFrequencyHz,
-      detuneCents:
-        this.definition.kind === OscillatorKind.Sample
-          ? 0
-          : this.definition.detuneCents,
-      phaseRadians:
-        this.definition.kind === OscillatorKind.Sample
-          ? 0
-          : this.definition.phaseRadians,
-      gain: this.definition.gain,
-      isActive: this.active,
-    };
-  }
-
-  public reset(): void {
-    this.active = false;
-    this.currentSampleValue = 0;
-  }
-}
-
-class TestOscillatorFactory implements IOscillatorFactory {
-  public create(definition: OscillatorDefinition): IOscillator {
-    return new TestOscillator(definition);
-  }
-}
-
-function getOscillatorIdentity(definition: OscillatorDefinition): string {
-  switch (definition.kind) {
-    case OscillatorKind.Basic:
-      return `${definition.kind}:${definition.waveform}:${definition.frequencyHz}`;
-
-    case OscillatorKind.Pulse:
-      return `${definition.kind}:${definition.pulseWidth}:${definition.frequencyHz}`;
-
-    case OscillatorKind.Wavetable:
-      return `${definition.kind}:${definition.tableId}:${definition.frequencyHz}`;
-
-    case OscillatorKind.Sample:
-      return `${definition.kind}:${definition.sampleId}:${definition.playbackFrequencyHz}`;
   }
 }
 
 describe("music-core-synthesizer-oscillators-contracts", () => {
-  describe("constant contracts", () => {
-    it("should expose stable oscillator kind values", () => {
+  describe("exports", () => {
+    it("should expose stable oscillator kind constants", () => {
       expect(OscillatorKind.Basic).toBe("basic");
       expect(OscillatorKind.Pulse).toBe("pulse");
       expect(OscillatorKind.Wavetable).toBe("wavetable");
       expect(OscillatorKind.Sample).toBe("sample");
     });
 
-    it("should expose stable waveform kind values", () => {
+    it("should expose stable waveform constants", () => {
       expect(OscillatorWaveformKind.Sine).toBe("sine");
       expect(OscillatorWaveformKind.Square).toBe("square");
       expect(OscillatorWaveformKind.Sawtooth).toBe("sawtooth");
@@ -157,143 +79,111 @@ describe("music-core-synthesizer-oscillators-contracts", () => {
     });
   });
 
-  describe("definition contracts", () => {
-    it("should allow a basic oscillator definition", () => {
-      const fixture = new OscillatorContractsFixture();
+  describe("parameter specifications", () => {
+    it("should validate oscillator frequency", () => {
+      const specification = OscillatorFrequencySpecification.positiveFinite();
 
-      const definition = fixture.createBasicDefinition() satisfies IBasicOscillatorDefinition;
-
-      expect(definition.kind).toBe(OscillatorKind.Basic);
-      expect(definition.waveform).toBe(OscillatorWaveformKind.Sawtooth);
-      expect(definition.frequencyHz).toBe(440);
-      expect(definition.detuneCents).toBe(0);
-      expect(definition.phaseRadians).toBe(0);
-      expect(definition.gain).toBe(1);
+      expect(specification.isSatisfiedBy(440)).toBe(true);
+      expect(specification.isSatisfiedBy(0)).toBe(false);
+      expect(specification.isSatisfiedBy(Number.NaN)).toBe(false);
     });
 
-    it("should allow a pulse oscillator definition with pulse width", () => {
-      const fixture = new OscillatorContractsFixture();
+    it("should validate oscillator velocity", () => {
+      const specification = OscillatorVelocitySpecification.zeroToOne();
 
-      const definition = fixture.createPulseDefinition() satisfies IPulseOscillatorDefinition;
-
-      expect(definition.kind).toBe(OscillatorKind.Pulse);
-      expect(definition.frequencyHz).toBe(110);
-      expect(definition.detuneCents).toBe(-12);
-      expect(definition.phaseRadians).toBe(Math.PI);
-      expect(definition.gain).toBe(0.75);
-      expect(definition.pulseWidth).toBe(0.5);
+      expect(specification.isSatisfiedBy(0)).toBe(true);
+      expect(specification.isSatisfiedBy(0.5)).toBe(true);
+      expect(specification.isSatisfiedBy(1)).toBe(true);
+      expect(specification.isSatisfiedBy(2)).toBe(false);
     });
 
-    it("should allow a wavetable oscillator definition with table id", () => {
-      const fixture = new OscillatorContractsFixture();
+    it("should validate pulse width", () => {
+      const specification = PulseWidthSpecification.zeroToOne();
 
-      const definition =
-        fixture.createWavetableDefinition() satisfies IWavetableOscillatorDefinition;
-
-      expect(definition.kind).toBe(OscillatorKind.Wavetable);
-      expect(definition.tableId).toBe("supersaw-table");
-      expect(definition.frequencyHz).toBe(220);
-      expect(definition.detuneCents).toBe(3);
-      expect(definition.phaseRadians).toBe(0);
-      expect(definition.gain).toBe(0.8);
-    });
-
-    it("should allow a sample oscillator definition with sample playback frequencies", () => {
-      const fixture = new OscillatorContractsFixture();
-
-      const definition = fixture.createSampleDefinition() satisfies ISampleOscillatorDefinition;
-
-      expect(definition.kind).toBe(OscillatorKind.Sample);
-      expect(definition.sampleId).toBe("sample-kick-001");
-      expect(definition.rootFrequencyHz).toBe(440);
-      expect(definition.playbackFrequencyHz).toBe(880);
-      expect(definition.gain).toBe(0.6);
-      expect(definition.loop).toBe(false);
-    });
-
-    it("should discriminate oscillator definitions by kind", () => {
-      const fixture = new OscillatorContractsFixture();
-
-      expect(getOscillatorIdentity(fixture.createBasicDefinition())).toBe(
-        "basic:sawtooth:440",
-      );
-
-      expect(getOscillatorIdentity(fixture.createPulseDefinition())).toBe(
-        "pulse:0.5:110",
-      );
-
-      expect(getOscillatorIdentity(fixture.createWavetableDefinition())).toBe(
-        "wavetable:supersaw-table:220",
-      );
-
-      expect(getOscillatorIdentity(fixture.createSampleDefinition())).toBe(
-        "sample:sample-kick-001:880",
-      );
+      expect(specification.isSatisfiedBy(0.5)).toBe(true);
+      expect(specification.isSatisfiedBy(-0.1)).toBe(false);
+      expect(specification.isSatisfiedBy(1.1)).toBe(false);
     });
   });
 
-  describe("oscillator behavior contracts", () => {
-    it("should allow an oscillator implementation to follow the contract", () => {
+  describe("definition specifications", () => {
+    it("should validate basic oscillator definitions", () => {
       const fixture = new OscillatorContractsFixture();
-      const oscillator = new TestOscillator(fixture.createBasicDefinition());
 
-      oscillator.noteOn({
-        timeSeconds: 0,
-        frequencyHz: 880,
-        velocity: 0.7,
-      });
-
-      const sample = oscillator.sample({
-        timeSeconds: 0.25,
-        sampleRateHz: 48_000,
-      });
-
-      const snapshot = oscillator.snapshot();
-
-      expect(sample.timeSeconds).toBe(0.25);
-      expect(sample.value).toBe(0.7);
-      expect(snapshot.frequencyHz).toBe(880);
-      expect(snapshot.isActive).toBe(true);
-
-      oscillator.noteOff({
-        timeSeconds: 0.5,
-      });
-
-      expect(oscillator.snapshot().isActive).toBe(false);
-    });
-
-    it("should allow an oscillator factory implementation to create oscillators", () => {
-      const fixture = new OscillatorContractsFixture();
-      const factory = new TestOscillatorFactory();
-
-      const oscillator = factory.create(fixture.createPulseDefinition());
-
-      expect(oscillator.definition.kind).toBe(OscillatorKind.Pulse);
-      expect(oscillator.snapshot().frequencyHz).toBe(110);
-      expect(oscillator.snapshot().gain).toBe(0.75);
-    });
-
-    it("should allow an oscillator implementation to reset runtime state", () => {
-      const fixture = new OscillatorContractsFixture();
-      const oscillator = new TestOscillator(fixture.createBasicDefinition());
-
-      oscillator.noteOn({
-        timeSeconds: 0,
-        frequencyHz: 440,
-        velocity: 1,
-      });
-
-      expect(oscillator.snapshot().isActive).toBe(true);
-
-      oscillator.reset();
-
-      expect(oscillator.snapshot().isActive).toBe(false);
       expect(
-        oscillator.sample({
-          timeSeconds: 1,
-          sampleRateHz: 48_000,
-        }).value,
-      ).toBe(0);
+        new BasicOscillatorDefinitionSpecification().isSatisfiedBy(
+          fixture.createBasicDefinition(),
+        ),
+      ).toBe(true);
+    });
+
+    it("should validate pulse oscillator definitions", () => {
+      const fixture = new OscillatorContractsFixture();
+
+      expect(
+        new PulseOscillatorDefinitionSpecification().isSatisfiedBy(
+          fixture.createPulseDefinition(),
+        ),
+      ).toBe(true);
+    });
+
+    it("should validate all oscillator definition variants", () => {
+      const fixture = new OscillatorContractsFixture();
+      const specification = OscillatorDefinitionSpecification.valid();
+
+      expect(specification.isSatisfiedBy(fixture.createBasicDefinition())).toBe(true);
+      expect(specification.isSatisfiedBy(fixture.createPulseDefinition())).toBe(true);
+      expect(specification.isSatisfiedBy(fixture.createWavetableDefinition())).toBe(true);
+      expect(specification.isSatisfiedBy(fixture.createSampleDefinition())).toBe(true);
+    });
+
+    it("should reject invalid oscillator definitions", () => {
+      const fixture = new OscillatorContractsFixture();
+
+      expect(
+        OscillatorDefinitionSpecification.valid().isSatisfiedBy({
+          ...fixture.createBasicDefinition(),
+          frequencyHz: 0,
+        }),
+      ).toBe(false);
+
+      expect(
+        OscillatorDefinitionSpecification.valid().isSatisfiedBy({
+          ...fixture.createPulseDefinition(),
+          pulseWidth: 2,
+        }),
+      ).toBe(false);
+
+      expect(
+        OscillatorDefinitionSpecification.valid().isSatisfiedBy({
+          ...fixture.createWavetableDefinition(),
+          tableId: "",
+        }),
+      ).toBe(false);
+    });
+  });
+
+  describe("validator", () => {
+    it("should allow valid definitions", () => {
+      const fixture = new OscillatorContractsFixture();
+      const validator = OscillatorDefinitionValidator.createDefault();
+
+      expect(() => validator.validate(fixture.createBasicDefinition())).not.toThrow();
+      expect(() => validator.validate(fixture.createPulseDefinition())).not.toThrow();
+      expect(() => validator.validate(fixture.createWavetableDefinition())).not.toThrow();
+      expect(() => validator.validate(fixture.createSampleDefinition())).not.toThrow();
+    });
+
+    it("should reject invalid definitions", () => {
+      const fixture = new OscillatorContractsFixture();
+      const validator = OscillatorDefinitionValidator.createDefault();
+
+      expect(() =>
+        validator.validate({
+          ...fixture.createBasicDefinition(),
+          frequencyHz: 0,
+        }),
+      ).toThrow("Oscillator definition is invalid");
     });
   });
 });

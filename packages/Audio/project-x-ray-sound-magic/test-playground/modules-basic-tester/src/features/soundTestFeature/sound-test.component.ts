@@ -1,24 +1,20 @@
-// packages/Audio/music-core-synthesizer/module-basic-tester/src/features/soundTestFeature/sound-test.component.ts
-
-import { LitElement, css, html } from "lit";
+﻿import { LitElement, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import type { MidiMessage } from "@monorepo/music-core-midi";
+
+import "./oscillator-control.component.js";
+import "./midi-controller.component.js";
+
+import {
+  SoundController,
+  type ISoundControllerOscillatorState,
+} from "./SoundController.js";
 
 const MidiMessageStatus = {
   NoteOff: 0x80,
   NoteOn: 0x90,
 } as const;
-
-import { IOscillatorDefinition, OscillatorWaveform, type IVoiceDefinition } from "@monorepo/music-core-synthesizer-contracts";
-
-import "./midi-controller.component";
-import "../../../../modules/music-core-synthesizer-oscillators-web-ui/src/oscillator-control.component";
-import "./adsr-control.component";
-import "./distortion-control.component";
-
-import { SoundController } from "./SoundController.js";
-import { createDefaultVoiceDefinition } from "./voice.factory";
 
 const c4MidiNote = 60;
 const repeatIntervalMilliseconds = 250;
@@ -27,13 +23,19 @@ const noteGateMilliseconds = 120;
 @customElement("sound-test")
 export class SoundTestComponent extends LitElement {
   private readonly controller = new SoundController();
-
-  private voiceDefinition: IVoiceDefinition = createDefaultVoiceDefinition();
-  private repeatTimerId: number | undefined;
   private readonly noteOffTimerIds = new Set<number>();
+
+  private repeatTimerId: number | undefined;
 
   @state()
   private isPlaying = false;
+
+  @state()
+  private oscillatorState: ISoundControllerOscillatorState = {
+    waveform: "sawtooth",
+    gain: 0.35,
+    detuneCents: 0,
+  };
 
   public disconnectedCallback(): void {
     this.stopRepeating();
@@ -45,71 +47,33 @@ export class SoundTestComponent extends LitElement {
       <h1>Sound Test</h1>
 
       <oscillator-control
-        .definition=${this.voiceDefinition}
-        @voice-definition-changed=${this.onVoiceDefinitionChanged}
+        .state=${this.oscillatorState}
+        @oscillator-state-changed=${this.onOscillatorStateChanged}
       ></oscillator-control>
 
-      <adsr-control
-        .definition=${this.voiceDefinition}
-        @voice-definition-changed=${this.onVoiceDefinitionChanged}
-      ></adsr-control>
+      <div class="controls">
+        <button
+          class=${this.isPlaying ? "active" : ""}
+          type="button"
+          @click=${this.onToggleC4}
+        >
+          ${this.isPlaying ? "Stop C4 Repeat" : "Start C4 Repeat"}
+        </button>
 
-      <distortion-control
-        .definition=${this.voiceDefinition}
-        @voice-definition-changed=${this.onVoiceDefinitionChanged}
-      ></distortion-control>
-
-      <button
-        class=${this.isPlaying ? "active" : ""}
-        type="button"
-        @click=${this.onToggleC4}
-      >
-        ${this.isPlaying ? "Stop C4" : "Start C4"}
-      </button>
-
-      <button type="button" @click=${this.onStop}>Stop</button>
+        <button type="button" @click=${this.onStop}>
+          Stop
+        </button>
+      </div>
 
       <midi-controller @midi-message=${this.onMidiMessage}></midi-controller>
     `;
   }
-private onOscillatorChanged(
-  index: number,
-  event: CustomEvent<{ readonly oscillator: IOscillatorDefinition }>,
-): void {
-  const oscillators = [...this.voiceDefinition.oscillators];
-  oscillators[index] = event.detail.oscillator;
 
-  this.setVoiceDefinition({
-    ...this.voiceDefinition,
-    oscillators,
-  });
-}
-
-private onAddOscillator = (): void => {
-  this.setVoiceDefinition({
-    ...this.voiceDefinition,
-    oscillators: [
-      ...this.voiceDefinition.oscillators,
-      {
-        waveform: OscillatorWaveform.Sawtooth,
-        detuneCents: 0,
-        gain: 0.5,
-      },
-    ],
-  });
-};
-
-private setVoiceDefinition(definition: IVoiceDefinition): void {
-  this.voiceDefinition = definition;
-  this.controller.setVoiceDefinition(definition);
-  this.requestUpdate();
-}
-  private readonly onVoiceDefinitionChanged = (
-    event: CustomEvent<{ readonly definition: IVoiceDefinition }>,
+  private readonly onOscillatorStateChanged = (
+    event: CustomEvent<{ readonly state: ISoundControllerOscillatorState }>,
   ): void => {
-    this.voiceDefinition = event.detail.definition;
-    this.controller.setVoiceDefinition(this.voiceDefinition);
-    this.requestUpdate();
+    this.oscillatorState = event.detail.state;
+    this.controller.setOscillatorState(this.oscillatorState);
   };
 
   private readonly onToggleC4 = (): void => {
@@ -128,17 +92,19 @@ private setVoiceDefinition(definition: IVoiceDefinition): void {
   private readonly onMidiMessage = async (
     event: CustomEvent<{ readonly message: MidiMessage }>,
   ): Promise<void> => {
-    await this.controller.init(this.voiceDefinition);
+    this.stopRepeating();
+    this.controller.setOscillatorState(this.oscillatorState);
 
     const message = event.detail.message;
 
     switch (message.status) {
       case MidiMessageStatus.NoteOn:
-        this.controller.noteOn(message.note.value());
+        await this.controller.init();
+        this.controller.noteOn(message.note.value(), message.velocity.value() / 127);
         return;
 
       case MidiMessageStatus.NoteOff:
-        this.controller.noteOff(message.note.value());
+        this.controller.noteOff();
         return;
     }
   };
@@ -149,8 +115,9 @@ private setVoiceDefinition(definition: IVoiceDefinition): void {
     }
 
     this.isPlaying = true;
+    this.controller.setOscillatorState(this.oscillatorState);
 
-    await this.controller.init(this.voiceDefinition);
+    await this.controller.init();
 
     if (!this.isPlaying) {
       return;
@@ -174,17 +141,17 @@ private setVoiceDefinition(definition: IVoiceDefinition): void {
     }
 
     this.noteOffTimerIds.clear();
-    this.controller.noteOff(c4MidiNote);
+    this.controller.noteOff();
     this.isPlaying = false;
   }
 
   private playC4Pulse(): void {
-    this.controller.noteOff(c4MidiNote);
-    this.controller.noteOn(c4MidiNote);
+    this.controller.noteOff();
+    this.controller.noteOn(c4MidiNote, 1);
 
     const timerId = window.setTimeout(() => {
       this.noteOffTimerIds.delete(timerId);
-      this.controller.noteOff(c4MidiNote);
+      this.controller.noteOff();
     }, noteGateMilliseconds);
 
     this.noteOffTimerIds.add(timerId);
@@ -194,13 +161,19 @@ private setVoiceDefinition(definition: IVoiceDefinition): void {
     :host {
       display: block;
       padding: 16px;
-      font-family: sans-serif;
+      font-family: system-ui, sans-serif;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0;
     }
 
     button {
-      margin-right: 8px;
       padding: 8px 12px;
       font-size: 14px;
+      cursor: pointer;
     }
 
     button.active {

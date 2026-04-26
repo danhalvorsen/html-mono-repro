@@ -1,6 +1,4 @@
-/* packages/Audio/music-core-synthesizer/module-basic-tester/src/index.css */
-
-:root {
+﻿:root {
   color-scheme: light dark;
   background-color: #ffffff;
 }
@@ -15,9 +13,6 @@ body {
   min-width: 320px;
   min-height: 100svh;
   margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   overflow-x: hidden;
   font-synthesis: none;
   text-rendering: optimizeLegibility;

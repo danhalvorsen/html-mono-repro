@@ -1,8 +1,6 @@
-// src/features/aboutFeature/aboutFeature.ts
+﻿import { html, type TemplateResult } from "lit";
 
-import { html, type TemplateResult } from "lit";
-
-import type { IViewFeature } from "../../infrastructure/IViewFeature";
+import type { IViewFeature } from "../../infrastructure/IViewFeature.js";
 
 export class AboutFeature implements IViewFeature {
   public readonly id = "about";

@@ -1,47 +1,45 @@
 ﻿{
-    "name": "@monorepo/music-core-synthesizer-oscillators",
-    "version": "1.0.0",
-    "description": "Deterministic oscillator DSP runtime for synthesizer oscillator contracts.",
-    "type": "module",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        }
-    },
-    "files": [
-        "dist"
-    ],
-    "scripts": {
-        "clean": "rimraf dist",
-        "build": "tsc -p tsconfig.json",
-        "test": "vitest run",
-        "test:typecheck": "vitest run --typecheck"
-    },
-    "keywords": [
-        "synthesizer",
-        "audio",
-        "dsp",
-        "oscillator",
-        "wavetable",
-        "sample",
-        "runtime",
-        "typescript",
-        "esm",
-        "monorepo"
-    ],
-    "author": "",
-    "license": "MIT",
-    "dependencies": {
-        "@monorepo/music-core-synthesizer-contracts": "workspace:*",
-        "@monorepo/music-core-synthesizer-engine": "workspace:*",
-        "@monorepo/music-core-synthesizer-oscillators-contracts": "workspace:*"
-    },
-    "devDependencies": {
-        "rimraf": "^6.0.1",
-        "typescript": "^5.9.3",
-        "vitest": "^3.2.4"
+  "name": "@monorepo/music-core-synthesizer-oscillators",
+  "version": "1.0.0",
+  "description": "Deterministic oscillator DSP runtime for synthesizer oscillator contracts.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "synthesizer",
+    "audio",
+    "dsp",
+    "oscillator",
+    "wavetable",
+    "sample",
+    "runtime",
+    "typescript",
+    "esm",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/music-core-synthesizer-oscillators-contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
 }

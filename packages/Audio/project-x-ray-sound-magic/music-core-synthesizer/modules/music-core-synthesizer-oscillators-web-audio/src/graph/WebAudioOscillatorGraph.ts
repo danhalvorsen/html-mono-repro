@@ -1,20 +1,25 @@
-﻿import {
+﻿// FILE: src/graph/WebAudioOscillatorGraph.ts
+
+import {
   OscillatorKind,
   type DetuneCentsValue,
   type FrequencyHzValue,
+  type IBasicOscillatorDefinition,
   type IOscillator,
   type IOscillatorNoteOffRequest,
   type IOscillatorNoteOnRequest,
   type IOscillatorSample,
   type IOscillatorSampleRequest,
   type IOscillatorStateSnapshot,
+  type IPulseOscillatorDefinition,
+  type ISampleOscillatorDefinition,
+  type IWavetableOscillatorDefinition,
   type OscillatorDefinition,
   type PhaseRadiansValue,
 } from "@monorepo/music-core-synthesizer-oscillators-contracts";
 
 import { OscillatorWaveformMapper } from "../mapping/index.js";
 import type {
-  IWebAudioAudioBufferLike,
   IWebAudioBufferSourceNodeLike,
   IWebAudioConnectable,
   IWebAudioContextLike,
@@ -63,7 +68,7 @@ export class WebAudioOscillatorGraph
 
     this.stopActiveSource(request.timeSeconds);
 
-    const source = this.createSource(request);
+    const source = this.createSource(this.definition, request);
 
     source.connect(this.outputNode);
     source.start(request.timeSeconds);
@@ -108,6 +113,10 @@ export class WebAudioOscillatorGraph
   public reset(): void {
     this.stopActiveSource(0);
     this.active = false;
+    this.activeFrequencyHz = this.getDefinitionFrequency(this.definition);
+    this.activeDetuneCents = this.getDefinitionDetune(this.definition);
+    this.activePhaseRadians = this.getDefinitionPhase(this.definition);
+
     this.setOutputGain(this.definition.gain);
   }
 
@@ -119,61 +128,76 @@ export class WebAudioOscillatorGraph
     this.outputNode.disconnect();
   }
 
-  private createSource(request: IOscillatorNoteOnRequest): IWebAudioSourceNodeLike {
-    switch (this.definition.kind) {
+  private createSource(
+    definition: OscillatorDefinition,
+    request: IOscillatorNoteOnRequest,
+  ): IWebAudioSourceNodeLike {
+    switch (definition.kind) {
       case OscillatorKind.Basic:
-        return this.createBasicSource(request);
+        return this.createBasicSource(definition, request);
 
       case OscillatorKind.Pulse:
-        return this.createPulseSource(request);
+        return this.createPulseSource(definition, request);
 
       case OscillatorKind.Wavetable:
-        return this.createWavetableSource(request);
+        return this.createWavetableSource(definition, request);
 
       case OscillatorKind.Sample:
-        return this.createSampleSource(request);
+        return this.createSampleSource(definition, request);
     }
   }
 
-  private createBasicSource(request: IOscillatorNoteOnRequest): IWebAudioOscillatorNodeLike {
+  private createBasicSource(
+    definition: IBasicOscillatorDefinition,
+    request: IOscillatorNoteOnRequest,
+  ): IWebAudioOscillatorNodeLike {
     const source = this.context.createOscillator();
 
-    source.type = this.waveformMapper.map(this.definition.waveform);
+    source.type = this.waveformMapper.map(definition.waveform);
     source.frequency.setValueAtTime(request.frequencyHz, request.timeSeconds);
-    source.detune.setValueAtTime(this.definition.detuneCents, request.timeSeconds);
+    source.detune.setValueAtTime(definition.detuneCents, request.timeSeconds);
 
     return source;
   }
 
-  private createPulseSource(request: IOscillatorNoteOnRequest): IWebAudioOscillatorNodeLike {
+  private createPulseSource(
+    definition: IPulseOscillatorDefinition,
+    request: IOscillatorNoteOnRequest,
+  ): IWebAudioOscillatorNodeLike {
     const source = this.context.createOscillator();
 
     source.type = "square";
     source.frequency.setValueAtTime(request.frequencyHz, request.timeSeconds);
-    source.detune.setValueAtTime(this.definition.detuneCents, request.timeSeconds);
+    source.detune.setValueAtTime(definition.detuneCents, request.timeSeconds);
 
     return source;
   }
 
-  private createWavetableSource(request: IOscillatorNoteOnRequest): IWebAudioOscillatorNodeLike {
+  private createWavetableSource(
+    definition: IWavetableOscillatorDefinition,
+    request: IOscillatorNoteOnRequest,
+  ): IWebAudioOscillatorNodeLike {
     const source = this.context.createOscillator();
-    const periodicWave = this.wavetableProvider.get(this.definition.tableId);
+    const periodicWave = this.wavetableProvider.get(definition.tableId);
 
     source.setPeriodicWave(periodicWave);
     source.frequency.setValueAtTime(request.frequencyHz, request.timeSeconds);
-    source.detune.setValueAtTime(this.definition.detuneCents, request.timeSeconds);
+    source.detune.setValueAtTime(definition.detuneCents, request.timeSeconds);
 
     return source;
   }
 
-  private createSampleSource(request: IOscillatorNoteOnRequest): IWebAudioBufferSourceNodeLike {
+  private createSampleSource(
+    definition: ISampleOscillatorDefinition,
+    request: IOscillatorNoteOnRequest,
+  ): IWebAudioBufferSourceNodeLike {
     const source = this.context.createBufferSource();
-    const buffer = this.sampleBufferProvider.get(this.definition.sampleId);
+    const buffer = this.sampleBufferProvider.get(definition.sampleId);
 
     source.buffer = buffer;
-    source.loop = this.definition.loop;
+    source.loop = definition.loop;
     source.playbackRate.setValueAtTime(
-      request.frequencyHz / this.definition.rootFrequencyHz,
+      request.frequencyHz / definition.rootFrequencyHz,
       request.timeSeconds,
     );
 
@@ -240,25 +264,33 @@ export class WebAudioOscillatorGraph
 
   private assertTime(value: number): void {
     if (!Number.isFinite(value) || value < 0) {
-      throw new Error(`timeSeconds must be finite and greater than or equal to 0. Actual value: ${String(value)}.`);
+      throw new Error(
+        `timeSeconds must be finite and greater than or equal to 0. Actual value: ${String(value)}.`,
+      );
     }
   }
 
   private assertFrequency(value: number): void {
     if (!Number.isFinite(value) || value <= 0) {
-      throw new Error(`frequencyHz must be finite and greater than 0. Actual value: ${String(value)}.`);
+      throw new Error(
+        `frequencyHz must be finite and greater than 0. Actual value: ${String(value)}.`,
+      );
     }
   }
 
   private assertVelocity(value: number): void {
     if (!Number.isFinite(value) || value < 0 || value > 1) {
-      throw new Error(`velocity must be between 0 and 1. Actual value: ${String(value)}.`);
+      throw new Error(
+        `velocity must be between 0 and 1. Actual value: ${String(value)}.`,
+      );
     }
   }
 
   private assertSampleRate(value: number): void {
     if (!Number.isFinite(value) || value <= 0) {
-      throw new Error(`sampleRateHz must be finite and greater than 0. Actual value: ${String(value)}.`);
+      throw new Error(
+        `sampleRateHz must be finite and greater than 0. Actual value: ${String(value)}.`,
+      );
     }
   }
 }

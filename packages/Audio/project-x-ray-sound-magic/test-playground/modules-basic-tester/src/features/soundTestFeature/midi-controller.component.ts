@@ -1,6 +1,4 @@
-// packages/Audio/music-core-synthesizer/module-basic-tester/src/features/soundTestFeature/midi-controller.component.ts
-
-import { LitElement, css, html } from "lit";
+﻿import { LitElement, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import {
@@ -45,7 +43,6 @@ export class MidiControllerComponent extends LitElement {
     this.parser.parse(londonBridgeSequence);
 
   private readonly scheduledTimerIds = new Set<number>();
-
   private playbackRunId = 0;
 
   @state()
@@ -63,14 +60,11 @@ export class MidiControllerComponent extends LitElement {
     return html`
       <section class="midi-controller">
         <h2>MIDI Controller</h2>
-
         <p>London Bridge Is Falling Down</p>
 
-        <div class="controls">
-          <button type="button" @click=${this.togglePlayback}>
-            ${this.isPlaying ? "Stop Song" : "Play Song"}
-          </button>
-        </div>
+        <button type="button" @click=${this.togglePlayback}>
+          ${this.isPlaying ? "Stop Song" : "Play Song"}
+        </button>
 
         <pre>${this.renderStatusText()}</pre>
       </section>
@@ -87,7 +81,7 @@ export class MidiControllerComponent extends LitElement {
   };
 
   private play(): void {
-    this.stop();
+    this.stop(false);
 
     this.isPlaying = true;
     this.currentStepIndex = -1;
@@ -95,14 +89,7 @@ export class MidiControllerComponent extends LitElement {
     const runId = ++this.playbackRunId;
     let offsetMs = 0;
 
-    this.dispatchEvent(
-      new CustomEvent(MidiControllerEvents.started, {
-        bubbles: true,
-        composed: true,
-      }),
-    );
-
-    this.steps.forEach((step, index) => {
+    this.steps.forEach((step, stepIndex) => {
       const startTimerId = window.setTimeout(() => {
         this.scheduledTimerIds.delete(startTimerId);
 
@@ -110,8 +97,8 @@ export class MidiControllerComponent extends LitElement {
           return;
         }
 
-        this.currentStepIndex = index;
-        this.emitStepNoteOn(step, index);
+        this.currentStepIndex = stepIndex;
+        this.emitStepNoteOn(step, stepIndex);
       }, offsetMs);
 
       this.scheduledTimerIds.add(startTimerId);
@@ -123,7 +110,7 @@ export class MidiControllerComponent extends LitElement {
           return;
         }
 
-        this.emitStepNoteOff(step, index);
+        this.emitStepNoteOff(step, stepIndex);
       }, offsetMs + step.holdMs);
 
       this.scheduledTimerIds.add(stopTimerId);
@@ -152,7 +139,7 @@ export class MidiControllerComponent extends LitElement {
     this.scheduledTimerIds.add(completedTimerId);
   }
 
-  private stop(): void {
+  private stop(dispatchStoppedEvent = true): void {
     this.playbackRunId++;
 
     for (const timerId of this.scheduledTimerIds) {
@@ -160,16 +147,17 @@ export class MidiControllerComponent extends LitElement {
     }
 
     this.scheduledTimerIds.clear();
-
     this.isPlaying = false;
     this.currentStepIndex = -1;
 
-    this.dispatchEvent(
-      new CustomEvent(MidiControllerEvents.stopped, {
-        bubbles: true,
-        composed: true,
-      }),
-    );
+    if (dispatchStoppedEvent) {
+      this.dispatchEvent(
+        new CustomEvent(MidiControllerEvents.stopped, {
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    }
   }
 
   private emitStepNoteOn(step: ParsedStep, stepIndex: number): void {
@@ -225,7 +213,7 @@ export class MidiControllerComponent extends LitElement {
       return "Starting...";
     }
 
-    return `Playing step ${this.currentStepIndex + 1}/${this.steps.length}: ${step.token}`;
+    return `Playing ${this.currentStepIndex + 1}/${this.steps.length}: ${step.token}`;
   }
 
   public static override readonly styles = css`

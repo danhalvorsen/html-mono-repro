@@ -1,4 +1,6 @@
-﻿import {
+﻿// FILE: src/algorithms/OscillatorAlgorithmFactory.ts
+
+import {
   OscillatorKind,
   type OscillatorDefinition,
 } from "@monorepo/music-core-synthesizer-oscillators-contracts";
@@ -34,5 +36,7 @@ export class OscillatorAlgorithmFactory implements IOscillatorAlgorithmFactory {
       case OscillatorKind.Sample:
         return new SampleOscillatorAlgorithm(this.sampleBufferProvider);
     }
+
+    throw new Error("Unsupported oscillator definition kind.");
   }
 }
