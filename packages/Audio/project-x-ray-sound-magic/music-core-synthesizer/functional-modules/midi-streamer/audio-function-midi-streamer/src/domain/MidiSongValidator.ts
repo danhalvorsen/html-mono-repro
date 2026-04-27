@@ -27,7 +27,7 @@ export class MidiSongValidator {
       case MidiMessageKinds.noteOn:
         this.requireMidiChannel(message.channel, `${path}.channel`);
         this.requireMidiByte(message.note, `${path}.note`);
-        this.requireIntegerRange(message.velocity, 1, 127, `${path}.velocity`);
+        this.requireMidiByte(message.velocity, `${path}.velocity`);
         return;
 
       case MidiMessageKinds.noteOff:

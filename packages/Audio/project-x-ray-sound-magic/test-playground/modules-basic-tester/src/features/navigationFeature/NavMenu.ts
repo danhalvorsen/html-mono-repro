@@ -1,13 +1,13 @@
-﻿import { LitElement, html } from "lit";
+import { LitElement, html, type TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { Style } from "../../infrastructure/Style.js";
 
 @customElement("nav-menu")
 export class NavMenu extends LitElement {
-  public static readonly styles = Style.navMenu;
+  public static override readonly styles = Style.navMenu;
 
-  public render() {
+  public override render(): TemplateResult {
     return html`
       <nav aria-label="Application views">
         <slot></slot>

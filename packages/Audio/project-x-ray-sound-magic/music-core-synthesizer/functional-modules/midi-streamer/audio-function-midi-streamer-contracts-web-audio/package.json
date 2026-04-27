@@ -1,0 +1,39 @@
+{
+  "name": "@monorepo/audio-function-midi-streamer-contracts-web-audio",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "audio",
+    "midi",
+    "streamer",
+    "synthesizer"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/audio-function-midi-streamer-contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

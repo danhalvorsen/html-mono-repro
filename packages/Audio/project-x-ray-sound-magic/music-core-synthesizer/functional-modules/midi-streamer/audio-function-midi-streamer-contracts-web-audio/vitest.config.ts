@@ -1,5 +1,3 @@
-// vitest.config.ts
-
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -8,12 +6,12 @@ export default defineConfig({
     environment: "node",
     include: [
       "tests/**/*.test.ts",
-      "tests/**/*.spec.ts",
+      "tests/**/*.spec.ts"
     ],
     isolate: false,
     pool: "threads",
     typecheck: {
-      tsconfig: "./tsconfig.test.json",
-    },
-  },
+      tsconfig: "./tsconfig.test.json"
+    }
+  }
 });
