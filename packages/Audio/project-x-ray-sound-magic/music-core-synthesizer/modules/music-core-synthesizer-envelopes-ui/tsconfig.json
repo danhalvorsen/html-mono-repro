@@ -1,11 +1,14 @@
-// tsconfig.json
-
 {
   "compilerOptions": {
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "lib": ["DOM", "ES2022"],
+
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
 
     "rootDir": "src",
     "outDir": "dist",
@@ -19,9 +22,22 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "emitDecoratorMetadata": false,
+
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+
     "types": [],
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["dist", "node_modules", "tests"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "tests"
+  ]
 }

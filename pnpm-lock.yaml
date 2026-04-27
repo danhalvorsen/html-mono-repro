@@ -1458,13 +1458,26 @@ importers:
         version: 5.9.3
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice:
+    dependencies:
+      '@monorepo/music-core-synthesizer-envelopes-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-contracts
+      '@monorepo/music-core-synthesizer-oscillators-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-contracts
+      '@monorepo/music-core-synthesizer-voice-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice-contracts
     devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
       typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
+        specifier: ~6.0.2
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-allocator:
     dependencies:
@@ -1515,13 +1528,73 @@ importers:
         version: 5.9.3
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-contracts:
+    dependencies:
+      '@monorepo/music-core-synthesizer-envelopes-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-contracts
+      '@monorepo/music-core-synthesizer-oscillators-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-contracts
     devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
       typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
+        specifier: ~6.0.2
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-ui:
+    dependencies:
+      '@monorepo/music-core-synthesizer-voice-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice-contracts
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
+      jsdom:
+        specifier: ^27.0.0
+        version: 27.4.0
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@27.4.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-web-audio:
+    dependencies:
+      '@monorepo/music-core-synthesizer-envelopes-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-contracts
+      '@monorepo/music-core-synthesizer-envelopes-web-audio':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-web-audio
+      '@monorepo/music-core-synthesizer-oscillators-web-audio':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-web-audio
+      '@monorepo/music-core-synthesizer-voice':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice
+      '@monorepo/music-core-synthesizer-voice-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice-contracts
+    devDependencies:
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-web-audio:
     dependencies:

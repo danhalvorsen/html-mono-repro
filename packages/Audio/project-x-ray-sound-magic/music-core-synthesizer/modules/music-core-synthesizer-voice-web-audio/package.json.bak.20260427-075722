@@ -1,5 +1,6 @@
+ 
 {
-  "name": "@monorepo/music-core-synthesizer-envelopes-ui",
+  "name": "@monorepo/music-core-synthesizer-voice-web-audio",
   "version": "1.0.0",
   "description": "Example module scaffold.",
   "type": "module",
@@ -27,11 +28,7 @@
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "@monorepo/music-core-synthesizer-contracts": "workspace:*",
-    "@monorepo/music-core-synthesizer-envelopes-contracts": "workspace:*",
-    "lit": "^3.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "rimraf": "^6.0.1",
     "typescript": "^5.9.3"
