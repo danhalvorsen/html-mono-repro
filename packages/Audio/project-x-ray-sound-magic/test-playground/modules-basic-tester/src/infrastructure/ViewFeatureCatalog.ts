@@ -1,8 +1,10 @@
-﻿import type { IViewFeature } from "./IViewFeature.js";
+import type { IViewFeature } from "./IViewFeature.js";
 
 import { AboutFeature } from "../features/aboutFeature/aboutFeature.js";
 import { HomeFeature } from "../features/homeFeature/homeFeature.js";
-import { SoundTestFeature } from "../features/soundTestFeature/soundTestFeature.js";
+import { SoundTestFeature } from "../features/soundTestFeature/soundTestFeature.js";
+import { FooFooFeature } from "../features/fooFooFeature/fooFooFeature.js";
+import { MultiOscillatorsFeature } from "../features/multiOscillatorsFeature/multiOscillatorsFeature.js";
 
 export class ViewFeatureCatalog {
   private readonly featuresById: ReadonlyMap<string, IViewFeature>;
@@ -37,5 +39,7 @@ export function createViewFeatureCatalog(): ViewFeatureCatalog {
     new HomeFeature(),
     new AboutFeature(),
     new SoundTestFeature(),
+    new FooFooFeature(),
+    new MultiOscillatorsFeature(),
   ]);
 }
