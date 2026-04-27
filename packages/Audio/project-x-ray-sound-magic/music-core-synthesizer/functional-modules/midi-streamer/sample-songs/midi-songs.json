@@ -1,0 +1,48 @@
+{
+  "songs": [
+    {
+      "id": "london-bridge",
+      "title": "London Bridge",
+      "tempoBpm": 120,
+      "ticksPerQuarterNote": 480,
+      "events": [
+        {
+          "tick": 0,
+          "message": {
+            "kind": "note-on",
+            "channel": 0,
+            "note": 67,
+            "velocity": 100
+          }
+        },
+        {
+          "tick": 480,
+          "message": {
+            "kind": "note-off",
+            "channel": 0,
+            "note": 67,
+            "velocity": 0
+          }
+        },
+        {
+          "tick": 480,
+          "message": {
+            "kind": "note-on",
+            "channel": 0,
+            "note": 65,
+            "velocity": 100
+          }
+        },
+        {
+          "tick": 960,
+          "message": {
+            "kind": "note-off",
+            "channel": 0,
+            "note": 65,
+            "velocity": 0
+          }
+        }
+      ]
+    }
+  ]
+}

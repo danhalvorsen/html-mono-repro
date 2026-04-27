@@ -1111,6 +1111,32 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer:
+    dependencies:
+      '@monorepo/audio-function-midi-streamer-contracts':
+        specifier: workspace:*
+        version: link:../audio-function-midi-streamer-contracts
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer-contracts: {}
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer-ui:
+    dependencies:
+      '@monorepo/audio-function-midi-streamer-contracts':
+        specifier: workspace:*
+        version: link:../audio-function-midi-streamer-contracts
+      lit:
+        specifier: ^3.0.0
+        version: 3.3.2
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer-web-audio:
+    dependencies:
+      '@monorepo/audio-function-midi-streamer':
+        specifier: workspace:*
+        version: link:../audio-function-midi-streamer
+      '@monorepo/audio-function-midi-streamer-contracts':
+        specifier: workspace:*
+        version: link:../audio-function-midi-streamer-contracts
+
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/sequencer/music-core-sequencer:
     devDependencies:
       rimraf:
