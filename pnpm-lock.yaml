@@ -683,40 +683,6 @@ importers:
         specifier: ^8.0.9
         version: 8.0.9(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
-  Applications/graph-vizualisation:
-    dependencies:
-      '@monorepo/core-graph':
-        specifier: workspace:*
-        version: link:../../packages/core-graph
-      '@monorepo/core-graph-json':
-        specifier: workspace:*
-        version: link:../../packages/core-graph-json
-      '@monorepo/core-graph-visualisation':
-        specifier: workspace:*
-        version: link:../../packages/core-graph-visualisation-modules/core-graph-visualisation
-      '@monorepo/core-graph-visualisation-hierarchical':
-        specifier: workspace:*
-        version: link:../../packages/core-graph-visualisation-modules/core-graph-visualisation-hierarchical
-      '@monorepo/core-graph-visualization-d3':
-        specifier: workspace:*
-        version: link:../../packages/core-graph-visualisation-modules/core-graph-visualization-d3
-      '@monorepo/core-graph-visualization-dgml':
-        specifier: workspace:*
-        version: link:../../packages/core-graph-visualisation-modules/core-graph-visualization-DGML
-      d3-force:
-        specifier: ^3.0.0
-        version: 3.0.0
-      lit:
-        specifier: ^3.3.2
-        version: 3.3.2
-    devDependencies:
-      typescript:
-        specifier: ~6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.0.4
-        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
-
   Applications/pdf/drawing-tool/application/make-clusters-and-validate-db-scan:
     dependencies:
       '@monorepo/core-design-patterns':
@@ -2948,6 +2914,74 @@ importers:
       vitest:
         specifier: ^1.6.0
         version: 1.6.1(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)
+
+  packages/core-graph-visualisation-modules/application-graph-visualisation-new:
+    dependencies:
+      '@monorepo/core-graph':
+        specifier: workspace:*
+        version: link:../../core-graph
+      '@monorepo/core-graph-json':
+        specifier: workspace:*
+        version: link:../../core-graph-json
+      '@monorepo/core-graph-visualisation':
+        specifier: workspace:*
+        version: link:../core-graph-visualisation
+      '@monorepo/core-graph-visualisation-hierarchical':
+        specifier: workspace:*
+        version: link:../core-graph-visualisation-hierarchical
+      '@monorepo/core-graph-visualization-d3':
+        specifier: workspace:*
+        version: link:../core-graph-visualization-d3
+      '@monorepo/core-graph-visualization-dgml':
+        specifier: workspace:*
+        version: link:../core-graph-visualization-DGML
+      d3-force:
+        specifier: ^3.0.0
+        version: 3.0.0
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.4
+        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/core-graph-visualisation-modules/application-graph-vizualisation:
+    dependencies:
+      '@monorepo/core-graph':
+        specifier: workspace:*
+        version: link:../../core-graph
+      '@monorepo/core-graph-json':
+        specifier: workspace:*
+        version: link:../../core-graph-json
+      '@monorepo/core-graph-visualisation':
+        specifier: workspace:*
+        version: link:../core-graph-visualisation
+      '@monorepo/core-graph-visualisation-hierarchical':
+        specifier: workspace:*
+        version: link:../core-graph-visualisation-hierarchical
+      '@monorepo/core-graph-visualization-d3':
+        specifier: workspace:*
+        version: link:../core-graph-visualization-d3
+      '@monorepo/core-graph-visualization-dgml':
+        specifier: workspace:*
+        version: link:../core-graph-visualization-DGML
+      d3-force:
+        specifier: ^3.0.0
+        version: 3.0.0
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.4
+        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/core-graph-visualisation-modules/core-graph-visualisation:
     dependencies:

@@ -1,0 +1,18 @@
+{
+  "nodes": [
+    { "id": "Ingest", "payload": null },
+    { "id": "Validate", "payload": null },
+    { "id": "Transform", "payload": null },
+    { "id": "Enrich", "payload": null },
+    { "id": "Index", "payload": null },
+    { "id": "Serve", "payload": null }
+  ],
+  "edges": [
+    { "sourceId": "Ingest", "targetId": "Validate" },
+    { "sourceId": "Validate", "targetId": "Transform" },
+    { "sourceId": "Validate", "targetId": "Enrich" },
+    { "sourceId": "Transform", "targetId": "Index" },
+    { "sourceId": "Enrich", "targetId": "Index" },
+    { "sourceId": "Index", "targetId": "Serve" }
+  ]
+}
