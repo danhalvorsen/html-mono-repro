@@ -1,4 +1,4 @@
-import type { IDagGraph } from "@monorepo/core-graph";
+import type { IGraph } from "@monorepo/core-graph";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -8,7 +8,7 @@ import type { INodeSelectionState } from "../app/NodeSelectionState.js";
 @customElement("dag-state-web-component")
 export class DagStateWebComponent extends LitElement {
   @property({ attribute: false })
-  graph!: IDagGraph;
+  graph!: IGraph;
 
   @property({ attribute: false })
   selectionState!: INodeSelectionState;
@@ -25,8 +25,7 @@ export class DagStateWebComponent extends LitElement {
     return html`
       <section class="workspace">
         <aside class="panel">
-          <h2>DAG State</h2>
-          <p>Acyclic: <strong>${this.graph.isAcyclic ? "yes" : "no"}</strong></p>
+          <h2>Graph State</h2>
           <p>Nodes: <strong>${this.graph.nodes.length}</strong></p>
           <p>Edges: <strong>${this.graph.edges.length}</strong></p>
           <p>Last clicked node: <strong>${this.selectionState.selectedNodeId}</strong></p>
@@ -34,11 +33,7 @@ export class DagStateWebComponent extends LitElement {
           <p>Controller activity: <strong>${this.activityState.activityMessage}</strong></p>
           <p>Layout algorithm: <strong>${this.layoutAlgorithm}</strong></p>
           <p class="hint">
-            Click a node to show its connection points. Click an edge to highlight the line and its
-            start/end connection points.after(() => {
-              
-            }); Drag from one connection point to another to create an edge.
-            Right-click a node to add a child.
+            Circle-only graph view. Edges are rendered from node center to node center.
           </p>
         </aside>
 
@@ -112,10 +107,6 @@ export class DagStateWebComponent extends LitElement {
     if (assignedElement instanceof HTMLElement) {
       this.observedElement = assignedElement;
       this.observedElement.addEventListener("graph-box:click", this.onGraphInteraction as EventListener);
-      this.observedElement.addEventListener("graph-box:right-click", this.onGraphInteraction as EventListener);
-      this.observedElement.addEventListener("graph-connection-point:click", this.onGraphInteraction as EventListener);
-      this.observedElement.addEventListener("graph-connection-point:connect", this.onGraphInteraction as EventListener);
-      this.observedElement.addEventListener("graph-connection-point:right-click", this.onGraphInteraction as EventListener);
       this.observedElement.addEventListener("graph-edge:click", this.onGraphInteraction as EventListener);
     }
   };
@@ -132,10 +123,6 @@ export class DagStateWebComponent extends LitElement {
     }
 
     this.observedElement.removeEventListener("graph-box:click", this.onGraphInteraction as EventListener);
-    this.observedElement.removeEventListener("graph-box:right-click", this.onGraphInteraction as EventListener);
-    this.observedElement.removeEventListener("graph-connection-point:click", this.onGraphInteraction as EventListener);
-    this.observedElement.removeEventListener("graph-connection-point:connect", this.onGraphInteraction as EventListener);
-    this.observedElement.removeEventListener("graph-connection-point:right-click", this.onGraphInteraction as EventListener);
     this.observedElement.removeEventListener("graph-edge:click", this.onGraphInteraction as EventListener);
     this.observedElement = undefined;
   }

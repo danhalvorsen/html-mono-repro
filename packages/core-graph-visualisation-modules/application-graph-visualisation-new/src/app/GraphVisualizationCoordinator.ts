@@ -12,8 +12,8 @@ import {
 import type {
   LayoutOptionDescriptor,
   LayoutOptionId,
-  NodeRepresentationOption,
 } from "./GraphVisualizationLayoutTypes.js";
+import { CenterCircleSceneFactory } from "../rendering/CenterCircleSceneFactory.js";
 
 interface ResizeBounds {
   readonly width: number;
@@ -46,7 +46,7 @@ export interface GraphVisualizationCoordinatorOptions {
 }
 
 const DEFAULT_LAYOUT_ID: LayoutOptionId = "d3-force";
-const DEFAULT_NODE_REPRESENTATION: NodeRepresentationOption = "box";
+const FIXED_NODE_REPRESENTATION: GraphNodeVisualRepresentation = "circle";
 
 type CoordinatorLifecycleState = "Uninitialized" | "Ready" | "Active" | "Disconnected";
 
@@ -55,10 +55,10 @@ export class GraphVisualizationCoordinator implements IGraphVisualizationCoordin
   private readonly scheduleAnimationFrame: ((callback: () => void) => void) | undefined;
   private readonly registry: IGraphVisualizationLayoutControllerRegistry;
   private readonly resizeObserver: ResizeObserver | undefined;
+  private readonly wrappedSceneFactoryByInnerFactory = new WeakMap<object, IGraphSvgSceneFactory>();
 
   private observedCanvas: HTMLElement | null = null;
   private activeLayoutId: LayoutOptionId = DEFAULT_LAYOUT_ID;
-  private nodeRepresentation: NodeRepresentationOption = DEFAULT_NODE_REPRESENTATION;
   private width = 960;
   private height = 640;
   private state: CoordinatorLifecycleState = "Uninitialized";
@@ -101,7 +101,7 @@ export class GraphVisualizationCoordinator implements IGraphVisualizationCoordin
   }
 
   get selectedNodeRepresentation(): GraphNodeVisualRepresentation {
-    return this.nodeRepresentation;
+    return FIXED_NODE_REPRESENTATION;
   }
 
   get visualizerWidth(): number {
@@ -117,7 +117,7 @@ export class GraphVisualizationCoordinator implements IGraphVisualizationCoordin
   }
 
   get sceneFactory(): IGraphSvgSceneFactory {
-    return this.getActiveLayout().sceneFactory;
+    return this.getWrappedSceneFactory(this.getActiveLayout().sceneFactory);
   }
 
   get layoutOptions(): readonly LayoutOptionDescriptor[] {
@@ -141,16 +141,7 @@ export class GraphVisualizationCoordinator implements IGraphVisualizationCoordin
     this.requestHostUpdate();
   }
 
-  setNodeRepresentation(representation: GraphNodeVisualRepresentation): void {
-    if (this.state === "Disconnected") {
-      return;
-    }
-
-    if (this.nodeRepresentation === representation) {
-      return;
-    }
-
-    this.nodeRepresentation = representation;
+  setNodeRepresentation(_representation: GraphNodeVisualRepresentation): void {
     this.requestHostUpdate();
   }
 
@@ -234,6 +225,19 @@ export class GraphVisualizationCoordinator implements IGraphVisualizationCoordin
     }
 
     throw new Error("GraphVisualizationCoordinator requires at least one layout registration.");
+  }
+
+  private getWrappedSceneFactory(innerFactory: IGraphSvgSceneFactory): IGraphSvgSceneFactory {
+    const key = innerFactory as object;
+    const cached = this.wrappedSceneFactoryByInnerFactory.get(key);
+
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const wrapped = new CenterCircleSceneFactory(innerFactory);
+    this.wrappedSceneFactoryByInnerFactory.set(key, wrapped);
+    return wrapped;
   }
 
   private requestAnimationHostUpdate(): void {

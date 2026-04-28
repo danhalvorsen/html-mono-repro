@@ -1,26 +1,18 @@
-// CenterCircleGraphVisualizerElement: custom element for center-circle mode
-// import { LitElement, html, css } from 'lit';
-// import { renderSimpleGraphSceneSvg } from './SimpleGraphSceneSvgRenderer';
+import { LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import type { GraphSvgScene } from "@monorepo/core-graph-visualisation";
+import { renderSimpleGraphSceneSvg } from "./SimpleGraphSceneSvgRenderer.js";
 
-class CenterCircleGraphVisualizerElement extends HTMLElement {
-  private sceneValue: any;
-  set scene(val: any) {
-    this.sceneValue = val;
-    this.render();
-  }
-  get scene() { return this.sceneValue; }
+@customElement("mr-core-graph-center-circle-visualizer")
+export class CenterCircleGraphVisualizerElement extends LitElement {
+  @property({ attribute: false })
+  scene: GraphSvgScene | undefined;
 
-  connectedCallback() { this.render(); }
+  override render() {
+    if (this.scene === undefined) {
+      return null;
+    }
 
-  render() {
-    if (!this.sceneValue) return;
-    // Import directly instead of window
-    // @ts-ignore
-    const { renderSimpleGraphSceneSvg } = require('./SimpleGraphSceneSvgRenderer');
-    this.innerHTML = renderSimpleGraphSceneSvg
-      ? renderSimpleGraphSceneSvg(this.sceneValue)
-      : '<!-- scene not available -->';
+    return renderSimpleGraphSceneSvg(this.scene);
   }
 }
-
-customElements.define('mr-core-graph-center-circle-visualizer', CenterCircleGraphVisualizerElement);

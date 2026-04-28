@@ -1,17 +1,19 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import type { IDagGraph } from "@monorepo/core-graph";
+import type { IGraph } from "@monorepo/core-graph";
 import type {
   GraphNodeVisualRepresentation,
   IGraphElementController,
   IGraphSvgSceneFactory,
 } from "@monorepo/core-graph-visualisation";
 
+const FIXED_NODE_REPRESENTATION: GraphNodeVisualRepresentation = "circle";
+
 @customElement("graph-visualization-canvas")
 export class GraphVisualizationCanvas extends LitElement {
   @property({ attribute: false })
-  graph!: IDagGraph;
+  graph!: IGraph;
 
   @property({ attribute: false })
   sceneFactory!: IGraphSvgSceneFactory;
@@ -29,13 +31,13 @@ export class GraphVisualizationCanvas extends LitElement {
   padding = 96;
 
   @property({ type: Number })
-  boxWidth = 150;
+  boxWidth = 64;
 
   @property({ type: Number })
   boxHeight = 64;
 
   @property({ type: String })
-  nodeRepresentation: GraphNodeVisualRepresentation = "box";
+  nodeRepresentation: GraphNodeVisualRepresentation = FIXED_NODE_REPRESENTATION;
 
   override render() {
     return html`
@@ -47,9 +49,9 @@ export class GraphVisualizationCanvas extends LitElement {
           .width=${this.width}
           .height=${this.height}
           .padding=${this.padding}
-          .boxWidth=${this.boxWidth}
-          .boxHeight=${this.boxHeight}
-          .nodeRepresentation=${this.nodeRepresentation}
+          .boxWidth=${64}
+          .boxHeight=${64}
+          .nodeRepresentation=${FIXED_NODE_REPRESENTATION}
         >
           <slot></slot>
         </mr-core-graph-visualizer>

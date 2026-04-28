@@ -1,5 +1,4 @@
 import type { IDagGraph } from "@monorepo/core-graph";
-import type { GraphNodeVisualRepresentation } from "@monorepo/core-graph-visualisation";
 import { LitElement, html, css } from "lit";
 import { customElement } from "lit/decorators.js";
 import { type IApplicationGraphFactory, ApplicationGraphFactory } from "../../app/ApplicationGraphFactory.js";
@@ -70,11 +69,9 @@ export class AppView1 extends LitElement {
           slot="toolbar"
           .layoutOptions=${this.coordinator.layoutOptions}
           .selectedLayoutId=${this.coordinator.selectedLayoutId}
-          .selectedNodeRepresentation=${this.coordinator.selectedNodeRepresentation}
           .sourceGraphOptions=${this.sourceGraphOptions}
           .selectedSourceGraphId=${this.selectedSourceGraphId}
           @layout-change=${this.onLayoutSelectionChanged}
-          @node-representation-change=${this.onNodeRepresentationChanged}
           @source-graph-change=${this.onSourceGraphChanged}
         ></graph-visualization-toolbar>
 
@@ -94,9 +91,9 @@ export class AppView1 extends LitElement {
             .width=${this.coordinator.visualizerWidth}
             .height=${this.coordinator.visualizerHeight}
             .padding=${96}
-            .boxWidth=${150}
+            .boxWidth=${64}
             .boxHeight=${64}
-            .nodeRepresentation=${this.coordinator.selectedNodeRepresentation}
+            .nodeRepresentation=${"circle"}
           >
             ${this.renderNodeLabelSlots()}
           </graph-visualization-canvas>
@@ -117,10 +114,6 @@ export class AppView1 extends LitElement {
 
     private onLayoutSelectionChanged = (event: CustomEvent<LayoutOptionId>): void => {
         this.coordinator.setLayout(event.detail);
-    };
-
-    private onNodeRepresentationChanged = (event: CustomEvent<GraphNodeVisualRepresentation>): void => {
-        this.coordinator.setNodeRepresentation(event.detail);
     };
 
     private onSourceGraphChanged = (event: CustomEvent<SourceGraphId>): void => {

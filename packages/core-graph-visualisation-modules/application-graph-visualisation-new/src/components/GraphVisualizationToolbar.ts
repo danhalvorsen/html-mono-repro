@@ -1,8 +1,6 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import type { GraphNodeVisualRepresentation } from "@monorepo/core-graph-visualisation";
-
 import type { LayoutOptionDescriptor, LayoutOptionId } from "../app/GraphVisualizationLayoutTypes.js";
 import type { SourceGraphId, SourceGraphOption } from "../app/GraphVisualizationSourceGraphTypes.js";
 
@@ -15,7 +13,7 @@ export class GraphVisualizationToolbar extends LitElement {
   selectedLayoutId: LayoutOptionId = "d3-force";
 
   @property({ type: String })
-  selectedNodeRepresentation: GraphNodeVisualRepresentation = "box";
+  selectedNodeRepresentation = "circle";
 
   @property({ attribute: false })
   sourceGraphOptions: readonly SourceGraphOption[] = [];
@@ -43,17 +41,7 @@ export class GraphVisualizationToolbar extends LitElement {
         </select>
       </label>
 
-      <label class="picker" for="node-representation-picker">
-        <span>Node shape</span>
-        <select
-          id="node-representation-picker"
-          @change=${this.onNodeRepresentationChanged}
-          .value=${this.selectedNodeRepresentation}
-        >
-          <option value="box">Box</option>
-          <option value="circle">Circle</option>
-        </select>
-      </label>
+      <span class="shape-indicator">Node shape: Circle</span>
 
       <slot name="toolbar-after"></slot>
     `;
@@ -64,7 +52,8 @@ export class GraphVisualizationToolbar extends LitElement {
       display: block;
     }
 
-    .picker {
+    .picker,
+    .shape-indicator {
       display: inline-flex;
       align-items: center;
       gap: 10px;
@@ -74,7 +63,8 @@ export class GraphVisualizationToolbar extends LitElement {
       color: #24476f;
     }
 
-    .picker span {
+    .picker span,
+    .shape-indicator {
       font-weight: 600;
     }
 
@@ -89,8 +79,16 @@ export class GraphVisualizationToolbar extends LitElement {
       cursor: pointer;
     }
 
+    .shape-indicator {
+      border: 1px solid rgba(76, 107, 143, 0.24);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
     @media (max-width: 900px) {
-      .picker {
+      .picker,
+      .shape-indicator {
         width: 100%;
         justify-content: space-between;
         margin-right: 0;
@@ -125,24 +123,6 @@ export class GraphVisualizationToolbar extends LitElement {
 
     this.dispatchEvent(new CustomEvent<LayoutOptionId>("layout-change", {
       detail: select.value as LayoutOptionId,
-      bubbles: true,
-      composed: true,
-    }));
-  };
-
-  private onNodeRepresentationChanged = (event: Event): void => {
-    const select = event.target;
-
-    if (!(select instanceof HTMLSelectElement)) {
-      return;
-    }
-
-    if (select.value !== "box" && select.value !== "circle") {
-      return;
-    }
-
-    this.dispatchEvent(new CustomEvent<GraphNodeVisualRepresentation>("node-representation-change", {
-      detail: select.value as GraphNodeVisualRepresentation,
       bubbles: true,
       composed: true,
     }));

@@ -1,7 +1,7 @@
 import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import type { IDagGraph } from "@monorepo/core-graph";
+import type { IGraph } from "@monorepo/core-graph";
 
 import type { IControllerActivityState } from "../app/ControllerActivityState.js";
 import type { INodeSelectionState } from "../app/NodeSelectionState.js";
@@ -10,7 +10,7 @@ import "./DagStateWebComponent.js";
 @customElement("graph-visualization-workspace")
 export class GraphVisualizationWorkspace extends LitElement {
   @property({ attribute: false })
-  graph!: IDagGraph;
+  graph!: IGraph;
 
   @property({ attribute: false })
   selectionState!: INodeSelectionState;

@@ -1,24 +1,18 @@
-// SimpleGraphVisualizationCanvas: renders the graph using the center-circle visualizer
-// import { html, LitElement } from 'lit';
-// import { CenterCircleGraphVisualizerElement } from '../rendering/CenterCircleGraphVisualizerElement';
+import { LitElement, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import type { GraphSvgScene } from "@monorepo/core-graph-visualisation";
+import "../rendering/CenterCircleGraphVisualizerElement.js";
 
-class SimpleGraphVisualizationCanvas extends HTMLElement {
-  private sceneValue: any;
-  set scene(val: any) {
-    this.sceneValue = val;
-    this.render();
-  }
-  get scene() { return this.sceneValue; }
+@customElement("simple-graph-visualization-canvas")
+export class SimpleGraphVisualizationCanvas extends LitElement {
+  @property({ attribute: false })
+  scene: GraphSvgScene | undefined;
 
-  connectedCallback() { this.render(); }
-
-  render() {
-    if (!this.sceneValue) return;
-    const visualizer = document.createElement('mr-core-graph-center-circle-visualizer') as any;
-    visualizer.scene = this.sceneValue;
-    this.innerHTML = '';
-    this.appendChild(visualizer);
+  override render() {
+    return html`
+      <mr-core-graph-center-circle-visualizer
+        .scene=${this.scene}
+      ></mr-core-graph-center-circle-visualizer>
+    `;
   }
 }
-
-customElements.define('simple-graph-visualization-canvas', SimpleGraphVisualizationCanvas);
