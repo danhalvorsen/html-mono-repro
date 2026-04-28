@@ -1,7 +1,10 @@
-# fix-code-fix-two-voices-resolver.ps1
+# fix-audio-playback-window-type.ps1
 #
-# Run from the modules folder, beside code.fix.ps1:
-#   .\fix-code-fix-two-voices-resolver.ps1 -Apply
+# Run from:
+#   music-core-synthesizer-voice-playwrigth
+#
+# Apply:
+#   .\fix-audio-playback-window-type.ps1 -Apply
 
 [CmdletBinding()]
 param(
@@ -11,66 +14,90 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$scriptPath = Join-Path (Get-Location).Path "code.fix.ps1"
+$modulePath = (Get-Location).Path
+$filePath = Join-Path $modulePath "tests\support\AudioPlaybackTestDefaults.ts"
 
-if (-not (Test-Path -LiteralPath $scriptPath)) {
-    throw "Missing script: $scriptPath"
+if (-not (Test-Path -LiteralPath $filePath)) {
+    throw "Missing file: $filePath"
 }
 
-$content = Get-Content -LiteralPath $scriptPath -Raw
+$backupRoot = Join-Path $modulePath (".backup\fix-audio-playback-window-type-" + (Get-Date -Format "yyyyMMdd-HHmmss"))
 
-$start = $content.IndexOf("function Resolve-TwoVoicesSpecPath")
-if ($start -lt 0) {
-    throw "Could not find Resolve-TwoVoicesSpecPath in code.fix.ps1"
-}
+function Backup-File {
+    param([Parameter(Mandatory = $true)][string]$Path)
 
-$endMarker = "`$audibleVoicePlayer = @'"
-$end = $content.IndexOf($endMarker, $start)
-
-if ($end -lt 0) {
-    throw "Could not find marker after Resolve-TwoVoicesSpecPath"
-}
-
-$replacement = @'
-function Resolve-TwoVoicesSpecPath {
-    $integrationPath = Join-Path $modulePath "tests\integration"
-
-    $matches = @(
-        Get-ChildItem `
-            -LiteralPath $integrationPath `
-            -File `
-            -Filter "*.ts" |
-        Where-Object {
-            $_.Name -like "*two*voices*oscillators*"
-        }
-    )
-
-    if ($matches.Length -gt 0) {
-        return $matches[0].FullName
+    if (-not $Apply) {
+        return
     }
 
-    return Join-Path $integrationPath "two-voices-two-oscillators.browser.integration.spec.ts"
+    if (-not (Test-Path -LiteralPath $backupRoot)) {
+        New-Item -ItemType Directory -Path $backupRoot | Out-Null
+    }
+
+    Copy-Item `
+        -LiteralPath $Path `
+        -Destination (Join-Path $backupRoot (Split-Path -Leaf $Path)) `
+        -Force
 }
 
+$content = @'
+export const AudioPlaybackTestDefaults = {
+  DurationMilliseconds: 5_000,
+  MinimumToleranceMilliseconds: 350,
+  MaximumToleranceMilliseconds: 750,
+  StopPaddingSeconds: 0.05,
+} as const;
+
+export interface IExpectedAudioPlaybackWindow {
+  readonly timeoutMilliseconds: number;
+
+  readonly minimumMilliseconds: number;
+  readonly maximumMilliseconds: number;
+
+  readonly minimumElapsedMilliseconds: number;
+  readonly maximumElapsedMilliseconds: number;
+}
+
+export class AudioPlaybackExpectationFactory {
+  public static createDefault(): IExpectedAudioPlaybackWindow {
+    const minimumMilliseconds =
+      AudioPlaybackTestDefaults.DurationMilliseconds
+      - AudioPlaybackTestDefaults.MinimumToleranceMilliseconds;
+
+    const maximumMilliseconds =
+      AudioPlaybackTestDefaults.DurationMilliseconds
+      + AudioPlaybackTestDefaults.MaximumToleranceMilliseconds;
+
+    return {
+      timeoutMilliseconds:
+        AudioPlaybackTestDefaults.DurationMilliseconds
+        + AudioPlaybackTestDefaults.MaximumToleranceMilliseconds
+        + 2_000,
+
+      minimumMilliseconds,
+      maximumMilliseconds,
+
+      minimumElapsedMilliseconds: minimumMilliseconds,
+      maximumElapsedMilliseconds: maximumMilliseconds,
+    };
+  }
+}
 '@
 
-$patched =
-    $content.Substring(0, $start) +
-    $replacement +
-    $content.Substring($end)
-
-Write-Host "PATCH: $scriptPath"
+Write-Host "WRITE: $filePath"
 
 if (-not $Apply) {
     Write-Host "Dry-run only. Re-run with -Apply."
     exit 0
 }
 
-$backupPath = "$scriptPath.bak"
-Copy-Item -LiteralPath $scriptPath -Destination $backupPath -Force
+Backup-File -Path $filePath
 
 $encoding = [System.Text.UTF8Encoding]::new($false)
-[System.IO.File]::WriteAllText($scriptPath, $patched, $encoding)
+[System.IO.File]::WriteAllText(
+    $filePath,
+    $content.TrimEnd() + [Environment]::NewLine,
+    $encoding
+)
 
-Write-Host "BACKUP: $backupPath"
 Write-Host "DONE"

@@ -13,7 +13,7 @@
     "dev:browser": "vite --config tests/browser/vite.config.ts --host 127.0.0.1 --port 4187",
     "test:ci": "playwright test --config playwright.config.ts",
     "test:audio": "playwright test --config playwright.config.ts --headed tests/integration/one-oscillator-3sec.browser.integration.spec.ts tests/integration/oscillator-envelope.browser.integration.spec.ts tests/integration/three-oscillators-one-voice.browser.integration.spec.ts tests/integration/two-osc-two-adsrs.test.ts",
-    "test:audible": "playwright test --config playwright.config.ts --headed tests/integration/voice.browser.integration.spec.ts tests/integration/two-voices-two-oscillators.browser.integration.spec.ts"
+    "test:audible": "playwright test --config playwright.config.ts --headed tests/integration/one-voice.browser.integration.spec.ts tests/integration/multi-voice.browser.integration.spec.ts"
   },
   "dependencies": {
     "@monorepo/music-core-synthesizer-envelopes-contracts": "workspace:*",

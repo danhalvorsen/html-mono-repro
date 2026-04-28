@@ -1,20 +1,20 @@
 import { test as base } from "@playwright/test";
 
-import { SynthBrowserPage } from "./SynthBrowserPage.js";
-import { VoiceControlPage } from "./VoiceControlPage.js";
+import { MultiVoicePage } from "./MultiVoicePage.js";
+import { OneVoicePage } from "./OneVoicePage.js";
 
 export interface ISynthPlaywrightFixtures {
-  readonly synthPage: SynthBrowserPage;
-  readonly voiceControlPage: VoiceControlPage;
+  readonly oneVoicePage: OneVoicePage;
+  readonly multiVoicePage: MultiVoicePage;
 }
 
 export const test = base.extend<ISynthPlaywrightFixtures>({
-  synthPage: async ({ page }, use) => {
-    await use(new SynthBrowserPage(page));
+  oneVoicePage: async ({ page }, use) => {
+    await use(new OneVoicePage(page));
   },
 
-  voiceControlPage: async ({ page }, use) => {
-    await use(new VoiceControlPage(page));
+  multiVoicePage: async ({ page }, use) => {
+    await use(new MultiVoicePage(page));
   },
 });
 

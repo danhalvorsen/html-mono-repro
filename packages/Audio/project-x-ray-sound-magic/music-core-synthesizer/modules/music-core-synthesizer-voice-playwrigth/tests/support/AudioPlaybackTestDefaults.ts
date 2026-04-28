@@ -7,23 +7,35 @@ export const AudioPlaybackTestDefaults = {
 
 export interface IExpectedAudioPlaybackWindow {
   readonly timeoutMilliseconds: number;
+
+  readonly minimumMilliseconds: number;
+  readonly maximumMilliseconds: number;
+
   readonly minimumElapsedMilliseconds: number;
   readonly maximumElapsedMilliseconds: number;
 }
 
 export class AudioPlaybackExpectationFactory {
   public static createDefault(): IExpectedAudioPlaybackWindow {
+    const minimumMilliseconds =
+      AudioPlaybackTestDefaults.DurationMilliseconds
+      - AudioPlaybackTestDefaults.MinimumToleranceMilliseconds;
+
+    const maximumMilliseconds =
+      AudioPlaybackTestDefaults.DurationMilliseconds
+      + AudioPlaybackTestDefaults.MaximumToleranceMilliseconds;
+
     return {
       timeoutMilliseconds:
         AudioPlaybackTestDefaults.DurationMilliseconds
         + AudioPlaybackTestDefaults.MaximumToleranceMilliseconds
         + 2_000,
-      minimumElapsedMilliseconds:
-        AudioPlaybackTestDefaults.DurationMilliseconds
-        - AudioPlaybackTestDefaults.MinimumToleranceMilliseconds,
-      maximumElapsedMilliseconds:
-        AudioPlaybackTestDefaults.DurationMilliseconds
-        + AudioPlaybackTestDefaults.MaximumToleranceMilliseconds,
+
+      minimumMilliseconds,
+      maximumMilliseconds,
+
+      minimumElapsedMilliseconds: minimumMilliseconds,
+      maximumElapsedMilliseconds: maximumMilliseconds,
     };
   }
 }
