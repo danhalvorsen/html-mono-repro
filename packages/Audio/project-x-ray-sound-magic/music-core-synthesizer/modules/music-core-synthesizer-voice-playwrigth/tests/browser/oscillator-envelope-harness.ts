@@ -1,3 +1,4 @@
+import { BrowserAudioPlaybackDurationConfiguration } from "./support/BrowserAudioPlaybackDurationConfiguration.js";
 import type {
   IAdsrEnvelopeDefinition,
 } from "@monorepo/music-core-synthesizer-envelopes-contracts";
@@ -27,22 +28,18 @@ const BrowserElementId = {
 
 const TestAudio = {
   FrequencyHz: 440,
-  NoteDurationSeconds: 1.2,
-  MaximumGain: 0.08,
+  NoteDurationSeconds: BrowserAudioPlaybackDurationConfiguration.resolveNoteDurationSeconds({ releaseSeconds: AdsrEnvelopeDefinitionTestFactory.createDefault().releaseSeconds }),
+  MaximumGain: 0.18,
 } as const;
 
 class OscillatorEnvelopeCompositionRoot {
-  public static create(): OscillatorEnvelopeApplication {
-    const oscillator = BasicOscillatorDefinitionFactory.create({
-      frequencyHz: TestAudio.FrequencyHz,
-      gain: 1,
-    });
-
-    const envelope = AdsrEnvelopeDefinitionTestFactory.createDefault();
-
+  public compose(): OscillatorEnvelopeApplication {
     return new OscillatorEnvelopeApplication(
-      oscillator,
-      envelope,
+      BasicOscillatorDefinitionFactory.create({
+        frequencyHz: TestAudio.FrequencyHz,
+        gain: 1,
+      }),
+      AdsrEnvelopeDefinitionTestFactory.createDefault(),
       BrowserElementResolver.getRequiredElement<HTMLButtonElement>(
         BrowserElementId.PlayEnvelopeVoice,
       ),
@@ -91,7 +88,7 @@ class OscillatorEnvelopeApplication {
     private readonly player: BrowserEnvelopeOscillatorPlayer,
   ) {}
 
-  public async start(): Promise<void> {
+  public start(): void {
     this.presenter.presentDefinition(this.oscillator, this.envelope);
     this.presenter.presentState(PlaybackState.Idle);
     this.presenter.presentElapsedMilliseconds(0);
@@ -140,9 +137,7 @@ interface IOscillatorEnvelopePresenter {
   ): void;
 
   presentState(state: PlaybackStateValue): void;
-
   presentElapsedMilliseconds(elapsedMilliseconds: number): void;
-
   presentError(error: string | null): void;
 }
 
@@ -184,5 +179,4 @@ class BrowserOscillatorEnvelopePresenter implements IOscillatorEnvelopePresenter
   }
 }
 
-const application = OscillatorEnvelopeCompositionRoot.create();
-await application.start();
+new OscillatorEnvelopeCompositionRoot().compose().start();

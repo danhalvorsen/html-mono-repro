@@ -1,11 +1,11 @@
+import { BrowserAudioPlaybackDurationConfiguration } from "./support/BrowserAudioPlaybackDurationConfiguration.js";
 import type {
   IVoiceDefinition,
 } from "@monorepo/music-core-synthesizer-voice-contracts";
 
-import { AdsrEnvelopeDefinitionTestFactory } from "./support/AdsrEnvelopeDefinitionTestFactory.js";
-import { BasicOscillatorDefinitionFactory } from "./support/BasicOscillatorDefinitionFactory.js";
 import { BrowserElementResolver } from "./support/BrowserElementResolver.js";
 import { BrowserLayeredAdsrVoicePlayer } from "./support/BrowserLayeredAdsrVoicePlayer.js";
+import { DefaultTwoOscillatorTwoAdsrVoiceDefinitionFactory } from "./support/VoiceDefinitionFactories.js";
 import { PlaybackState, type PlaybackStateValue } from "./support/PlaybackState.js";
 import { VoiceDefinitionFlattener } from "./support/VoiceDefinitionFlattener.js";
 
@@ -22,21 +22,14 @@ const BrowserElementId = {
 } as const;
 
 const TestAudio = {
-  NoteDurationSeconds: 1.2,
-  MaximumGainPerOscillator: 0.04,
-} as const;
-
-const VoiceFrequencyHz = {
-  Oscillator1: 261.63,
-  Oscillator2: 392,
+  NoteDurationSeconds: BrowserAudioPlaybackDurationConfiguration.resolveNoteDurationSeconds({ releaseSeconds: 0.6 }),
+  MaximumGainPerOscillator: 0.10,
 } as const;
 
 class TwoOscTwoAdsrsCompositionRoot {
-  public static create(): TwoOscTwoAdsrsApplication {
-    const definition = TwoOscTwoAdsrsVoiceDefinitionFactory.create();
-
+  public compose(): TwoOscTwoAdsrsApplication {
     return new TwoOscTwoAdsrsApplication(
-      definition,
+      DefaultTwoOscillatorTwoAdsrVoiceDefinitionFactory.create(),
       BrowserElementResolver.getRequiredElement<HTMLButtonElement>(
         BrowserElementId.PlayVoice,
       ),
@@ -81,7 +74,7 @@ class TwoOscTwoAdsrsApplication {
     private readonly player: BrowserLayeredAdsrVoicePlayer,
   ) {}
 
-  public async start(): Promise<void> {
+  public start(): void {
     this.presenter.presentDefinition(this.definition);
     this.presenter.presentState(PlaybackState.Idle);
     this.presenter.presentElapsedMilliseconds(0);
@@ -119,39 +112,6 @@ class TwoOscTwoAdsrsApplication {
     } finally {
       this.isPlaying = false;
     }
-  }
-}
-
-class TwoOscTwoAdsrsVoiceDefinitionFactory {
-  public static create(): IVoiceDefinition {
-    return {
-      id: "two-osc-two-adsrs-voice",
-      outputGain: 1,
-      layers: [
-        {
-          id: "oscillator-1-layer",
-          enabled: true,
-          gain: 1,
-          oscillators: [
-            BasicOscillatorDefinitionFactory.create({
-              frequencyHz: VoiceFrequencyHz.Oscillator1,
-            }),
-          ],
-          envelope: AdsrEnvelopeDefinitionTestFactory.createFast(),
-        },
-        {
-          id: "oscillator-2-layer",
-          enabled: true,
-          gain: 1,
-          oscillators: [
-            BasicOscillatorDefinitionFactory.create({
-              frequencyHz: VoiceFrequencyHz.Oscillator2,
-            }),
-          ],
-          envelope: AdsrEnvelopeDefinitionTestFactory.createSlow(),
-        },
-      ],
-    };
   }
 }
 
@@ -209,5 +169,4 @@ class BrowserTwoOscTwoAdsrsPresenter implements IVoicePresenter {
   }
 }
 
-const application = TwoOscTwoAdsrsCompositionRoot.create();
-await application.start();
+new TwoOscTwoAdsrsCompositionRoot().compose().start();

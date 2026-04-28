@@ -1,3 +1,4 @@
+import { AudioPlaybackExpectationFactory } from "../support/AudioPlaybackTestDefaults.js";
 import { expect, test } from "../support/SynthPlaywrightFixtures.js";
 
 const TestPage = {
@@ -9,11 +10,7 @@ const Selector = {
   Frequency: "#oscillator-frequency",
 } as const;
 
-const ExpectedPlayback = {
-  TimeoutMilliseconds: 4_000,
-  MinimumElapsedMilliseconds: 2_800,
-  MaximumElapsedMilliseconds: 3_500,
-} as const;
+const ExpectedPlayback = AudioPlaybackExpectationFactory.createDefault();
 
 test.describe("Oscillator UI browser integration", () => {
   test("should use oscillator-control and play one oscillator for approximately three seconds", async ({ synthPage, page }) => {
@@ -31,9 +28,9 @@ test.describe("Oscillator UI browser integration", () => {
     await synthPage.play();
 
     await synthPage.shouldStopWithin({
-      timeoutMilliseconds: ExpectedPlayback.TimeoutMilliseconds,
-      minimumElapsedMilliseconds: ExpectedPlayback.MinimumElapsedMilliseconds,
-      maximumElapsedMilliseconds: ExpectedPlayback.MaximumElapsedMilliseconds,
+      timeoutMilliseconds: ExpectedPlayback.timeoutMilliseconds,
+      minimumElapsedMilliseconds: ExpectedPlayback.minimumElapsedMilliseconds,
+      maximumElapsedMilliseconds: ExpectedPlayback.maximumElapsedMilliseconds,
     });
   });
 });

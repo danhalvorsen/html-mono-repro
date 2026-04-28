@@ -1,29 +1,27 @@
-import { expect, test } from "@playwright/test";
+import { test } from "@playwright/test";
+
+import { AudibleVoiceStatePage } from "../support/AudibleVoiceStatePage.js";
 
 test.describe("Voice browser integration", () => {
-  test("creates a voice and transitions gate state in a real browser", async ({ page }) => {
-    await page.goto("/");
+  test("should create a voice and play audible sound during the active state", async ({ page }) => {
+    const voicePage = new AudibleVoiceStatePage(page);
 
-    await expect(page.locator("#voice-state")).toHaveText("not-created");
+    await voicePage.open();
 
-    await page.locator("#create-voice").click();
-    await expect(page.locator("#voice-state")).toHaveText("idle");
-    await expect(page.locator("#voice-frequency")).toHaveText("none");
-    await expect(page.locator("#voice-velocity")).toHaveText("0");
+    await voicePage.shouldBeNotCreated();
 
-    await page.locator("#gate-on").click();
-    await expect(page.locator("#voice-state")).toHaveText("active");
-    await expect(page.locator("#voice-frequency")).toHaveText("440");
-    await expect(page.locator("#voice-velocity")).toHaveText("0.75");
+    await voicePage.createVoice();
 
-    await page.locator("#gate-off").click();
-    await expect(page.locator("#voice-state")).toHaveText("released");
-    await expect(page.locator("#voice-frequency")).toHaveText("440");
-    await expect(page.locator("#voice-velocity")).toHaveText("0");
+    await voicePage.shouldBeIdle();
 
-    await page.locator("#reset").click();
-    await expect(page.locator("#voice-state")).toHaveText("idle");
-    await expect(page.locator("#voice-frequency")).toHaveText("none");
-    await expect(page.locator("#voice-velocity")).toHaveText("0");
+    await voicePage.playVoice();
+
+    await voicePage.shouldBeActive();
+
+    await voicePage.shouldBeReleasedAfterAudiblePlayback();
+
+    await voicePage.reset();
+
+    await voicePage.shouldBeNotCreated();
   });
 });

@@ -1,3 +1,4 @@
+import { BrowserAudioPlaybackDurationConfiguration } from "./support/BrowserAudioPlaybackDurationConfiguration.js";
 import "@monorepo/music-core-synthesizer-oscillators-web-ui";
 
 import type {
@@ -26,9 +27,9 @@ const OscillatorControlEvent = {
 
 const TestAudio = {
   FrequencyHz: 440,
-  DurationSeconds: 3,
+  DurationSeconds: BrowserAudioPlaybackDurationConfiguration.resolve().durationSeconds,
   OutputGain: 1,
-  SafePerOscillatorGain: 0.04,
+  SafePerOscillatorGain: 0.18,
 } as const;
 
 interface IOscillatorDefinitionChangedDetail {
@@ -40,7 +41,7 @@ interface IOscillatorControlElement extends HTMLElement {
 }
 
 class OneOscillatorCompositionRoot {
-  public static create(): OneOscillatorApplication {
+  public compose(): OneOscillatorApplication {
     return new OneOscillatorApplication(
       BrowserElementResolver.getRequiredElement<IOscillatorControlElement>(
         BrowserElementId.OscillatorControl,
@@ -182,5 +183,5 @@ class BrowserOscillatorPresenter implements IOscillatorPresenter {
   }
 }
 
-const application = OneOscillatorCompositionRoot.create();
+const application = new OneOscillatorCompositionRoot().compose();
 await application.start();

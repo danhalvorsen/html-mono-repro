@@ -1,3 +1,4 @@
+import { AudioPlaybackExpectationFactory } from "../support/AudioPlaybackTestDefaults.js";
 import { expect, test } from "../support/SynthPlaywrightFixtures.js";
 
 const TestPage = {
@@ -9,11 +10,7 @@ const Selector = {
   Frequencies: "#voice-frequencies",
 } as const;
 
-const ExpectedPlayback = {
-  TimeoutMilliseconds: 4_000,
-  MinimumElapsedMilliseconds: 2_800,
-  MaximumElapsedMilliseconds: 3_500,
-} as const;
+const ExpectedPlayback = AudioPlaybackExpectationFactory.createDefault();
 
 test.describe("Three oscillators in one Voice browser integration", () => {
   test("should play oscillator 1 through oscillator 3 in one voice with different frequencies", async ({ synthPage, page }) => {
@@ -29,9 +26,9 @@ test.describe("Three oscillators in one Voice browser integration", () => {
     await synthPage.play();
 
     await synthPage.shouldStopWithin({
-      timeoutMilliseconds: ExpectedPlayback.TimeoutMilliseconds,
-      minimumElapsedMilliseconds: ExpectedPlayback.MinimumElapsedMilliseconds,
-      maximumElapsedMilliseconds: ExpectedPlayback.MaximumElapsedMilliseconds,
+      timeoutMilliseconds: ExpectedPlayback.timeoutMilliseconds,
+      minimumElapsedMilliseconds: ExpectedPlayback.minimumElapsedMilliseconds,
+      maximumElapsedMilliseconds: ExpectedPlayback.maximumElapsedMilliseconds,
     });
   });
 });

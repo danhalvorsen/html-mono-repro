@@ -8,21 +8,27 @@ export class SynthBrowserPage {
   ) {}
 
   public get playButton(): Locator {
-    return this.page.locator("#play-voice, #play-oscillator").first();
+    return this.page
+      .locator("#play-voice, #play-oscillator, #play-envelope-voice")
+      .first();
   }
 
   public get state(): Locator {
-    return this.page.locator("#voice-state, #oscillator-state").first();
+    return this.page
+      .locator("#voice-state, #oscillator-state, #envelope-state")
+      .first();
   }
 
   public get elapsedMilliseconds(): Locator {
     return this.page
-      .locator("#voice-elapsed-ms, #oscillator-elapsed-ms")
+      .locator("#voice-elapsed-ms, #oscillator-elapsed-ms, #envelope-elapsed-ms")
       .first();
   }
 
   public get error(): Locator {
-    return this.page.locator("#voice-error, #oscillator-error").first();
+    return this.page
+      .locator("#voice-error, #oscillator-error, #envelope-error")
+      .first();
   }
 
   public async open(path: string): Promise<void> {

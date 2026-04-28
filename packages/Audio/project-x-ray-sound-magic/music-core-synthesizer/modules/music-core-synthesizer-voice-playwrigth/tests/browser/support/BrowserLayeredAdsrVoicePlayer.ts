@@ -7,7 +7,7 @@ import {
   type IWebAudioConnectable,
   type IWebAudioContextLike,
   type IWebAudioEnvelopeGainGraph,
-} from "../../../../music-core-synthesizer-envelopes-web-audio/src/index.js";
+} from "@monorepo/music-core-synthesizer-envelopes-web-audio";
 
 import type {
   IBasicOscillatorDefinition,
@@ -21,10 +21,6 @@ import type {
 import { BasicOscillatorDefinitionGuard } from "./BasicOscillatorDefinitionGuard.js";
 import { OscillatorTypeMapper } from "./OscillatorTypeMapper.js";
 
-export interface ILayeredAdsrVoicePlayer {
-  play(request: ILayeredAdsrVoicePlayRequest): Promise<ILayeredAdsrVoicePlayResult>;
-}
-
 export interface ILayeredAdsrVoicePlayRequest {
   readonly definition: IVoiceDefinition;
   readonly noteDurationSeconds: number;
@@ -35,7 +31,7 @@ export interface ILayeredAdsrVoicePlayResult {
   readonly elapsedMilliseconds: number;
 }
 
-export class BrowserLayeredAdsrVoicePlayer implements ILayeredAdsrVoicePlayer {
+export class BrowserLayeredAdsrVoicePlayer {
   public constructor(
     private readonly performanceClock: Performance,
   ) {}
@@ -73,13 +69,13 @@ export class BrowserLayeredAdsrVoicePlayer implements ILayeredAdsrVoicePlayer {
         audioNodes.push(outputGain);
 
         const startedAtMilliseconds = this.performanceClock.now();
+
         const oscillatorNodes = this.createLayerGraphs({
           audioContext,
           enabledLayers,
           outputGain,
           startTimeSeconds,
           gateOffTimeSeconds,
-          stopTimeSeconds,
           maximumGainPerOscillator: request.maximumGainPerOscillator,
           audioNodes,
           envelopeGraphs,
@@ -137,7 +133,6 @@ export class BrowserLayeredAdsrVoicePlayer implements ILayeredAdsrVoicePlayer {
     readonly outputGain: GainNode;
     readonly startTimeSeconds: number;
     readonly gateOffTimeSeconds: number;
-    readonly stopTimeSeconds: number;
     readonly maximumGainPerOscillator: number;
     readonly audioNodes: AudioNode[];
     readonly envelopeGraphs: IWebAudioEnvelopeGainGraph[];

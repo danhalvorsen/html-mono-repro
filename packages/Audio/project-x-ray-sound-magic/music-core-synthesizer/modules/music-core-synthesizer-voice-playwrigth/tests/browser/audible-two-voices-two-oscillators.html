@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Audible Two Voices Two Oscillators</title>
+  </head>
+  <body>
+    <main>
+      <button id="play-two-voices" type="button">Play Two Voices</button>
+
+      <output id="voice-state" aria-live="polite">idle</output>
+      <output id="voice-count" aria-live="polite">0</output>
+      <output id="voice-1-oscillators" aria-live="polite"></output>
+      <output id="voice-2-oscillators" aria-live="polite"></output>
+      <output id="voice-frequencies" aria-live="polite"></output>
+      <output id="voice-duration-ms" aria-live="polite">0</output>
+      <output id="voice-elapsed-ms" aria-live="polite">0</output>
+      <output id="voice-error" aria-live="polite"></output>
+    </main>
+
+    <script type="module" src="./audible-two-voices-two-oscillators-harness.ts"></script>
+  </body>
+</html>

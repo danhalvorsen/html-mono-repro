@@ -14,12 +14,6 @@ import type {
 
 import { OscillatorTypeMapper } from "./OscillatorTypeMapper.js";
 
-export interface IEnvelopeOscillatorPlayer {
-  play(
-    request: IEnvelopeOscillatorPlayRequest,
-  ): Promise<IEnvelopeOscillatorPlayResult>;
-}
-
 export interface IEnvelopeOscillatorPlayRequest {
   readonly oscillator: IBasicOscillatorDefinition;
   readonly envelope: EnvelopeDefinition;
@@ -31,7 +25,7 @@ export interface IEnvelopeOscillatorPlayResult {
   readonly elapsedMilliseconds: number;
 }
 
-export class BrowserEnvelopeOscillatorPlayer implements IEnvelopeOscillatorPlayer {
+export class BrowserEnvelopeOscillatorPlayer {
   public constructor(
     private readonly performanceClock: Performance,
   ) {}
@@ -45,12 +39,13 @@ export class BrowserEnvelopeOscillatorPlayer implements IEnvelopeOscillatorPlaye
     await audioContext.resume();
 
     return new Promise<IEnvelopeOscillatorPlayResult>((resolve, reject) => {
-      const createdNodes: AudioNode[] = [];
+      const nodes: AudioNode[] = [];
 
       try {
         const startTimeSeconds = audioContext.currentTime;
         const gateOffTimeSeconds = startTimeSeconds + request.noteDurationSeconds;
-        const stopTimeSeconds = gateOffTimeSeconds + this.resolveReleaseSeconds(request.envelope) + 0.05;
+        const stopTimeSeconds =
+          gateOffTimeSeconds + EnvelopeReleaseSecondsResolver.resolve(request.envelope) + 0.05;
 
         const oscillator = audioContext.createOscillator();
         const outputGain = audioContext.createGain();
@@ -80,7 +75,7 @@ export class BrowserEnvelopeOscillatorPlayer implements IEnvelopeOscillatorPlaye
         envelopeGraph.connect(outputGain as unknown as IWebAudioConnectable);
         outputGain.connect(audioContext.destination);
 
-        createdNodes.push(oscillator, outputGain);
+        nodes.push(oscillator, outputGain);
 
         envelopeGraph.gateOn({
           timeSeconds: startTimeSeconds,
@@ -95,7 +90,7 @@ export class BrowserEnvelopeOscillatorPlayer implements IEnvelopeOscillatorPlaye
           oscillator.disconnect();
           envelopeGraph.disconnect();
 
-          for (const node of createdNodes) {
+          for (const node of nodes) {
             node.disconnect();
           }
 
@@ -111,23 +106,14 @@ export class BrowserEnvelopeOscillatorPlayer implements IEnvelopeOscillatorPlaye
         oscillator.start(startTimeSeconds);
         oscillator.stop(stopTimeSeconds);
       } catch (error) {
-        for (const node of createdNodes) {
+        for (const node of nodes) {
           node.disconnect();
         }
 
         void audioContext.close();
-
         reject(error instanceof Error ? error : new Error(String(error)));
       }
     });
-  }
-
-  private resolveReleaseSeconds(envelope: EnvelopeDefinition): number {
-    if ("releaseSeconds" in envelope) {
-      return envelope.releaseSeconds;
-    }
-
-    return 0;
   }
 
   private resolveAudioContextConstructor(): typeof AudioContext {
@@ -136,5 +122,15 @@ export class BrowserEnvelopeOscillatorPlayer implements IEnvelopeOscillatorPlaye
     }
 
     return globalThis.AudioContext;
+  }
+}
+
+export class EnvelopeReleaseSecondsResolver {
+  public static resolve(envelope: EnvelopeDefinition): number {
+    if ("releaseSeconds" in envelope) {
+      return envelope.releaseSeconds;
+    }
+
+    return 0;
   }
 }

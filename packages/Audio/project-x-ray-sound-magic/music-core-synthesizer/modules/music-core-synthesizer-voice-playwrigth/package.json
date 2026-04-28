@@ -5,10 +5,15 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",
-    "test": "playwright test --config playwright.config.ts",
+    "test": "playwright test --config playwright.config.ts --headed",
     "test:headed": "playwright test --config playwright.config.ts --headed",
     "test:debug": "playwright test --config playwright.config.ts --debug",
-    "install:browser": "playwright install chromium"
+    "install:browser": "playwright install chromium",
+    "test:audio:headed": "playwright test --config playwright.config.ts --headed tests/integration/one-oscillator-3sec.browser.integration.spec.ts tests/integration/oscillator-envelope.browser.integration.spec.ts tests/integration/three-oscillators-one-voice.browser.integration.spec.ts tests/integration/two-osc-two-adsrs.test.ts",
+    "dev:browser": "vite --config tests/browser/vite.config.ts --host 127.0.0.1 --port 4187",
+    "test:ci": "playwright test --config playwright.config.ts",
+    "test:audio": "playwright test --config playwright.config.ts --headed tests/integration/one-oscillator-3sec.browser.integration.spec.ts tests/integration/oscillator-envelope.browser.integration.spec.ts tests/integration/three-oscillators-one-voice.browser.integration.spec.ts tests/integration/two-osc-two-adsrs.test.ts",
+    "test:audible": "playwright test --config playwright.config.ts --headed tests/integration/voice.browser.integration.spec.ts tests/integration/two-voices-two-oscillators.browser.integration.spec.ts"
   },
   "dependencies": {
     "@monorepo/music-core-synthesizer-envelopes-contracts": "workspace:*",

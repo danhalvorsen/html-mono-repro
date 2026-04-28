@@ -1,12 +1,13 @@
+import { BrowserAudioPlaybackDurationConfiguration } from "./support/BrowserAudioPlaybackDurationConfiguration.js";
 import type {
   IVoiceDefinition,
 } from "@monorepo/music-core-synthesizer-voice-contracts";
 
 import { BrowserAudioOscillatorPlayer } from "./support/BrowserAudioOscillatorPlayer.js";
 import { BrowserElementResolver } from "./support/BrowserElementResolver.js";
+import { DefaultThreeOscillatorVoiceDefinitionFactory } from "./support/VoiceDefinitionFactories.js";
 import { PlaybackState, type PlaybackStateValue } from "./support/PlaybackState.js";
 import { VoiceDefinitionFlattener } from "./support/VoiceDefinitionFlattener.js";
-import { VoiceDefinitionTestBuilder } from "./support/VoiceDefinitionTestBuilder.js";
 
 const BrowserElementId = {
   PlayVoice: "play-voice",
@@ -18,31 +19,14 @@ const BrowserElementId = {
 } as const;
 
 const TestAudio = {
-  DurationSeconds: 3,
-  OutputGain: 1,
-  SafePerOscillatorGain: 0.025,
-} as const;
-
-const VoiceFrequencyHz = {
-  Oscillator1: 261.63,
-  Oscillator2: 329.63,
-  Oscillator3: 392,
+  DurationSeconds: BrowserAudioPlaybackDurationConfiguration.resolve().durationSeconds,
+  SafePerOscillatorGain: 0.08,
 } as const;
 
 class ThreeOscillatorVoiceCompositionRoot {
-  public static create(): ThreeOscillatorVoiceApplication {
-    const definition = new VoiceDefinitionTestBuilder()
-      .withId("three-oscillator-voice")
-      .withOutputGain(TestAudio.OutputGain)
-      .withOscillatorFrequencies([
-        VoiceFrequencyHz.Oscillator1,
-        VoiceFrequencyHz.Oscillator2,
-        VoiceFrequencyHz.Oscillator3,
-      ])
-      .build();
-
+  public compose(): ThreeOscillatorVoiceApplication {
     return new ThreeOscillatorVoiceApplication(
-      definition,
+      DefaultThreeOscillatorVoiceDefinitionFactory.create(),
       BrowserElementResolver.getRequiredElement<HTMLButtonElement>(
         BrowserElementId.PlayVoice,
       ),
@@ -78,7 +62,7 @@ class ThreeOscillatorVoiceApplication {
     private readonly player: BrowserAudioOscillatorPlayer,
   ) {}
 
-  public async start(): Promise<void> {
+  public start(): void {
     this.presenter.presentDefinition(this.definition);
     this.presenter.presentState(PlaybackState.Idle);
     this.presenter.presentElapsedMilliseconds(0);
@@ -158,5 +142,4 @@ class BrowserVoicePresenter implements IVoicePresenter {
   }
 }
 
-const application = ThreeOscillatorVoiceCompositionRoot.create();
-await application.start();
+new ThreeOscillatorVoiceCompositionRoot().compose().start();
