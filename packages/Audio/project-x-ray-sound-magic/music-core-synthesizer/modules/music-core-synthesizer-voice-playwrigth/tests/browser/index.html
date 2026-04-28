@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Voice Playwright Harness</title>
+  </head>
+  <body>
+    <main>
+      <button id="create-voice" type="button">Create Voice</button>
+      <button id="gate-on" type="button">Gate On</button>
+      <button id="gate-off" type="button">Gate Off</button>
+      <button id="reset" type="button">Reset</button>
+
+      <output id="voice-state" aria-live="polite">not-created</output>
+      <output id="voice-frequency" aria-live="polite">none</output>
+      <output id="voice-velocity" aria-live="polite">0</output>
+    </main>
+
+    <script type="module" src="./voice-browser-harness.ts"></script>
+  </body>
+</html>

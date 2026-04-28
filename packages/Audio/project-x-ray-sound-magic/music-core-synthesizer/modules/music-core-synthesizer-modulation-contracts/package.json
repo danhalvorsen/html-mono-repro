@@ -29,7 +29,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@monorepo/music-core-synthesizer-parameters": "workspace:*"
+    "@monorepo/music-core-synthesizer-parameters": "workspace:*",
+    "@monorepo/core-specifications": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",

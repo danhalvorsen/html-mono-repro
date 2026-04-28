@@ -11,15 +11,18 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run"
   },
   "dependencies": {
+    "@monorepo/core-specifications": "workspace:*",
+    "@monorepo/music-core-synthesizer-voice-contracts": "workspace:*",
     "@monorepo/music-core-synthesizer-envelopes-contracts": "workspace:*",
-    "@monorepo/music-core-synthesizer-oscillators-contracts": "workspace:*",
-    "@monorepo/music-core-synthesizer-voice-contracts": "workspace:*"
+    "@monorepo/music-core-synthesizer-oscillators-contracts": "workspace:*"
   },
   "devDependencies": {
     "chai": "^5.1.2",

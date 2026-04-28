@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>One Oscillator 3 Seconds</title>
+  </head>
+  <body>
+    <main>
+      <oscillator-control
+        id="oscillator-control"
+        label="Browser Test Oscillator"
+      ></oscillator-control>
+
+      <button id="play-oscillator" type="button">Play Oscillator</button>
+
+      <output id="oscillator-state" aria-live="polite">idle</output>
+      <output id="oscillator-waveform" aria-live="polite">sine</output>
+      <output id="oscillator-frequency" aria-live="polite">440</output>
+      <output id="oscillator-elapsed-ms" aria-live="polite">0</output>
+      <output id="oscillator-error" aria-live="polite"></output>
+    </main>
+
+    <script type="module" src="./one-oscillator-3sec-harness.ts"></script>
+  </body>
+</html>

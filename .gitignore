@@ -62,3 +62,36 @@ packages/core-pdf-reader-app/nodejs-pid-sample/.output/dbscan-clusters.json
 packages/core-pdf-reader-app/nodejs-pid-sample/.output/dbscan-epsilon-estimate.json
 packages/core-pdf-reader-app/nodejs-pid-sample/.output/PID.clusters.pdf
 packages/Audio/project-x-ray-sound-magic/.ai-share/npm-modules.ai-code.txt
+.backup/fix-lit-oscillator-playwright-20260428-085755/C__Users_danha_source_repos_HTML_MonoRepro_packages_Audio_project-x-ray-sound-magic_music-core-synthesizer_modules_music-core-synthesizer-oscillators-web-ui_package.json
+.backup/fix-lit-oscillator-playwright-20260428-085755/C__Users_danha_source_repos_HTML_MonoRepro_packages_Audio_project-x-ray-sound-magic_music-core-synthesizer_modules_music-core-synthesizer-voice-playwrigth_tests_browser_lit-oscillator-play-test-app.ts
+.backup/voice-default-factory-fix-20260428-084834/C__Users_danha_source_repos_HTML_MonoRepro_packages_Audio_project-x-ray-sound-magic_music-core-synthesizer_modules_music-core-synthesizer-voice_package.json
+.backup/voice-default-factory-fix-20260428-084834/C__Users_danha_source_repos_HTML_MonoRepro_packages_Audio_project-x-ray-sound-magic_music-core-synthesizer_modules_music-core-synthesizer-voice_src_DefaultVoiceDefinitionFactory.ts
+.backup/voice-default-factory-fix-20260428-084834/C__Users_danha_source_repos_HTML_MonoRepro_packages_Audio_project-x-ray-sound-magic_music-core-synthesizer_modules_music-core-synthesizer-voice_src_index.ts
+.backup/voice-default-factory-fix-20260428-084923/C__Users_danha_source_repos_HTML_MonoRepro_packages_Audio_project-x-ray-sound-magic_music-core-synthesizer_modules_music-core-synthesizer-voice_package.json
+.backup/voice-default-factory-fix-20260428-084923/C__Users_danha_source_repos_HTML_MonoRepro_packages_Audio_project-x-ray-sound-magic_music-core-synthesizer_modules_music-core-synthesizer-voice_src_DefaultVoiceDefinitionFactory.ts
+.backup/voice-default-factory-fix-20260428-084923/C__Users_danha_source_repos_HTML_MonoRepro_packages_Audio_project-x-ray-sound-magic_music-core-synthesizer_modules_music-core-synthesizer-voice_src_index.ts
+.backup/voice-domain-update-20260428-084656/code.ts
+.backup/voice-domain-update-20260428-084656/index.ts
+.backup/voice-domain-update-20260428-084656/package.json
+.backup/voice-domain-update-20260428-084656/vite.config.ts
+.backup/voice-playwright-lit-oscillator-20260428-085559/packages_Audio_project-x-ray-sound-magic_music-core-synthesizer_modules_music-core-synthesizer-voice-playwrigth_package.json
+packages/core-pdf-reader/tests/PID/PID.fragments.json
+packages/core-pdf-reader/tests/PID/PID.fragments.json
+packages/Audio/music-note-sheet-dom/tsconfig.tsbuildinfo
+packages/Audio/music-note-sheet-abstract/tsconfig.tsbuildinfo
+# BEGIN local generated artifacts
+*.tsbuildinfo
+.backup/
+**/.backup/
+.ai-share/
+**/.ai-share/
+# END local generated artifacts
+*.bak
+*.tmp
+*.log
+test-results/
+**/test-results/
+playwright-report/
+**/playwright-report/
+blob-report/
+**/blob-report/

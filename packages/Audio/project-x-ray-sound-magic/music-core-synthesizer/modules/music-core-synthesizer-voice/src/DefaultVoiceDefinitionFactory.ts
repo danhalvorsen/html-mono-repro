@@ -1,86 +1,84 @@
 import {
   EnvelopeCurveKind,
   EnvelopeKind,
+  type IAdsrEnvelopeDefinition,
 } from "@monorepo/music-core-synthesizer-envelopes-contracts";
-import type {
-  IAdsrEnvelopeDefinition,
-} from "@monorepo/music-core-synthesizer-envelopes-contracts";
+
 import {
   OscillatorKind,
   OscillatorWaveformKind,
+  type OscillatorDefinition,
 } from "@monorepo/music-core-synthesizer-oscillators-contracts";
-import type {
-  IBasicOscillatorDefinition,
-} from "@monorepo/music-core-synthesizer-oscillators-contracts";
+
 import type {
   IVoiceDefinition,
   IVoiceLayerDefinition,
 } from "@monorepo/music-core-synthesizer-voice-contracts";
 
-export class DefaultVoiceDefinitionFactory {
-  public static createTwoLayerDefault(): IVoiceDefinition {
+export interface IDefaultVoiceDefinitionFactory {
+  create(): IVoiceDefinition;
+}
+
+export class DefaultVoiceDefinitionFactory implements IDefaultVoiceDefinitionFactory {
+  public create(): IVoiceDefinition {
     return {
-      outputGain: 0.75,
+      id: "default-voice",
+      outputGain: 0.8,
       layers: [
         this.createLayer({
-          waveform: OscillatorWaveformKind.Sawtooth,
-          oscillatorGain: 0.45,
-          detuneCents: -7,
-          layerGain: 0.9,
-        }),
-        this.createLayer({
-          waveform: OscillatorWaveformKind.Square,
-          oscillatorGain: 0.35,
-          detuneCents: 7,
-          layerGain: 0.8,
+          id: "main-layer",
+          gain: 1,
+          enabled: true,
+          oscillatorFrequencyHz: 440,
         }),
       ],
     };
   }
 
-  private static createLayer(request: {
-    readonly waveform: IBasicOscillatorDefinition["waveform"];
-    readonly oscillatorGain: number;
-    readonly detuneCents: number;
-    readonly layerGain: number;
+  private createLayer(request: {
+    readonly id: string;
+    readonly gain: number;
+    readonly enabled: boolean;
+    readonly oscillatorFrequencyHz: number;
   }): IVoiceLayerDefinition {
     return {
-      enabled: true,
-      gain: request.layerGain,
-      oscillator: this.createOscillator({
-        waveform: request.waveform,
-        gain: request.oscillatorGain,
-        detuneCents: request.detuneCents,
-      }),
-      envelope: this.createAdsrEnvelope(),
+      id: request.id,
+      enabled: request.enabled,
+      gain: request.gain,
+      oscillators: [
+        this.createOscillator({
+          frequencyHz: request.oscillatorFrequencyHz,
+          detuneCents: 0,
+        }),
+      ],
+      envelope: this.createEnvelope(),
     };
   }
 
-  private static createOscillator(request: {
-    readonly waveform: IBasicOscillatorDefinition["waveform"];
-    readonly gain: number;
+  private createOscillator(request: {
+    readonly frequencyHz: number;
     readonly detuneCents: number;
-  }): IBasicOscillatorDefinition {
+  }): OscillatorDefinition {
     return {
       kind: OscillatorKind.Basic,
-      waveform: request.waveform,
-      frequencyHz: 440,
+      waveform: OscillatorWaveformKind.Sawtooth,
+      frequencyHz: request.frequencyHz,
       detuneCents: request.detuneCents,
       phaseRadians: 0,
-      gain: request.gain,
+      gain: 1,
     };
   }
 
-  private static createAdsrEnvelope(): IAdsrEnvelopeDefinition {
+  private createEnvelope(): IAdsrEnvelopeDefinition {
     return {
       kind: EnvelopeKind.Adsr,
-      attackSeconds: 0.02,
-      decaySeconds: 0.14,
-      sustainLevel: 0.62,
-      releaseSeconds: 0.35,
+      attackSeconds: 0.01,
+      decaySeconds: 0.12,
+      sustainLevel: 0.7,
+      releaseSeconds: 0.25,
       attackCurve: { kind: EnvelopeCurveKind.Linear },
-      decayCurve: { kind: EnvelopeCurveKind.Linear },
-      releaseCurve: { kind: EnvelopeCurveKind.Linear },
+      decayCurve: { kind: EnvelopeCurveKind.Exponential },
+      releaseCurve: { kind: EnvelopeCurveKind.Exponential },
     };
   }
 }

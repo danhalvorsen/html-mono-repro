@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Oscillator With ADSR Envelope</title>
+  </head>
+  <body>
+    <main>
+      <button id="play-envelope-voice" type="button">Play Oscillator + Envelope</button>
+
+      <output id="envelope-state" aria-live="polite">idle</output>
+      <output id="envelope-kind" aria-live="polite">adsr</output>
+      <output id="oscillator-frequency" aria-live="polite">440</output>
+      <output id="envelope-attack" aria-live="polite">0.05</output>
+      <output id="envelope-decay" aria-live="polite">0.2</output>
+      <output id="envelope-sustain" aria-live="polite">0.65</output>
+      <output id="envelope-release" aria-live="polite">0.4</output>
+      <output id="envelope-elapsed-ms" aria-live="polite">0</output>
+      <output id="envelope-error" aria-live="polite"></output>
+    </main>
+
+    <script type="module" src="./oscillator-envelope-harness.ts"></script>
+  </body>
+</html>

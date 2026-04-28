@@ -1348,6 +1348,9 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-filters-contracts:
     dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
       '@monorepo/music-core-synthesizer-parameters':
         specifier: workspace:*
         version: link:../music-core-synthesizer-parameters
@@ -1370,6 +1373,9 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-midi-contracts:
     dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
       '@monorepo/music-core-synthesizer-parameters':
         specifier: workspace:*
         version: link:../music-core-synthesizer-parameters
@@ -1392,6 +1398,9 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-modulation-contracts:
     dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
       '@monorepo/music-core-synthesizer-parameters':
         specifier: workspace:*
         version: link:../music-core-synthesizer-parameters
@@ -1414,6 +1423,9 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-noise-contracts:
     dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
       '@monorepo/music-core-synthesizer-parameters':
         specifier: workspace:*
         version: link:../music-core-synthesizer-parameters
@@ -1488,7 +1500,7 @@ importers:
         specifier: workspace:*
         version: link:../music-core-synthesizer-oscillators-contracts
       lit:
-        specifier: ^3.3.2
+        specifier: ^3.3.1
         version: 3.3.2
     devDependencies:
       jsdom:
@@ -1518,6 +1530,10 @@ importers:
         version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-parameters-contracts:
+    dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
     devDependencies:
       rimraf:
         specifier: ^6.0.1
@@ -1546,6 +1562,9 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice:
     dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
       '@monorepo/music-core-synthesizer-envelopes-contracts':
         specifier: workspace:*
         version: link:../music-core-synthesizer-envelopes-contracts
@@ -1616,12 +1635,18 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-contracts:
     dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
       '@monorepo/music-core-synthesizer-envelopes-contracts':
         specifier: workspace:*
         version: link:../music-core-synthesizer-envelopes-contracts
       '@monorepo/music-core-synthesizer-oscillators-contracts':
         specifier: workspace:*
         version: link:../music-core-synthesizer-oscillators-contracts
+      '@monorepo/music-core-synthesizer-parameters':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-parameters
     devDependencies:
       chai:
         specifier: ^5.1.2
@@ -1632,6 +1657,37 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-playwrigth:
+    dependencies:
+      '@monorepo/music-core-synthesizer-envelopes-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-contracts
+      '@monorepo/music-core-synthesizer-envelopes-web-audio':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-web-audio
+      '@monorepo/music-core-synthesizer-oscillators-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-contracts
+      '@monorepo/music-core-synthesizer-oscillators-web-ui':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-web-ui
+      '@monorepo/music-core-synthesizer-voice':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice
+      '@monorepo/music-core-synthesizer-voice-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice-contracts
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.56.0
+        version: 1.59.1
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.10
+        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-ui:
     dependencies:
@@ -2831,7 +2887,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.6.0)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)
+        version: 1.6.1(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)
 
   packages/core-graph-pathfinding-builder:
     dependencies:
@@ -2891,7 +2947,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^1.6.0
-        version: 1.6.1(@types/node@25.6.0)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)
+        version: 1.6.1(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)
 
   packages/core-graph-visualisation:
     dependencies:
@@ -5140,6 +5196,11 @@ packages:
 
   '@pdf-lib/upng@1.0.1':
     resolution: {integrity: sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ==}
+
+  '@playwright/test@1.59.1':
+    resolution: {integrity: sha512-PG6q63nQg5c9rIi4/Z5lR5IVF7yU5MqmKaPOe0HSc0O2cX1fPi96sUQu5j7eo4gKCkB2AnNGoWt7y4/Xx3Kcqg==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
@@ -10153,6 +10214,10 @@ snapshots:
     dependencies:
       pako: 1.0.11
 
+  '@playwright/test@1.59.1':
+    dependencies:
+      playwright: 1.59.1
+
   '@polka/url@1.0.0-next.29': {}
 
   '@redocly/ajv@8.11.2':
@@ -10874,6 +10939,20 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
+  '@vitest/browser-playwright@4.1.4(playwright@1.59.1)(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.4)':
+    dependencies:
+      '@vitest/browser': 4.1.4(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.4)
+      '@vitest/mocker': 4.1.4(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+      playwright: 1.59.1
+      tinyrainbow: 3.1.0
+      vitest: 4.1.4(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(happy-dom@20.8.9)(jsdom@26.1.0)(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+    transitivePeerDependencies:
+      - bufferutil
+      - msw
+      - utf-8-validate
+      - vite
+    optional: true
+
   '@vitest/browser-playwright@4.1.4(playwright@1.59.1)(vite@8.0.10(@types/node@24.12.2)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.4)':
     dependencies:
       '@vitest/browser': 4.1.4(vite@8.0.10(@types/node@24.12.2)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.4)
@@ -10886,6 +10965,24 @@ snapshots:
       - msw
       - utf-8-validate
       - vite
+
+  '@vitest/browser@4.1.4(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.4)':
+    dependencies:
+      '@blazediff/core': 1.9.1
+      '@vitest/mocker': 4.1.4(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+      '@vitest/utils': 4.1.4
+      magic-string: 0.30.21
+      pngjs: 7.0.0
+      sirv: 3.0.2
+      tinyrainbow: 3.1.0
+      vitest: 4.1.4(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(happy-dom@20.8.9)(jsdom@26.1.0)(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+      ws: 8.20.0
+    transitivePeerDependencies:
+      - bufferutil
+      - msw
+      - utf-8-validate
+      - vite
+    optional: true
 
   '@vitest/browser@4.1.4(vite@8.0.10(@types/node@24.12.2)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.4)':
     dependencies:
@@ -10916,9 +11013,9 @@ snapshots:
       obug: 2.1.1
       std-env: 4.0.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.4(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(happy-dom@20.8.9)(jsdom@29.0.2)(vite@8.0.10(@types/node@24.12.2)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+      vitest: 4.1.4(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(happy-dom@20.8.9)(jsdom@26.1.0)(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
     optionalDependencies:
-      '@vitest/browser': 4.1.4(vite@8.0.10(@types/node@24.12.2)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.4)
+      '@vitest/browser': 4.1.4(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.4)
     optional: true
 
   '@vitest/expect@1.6.1':
@@ -10959,6 +11056,14 @@ snapshots:
       magic-string: 0.30.21
     optionalDependencies:
       vite: 7.3.2(@types/node@25.6.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  '@vitest/mocker@4.1.4(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))':
+    dependencies:
+      '@vitest/spy': 4.1.4
+      estree-walker: 3.0.3
+      magic-string: 0.30.21
+    optionalDependencies:
+      vite: 7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   '@vitest/mocker@4.1.4(vite@8.0.10(@types/node@24.12.2)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))':
     dependencies:
@@ -11031,7 +11136,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.16
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@25.0.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+      vitest: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   '@vitest/ui@4.1.4(vitest@4.1.4)':
     dependencies:
@@ -11042,7 +11147,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.16
       tinyrainbow: 3.1.0
-      vitest: 4.1.4(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(happy-dom@20.8.9)(jsdom@29.0.2)(vite@8.0.10(@types/node@24.12.2)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+      vitest: 4.1.4(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(happy-dom@20.8.9)(jsdom@26.1.0)(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
 
   '@vitest/utils@1.6.1':
     dependencies:
@@ -14034,7 +14139,7 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.3
 
-  vitest@1.6.1(@types/node@25.6.0)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1):
+  vitest@1.6.1(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1):
     dependencies:
       '@vitest/expect': 1.6.1
       '@vitest/runner': 1.6.1
@@ -14246,6 +14351,38 @@ snapshots:
       - terser
       - tsx
       - yaml
+
+  vitest@4.1.4(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(happy-dom@20.8.9)(jsdom@26.1.0)(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)):
+    dependencies:
+      '@vitest/expect': 4.1.4
+      '@vitest/mocker': 4.1.4(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+      '@vitest/pretty-format': 4.1.4
+      '@vitest/runner': 4.1.4
+      '@vitest/snapshot': 4.1.4
+      '@vitest/spy': 4.1.4
+      '@vitest/utils': 4.1.4
+      es-module-lexer: 2.0.0
+      expect-type: 1.3.0
+      magic-string: 0.30.21
+      obug: 2.1.1
+      pathe: 2.0.3
+      picomatch: 4.0.4
+      std-env: 4.0.0
+      tinybench: 2.9.0
+      tinyexec: 1.1.1
+      tinyglobby: 0.2.16
+      tinyrainbow: 3.1.0
+      vite: 7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+      why-is-node-running: 2.3.0
+    optionalDependencies:
+      '@types/node': 24.12.2
+      '@vitest/browser-playwright': 4.1.4(playwright@1.59.1)(vite@7.3.2(@types/node@24.12.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.4)
+      '@vitest/coverage-v8': 4.1.4(@vitest/browser@4.1.4)(vitest@4.1.4)
+      '@vitest/ui': 4.1.4(vitest@4.1.4)
+      happy-dom: 20.8.9
+      jsdom: 26.1.0
+    transitivePeerDependencies:
+      - msw
 
   vitest@4.1.4(@types/node@24.12.2)(@vitest/browser-playwright@4.1.4)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(happy-dom@20.8.9)(jsdom@29.0.2)(vite@8.0.10(@types/node@24.12.2)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)):
     dependencies:
