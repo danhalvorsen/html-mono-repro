@@ -21,18 +21,12 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
 
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "skipLibCheck": true,
 
     "composite": true,
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo"
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "dist",
-    "tests",
-    "node_modules"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", "tests", "node_modules"]
 }

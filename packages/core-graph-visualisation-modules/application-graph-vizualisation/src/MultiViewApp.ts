@@ -1,8 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { ViewManager, type ViewEntry } from "./views/ViewManager";
-import { AppView1 } from "./views/AppView1/AppView1";
-import { AppView2 } from "./views/AppView2/AppView2";
+import { ViewManager, type ViewEntry } from "./views/ViewManager.js";
+import { AppView1 } from "./views/AppView1/AppView1.js";
+import { AppView2 } from "./views/AppView2/AppView2.js";
 
 @customElement("graph-visualization-app")
 export class MultiViewApp extends LitElement {
