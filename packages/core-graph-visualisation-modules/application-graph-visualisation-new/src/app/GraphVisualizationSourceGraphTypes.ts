@@ -3,7 +3,8 @@ export type SourceGraphId =
   | "web-component-hierarchy"
   | "reactive-controller-ownership"
   | "application-architecture"
-  | "hierarchical-organization";
+  | "hierarchical-organization"
+  | "champions-league-players";
 
 export interface SourceGraphOption {
   readonly id: SourceGraphId;

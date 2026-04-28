@@ -30,6 +30,7 @@ export class AppView1 extends LitElement {
         { id: "reactive-controller-ownership", label: "Controller Ownership" },
         { id: "application-architecture", label: "Application Architecture" },
         { id: "hierarchical-organization", label: "Hierarchical Organization" },
+        { id: "champions-league-players", label: "Champions League Players" },
     ];
 
     constructor(
@@ -138,6 +139,8 @@ export class AppView1 extends LitElement {
                 return this.graphFactory.createApplicationArchitectureGraph();
             case "hierarchical-organization":
                 return this.graphFactory.createHierarchicalOrganizationGraph();
+            case "champions-league-players":
+                return this.graphFactory.createChampionsLeaguePlayersGraph();
         }
     }
 
