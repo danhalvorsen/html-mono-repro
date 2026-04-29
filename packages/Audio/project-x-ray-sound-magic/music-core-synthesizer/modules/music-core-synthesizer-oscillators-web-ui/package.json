@@ -1,4 +1,4 @@
- {
+{
   "name": "@monorepo/music-core-synthesizer-oscillators-web-ui",
   "version": "1.0.0",
   "private": true,
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@monorepo/music-core-synthesizer-oscillators-contracts": "workspace:*",
-    "lit": "^3.3.2"
+    "lit": "^3.3.1"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

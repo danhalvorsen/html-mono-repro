@@ -1,0 +1,29 @@
+{
+  "name": "@monorepo/music-core-synthesizer-voice-ui",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@monorepo/music-core-synthesizer-voice-contracts": "workspace:*",
+    "lit": "^3.3.2"
+  },
+  "devDependencies": {
+    "chai": "^5.1.2",
+    "jsdom": "^27.0.0",
+    "typescript": "~6.0.2",
+    "vitest": "^3.2.4"
+  }
+}

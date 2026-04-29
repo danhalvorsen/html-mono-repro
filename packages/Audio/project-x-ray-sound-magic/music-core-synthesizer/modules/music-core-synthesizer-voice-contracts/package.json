@@ -1,36 +1,32 @@
- 
 {
   "name": "@monorepo/music-core-synthesizer-voice-contracts",
   "version": "1.0.0",
-  "description": "Example module scaffold.",
+  "private": true,
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "clean": "rimraf dist",
     "build": "tsc -p tsconfig.json",
-    "test": "vitest run",
-    "test:typecheck": "vitest run --typecheck"
+    "test": "vitest run"
   },
-  "keywords": [
-    "module",
-    "typescript",
-    "example"
-  ],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "@monorepo/core-specifications": "workspace:*",
+    "@monorepo/music-core-synthesizer-parameters": "workspace:*",
+    "@monorepo/music-core-synthesizer-oscillators-contracts": "workspace:*",
+    "@monorepo/music-core-synthesizer-envelopes-contracts": "workspace:*"
+  },
   "devDependencies": {
-    "rimraf": "^6.0.1",
-    "typescript": "^5.9.3"
+    "chai": "^5.1.2",
+    "typescript": "~6.0.2",
+    "vitest": "^3.2.4"
   }
 }

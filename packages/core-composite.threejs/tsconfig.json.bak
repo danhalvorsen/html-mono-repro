@@ -1,1 +1,0 @@
-{"compilerOptions":{"noEmit":false,"outDir":"dist","moduleResolution":"bundler","composite":true,"incremental":true,"module":"ESNext","skipLibCheck":true,"noEmitOnError":true,"rootDir":".","types":[]},"include":["src"],"extends":"../../tsconfig.base.json"}

@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "DOM"],
+    "types": ["node"],
+    "strict": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@monorepo/core-http-messages": [
+        "../core-http-messages/src/index.ts"
+      ],
+      "@monorepo/core-http-message-factories": [
+        "../core-http-message-factories/src/index.ts"
+      ],
+      "@monorepo/core-http-messages-http-client": [
+        "../core-http-messages-http-client/src/index.ts"
+      ],
+      "@monorepo/core-http-messages-ollama": [
+        "../core-http-messages-ollama/src/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "tests/**/*.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}

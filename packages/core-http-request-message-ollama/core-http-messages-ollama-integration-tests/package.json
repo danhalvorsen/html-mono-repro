@@ -1,0 +1,37 @@
+{
+  "name": "@monorepo/core-http-messages-ollama-integration-tests",
+  "version": "1.0.0",
+  "description": "Integration tests for Ollama HTTP request messages.",
+  "type": "module",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:typecheck": "vitest run --typecheck",
+    "test": "pnpm --workspace-root vitest --config packages/core-http-request-message-ollama/core-http-messages-ollama-integration-tests/vitest.config.ts run",
+    "coverage": "pnpm --workspace-root vitest --config packages/core-http-request-message-ollama/core-http-messages-ollama-integration-tests/vitest.config.ts run --coverage"
+  },
+  "dependencies": {
+    "@monorepo/core-http-message-factories": "workspace:*",
+    "@monorepo/core-http-messages": "workspace:*",
+    "@monorepo/core-http-messages-http-client": "workspace:*",
+    "@monorepo/core-http-messages-ollama": "workspace:*"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}

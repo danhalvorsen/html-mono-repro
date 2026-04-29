@@ -1,0 +1,23 @@
+// FILE: src/infrastructure/NavigationEvents.ts
+
+export const NavigationEvents = {
+  ViewChange: "view-change",
+
+  navigate: "navigation:navigate",
+  navigationRequested: "navigation:navigate",
+  selected: "navigation:selected",
+  itemSelected: "navigation:selected",
+  featureSelected: "navigation:feature-selected",
+} as const;
+
+export type NavigationEventName =
+  (typeof NavigationEvents)[keyof typeof NavigationEvents];
+
+export interface ViewChangeDetail {
+  readonly view: string;
+  readonly id?: string;
+  readonly viewId?: string;
+  readonly featureId?: string;
+}
+
+export type ViewChangeEvent = CustomEvent<ViewChangeDetail>;

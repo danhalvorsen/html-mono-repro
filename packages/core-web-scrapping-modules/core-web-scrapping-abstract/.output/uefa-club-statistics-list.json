@@ -1,0 +1,248 @@
+{
+  "sourcePageUrl": "https://www.uefa.com/uefachampionsleague/statistics/clubs/",
+  "sourceApiUrl": "https://match.uefa.com/v5/matches?competitionId=1&seasonYear=2026&phase=TOURNAMENT&limit=500&offset=0&order=ASC",
+  "generatedAt": "2026-04-29T17:12:10.491Z",
+  "rowCount": 24,
+  "rows": [
+    {
+      "rank": "01",
+      "teamId": "52747",
+      "teamName": "Paris",
+      "country": "France",
+      "matchesPlayed": 6,
+      "won": 5,
+      "drawn": 1,
+      "lost": 0
+    },
+    {
+      "rank": "01",
+      "teamId": "50051",
+      "teamName": "Real Madrid",
+      "country": "Spain",
+      "matchesPlayed": 6,
+      "won": 4,
+      "drawn": 0,
+      "lost": 2
+    },
+    {
+      "rank": "03",
+      "teamId": "50037",
+      "teamName": "Bayern München",
+      "country": "Germany",
+      "matchesPlayed": 5,
+      "won": 4,
+      "drawn": 0,
+      "lost": 1
+    },
+    {
+      "rank": "03",
+      "teamId": "50124",
+      "teamName": "Atleti",
+      "country": "Spain",
+      "matchesPlayed": 5,
+      "won": 3,
+      "drawn": 0,
+      "lost": 2
+    },
+    {
+      "rank": "03",
+      "teamId": "7889",
+      "teamName": "Liverpool",
+      "country": "England",
+      "matchesPlayed": 5,
+      "won": 1,
+      "drawn": 0,
+      "lost": 4
+    },
+    {
+      "rank": "06",
+      "teamId": "59333",
+      "teamName": "Bodø/Glimt",
+      "country": "Norway",
+      "matchesPlayed": 4,
+      "won": 3,
+      "drawn": 0,
+      "lost": 1
+    },
+    {
+      "rank": "06",
+      "teamId": "52280",
+      "teamName": "Arsenal",
+      "country": "England",
+      "matchesPlayed": 4,
+      "won": 2,
+      "drawn": 2,
+      "lost": 0
+    },
+    {
+      "rank": "06",
+      "teamId": "50080",
+      "teamName": "Barcelona",
+      "country": "Spain",
+      "matchesPlayed": 4,
+      "won": 2,
+      "drawn": 1,
+      "lost": 1
+    },
+    {
+      "rank": "06",
+      "teamId": "50067",
+      "teamName": "Galatasaray",
+      "country": "Türkiye",
+      "matchesPlayed": 4,
+      "won": 2,
+      "drawn": 0,
+      "lost": 2
+    },
+    {
+      "rank": "06",
+      "teamId": "50149",
+      "teamName": "Sporting CP",
+      "country": "Portugal",
+      "matchesPlayed": 4,
+      "won": 1,
+      "drawn": 1,
+      "lost": 2
+    },
+    {
+      "rank": "06",
+      "teamId": "52816",
+      "teamName": "Atalanta",
+      "country": "Italy",
+      "matchesPlayed": 4,
+      "won": 1,
+      "drawn": 0,
+      "lost": 3
+    },
+    {
+      "rank": "12",
+      "teamId": "59324",
+      "teamName": "Newcastle",
+      "country": "England",
+      "matchesPlayed": 3,
+      "won": 1,
+      "drawn": 1,
+      "lost": 1
+    },
+    {
+      "rank": "12",
+      "teamId": "50109",
+      "teamName": "Leverkusen",
+      "country": "Germany",
+      "matchesPlayed": 3,
+      "won": 0,
+      "drawn": 2,
+      "lost": 1
+    },
+    {
+      "rank": "14",
+      "teamId": "52758",
+      "teamName": "B. Dortmund",
+      "country": "Germany",
+      "matchesPlayed": 2,
+      "won": 1,
+      "drawn": 0,
+      "lost": 1
+    },
+    {
+      "rank": "14",
+      "teamId": "1652",
+      "teamName": "Tottenham",
+      "country": "England",
+      "matchesPlayed": 2,
+      "won": 1,
+      "drawn": 0,
+      "lost": 1
+    },
+    {
+      "rank": "14",
+      "teamId": "50147",
+      "teamName": "Benfica",
+      "country": "Portugal",
+      "matchesPlayed": 2,
+      "won": 0,
+      "drawn": 0,
+      "lost": 2
+    },
+    {
+      "rank": "14",
+      "teamId": "52914",
+      "teamName": "Chelsea",
+      "country": "England",
+      "matchesPlayed": 2,
+      "won": 0,
+      "drawn": 0,
+      "lost": 2
+    },
+    {
+      "rank": "14",
+      "teamId": "50138",
+      "teamName": "Inter",
+      "country": "Italy",
+      "matchesPlayed": 2,
+      "won": 0,
+      "drawn": 0,
+      "lost": 2
+    },
+    {
+      "rank": "14",
+      "teamId": "52919",
+      "teamName": "Man City",
+      "country": "England",
+      "matchesPlayed": 2,
+      "won": 0,
+      "drawn": 0,
+      "lost": 2
+    },
+    {
+      "rank": "20",
+      "teamId": "50139",
+      "teamName": "Juventus",
+      "country": "Italy",
+      "matchesPlayed": 1,
+      "won": 1,
+      "drawn": 0,
+      "lost": 0
+    },
+    {
+      "rank": "20",
+      "teamId": "50023",
+      "teamName": "Monaco",
+      "country": "France",
+      "matchesPlayed": 1,
+      "won": 0,
+      "drawn": 1,
+      "lost": 0
+    },
+    {
+      "rank": "20",
+      "teamId": "2610",
+      "teamName": "Olympiacos",
+      "country": "Greece",
+      "matchesPlayed": 1,
+      "won": 0,
+      "drawn": 1,
+      "lost": 0
+    },
+    {
+      "rank": "20",
+      "teamId": "50043",
+      "teamName": "Club Brugge",
+      "country": "Belgium",
+      "matchesPlayed": 1,
+      "won": 0,
+      "drawn": 0,
+      "lost": 1
+    },
+    {
+      "rank": "20",
+      "teamId": "60609",
+      "teamName": "Qarabağ",
+      "country": "Azerbaijan",
+      "matchesPlayed": 1,
+      "won": 0,
+      "drawn": 0,
+      "lost": 1
+    }
+  ]
+}

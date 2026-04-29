@@ -683,40 +683,6 @@ importers:
         specifier: ^8.0.9
         version: 8.0.9(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
-  Applications/graph-visualization/graph-vizualisation:
-    dependencies:
-      '@monorepo/core-graph':
-        specifier: workspace:*
-        version: link:../../../packages/core-graph
-      '@monorepo/core-graph-json':
-        specifier: workspace:*
-        version: link:../../../packages/core-graph-json
-      '@monorepo/core-graph-visualisation':
-        specifier: workspace:*
-        version: link:../../../packages/core-graph-visualisation
-      '@monorepo/core-graph-visualisation-hierarchical':
-        specifier: workspace:*
-        version: link:../../../packages/core-graph-visualisation-hierarchical
-      '@monorepo/core-graph-visualization-d3':
-        specifier: workspace:*
-        version: link:../../../packages/core-graph-visualization-d3
-      '@monorepo/core-graph-visualization-dgml':
-        specifier: workspace:*
-        version: link:../../../packages/core-graph-visualization-DGML
-      d3-force:
-        specifier: ^3.0.0
-        version: 3.0.0
-      lit:
-        specifier: ^3.3.2
-        version: 3.3.2
-    devDependencies:
-      typescript:
-        specifier: ~6.0.2
-        version: 6.0.2
-      vite:
-        specifier: ^8.0.4
-        version: 8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
-
   Applications/pdf/drawing-tool/application/make-clusters-and-validate-db-scan:
     dependencies:
       '@monorepo/core-design-patterns':
@@ -733,10 +699,10 @@ importers:
         version: link:../../../../../packages/core-fsm
       '@monorepo/core-http-messages':
         specifier: workspace:*
-        version: link:../../../../../packages/core-http-messages
+        version: link:../../../../../packages/core-http-request-message-ollama/core-http-messages
       '@monorepo/core-http-messages-http-client':
         specifier: workspace:*
-        version: link:../../../../../packages/core-http-messages-http-client
+        version: link:../../../../../packages/core-http-request-message-ollama/core-http-messages-http-client
       '@monorepo/core-json':
         specifier: workspace:*
         version: link:../../core-json
@@ -770,13 +736,10 @@ importers:
         version: link:../core-group-shape-test-data
       '@monorepo/core-http-messages':
         specifier: workspace:*
-        version: link:../../../../packages/core-http-messages
-      '@monorepo/core-http-messages-express':
-        specifier: workspace:*
-        version: link:../../../../packages/core-http-messages-express
+        version: link:../../../../packages/core-http-request-message-ollama/core-http-messages
       '@monorepo/core-http-messages-http-client':
         specifier: workspace:*
-        version: link:../../../../packages/core-http-messages-http-client
+        version: link:../../../../packages/core-http-request-message-ollama/core-http-messages-http-client
       '@monorepo/core-json':
         specifier: workspace:*
         version: link:../core-json
@@ -1111,6 +1074,93 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer:
+    dependencies:
+      '@monorepo/audio-function-midi-streamer-contracts':
+        specifier: workspace:*
+        version: link:../audio-function-midi-streamer-contracts
+    devDependencies:
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer-contracts:
+    devDependencies:
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer-contracts-web-audio:
+    dependencies:
+      '@monorepo/audio-function-midi-streamer-contracts':
+        specifier: workspace:*
+        version: link:../audio-function-midi-streamer-contracts
+    devDependencies:
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer-ui:
+    dependencies:
+      '@monorepo/audio-function-midi-streamer-contracts':
+        specifier: workspace:*
+        version: link:../audio-function-midi-streamer-contracts
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@25.0.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer-web-audio:
+    dependencies:
+      '@monorepo/audio-function-midi-streamer':
+        specifier: workspace:*
+        version: link:../audio-function-midi-streamer
+      '@monorepo/audio-function-midi-streamer-contracts':
+        specifier: workspace:*
+        version: link:../audio-function-midi-streamer-contracts
+
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/functional-modules/sequencer/music-core-sequencer:
     devDependencies:
       rimraf:
@@ -1261,6 +1311,9 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-filters-contracts:
     dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
       '@monorepo/music-core-synthesizer-parameters':
         specifier: workspace:*
         version: link:../music-core-synthesizer-parameters
@@ -1283,6 +1336,9 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-midi-contracts:
     dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
       '@monorepo/music-core-synthesizer-parameters':
         specifier: workspace:*
         version: link:../music-core-synthesizer-parameters
@@ -1305,6 +1361,9 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-modulation-contracts:
     dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
       '@monorepo/music-core-synthesizer-parameters':
         specifier: workspace:*
         version: link:../music-core-synthesizer-parameters
@@ -1327,6 +1386,9 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-noise-contracts:
     dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
       '@monorepo/music-core-synthesizer-parameters':
         specifier: workspace:*
         version: link:../music-core-synthesizer-parameters
@@ -1401,7 +1463,7 @@ importers:
         specifier: workspace:*
         version: link:../music-core-synthesizer-oscillators-contracts
       lit:
-        specifier: ^3.3.2
+        specifier: ^3.3.1
         version: 3.3.2
     devDependencies:
       jsdom:
@@ -1431,6 +1493,10 @@ importers:
         version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-parameters-contracts:
+    dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
     devDependencies:
       rimraf:
         specifier: ^6.0.1
@@ -1458,13 +1524,29 @@ importers:
         version: 5.9.3
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice:
+    dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
+      '@monorepo/music-core-synthesizer-envelopes-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-contracts
+      '@monorepo/music-core-synthesizer-oscillators-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-contracts
+      '@monorepo/music-core-synthesizer-voice-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice-contracts
     devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
       typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
+        specifier: ~6.0.2
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-allocator:
     dependencies:
@@ -1515,13 +1597,110 @@ importers:
         version: 5.9.3
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-contracts:
+    dependencies:
+      '@monorepo/core-specifications':
+        specifier: workspace:*
+        version: link:../../../../../core-specifications
+      '@monorepo/music-core-synthesizer-envelopes-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-contracts
+      '@monorepo/music-core-synthesizer-oscillators-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-contracts
+      '@monorepo/music-core-synthesizer-parameters':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-parameters
     devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
       typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
+        specifier: ~6.0.2
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-playwrigth:
+    dependencies:
+      '@monorepo/music-core-synthesizer-envelopes-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-contracts
+      '@monorepo/music-core-synthesizer-envelopes-web-audio':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-web-audio
+      '@monorepo/music-core-synthesizer-oscillators-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-contracts
+      '@monorepo/music-core-synthesizer-oscillators-web-ui':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-web-ui
+      '@monorepo/music-core-synthesizer-voice':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice
+      '@monorepo/music-core-synthesizer-voice-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice-contracts
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.56.0
+        version: 1.59.1
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.10
+        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-ui:
+    dependencies:
+      '@monorepo/music-core-synthesizer-voice-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice-contracts
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
+      jsdom:
+        specifier: ^27.0.0
+        version: 27.4.0
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@27.4.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-voice-web-audio:
+    dependencies:
+      '@monorepo/music-core-synthesizer-envelopes-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-contracts
+      '@monorepo/music-core-synthesizer-envelopes-web-audio':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-envelopes-web-audio
+      '@monorepo/music-core-synthesizer-oscillators-web-audio':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-oscillators-web-audio
+      '@monorepo/music-core-synthesizer-voice':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice
+      '@monorepo/music-core-synthesizer-voice-contracts':
+        specifier: workspace:*
+        version: link:../music-core-synthesizer-voice-contracts
+    devDependencies:
+      chai:
+        specifier: ^5.1.2
+        version: 5.3.3
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/Audio/project-x-ray-sound-magic/music-core-synthesizer/modules/music-core-synthesizer-web-audio:
     dependencies:
@@ -1613,6 +1792,15 @@ importers:
 
   packages/Audio/project-x-ray-sound-magic/test-playground/modules-basic-tester:
     dependencies:
+      '@monorepo/audio-function-midi-streamer':
+        specifier: workspace:*
+        version: link:../../music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer
+      '@monorepo/audio-function-midi-streamer-contracts':
+        specifier: workspace:*
+        version: link:../../music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer-contracts
+      '@monorepo/audio-function-midi-streamer-ui':
+        specifier: workspace:*
+        version: link:../../music-core-synthesizer/functional-modules/midi-streamer/audio-function-midi-streamer-ui
       '@monorepo/music-core-synthesizer-envelopes-contracts':
         specifier: workspace:*
         version: link:../../music-core-synthesizer/modules/music-core-synthesizer-envelopes-contracts
@@ -2086,13 +2274,13 @@ importers:
     dependencies:
       '@monorepo/core-http-message-factories':
         specifier: workspace:*
-        version: link:../core-http-message-factories
+        version: link:../core-http-request-message-ollama/core-http-message-factories
       '@monorepo/core-http-messages':
         specifier: workspace:*
-        version: link:../core-http-messages
+        version: link:../core-http-request-message-ollama/core-http-messages
       '@monorepo/core-http-messages-http-client':
         specifier: workspace:*
-        version: link:../core-http-messages-http-client
+        version: link:../core-http-request-message-ollama/core-http-messages-http-client
     devDependencies:
       rimraf:
         specifier: ^6.0.1
@@ -2533,34 +2721,6 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-formatter:
-    dependencies:
-      '@monorepo/core-template':
-        specifier: workspace:*
-        version: link:../core-template
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
-      tsyringe:
-        specifier: ^4.8.0
-        version: 4.10.0
-
-  packages/core-formatter/core-example:
-    dependencies:
-      '@monorepo/core-logger-abstract':
-        specifier: workspace:*
-        version: link:../../core-logger-abstract
-      '@monorepo/core-logger-web':
-        specifier: workspace:*
-        version: link:../../core-logger-web
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.6.0
-        version: 5.9.3
-
   packages/core-fsm:
     devDependencies:
       rimraf:
@@ -2589,7 +2749,7 @@ importers:
     dependencies:
       '@monorepo/core-graph-visualisation':
         specifier: workspace:*
-        version: link:../core-graph-visualisation
+        version: link:../core-graph-visualisation-modules/core-graph-visualisation
       d3-force:
         specifier: ^3.0.0
         version: 3.0.0
@@ -2620,11 +2780,11 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-graph-pathfinding:
+  packages/core-graph-pathfinding-modules/core-graph-pathfinding:
     dependencies:
       '@monorepo/core-graph':
         specifier: workspace:*
-        version: link:../core-graph
+        version: link:../../core-graph
       '@monorepo/core-graph-pathfinding-domain':
         specifier: workspace:*
         version: link:../core-graph-pathfinding-domain
@@ -2639,7 +2799,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-graph-pathfinding-a-star:
+  packages/core-graph-pathfinding-modules/core-graph-pathfinding-a-star:
     dependencies:
       '@monorepo/core-graph-pathfinding':
         specifier: workspace:*
@@ -2664,11 +2824,11 @@ importers:
         specifier: ^1.6.0
         version: 1.6.1(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)
 
-  packages/core-graph-pathfinding-builder:
+  packages/core-graph-pathfinding-modules/core-graph-pathfinding-builder:
     dependencies:
       '@monorepo/core-graph':
         specifier: workspace:*
-        version: link:../core-graph
+        version: link:../../core-graph
       '@monorepo/core-graph-pathfinding-domain':
         specifier: workspace:*
         version: link:../core-graph-pathfinding-domain
@@ -2683,7 +2843,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-graph-pathfinding-composition:
+  packages/core-graph-pathfinding-modules/core-graph-pathfinding-composition:
     dependencies:
       '@monorepo/core-graph-pathfinding-domain':
         specifier: workspace:*
@@ -2699,7 +2859,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-graph-pathfinding-domain:
+  packages/core-graph-pathfinding-modules/core-graph-pathfinding-domain:
     devDependencies:
       rimraf:
         specifier: ^6.0.1
@@ -2708,7 +2868,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-graph-pathfinding-domain-validators:
+  packages/core-graph-pathfinding-modules/core-graph-pathfinding-domain-validators:
     dependencies:
       '@monorepo/core-graph-pathfinding-domain':
         specifier: workspace:*
@@ -2724,17 +2884,85 @@ importers:
         specifier: ^1.6.0
         version: 1.6.1(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)
 
-  packages/core-graph-visualisation:
+  packages/core-graph-visualisation-modules/application-graph-visualisation-new:
+    dependencies:
+      '@monorepo/core-graph':
+        specifier: workspace:*
+        version: link:../../core-graph
+      '@monorepo/core-graph-json':
+        specifier: workspace:*
+        version: link:../../core-graph-json
+      '@monorepo/core-graph-visualisation':
+        specifier: workspace:*
+        version: link:../core-graph-visualisation
+      '@monorepo/core-graph-visualisation-hierarchical':
+        specifier: workspace:*
+        version: link:../core-graph-visualisation-hierarchical
+      '@monorepo/core-graph-visualization-d3':
+        specifier: workspace:*
+        version: link:../core-graph-visualization-d3
+      '@monorepo/core-graph-visualization-dgml':
+        specifier: workspace:*
+        version: link:../core-graph-visualization-DGML
+      d3-force:
+        specifier: ^3.0.0
+        version: 3.0.0
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.4
+        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/core-graph-visualisation-modules/application-graph-vizualisation:
+    dependencies:
+      '@monorepo/core-graph':
+        specifier: workspace:*
+        version: link:../../core-graph
+      '@monorepo/core-graph-json':
+        specifier: workspace:*
+        version: link:../../core-graph-json
+      '@monorepo/core-graph-visualisation':
+        specifier: workspace:*
+        version: link:../core-graph-visualisation
+      '@monorepo/core-graph-visualisation-hierarchical':
+        specifier: workspace:*
+        version: link:../core-graph-visualisation-hierarchical
+      '@monorepo/core-graph-visualization-d3':
+        specifier: workspace:*
+        version: link:../core-graph-visualization-d3
+      '@monorepo/core-graph-visualization-dgml':
+        specifier: workspace:*
+        version: link:../core-graph-visualization-DGML
+      d3-force:
+        specifier: ^3.0.0
+        version: 3.0.0
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.4
+        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+
+  packages/core-graph-visualisation-modules/core-graph-visualisation:
     dependencies:
       '@monorepo/core-fsm':
         specifier: workspace:*
-        version: link:../core-fsm
+        version: link:../../core-fsm
       '@monorepo/core-graph':
         specifier: workspace:*
-        version: link:../core-graph
+        version: link:../../core-graph
       '@monorepo/core-scene-graph':
         specifier: workspace:*
-        version: link:../core-scene-graph
+        version: link:../../core-scene-graph
       lit:
         specifier: ^3.3.1
         version: 3.3.2
@@ -2746,7 +2974,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-graph-visualisation-hierarchical:
+  packages/core-graph-visualisation-modules/core-graph-visualisation-hierarchical:
     dependencies:
       '@monorepo/core-graph-visualisation':
         specifier: workspace:*
@@ -2759,7 +2987,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-graph-visualization-DGML:
+  packages/core-graph-visualisation-modules/core-graph-visualization-DGML:
     dependencies:
       '@monorepo/core-graph-visualisation':
         specifier: workspace:*
@@ -2770,7 +2998,7 @@ importers:
     devDependencies:
       '@monorepo/core-graph':
         specifier: workspace:*
-        version: link:../core-graph
+        version: link:../../core-graph
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -2778,7 +3006,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-graph-visualization-d3:
+  packages/core-graph-visualisation-modules/core-graph-visualization-d3:
     dependencies:
       '@monorepo/core-graph-visualisation':
         specifier: workspace:*
@@ -2800,7 +3028,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-graph-visualization-routing-egdes:
+  packages/core-graph-visualisation-modules/core-graph-visualization-routing-egdes:
     dependencies:
       '@monorepo/core-graph-visualisation':
         specifier: workspace:*
@@ -2808,7 +3036,7 @@ importers:
     devDependencies:
       '@monorepo/core-graph':
         specifier: workspace:*
-        version: link:../core-graph
+        version: link:../../core-graph
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -2822,7 +3050,35 @@ importers:
         specifier: workspace:*
         version: link:../core-threejs
 
-  packages/core-http-message-factories:
+  packages/core-http-request-message-ollama/core-formatter:
+    dependencies:
+      '@monorepo/core-template':
+        specifier: workspace:*
+        version: link:../../core-template
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+      tsyringe:
+        specifier: ^4.8.0
+        version: 4.10.0
+
+  packages/core-http-request-message-ollama/core-formatter/core-example:
+    dependencies:
+      '@monorepo/core-logger-abstract':
+        specifier: workspace:*
+        version: link:../../../core-logger-abstract
+      '@monorepo/core-logger-web':
+        specifier: workspace:*
+        version: link:../../../core-logger-web
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+
+  packages/core-http-request-message-ollama/core-http-message-factories:
     dependencies:
       '@monorepo/core-http-messages':
         specifier: workspace:*
@@ -2838,7 +3094,7 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
 
-  packages/core-http-messages:
+  packages/core-http-request-message-ollama/core-http-messages:
     devDependencies:
       rimraf:
         specifier: ^6.0.1
@@ -2847,26 +3103,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-http-messages-express:
-    dependencies:
-      '@monorepo/core-http-messages':
-        specifier: workspace:*
-        version: link:../core-http-messages
-      express:
-        specifier: ^5.2.1
-        version: 5.2.1
-    devDependencies:
-      '@types/express':
-        specifier: ^5.0.6
-        version: 5.0.6
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  packages/core-http-messages-http-client:
+  packages/core-http-request-message-ollama/core-http-messages-http-client:
     dependencies:
       '@monorepo/core-http-messages':
         specifier: workspace:*
@@ -2882,7 +3119,7 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-http-messages-ollama:
+  packages/core-http-request-message-ollama/core-http-messages-ollama:
     dependencies:
       '@monorepo/core-http-message-factories':
         specifier: workspace:*
@@ -2891,6 +3128,31 @@ importers:
         specifier: workspace:*
         version: link:../core-http-messages
     devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/core-http-request-message-ollama/core-http-messages-ollama-integration-tests:
+    dependencies:
+      '@monorepo/core-http-message-factories':
+        specifier: workspace:*
+        version: link:../core-http-message-factories
+      '@monorepo/core-http-messages':
+        specifier: workspace:*
+        version: link:../core-http-messages
+      '@monorepo/core-http-messages-http-client':
+        specifier: workspace:*
+        version: link:../core-http-messages-http-client
+      '@monorepo/core-http-messages-ollama':
+        specifier: workspace:*
+        version: link:../core-http-messages-ollama
+    devDependencies:
+      playwright:
+        specifier: ^1.59.1
+        version: 1.59.1
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -3747,8 +4009,49 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
-  packages/core-web-scrapping:
+  packages/core-web-scrapping-modules/core-web-scrapping-abstract:
+    dependencies:
+      '@monorepo/core-http-messages':
+        specifier: workspace:*
+        version: link:../../core-http-request-message-ollama/core-http-messages
+      '@monorepo/core-http-messages-http-client':
+        specifier: workspace:*
+        version: link:../../core-http-request-message-ollama/core-http-messages-http-client
+      playwright:
+        specifier: ^1.59.1
+        version: 1.59.1
+      remeda:
+        specifier: ^2.34.0
+        version: 2.34.0
     devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/core-web-scrapping-modules/core-web-scrapping-fifa:
+    dependencies:
+      '@monorepo/core-http-messages':
+        specifier: workspace:*
+        version: link:../../core-http-request-message-ollama/core-http-messages
+      '@monorepo/core-http-messages-http-client':
+        specifier: workspace:*
+        version: link:../../core-http-request-message-ollama/core-http-messages-http-client
+      '@monorepo/core-web-scrapping-abstract':
+        specifier: workspace:*
+        version: link:../core-web-scrapping-abstract
+      playwright:
+        specifier: ^1.59.1
+        version: 1.59.1
+      remeda:
+        specifier: ^2.34.0
+        version: 2.34.0
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.59.1
+        version: 1.59.1
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -4971,6 +5274,11 @@ packages:
 
   '@pdf-lib/upng@1.0.1':
     resolution: {integrity: sha512-dQK2FUMQtowVP00mtIksrlZhdFXQZPC+taih1q4CvPZ5vqdxR/LKBaFg0oAfzd1GlHZXXSPdQfzQnt+ViGvEIQ==}
+
+  '@playwright/test@1.59.1':
+    resolution: {integrity: sha512-PG6q63nQg5c9rIi4/Z5lR5IVF7yU5MqmKaPOe0HSc0O2cX1fPi96sUQu5j7eo4gKCkB2AnNGoWt7y4/Xx3Kcqg==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
@@ -7094,6 +7402,15 @@ packages:
       canvas:
         optional: true
 
+  jsdom@25.0.1:
+    resolution: {integrity: sha512-8i7LzZj7BF8uplX+ZyOlIz86V6TAsSs+np6m1kpW9u0JWi4z/1t+FzcK1aek+ybTnAC4KhBL4uXCNT0wcUIeCw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      canvas: ^2.11.2
+    peerDependenciesMeta:
+      canvas:
+        optional: true
+
   jsdom@26.1.0:
     resolution: {integrity: sha512-Cvc9WUhxSMEo4McES3P7oK3QaXldCfNWp7pl2NNeiIFlCoLr3kfq9kb1fxftiwk1FLV7CvpvDfonxtzUDeSOPg==}
     engines: {node: '>=18'}
@@ -7719,6 +8036,9 @@ packages:
   regjsparser@0.13.1:
     resolution: {integrity: sha512-dLsljMd9sqwRkby8zhO1gSg3PnJIBFid8f4CQj/sXx+7cKx+E7u0PKhZ+U4wmhx7EfmtvnA318oVaIkAB1lRJw==}
     hasBin: true
+
+  remeda@2.34.0:
+    resolution: {integrity: sha512-zL4cEPkLHxwmlDRPyvJZjojpG5M5HXrDiABNKof+dq7kkuyQttP6NrF2uJB0DKIU09K8cTq+sQDlbo2r7mdR5Q==}
 
   require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
@@ -9974,6 +10294,10 @@ snapshots:
   '@pdf-lib/upng@1.0.1':
     dependencies:
       pako: 1.0.11
+
+  '@playwright/test@1.59.1':
+    dependencies:
+      playwright: 1.59.1
 
   '@polka/url@1.0.0-next.29': {}
 
@@ -12300,6 +12624,34 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  jsdom@25.0.1:
+    dependencies:
+      cssstyle: 4.6.0
+      data-urls: 5.0.0
+      decimal.js: 10.6.0
+      form-data: 4.0.5
+      html-encoding-sniffer: 4.0.0
+      http-proxy-agent: 7.0.2
+      https-proxy-agent: 7.0.6(supports-color@10.2.2)
+      is-potential-custom-element-name: 1.0.1
+      nwsapi: 2.2.23
+      parse5: 7.3.0
+      rrweb-cssom: 0.7.1
+      saxes: 6.0.0
+      symbol-tree: 3.2.4
+      tough-cookie: 5.1.2
+      w3c-xmlserializer: 5.0.0
+      webidl-conversions: 7.0.0
+      whatwg-encoding: 3.1.1
+      whatwg-mimetype: 4.0.0
+      whatwg-url: 14.2.0
+      ws: 8.20.0
+      xml-name-validator: 5.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
   jsdom@26.1.0:
     dependencies:
       cssstyle: 4.6.0
@@ -12957,6 +13309,8 @@ snapshots:
   regjsparser@0.13.1:
     dependencies:
       jsesc: 3.1.0
+
+  remeda@2.34.0: {}
 
   require-from-string@2.0.2: {}
 
@@ -13935,6 +14289,50 @@ snapshots:
       '@vitest/ui': 3.2.4(vitest@3.2.4)
       happy-dom: 20.8.9
       jsdom: 29.0.2
+    transitivePeerDependencies:
+      - jiti
+      - less
+      - lightningcss
+      - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - tsx
+      - yaml
+
+  vitest@3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@25.0.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3):
+    dependencies:
+      '@types/chai': 5.2.3
+      '@vitest/expect': 3.2.4
+      '@vitest/mocker': 3.2.4(vite@7.3.2(@types/node@25.6.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))
+      '@vitest/pretty-format': 3.2.4
+      '@vitest/runner': 3.2.4
+      '@vitest/snapshot': 3.2.4
+      '@vitest/spy': 3.2.4
+      '@vitest/utils': 3.2.4
+      chai: 5.3.3
+      debug: 4.4.3(supports-color@10.2.2)
+      expect-type: 1.3.0
+      magic-string: 0.30.21
+      pathe: 2.0.3
+      picomatch: 4.0.4
+      std-env: 3.10.0
+      tinybench: 2.9.0
+      tinyexec: 0.3.2
+      tinyglobby: 0.2.16
+      tinypool: 1.1.1
+      tinyrainbow: 2.0.0
+      vite: 7.3.2(@types/node@25.6.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+      vite-node: 3.2.4(@types/node@25.6.0)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
+      why-is-node-running: 2.3.0
+    optionalDependencies:
+      '@types/node': 25.6.0
+      '@vitest/ui': 3.2.4(vitest@3.2.4)
+      happy-dom: 20.8.9
+      jsdom: 25.0.1
     transitivePeerDependencies:
       - jiti
       - less

@@ -1,0 +1,221 @@
+{
+  "graph": {
+    "id": "champions-league-players",
+    "metadata": {
+      "label": "UEFA Champions League Players",
+      "version": "1.0",
+      "description": "Sample JGF graph connecting Champions League teams, players, and player nationalities."
+    },
+    "nodes": [
+      {
+        "id": "UEFA Champions League",
+        "metadata": {
+          "label": "UEFA Champions League",
+          "kind": "competition"
+        }
+      },
+      {
+        "id": "Manchester City",
+        "metadata": {
+          "label": "Manchester City",
+          "kind": "team",
+          "country": "England"
+        }
+      },
+      {
+        "id": "Real Madrid",
+        "metadata": {
+          "label": "Real Madrid",
+          "kind": "team",
+          "country": "Spain"
+        }
+      },
+      {
+        "id": "FC Barcelona",
+        "metadata": {
+          "label": "FC Barcelona",
+          "kind": "team",
+          "country": "Spain"
+        }
+      },
+      {
+        "id": "FC Bayern Munich",
+        "metadata": {
+          "label": "FC Bayern Munich",
+          "kind": "team",
+          "country": "Germany"
+        }
+      },
+      {
+        "id": "Erling Haaland",
+        "metadata": {
+          "label": "Erling Haaland",
+          "kind": "player",
+          "position": "forward"
+        }
+      },
+      {
+        "id": "Kylian Mbappé",
+        "metadata": {
+          "label": "Kylian Mbappé",
+          "kind": "player",
+          "position": "forward"
+        }
+      },
+      {
+        "id": "Lamine Yamal",
+        "metadata": {
+          "label": "Lamine Yamal",
+          "kind": "player",
+          "position": "forward"
+        }
+      },
+      {
+        "id": "Harry Kane",
+        "metadata": {
+          "label": "Harry Kane",
+          "kind": "player",
+          "position": "forward"
+        }
+      },
+      {
+        "id": "Norway",
+        "metadata": {
+          "label": "Norway",
+          "kind": "nationality"
+        }
+      },
+      {
+        "id": "France",
+        "metadata": {
+          "label": "France",
+          "kind": "nationality"
+        }
+      },
+      {
+        "id": "Spain",
+        "metadata": {
+          "label": "Spain",
+          "kind": "nationality"
+        }
+      },
+      {
+        "id": "England",
+        "metadata": {
+          "label": "England",
+          "kind": "nationality"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "competition-team-manchester-city",
+        "source": "UEFA Champions League",
+        "target": "Manchester City",
+        "metadata": {
+          "label": "includes team",
+          "relation": "includes-team"
+        }
+      },
+      {
+        "id": "competition-team-real-madrid",
+        "source": "UEFA Champions League",
+        "target": "Real Madrid",
+        "metadata": {
+          "label": "includes team",
+          "relation": "includes-team"
+        }
+      },
+      {
+        "id": "competition-team-fc-barcelona",
+        "source": "UEFA Champions League",
+        "target": "FC Barcelona",
+        "metadata": {
+          "label": "includes team",
+          "relation": "includes-team"
+        }
+      },
+      {
+        "id": "competition-team-fc-bayern-munich",
+        "source": "UEFA Champions League",
+        "target": "FC Bayern Munich",
+        "metadata": {
+          "label": "includes team",
+          "relation": "includes-team"
+        }
+      },
+      {
+        "id": "team-player-erling-haaland",
+        "source": "Manchester City",
+        "target": "Erling Haaland",
+        "metadata": {
+          "label": "has player",
+          "relation": "has-player"
+        }
+      },
+      {
+        "id": "player-nationality-erling-haaland-norway",
+        "source": "Erling Haaland",
+        "target": "Norway",
+        "metadata": {
+          "label": "nationality",
+          "relation": "has-nationality"
+        }
+      },
+      {
+        "id": "team-player-kylian-mbappe",
+        "source": "Real Madrid",
+        "target": "Kylian Mbappé",
+        "metadata": {
+          "label": "has player",
+          "relation": "has-player"
+        }
+      },
+      {
+        "id": "player-nationality-kylian-mbappe-france",
+        "source": "Kylian Mbappé",
+        "target": "France",
+        "metadata": {
+          "label": "nationality",
+          "relation": "has-nationality"
+        }
+      },
+      {
+        "id": "team-player-lamine-yamal",
+        "source": "FC Barcelona",
+        "target": "Lamine Yamal",
+        "metadata": {
+          "label": "has player",
+          "relation": "has-player"
+        }
+      },
+      {
+        "id": "player-nationality-lamine-yamal-spain",
+        "source": "Lamine Yamal",
+        "target": "Spain",
+        "metadata": {
+          "label": "nationality",
+          "relation": "has-nationality"
+        }
+      },
+      {
+        "id": "team-player-harry-kane",
+        "source": "FC Bayern Munich",
+        "target": "Harry Kane",
+        "metadata": {
+          "label": "has player",
+          "relation": "has-player"
+        }
+      },
+      {
+        "id": "player-nationality-harry-kane-england",
+        "source": "Harry Kane",
+        "target": "England",
+        "metadata": {
+          "label": "nationality",
+          "relation": "has-nationality"
+        }
+      }
+    ]
+  }
+}

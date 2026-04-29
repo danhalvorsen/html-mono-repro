@@ -1,7 +1,9 @@
-﻿import type { IViewFeature } from "./IViewFeature.js";
+import type { IViewFeature } from "./IViewFeature.js";
 
 import { AboutFeature } from "../features/aboutFeature/aboutFeature.js";
+import { FooFooFeature } from "../features/fooFooFeature/fooFooFeature.js";
 import { HomeFeature } from "../features/homeFeature/homeFeature.js";
+import { MultiOscillatorsFeature } from "../features/multiOscillatorsFeature/multiOscillatorsFeature.js";
 import { SoundTestFeature } from "../features/soundTestFeature/soundTestFeature.js";
 
 export class ViewFeatureCatalog {
@@ -32,10 +34,18 @@ export class ViewFeatureCatalog {
   }
 }
 
+export class ViewFeatureCatalogFactory {
+  public create(): ViewFeatureCatalog {
+    return new ViewFeatureCatalog([
+      new HomeFeature(),
+      new AboutFeature(),
+      new SoundTestFeature(),
+      new FooFooFeature(),
+      new MultiOscillatorsFeature(),
+    ]);
+  }
+}
+
 export function createViewFeatureCatalog(): ViewFeatureCatalog {
-  return new ViewFeatureCatalog([
-    new HomeFeature(),
-    new AboutFeature(),
-    new SoundTestFeature(),
-  ]);
+  return new ViewFeatureCatalogFactory().create();
 }

@@ -1,6 +1,7 @@
-﻿// FILE: test-playground/modules-basic-tester/src/features/soundTestFeature/SoundController.ts
-
-import type { MidiMessage } from "@monorepo/music-core-midi";
+import {
+  MidiMessageKinds,
+  type MidiMessage,
+} from "@monorepo/audio-function-midi-streamer-contracts";
 import {
   OscillatorKind,
   OscillatorWaveformKind,
@@ -15,11 +16,6 @@ import {
 
 import { BrowserWebAudioContextAdapter } from "./BrowserWebAudioContextAdapter.js";
 import { MidiNoteFrequencyMapper } from "./MidiNoteFrequencyMapper.js";
-
-const MidiMessageStatus = {
-  NoteOff: 0x80,
-  NoteOn: 0x90,
-} as const;
 
 export type OscillatorIndex = 0 | 1;
 
@@ -87,13 +83,23 @@ export class SoundController {
   public async handleMidiMessage(message: MidiMessage): Promise<void> {
     await this.init();
 
-    switch (message.status) {
-      case MidiMessageStatus.NoteOn:
-        this.noteOn(message.note.value(), message.velocity.value() / 127);
+    switch (message.kind) {
+      case MidiMessageKinds.noteOn:
+        if (message.velocity <= 0) {
+          this.noteOff();
+          return;
+        }
+
+        this.noteOn(message.note, message.velocity / 127);
         return;
 
-      case MidiMessageStatus.NoteOff:
+      case MidiMessageKinds.noteOff:
         this.noteOff();
+        return;
+
+      case MidiMessageKinds.controlChange:
+      case MidiMessageKinds.pitchBend:
+      case MidiMessageKinds.systemExclusive:
         return;
     }
   }

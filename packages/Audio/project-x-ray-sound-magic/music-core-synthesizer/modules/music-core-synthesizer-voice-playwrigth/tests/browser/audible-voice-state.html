@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Audible Voice State Test</title>
+  </head>
+  <body>
+    <main>
+      <button id="create-voice" type="button">Create Voice</button>
+      <button id="play-voice" type="button">Play Audible Voice</button>
+      <button id="reset" type="button">Reset</button>
+
+      <output id="voice-state" aria-live="polite">not-created</output>
+      <output id="voice-frequency" aria-live="polite">none</output>
+      <output id="voice-velocity" aria-live="polite">0</output>
+      <output id="voice-duration-ms" aria-live="polite">0</output>
+      <output id="voice-elapsed-ms" aria-live="polite">0</output>
+      <output id="voice-error" aria-live="polite"></output>
+    </main>
+
+    <script type="module" src="./audible-voice-state-harness.ts"></script>
+  </body>
+</html>

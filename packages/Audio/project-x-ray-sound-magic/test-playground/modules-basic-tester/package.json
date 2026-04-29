@@ -15,8 +15,11 @@
     "@monorepo/music-core-synthesizer-envelopes-web-audio": "workspace:*",
     "@monorepo/music-core-synthesizer-oscillators-contracts": "workspace:*",
     "@monorepo/music-core-synthesizer-oscillators-web-audio": "workspace:*",
-    "@monorepo/music-core-synthesizer-oscillators-web-ui": "workspace:*", 
-    "@monorepo/music-core-synthesizer-envelopes-ui": "workspace:*"
+    "@monorepo/music-core-synthesizer-oscillators-web-ui": "workspace:*",
+    "@monorepo/music-core-synthesizer-envelopes-ui": "workspace:*",
+    "@monorepo/audio-function-midi-streamer": "workspace:*",
+    "@monorepo/audio-function-midi-streamer-contracts": "workspace:*",
+    "@monorepo/audio-function-midi-streamer-ui": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

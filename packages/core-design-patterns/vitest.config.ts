@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig } from 'vitest/config';
 import path from 'path';
 
 export default defineConfig({
@@ -9,8 +9,7 @@ export default defineConfig({
     isolate: false,
     pool: 'threads',
   },
-
   resolve: {
- 
-}}
-);
+    // Add aliases or other resolve options here if needed
+  }
+});

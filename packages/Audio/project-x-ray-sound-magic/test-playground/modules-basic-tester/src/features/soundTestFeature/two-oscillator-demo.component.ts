@@ -1,33 +1,57 @@
-// FILE: test-playground/modules-basic-tester/src/features/soundTestFeature/two-oscillator-demo.component.ts
-
-import { LitElement, css, html } from "lit";
+import {
+  DefaultMidiSongCatalogFactory,
+  MidiSongStreamerFactory,
+} from "@monorepo/audio-function-midi-streamer";
+import {
+  MidiMessageKinds,
+  type MidiMessage,
+  type MidiSong,
+  type MidiStreamFailure,
+  type MidiStreamMessage,
+} from "@monorepo/audio-function-midi-streamer-contracts";
+import type { OscillatorDefinition } from "@monorepo/music-core-synthesizer-oscillators-contracts";
+import { LitElement, css, html, type TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import type { OscillatorDefinition } from "@monorepo/music-core-synthesizer-oscillators-contracts";
- 
-import type { MidiMessageStreamEvent } from "./midi-controller.component.js";
-import "./midi-controller.component.js";
-
-type OscillatorDefinitionChangedEvent = CustomEvent<{
-  readonly definition: OscillatorDefinition;
-}>;
 import {
   SoundController,
   type OscillatorIndex,
 } from "./SoundController.js";
 
+type OscillatorDefinitionChangedEvent = CustomEvent<{
+  readonly definition: OscillatorDefinition;
+}>;
+
+type MidiStreamMessageEvent = CustomEvent<MidiStreamMessage>;
+type MidiStreamFailureEvent = CustomEvent<MidiStreamFailure>;
+
 @customElement("two-oscillator-demo")
 export class TwoOscillatorDemoComponent extends LitElement {
+  private static readonly midiSongCatalogUrl = new URL(
+    "../../../../../music-core-synthesizer/functional-modules/midi-streamer/sample-songs/midi-songs.json",
+    import.meta.url,
+  ).href;
+
   private readonly soundController = new SoundController();
+
+  private readonly midiStreamer =
+    new MidiSongStreamerFactory().createBrowserDefault();
+
+  private readonly songCatalogFactory = new DefaultMidiSongCatalogFactory();
 
   @state()
   private status = "Ready";
 
   @state()
-  private oscillatorADefinition = this.soundController.getOscillatorDefinition(0);
+  private songs: readonly MidiSong[] = [];
 
   @state()
-  private oscillatorBDefinition = this.soundController.getOscillatorDefinition(1);
+  private oscillatorADefinition =
+    this.soundController.getOscillatorDefinition(0);
+
+  @state()
+  private oscillatorBDefinition =
+    this.soundController.getOscillatorDefinition(1);
 
   public static override readonly styles = css`
     :host {
@@ -39,11 +63,12 @@ export class TwoOscillatorDemoComponent extends LitElement {
       gap: 16px;
     }
 
-    .toolbar {
+    .toolbar,
+    .controls {
       display: flex;
-      gap: 12px;
+      gap: 16px;
       flex-wrap: wrap;
-      align-items: center;
+      align-items: flex-start;
     }
 
     button {
@@ -59,15 +84,26 @@ export class TwoOscillatorDemoComponent extends LitElement {
       font-size: 13px;
     }
 
-    .controls {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      align-items: flex-start;
+    audio-function-midi-streamer {
+      display: block;
+      min-width: 320px;
+      padding: 12px;
+      border: 1px solid #333;
+      border-radius: 8px;
     }
   `;
 
-  public override render() {
+  public override connectedCallback(): void {
+    super.connectedCallback();
+    void this.loadMidiSongs();
+  }
+
+  public override disconnectedCallback(): void {
+    this.soundController.noteOff();
+    super.disconnectedCallback();
+  }
+
+  public override render(): TemplateResult {
     return html`
       <section class="layout">
         <h1>Oscillator View</h1>
@@ -96,20 +132,40 @@ export class TwoOscillatorDemoComponent extends LitElement {
             ) => this.onOscillatorDefinitionChanged(1, event)}
           ></oscillator-control>
 
-          <midi-controller
-            @midi-message=${this.onMidiMessage}
-            @midi-song-started=${this.onMidiStarted}
-            @midi-song-stopped=${this.onMidiStopped}
-            @midi-song-completed=${this.onMidiCompleted}
-          ></midi-controller>
+          <audio-function-midi-streamer
+            .streamer=${this.midiStreamer}
+            .songs=${this.songs}
+            @audio-function-midi-streamer:song-selected=${this.onMidiSongSelected}
+            @audio-function-midi-streamer:midi-message=${this.onMidiMessage}
+            @audio-function-midi-streamer:stream-completed=${this.onMidiCompleted}
+            @audio-function-midi-streamer:stream-failed=${this.onMidiFailed}
+          ></audio-function-midi-streamer>
         </div>
       </section>
     `;
   }
 
-  public override disconnectedCallback(): void {
-    this.soundController.noteOff();
-    super.disconnectedCallback();
+  private async loadMidiSongs(): Promise<void> {
+    try {
+      this.status = "Loading MIDI songs...";
+
+      const response = await fetch(TwoOscillatorDemoComponent.midiSongCatalogUrl);
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to load MIDI song catalog. HTTP status: ${response.status}.`,
+        );
+      }
+
+      const json = (await response.json()) as unknown;
+      const repository = this.songCatalogFactory.createFromJson(json);
+
+      this.songs = await repository.list();
+      this.status = `Loaded ${this.songs.length} MIDI song(s)`;
+    } catch (error) {
+      this.songs = [];
+      this.status = `MIDI song load failed: ${this.getErrorMessage(error)}`;
+    }
   }
 
   private readonly playC4 = async (): Promise<void> => {
@@ -138,27 +194,60 @@ export class TwoOscillatorDemoComponent extends LitElement {
     this.status = `Oscillator ${index === 0 ? "A" : "B"} changed`;
   }
 
-  private readonly onMidiStarted = async (): Promise<void> => {
+  private readonly onMidiSongSelected = async (): Promise<void> => {
     await this.soundController.init();
-    this.status = "MIDI started";
+    this.status = "MIDI song selected";
   };
 
   private readonly onMidiMessage = async (
-    event: MidiMessageStreamEvent,
+    event: MidiStreamMessageEvent,
   ): Promise<void> => {
     await this.soundController.handleMidiMessage(event.detail.message);
-    this.status = `MIDI step ${event.detail.stepIndex + 1}: ${event.detail.step.token}`;
-  };
 
-  private readonly onMidiStopped = (): void => {
-    this.soundController.noteOff();
-    this.status = "MIDI stopped";
+    this.status =
+      `MIDI ${event.detail.eventIndex + 1}: ${MidiMessageFormatter.format(
+        event.detail.message,
+      )}`;
   };
 
   private readonly onMidiCompleted = (): void => {
     this.soundController.noteOff();
     this.status = "MIDI completed";
   };
+
+  private readonly onMidiFailed = (event: MidiStreamFailureEvent): void => {
+    this.soundController.noteOff();
+    this.status = `MIDI failed: ${event.detail.message}`;
+  };
+
+  private getErrorMessage(error: unknown): string {
+    if (error instanceof Error) {
+      return error.message;
+    }
+
+    return "Unknown error.";
+  }
+}
+
+class MidiMessageFormatter {
+  public static format(message: MidiMessage): string {
+    switch (message.kind) {
+      case MidiMessageKinds.noteOn:
+        return `note-on ch=${message.channel} note=${message.note} velocity=${message.velocity}`;
+
+      case MidiMessageKinds.noteOff:
+        return `note-off ch=${message.channel} note=${message.note}`;
+
+      case MidiMessageKinds.controlChange:
+        return `cc ch=${message.channel} controller=${message.controller} value=${message.value}`;
+
+      case MidiMessageKinds.pitchBend:
+        return `pitch-bend ch=${message.channel} value=${message.value}`;
+
+      case MidiMessageKinds.systemExclusive:
+        return `sysex bytes=${message.data.length}`;
+    }
+  }
 }
 
 declare global {

@@ -29,7 +29,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    
+    "@monorepo/core-specifications": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
