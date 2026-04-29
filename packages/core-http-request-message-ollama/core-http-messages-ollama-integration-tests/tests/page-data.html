@@ -1,0 +1,38 @@
+}
+
+ ✓ tests/ollama-generate.integration.test.ts (1 test) 2196ms
+   ✓ integration: Ollama /api/generate > should send a generate request through the core HTTP client and assert structured extraction response  2194ms
+stdout | tests/lyse-strompriser-to-ollama.integration.test.ts > integration: Lyse rendered price table HTML to Ollama > should fetch Lyse, extract rendered HTML table, send it to Ollama, and assert a 24-row JSON table
+{
+  rawHtmlLength: 103003,
+  renderedTableHtmlLength: 19272,
+  deterministicRowCount: 24,
+  renderedTablePreview: '<table class="desktop-table__StyledDesktopTable-sc-1208b1ff-0 cwkuPo"><thead><tr><th class="desktop-table__StyledHeading-sc-1208b1ff-1 iUKzBi" style="word-break: break-word;">Klokkeslett</th><th class="desktop-table__StyledHeading-sc-1208b1ff-1 iUKzBi" style="word-break: break-word;">Pris per kWh</th><th class="desktop-table__StyledHeading-sc-1208b1ff-1 iUKzBi" style="word-break: break-word;">Prisinndeling</th></tr></thead><tbody><tr><td kind="normal" class="Text__StyledGrommetParagraph-sc-a7f6d1c8-1 bCdmPt">kl 00-01 </td><td kind="normal" class="Text__StyledGrommetParagraph-sc-a7f6d1c8-1 bCdmPt">130,94 øre</td><td kind="normal" class="Text__StyledGrommetParagraph-sc-a7f6d1c8-1 bCdmPt"><div '
+}
+
+ ❯ tests/lyse-strompriser-to-ollama.integration.test.ts (1 test | 1 failed) 46316ms
+   × integration: Lyse rendered price table HTML to Ollama > should fetch Lyse, extract rendered HTML table, send it to Ollama, and assert a 24-row JSON table 46315ms
+     → Unexpected sourceUrl: undefined
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/lyse-strompriser-to-ollama.integration.test.ts > integration: Lyse rendered price table HTML to Ollama > should fetch Lyse, extract rendered HTML table, send it to Ollama, and assert a 24-row JSON table
+Error: Unexpected sourceUrl: undefined
+ ❯ parseLysePriceTable tests/lyse-strompriser-to-ollama.integration.test.ts:278:11
+    276| 
+    277|   if (parsed.sourceUrl !== LyseStrompriserUrl) {
+    278|     throw new Error(`Unexpected sourceUrl: ${String(parsed.sourceUrl)}`);
+       |           ^
+    279|   }
+    280| 
+ ❯ tests/lyse-strompriser-to-ollama.integration.test.ts:72:28
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 3 passed (4)
+   Start at  08:35:25
+   Duration  47.49s (transform 182ms, setup 0ms, collect 909ms, tests 48.60s, environment 0ms, prepare 721ms)
+
+ ELIFECYCLE  Test failed. See above for more details.
+PS C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-http-request-message-ollama\core-http-messages-ollama-integration-tests> 

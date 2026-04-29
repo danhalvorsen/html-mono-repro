@@ -20,7 +20,7 @@
     "@monorepo/core-filesystem": "workspace:*",
     "@monorepo/core-json": "workspace:*",
     "@monorepo/core-http-messages": "workspace:*",  
-    "@monorepo/core-http-messages-express": "workspace:*",
+    
     "@monorepo/core-http-messages-http-client": "workspace:*",  
     "@monorepo/core-design-patterns-cqrs": "workspace:*",
     "@monorepo/core-design-patterns-mediator": "workspace:*",

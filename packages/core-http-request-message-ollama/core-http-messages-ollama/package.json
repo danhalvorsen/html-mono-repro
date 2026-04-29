@@ -1,0 +1,31 @@
+{
+  "name": "@monorepo/core-http-messages-ollama",
+  "version": "1.0.0",
+  "description": "Ollama HTTP request message factories.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-http-message-factories": "workspace:*",
+    "@monorepo/core-http-messages": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}

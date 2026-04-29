@@ -1,0 +1,12 @@
+{
+  "sourceUrl": "https://www.uefa.com/uefachampionsleague/statistics/clubs/",
+  "generatedAt": "2026-04-29T09:09:01.065Z",
+  "rowCount": 1,
+  "rows": [
+    {
+      "teamName": "UEFA Champions League",
+      "href": "/uefachampionsleague/",\"_self\"}],\"customProperties\":{\"nolang\":\"j\"}},{\"id\":\"about\",\"text\":\"About\",\"tag\":\"about\",\"trackText\":\"About\",\"href\":\"/uefachampionsleague/about/\",\"isActive\":false,\"target\":\"_self\"},{\"id\":\"store\",\"text\":\"Store (clubs)\",\"tag\":\"nav_clubs_store\",\"trackText\":\"Store (Clubs)\",\"href\":\"https://clubcompetitions-shop.com/?utm_source=uefa\\u0026utm_medium=website\\u0026utm_campaign=UCL-store\",\"isActive\":false,\"target\":\"\"}],\"trnItem\":{\"id\":\"trnname\",\"text\":\"UEFA Champions League\",\"tag\":\"comp_uefachampionsleague\",\"trackText\":\"Home\",\"href\":\"/uefachampionsleague/\",\"isActive\":false,\"target\":\"_self\"},\"activateFavouriteClub\":false,\"activateLoginButton\":false,\"theme\":\"dark\",\"isCorporateContext\":false,\"sponsorStripLibrary\":\"/uefachampionsleague/libraries/promo/_sponsor_strip\"}\" data-force-inview=\"false\"> UEFA Champions League <div class=\"pk-row--heade"
+      "rowText": "\"target\":
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "name": "@monorepo/core-web-scrapping-abstract",
+  "version": "1.0.0",
+  "description": "Node.js implementation of the core.web.scrapping.abstract package.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "example",
+    "module",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@monorepo/core-http-messages-http-client": "workspace:*",
+    "@monorepo/core-http-messages": "workspace:*",  
+    "playwright": "^1.59.1",
+    "remeda": "^2.34.0"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}
