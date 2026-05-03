@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lit 3 Monaco Menu</title>
+    <script type="module" src="/src/index.ts"></script>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #0f172a;
+        color: #dbe6ff;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+      }
+
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 1rem;
+        display: grid;
+        gap: 1rem;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 320px;
+        box-sizing: border-box;
+        border: 1px solid #2d426f;
+        border-radius: 10px;
+        padding: 0.8rem;
+        resize: vertical;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 0.95rem;
+        color: #dbe6ff;
+        background: #111d33;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <monaco-menu>
+        <monaco-code-load
+          slot="load"
+          target-selector="#code-source"
+          default-file-name="snippet.ts"
+        ></monaco-code-load>
+
+        <monaco-code-save
+          slot="save"
+          target-selector="#code-source"
+          file-name="snippet.ts"
+        ></monaco-code-save>
+
+        <monaco-code-build slot="build" target-selector="#code-source"></monaco-code-build>
+        <monaco-code-run slot="run" target-selector="#code-source"></monaco-code-run>
+      </monaco-menu>
+
+      <textarea id="code-source">function hello(name: string) {
+  return `Hello, ${name}`;
+}
+
+console.log(hello("MonoRepro"));
+      </textarea>
+    </main>
+  </body>
+</html>

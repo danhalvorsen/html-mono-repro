@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: #0f1727;
+  color: #d8e1f4;
+}
+
+.card {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 1.2rem;
+  border-radius: 12px;
+  background: #101a2d;
+  border: 1px solid #253558;
+}
+
+button {
+  border: 1px solid #2e426a;
+  border-radius: 8px;
+  background: #172847;
+  color: #f1f6ff;
+  padding: 0.4rem 0.7rem;
+}

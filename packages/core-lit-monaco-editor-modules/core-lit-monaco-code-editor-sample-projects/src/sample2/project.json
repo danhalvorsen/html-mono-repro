@@ -1,0 +1,15 @@
+{
+  "name": "sample2-counter-ui",
+  "version": "1.0.0",
+  "entry": {
+    "ts": "main.ts",
+    "html": "index.html",
+    "css": "styles.css"
+  },
+  "files": [
+    { "path": "main.ts", "language": "typescript", "role": "entry" },
+    { "path": "index.html", "language": "html", "role": "entry" },
+    { "path": "styles.css", "language": "css", "role": "entry" }
+  ],
+  "tags": ["lit3", "ui", "counter"]
+}

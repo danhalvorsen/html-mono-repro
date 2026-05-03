@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: #f5f7ff;
+  color: #14213d;
+}
+
+.card {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 1.2rem;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #d9e2ff;
+}

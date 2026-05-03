@@ -1,0 +1,30 @@
+{
+  "name": "core-lit-monaco-editor-application",
+  "version": "0.0.1",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "test": "pnpm -w vitest run test/*.integration.spec.ts",
+    "serve": "vite preview",
+    "samples:copy": "pnpm -C ../core-lit-monaco-code-editor-sample-projects extract:samples ../core-lit-monaco-editor-application/samples"
+  },
+  "dependencies": {
+    "@monorepo/core-lit-monaco-build-product-abstract": "workspace:*",
+    "@monorepo/core-lit-monaco-build-product-html-viewer": "workspace:*",
+    "@monorepo/core-lit-monaco-code-editor": "workspace:*",
+    "@monorepo/core-lit-monaco-editor-menu": "workspace:*",
+    "@monorepo/core-pdf-reader": "workspace:*",
+    "@monorepo/core-pdf-presenter": "workspace:*",
+    "lit": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.0"
+  }
+}

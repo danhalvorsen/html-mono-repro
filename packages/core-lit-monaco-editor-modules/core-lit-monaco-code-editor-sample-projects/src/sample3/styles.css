@@ -1,0 +1,39 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.pdf-reader-sample {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #ffffff;
+  border: 1px solid #dbe3ee;
+  border-radius: 10px;
+}
+
+.picker {
+  display: inline-block;
+  margin: 0.75rem 0;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #2962ff;
+  border-radius: 8px;
+  color: #0b3cc1;
+  cursor: pointer;
+}
+
+#pdf-file {
+  display: block;
+  margin-bottom: 0.8rem;
+}
+
+#pdf-output {
+  min-height: 220px;
+  padding: 0.7rem;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  background: #f8fbff;
+  white-space: pre-wrap;
+}

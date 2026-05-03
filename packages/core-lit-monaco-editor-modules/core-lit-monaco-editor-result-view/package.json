@@ -1,0 +1,23 @@
+{
+  "name": "@monorepo/core-lit-monaco-editor-result-view",
+  "version": "0.0.1",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@monorepo/core-lit-monaco-build-product-abstract": "workspace:*",
+    "lit": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.0"
+  }
+}

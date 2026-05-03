@@ -1,0 +1,16 @@
+{
+  "name": "@monorepo/core-composite-tree-simple-demo",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "@monorepo/core-composite-tree": "workspace:*",
+    "yaml": "^2.8.3"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/index.ts"
+  }
+}
