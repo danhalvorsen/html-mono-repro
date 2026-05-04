@@ -91,6 +91,10 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject 
     this.#animationController.onTime(time);
   }
 
+  public getCurrentPoint(): Point2 | null {
+    return this.#animationController.getCurrentPoint();
+  }
+
   #buildSubjectAt(point: Point2, rotationRadians: number): GamePolygon {
     return new SvgRectangleBuilder()
       .withLength(this.size)

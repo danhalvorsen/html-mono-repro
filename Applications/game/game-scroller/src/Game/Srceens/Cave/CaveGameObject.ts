@@ -1,28 +1,45 @@
+// FILE: src/Game/Srceens/Cave/CaveGameObject.ts
+
 import { LitElement, css, html, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
 import type { ITimeObserver, TimeSchdulerObserver } from '../../ObjectObjectTimerObserver.js';
 import { GamePolygon } from '../../GamePolygon.js';
 import { GamePolygonGeneratorController } from './GamePolygonGeneratorController.js';
 import type { Point2 } from '@monorepo/core-math';
 import { MultiCurveSvgTemplate } from './MultiCurveSvgTemplate.js';
+import type { ICamera } from '../../ICamera.js';
 
 type CaveGameObjectReferenceTarget = HTMLElement & {
   caveGameObject?: CaveGameObject;
 };
-/**
- * 
- */
+
 @customElement('cave-game-object')
 export class CaveGameObject extends LitElement implements ITimeObserver {
-  static override styles = css`
+  public static override styles = css`
+    .camera-viewport {
+      position: relative;
+      overflow: hidden;
+    }
+
     .cave-layout {
       position: relative;
       width: fit-content;
+      transform-origin: left top;
+      will-change: transform;
     }
 
     .overlay-layer {
       position: absolute;
       inset: 0;
+      pointer-events: none;
+    }
+
+    .camera-viewbox {
+      position: absolute;
+      border: 1px solid rgba(30, 64, 175, 0.9);
+      background: rgba(96, 165, 250, 0.25);
+      box-sizing: border-box;
       pointer-events: none;
     }
 
@@ -36,9 +53,22 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
 
   readonly #canvasLength = 500;
   #unsubscribe: (() => void) | null = null;
+  #unsubscribeFromCamera: (() => void) | null = null;
 
   @property({ attribute: false })
-  scheduler?: TimeSchdulerObserver;
+  public scheduler?: TimeSchdulerObserver;
+
+  @property({ attribute: false })
+  public camera?: ICamera;
+
+  @property({ type: Number })
+  public viewportWidth?: number;
+
+  @property({ type: Number })
+  public viewportHeight?: number;
+
+  @property({ type: Boolean })
+  public showCameraViewBox = false;
 
   readonly #curveGenerator = new GamePolygonGeneratorController(this, {
     reference: {
@@ -94,14 +124,24 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
   }
 
   protected override updated(changed: Map<string, unknown>): void {
-    if (!changed.has('scheduler')) return;
-    this.#unsubscribe?.();
-    this.#unsubscribe = this.scheduler?.subscribe(this) ?? null;
+    if (changed.has('scheduler')) {
+      this.#unsubscribe?.();
+      this.#unsubscribe = this.scheduler?.subscribe(this) ?? null;
+    }
+
+    if (changed.has('camera')) {
+      this.#unsubscribeFromCamera?.();
+      this.#unsubscribeFromCamera = this.camera?.subscribe(() => this.requestUpdate()) ?? null;
+    }
   }
 
-  disconnectedCallback(): void {
+  public override disconnectedCallback(): void {
     this.#unsubscribe?.();
     this.#unsubscribe = null;
+
+    this.#unsubscribeFromCamera?.();
+    this.#unsubscribeFromCamera = null;
+
     super.disconnectedCallback();
   }
 
@@ -138,7 +178,7 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
     return middle ? { x: middle.x, y: middle.y } : undefined;
   }
 
-  #onOverlaySlotChange = (event: Event): void => {
+  readonly #onOverlaySlotChange = (event: Event): void => {
     const slot = event.target as HTMLSlotElement | null;
     this.#propagateCaveReferenceToSlot({ slot });
   };
@@ -146,13 +186,16 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
   #propagateCaveReferenceToAllSlots(): void {
     const startSlot = this.renderRoot.querySelector('slot[name="overlay-start"]') as HTMLSlotElement | null;
     const centerSlot = this.renderRoot.querySelector('slot[name="overlay-center"]') as HTMLSlotElement | null;
+
     this.#propagateCaveReferenceToSlot({ slot: startSlot });
     this.#propagateCaveReferenceToSlot({ slot: centerSlot });
   }
 
-  #propagateCaveReferenceToSlot(options: { slot: HTMLSlotElement | null }): void {
+  #propagateCaveReferenceToSlot(options: { readonly slot: HTMLSlotElement | null }): void {
     if (!options.slot) return;
+
     const assignedElements = options.slot.assignedElements({ flatten: true });
+
     for (const element of assignedElements) {
       if (!(element instanceof HTMLElement)) continue;
       (element as CaveGameObjectReferenceTarget).caveGameObject = this;
@@ -160,6 +203,31 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
   }
 
   protected override render(): TemplateResult {
+    const worldWidth = this.#canvasLength * 3;
+    const worldHeight = 300;
+    const cameraView = this.camera?.getView();
+    const isMiniMap = this.showCameraViewBox;
+    const viewportWidth = this.viewportWidth ?? cameraView?.width ?? worldWidth;
+    const viewportHeight = this.viewportHeight ?? cameraView?.height ?? worldHeight;
+    const scale = isMiniMap ? Math.min(viewportWidth / worldWidth, viewportHeight / worldHeight) : 1;
+    const scaledWorldWidth = worldWidth * scale;
+    const scaledWorldHeight = worldHeight * scale;
+    const offsetX = isMiniMap
+      ? (viewportWidth - scaledWorldWidth) / 2
+      : (cameraView ? -cameraView.x : 0);
+    const offsetY = isMiniMap
+      ? (viewportHeight - scaledWorldHeight) / 2
+      : (cameraView ? -cameraView.y : 0);
+    const transform = `translate3d(${offsetX}px, ${offsetY}px, 0) scale(${scale})`;
+    const cameraViewBoxStyle = cameraView
+      ? styleMap({
+          left: `${offsetX + cameraView.x * scale}px`,
+          top: `${offsetY + cameraView.y * scale}px`,
+          width: `${cameraView.width * scale}px`,
+          height: `${cameraView.height * scale}px`
+        })
+      : undefined;
+
     const shape = new MultiCurveSvgTemplate(
       this.#curveGenerator.referencePoints,
       this.#curveGenerator.upperPoints,
@@ -167,15 +235,38 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
     );
 
     return html`
-      <h3>Cave Screen</h3>
-      <div class="cave-layout">
-        <game-polygon .width=${this.#canvasLength * 3} .height=${300} .polygon=${shape as unknown as GamePolygon['polygon']}></game-polygon>
-        <div class="overlay-layer">
-          <slot name="overlay-start" @slotchange=${this.#onOverlaySlotChange}></slot>
+    
+      <div
+        class="camera-viewport"
+        style=${styleMap({
+          width: `${viewportWidth}px`,
+          height: `${viewportHeight}px`
+        })}
+      >
+        <div
+          class="cave-layout"
+          style=${styleMap({
+            transform
+          })}
+        >
+          <game-polygon
+            .width=${worldWidth}
+            .height=${worldHeight}
+            .polygon=${shape as unknown as GamePolygon['polygon']}
+          ></game-polygon>
+
+          <div class="overlay-layer">
+            <slot name="overlay-start" @slotchange=${this.#onOverlaySlotChange}></slot>
+          </div>
+
+          <div class="overlay-layer">
+            <slot name="overlay-center" @slotchange=${this.#onOverlaySlotChange}></slot>
+          </div>
         </div>
-        <div class="overlay-layer">
-          <slot name="overlay-center" @slotchange=${this.#onOverlaySlotChange}></slot>
-        </div>
+
+        ${this.showCameraViewBox && cameraView
+          ? html`<div class="camera-viewbox" style=${cameraViewBoxStyle}></div>`
+          : null}
       </div>
     `;
   }

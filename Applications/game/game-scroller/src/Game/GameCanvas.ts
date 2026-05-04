@@ -1,72 +1,82 @@
+// FILE: src/Game/GameCanvas.ts
+
 import { html, LitElement, type TemplateResult } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { customElement, property } from 'lit/decorators.js';
-
+ 
 import type { TimeSchdulerObserver } from './ObjectObjectTimerObserver.js';
 
 import './Srceens/Cave/CaveGameObject.js';
-import './GameObjectSubject.js';
+import '../GameObjects/RectangleGameObjects.js';
+import type { ICamera, ICameraFollowTarget } from './ICamera.js';
+import { GameObjectPlacementFactory } from './GameObjectPlacementFactory.js';
 
-type GameObjectViewModel = {
+export type GameObjectViewModel = {
   readonly id: string;
-  readonly slot: 'overlay-center';
+  readonly slot: 'overlay-start' | 'overlay-center';
   readonly fill: string;
   readonly stroke: string;
   readonly size: number;
   readonly indexOffsetRatio: number;
+  readonly followCamera: boolean;
 };
-
-class GameObjectPlacementFactory {
-  public create(count: number): readonly GameObjectViewModel[] {
-    return Array.from({ length: count }, (_, index) => {
-      const ratio = (index + 0.5) / count;
-
-      return {
-        id: `game-object-${index}`,
-        slot: 'overlay-center',
-        fill: this.getFill(index),
-        stroke: this.getStroke(index),
-        size: 10,
-        indexOffsetRatio: ratio
-      };
-    });
-  }
-
-  private getFill(index: number): string {
-    return index % 2 === 0 ? '#60a5fa' : '#facc15';
-  }
-
-  private getStroke(index: number): string {
-    return index % 2 === 0 ? '#1d4ed8' : '#a16207';
-  }
-}
 
 const placementFactory = new GameObjectPlacementFactory();
 
 @customElement('game-canvas')
 export class GameCanvas extends LitElement {
-  private readonly gameObjects = placementFactory.create(100);
+  private readonly gameObjects = placementFactory.create();
+  #isCameraTargetBound = false;
 
   @property({ attribute: false })
   public scheduler?: TimeSchdulerObserver;
 
+  @property({ attribute: false })
+  public camera?: ICamera;
+
+  @property({ type: Number })
+  public viewportWidth?: number;
+
+  @property({ type: Number })
+  public viewportHeight?: number;
+
+  @property({ type: Boolean })
+  public showCameraViewBox = false;
+
+  protected override updated(changed: Map<string, unknown>): void {
+    if (this.showCameraViewBox) return;
+    if (!this.camera) return;
+    if (!changed.has('camera') && this.#isCameraTargetBound) return;
+
+    const target = this.renderRoot.querySelector('rectangle-game-object[data-camera-target="true"]') as ICameraFollowTarget | null;
+    if (!target) return;
+
+    this.camera.setFollowTarget(target);
+    this.#isCameraTargetBound = true;
+  }
+
   protected override render(): TemplateResult {
     return html`
-      <h3>Canvas</h3>
-
-      <cave-game-object .scheduler=${this.scheduler}>
+      <cave-game-object
+        .scheduler=${this.scheduler}
+        .camera=${this.camera}
+        .viewportWidth=${this.viewportWidth}
+        .viewportHeight=${this.viewportHeight}
+        .showCameraViewBox=${this.showCameraViewBox}
+      >
         ${repeat(
           this.gameObjects,
           gameObject => gameObject.id,
           gameObject => html`
-            <game-object-subject
+            <rectangle-game-object
               slot=${gameObject.slot}
+              data-camera-target=${gameObject.followCamera ? 'true' : 'false'}
               .scheduler=${this.scheduler}
               .fill=${gameObject.fill}
               .stroke=${gameObject.stroke}
               .size=${gameObject.size}
               .indexOffsetRatio=${gameObject.indexOffsetRatio}
-            ></game-object-subject>
+            ></rectangle-game-object>
           `
         )}
       </cave-game-object>
