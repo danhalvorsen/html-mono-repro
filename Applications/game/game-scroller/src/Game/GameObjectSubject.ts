@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import type { TimeSchdulerObserver } from './ObjectObjectTimerObserver';
 import { SvgRectangleBuilder } from './Builders/SvgPolygonBuilder';
 import type { GamePolygon } from './GamePolygon';
-import type { Point2 } from '@monorepo/core-math';
+import type { Point, Point2 } from '@monorepo/core-math';
 import { GameObjectAnimationController } from './Animation/GameObjectAnimationController';
 
 export interface ICurveCollection {
@@ -33,7 +33,7 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject 
   scheduler?: TimeSchdulerObserver;
 
   @property({ type: Number })
-  size = 50;
+  size = 10;
 
   @property({ type: String })
   fill = '#60a5fa';
@@ -49,12 +49,12 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject 
 
   public constructor(subject?: GamePolygon) {
     super();
-    this.subject = subject ?? this.#buildSubjectAt({ x: 20, y: 20 });
+    this.subject = subject ?? this.#buildSubjectAt({ x: 20, y: 20 }, 0);
     this.#animationController = new GameObjectAnimationController({
       host: this,
       indexOffsetRatio: this.indexOffsetRatio,
-      onFrame: ({ point }) => {
-        this.subject = this.#buildSubjectAt(point);
+      onFrame: ({ point, rotationRadians }) => {
+        this.subject = this.#buildSubjectAt(point, rotationRadians);
       }
     });
   }
@@ -71,7 +71,8 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject 
 
     if (changed.has('fill') || changed.has('stroke') || changed.has('size')) {
       const point = this.#animationController.getCurrentPoint() ?? { x: 20, y: 20 };
-      this.subject = this.#buildSubjectAt(point);
+      const rotationRadians = this.#animationController.getCurrentRotationRadians();
+      this.subject = this.#buildSubjectAt(point, rotationRadians);
     }
 
     if (changed.has('indexOffsetRatio')) {
@@ -90,18 +91,41 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject 
     this.#animationController.onTime(time);
   }
 
-  #buildSubjectAt(point: Point2): GamePolygon {
+  #buildSubjectAt(point: Point2, rotationRadians: number): GamePolygon {
     return new SvgRectangleBuilder()
       .withLength(this.size)
       .withHeigth(this.size)
       .withCenter(point)
       .withCanvasSize(this.#canvasWidth, this.#canvasHeight)
+      .withCoordinateMapper((vertex: Readonly<Point>) =>
+        this.#rotatePoint({
+          point: vertex,
+          center: point,
+          rotationRadians
+        })
+      )
       .withStyle({
         fill: this.fill,
         stroke: this.stroke,
         strokeWidth: 2
       })
       .build();
+  }
+
+  #rotatePoint(options: {
+    point: Readonly<Point>;
+    center: Readonly<Point>;
+    rotationRadians: number;
+  }): Point {
+    const dx = options.point.x - options.center.x;
+    const dy = options.point.y - options.center.y;
+    const cos = Math.cos(options.rotationRadians);
+    const sin = Math.sin(options.rotationRadians);
+
+    return {
+      x: options.center.x + dx * cos - dy * sin,
+      y: options.center.y + dx * sin + dy * cos
+    };
   }
 
   protected render(): TemplateResult {

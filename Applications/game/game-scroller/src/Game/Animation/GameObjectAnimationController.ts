@@ -142,8 +142,9 @@ export class GameObjectAnimationController implements ReactiveController {
     const nextIndex = Math.min(lastIndex, options.index + 1);
     const previousPoint = options.samples[previousIndex] ?? options.samples[0];
     const nextPoint = options.samples[nextIndex] ?? options.samples[lastIndex];
+    const baseRotation = Math.atan2(nextPoint.y - previousPoint.y, nextPoint.x - previousPoint.x);
 
-    return Math.atan2(nextPoint.y - previousPoint.y, nextPoint.x - previousPoint.x);
+    return this.#direction === 1 ? baseRotation : baseRotation + Math.PI;
   }
 
   #resolveSamples(): readonly Point2[] {
