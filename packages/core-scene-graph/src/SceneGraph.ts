@@ -1,5 +1,5 @@
 
-import type { ISceneNode } from "../ISceneNode.js";
+import type { ISceneNode } from "./ISceneNode.js";
 
 export class SceneGraph {
   public constructor(private readonly root: ISceneNode) { }

@@ -1,23 +1,31 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit';
-import { BrowserKeyboardEventName, BrowserWindowEventName } from './playerControl';
-import { toBrowserKeyboardCode } from './toBrowserKeyboardCode';
-import { PlayerInputAxis } from './PlayerInputAxis';
-import { BrowserKeyboardCode } from './BrowserKeyboardCode';
-import { DefaultPlayerKeyMap } from './DefaultPlayerKeyMap';
-import { PlayerKeyMap } from './PlayerKeyMap';
+import { BrowserKeyboardEventName, BrowserWindowEventName } from './BrowserInputEventName.js';
+import type { BrowserKeyboardCode } from './BrowserKeyboardCode.js';
+import {
+  DefaultBrowserKeyboardCodeParser,
+  type BrowserKeyboardCodeParser
+} from './BrowserKeyboardCodeParser.js';
+import { DefaultPlayerKeyMap } from './DefaultPlayerKeyMap.js';
+import { PlayerInputAxis } from './PlayerInputAxis.js';
+import type { PlayerKeyMap } from './PlayerKeyMap.js';
 
-
-export class PlayerInput implements ReactiveController {
+export class PlayerInputController implements ReactiveController {
   readonly #host: ReactiveControllerHost;
+  readonly #eventSource: EventTarget;
   readonly #keyMap: PlayerKeyMap;
+  readonly #codeParser: BrowserKeyboardCodeParser;
   readonly #pressedCodes = new Set<BrowserKeyboardCode>();
 
   public constructor(
     host: ReactiveControllerHost,
-    keyMap: PlayerKeyMap = new DefaultPlayerKeyMap()
+    keyMap: PlayerKeyMap = new DefaultPlayerKeyMap(),
+    codeParser: BrowserKeyboardCodeParser = new DefaultBrowserKeyboardCodeParser(),
+    eventSource: EventTarget = globalThis
   ) {
     this.#host = host;
     this.#keyMap = keyMap;
+    this.#codeParser = codeParser;
+    this.#eventSource = eventSource;
     this.#host.addController(this);
   }
 
@@ -40,15 +48,15 @@ export class PlayerInput implements ReactiveController {
   }
 
   public hostConnected(): void {
-    globalThis.addEventListener(BrowserKeyboardEventName.keyDown, this.#onKeyDown);
-    globalThis.addEventListener(BrowserKeyboardEventName.keyUp, this.#onKeyUp);
-    globalThis.addEventListener(BrowserWindowEventName.blur, this.#onBlur);
+    this.#eventSource.addEventListener(BrowserKeyboardEventName.KeyDown, this.#onKeyDown);
+    this.#eventSource.addEventListener(BrowserKeyboardEventName.KeyUp, this.#onKeyUp);
+    this.#eventSource.addEventListener(BrowserWindowEventName.Blur, this.#onBlur);
   }
 
   public hostDisconnected(): void {
-    globalThis.removeEventListener(BrowserKeyboardEventName.keyDown, this.#onKeyDown);
-    globalThis.removeEventListener(BrowserKeyboardEventName.keyUp, this.#onKeyUp);
-    globalThis.removeEventListener(BrowserWindowEventName.blur, this.#onBlur);
+    this.#eventSource.removeEventListener(BrowserKeyboardEventName.KeyDown, this.#onKeyDown);
+    this.#eventSource.removeEventListener(BrowserKeyboardEventName.KeyUp, this.#onKeyUp);
+    this.#eventSource.removeEventListener(BrowserWindowEventName.Blur, this.#onBlur);
     this.#pressedCodes.clear();
   }
 
@@ -72,7 +80,7 @@ export class PlayerInput implements ReactiveController {
   };
 
   #setPressed(rawCode: string, pressed: boolean): void {
-    const code = toBrowserKeyboardCode(rawCode);
+    const code = this.#codeParser.parse(rawCode);
 
     if (code === null) return;
     if (!this.#keyMap.isMapped(code)) return;

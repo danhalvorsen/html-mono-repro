@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "test": "vitest run",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -13,7 +14,8 @@
     "@monorepo/core-math": "workspace:*",
     "@monorepo/core-math-probability": "workspace:*",
     "@monorepo/core-design-patterns": "workspace:*",
-    "@monorepo/game-objects": "workspace:*" 
+    "@monorepo/game-objects": "workspace:*",
+    "name": "@monorepo/core-scene-graph"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

@@ -1,15 +1,17 @@
-import type { BrowserKeyboardCode } from './BrowserKeyboardCode';
-import type { PlayerKeyMap } from './PlayerKeyMap';
-
+import {
+  BrowserKeyboardCode,
+  type BrowserKeyboardCode as BrowserKeyboardCodeValue
+} from './BrowserKeyboardCode.js';
+import type { PlayerKeyMap } from './PlayerKeyMap.js';
 
 export class DefaultPlayerKeyMap implements PlayerKeyMap {
-  public readonly moveUp = BrowserKeyboardCode.arrowUp;
-  public readonly moveDown = BrowserKeyboardCode.arrowDown;
-  public readonly moveLeft = BrowserKeyboardCode.arrowLeft;
-  public readonly moveRight = BrowserKeyboardCode.arrowRight;
-  public readonly fire = BrowserKeyboardCode.space;
+  public readonly moveUp = BrowserKeyboardCode.ArrowUp;
+  public readonly moveDown = BrowserKeyboardCode.ArrowDown;
+  public readonly moveLeft = BrowserKeyboardCode.ArrowLeft;
+  public readonly moveRight = BrowserKeyboardCode.ArrowRight;
+  public readonly fire = BrowserKeyboardCode.Space;
 
-  public isMapped(code: BrowserKeyboardCode): boolean {
+  public isMapped(code: BrowserKeyboardCodeValue): boolean {
     return (
       code === this.moveUp ||
       code === this.moveDown ||

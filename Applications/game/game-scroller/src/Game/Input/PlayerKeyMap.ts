@@ -1,5 +1,4 @@
-import type { BrowserKeyboardCode } from './BrowserKeyboardCode';
-
+import type { BrowserKeyboardCode } from './BrowserKeyboardCode.js';
 
 export interface PlayerKeyMap {
   readonly moveUp: BrowserKeyboardCode;

@@ -237,7 +237,7 @@ All code deliveries must include tests unless the task explicitly states otherwi
 BDD-style tests are expected.
 
 Examples:
-- `describe`, `it`, `should`
+- `describe`, `it`, `expect`
 - scenario-oriented naming
 - behavior-focused assertions
 
@@ -280,6 +280,7 @@ When generating tests, prefer behavior phrasing such as:
 - should preserve invariant X when operation Y occurs
 - should return deterministic output for known input
 - should throw when required dependency is missing
+- should have `toBe` as an alias for `expect` (vitest-specific)
 
 ### Fixture guidance
 - create reusable fixture builders for repeated setup

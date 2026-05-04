@@ -1,10 +1,12 @@
 import { customElement } from 'lit/decorators.js';
-import { GameObjectSubject } from '../GameObjectSubject';
-import { PlayerInput } from './PlayerInput';
+import { GameObjectSubject } from '../GameObjectSubject.js';
+import { PlayerInputController } from './PlayerInputController.js';
 
-@customElement('game-player')
+const PlayerElementName = 'game-player';
+
+@customElement(PlayerElementName)
 export class Player extends GameObjectSubject {
-  readonly #input = new PlayerInput(this);
+  readonly #input = new PlayerInputController(this);
 
   public get horizontalAxis(): number {
     return this.#input.horizontalAxis;
@@ -21,6 +23,6 @@ export class Player extends GameObjectSubject {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'game-player': Player;
+    [PlayerElementName]: Player;
   }
 }

@@ -1,4 +1,3 @@
-
 export class PlayerInputAxis {
   readonly #negative: boolean;
   readonly #positive: boolean;
