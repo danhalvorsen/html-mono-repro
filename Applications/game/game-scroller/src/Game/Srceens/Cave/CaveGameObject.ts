@@ -1,40 +1,39 @@
-import { LitElement, html, svg, type SVGTemplateResult, type TemplateResult } from 'lit';
+import { LitElement, css, html, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { ITimeObserver, TimeSchdulerObserver } from '../../ObjectObjectTimerObserver.js';
-import { type ISvgTemplate, GamePolygon } from '../../GamePolygon.js';
+import { GamePolygon } from '../../GamePolygon.js';
 import { GamePolygonGeneratorController } from './GamePolygonGeneratorController.js';
 import type { Point2 } from '@monorepo/core-math';
+import { MultiCurveSvgTemplate } from './MultiCurveSvgTemplate.js';
 
-class MultiCurveSvgTemplate implements ISvgTemplate {
-  readonly #reference: readonly Point2[];
-  readonly #upper: readonly Point2[];
-  readonly #lower: readonly Point2[];
-
-  public constructor(
-    reference: readonly Point2[],
-    upper: readonly Point2[],
-    lower: readonly Point2[]
-  ) {
-    this.#reference = reference;
-    this.#upper = upper;
-    this.#lower = lower;
-  }
-
-  public get svg(): SVGTemplateResult {
-    return svg`
-      <polyline points=${toPoints(this.#upper)} fill="none" stroke="#22c55e" stroke-width="2"></polyline>
-      <polyline points=${toPoints(this.#reference)} fill="none" stroke="#0ea5e9" stroke-width="2"></polyline>
-      <polyline points=${toPoints(this.#lower)} fill="none" stroke="#ef4444" stroke-width="2"></polyline>
-    `;
-  }
-}
-
-function toPoints(points: readonly Point2[]): string {
-  return points.map((p) => `${p.x},${p.y}`).join(' ');
-}
-
+type CaveGameObjectReferenceTarget = HTMLElement & {
+  caveGameObject?: CaveGameObject;
+};
+/**
+ * 
+ */
 @customElement('cave-game-object')
 export class CaveGameObject extends LitElement implements ITimeObserver {
+  static override styles = css`
+    .cave-layout {
+      position: relative;
+      width: fit-content;
+    }
+
+    .overlay-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    ::slotted([slot='overlay-start']),
+    ::slotted([slot='overlay-center']) {
+      position: absolute;
+      inset: 0;
+      display: block;
+    }
+  `;
+
   readonly #canvasLength = 500;
   #unsubscribe: (() => void) | null = null;
 
@@ -90,6 +89,10 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
     }
   });
 
+  protected override firstUpdated(): void {
+    this.#propagateCaveReferenceToAllSlots();
+  }
+
   protected override updated(changed: Map<string, unknown>): void {
     if (!changed.has('scheduler')) return;
     this.#unsubscribe?.();
@@ -106,6 +109,56 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
     void time;
   }
 
+  public getReferenceCurve(): readonly Point2[] {
+    return this.#curveGenerator.referencePoints;
+  }
+
+  public getGeneratedCurves(): {
+    readonly reference: readonly Point2[];
+    readonly upper: readonly Point2[];
+    readonly lower: readonly Point2[];
+  } {
+    return {
+      reference: this.#curveGenerator.referencePoints,
+      upper: this.#curveGenerator.upperPoints,
+      lower: this.#curveGenerator.lowerPoints
+    };
+  }
+
+  public getReferenceStartPoint(): Point2 | undefined {
+    const first = this.#curveGenerator.referencePoints[0];
+    return first ? { x: first.x, y: first.y } : undefined;
+  }
+
+  public getReferenceCenterPoint(): Point2 | undefined {
+    const points = this.#curveGenerator.referencePoints;
+    if (points.length === 0) return undefined;
+    const middleIndex = Math.floor(points.length / 2);
+    const middle = points[middleIndex];
+    return middle ? { x: middle.x, y: middle.y } : undefined;
+  }
+
+  #onOverlaySlotChange = (event: Event): void => {
+    const slot = event.target as HTMLSlotElement | null;
+    this.#propagateCaveReferenceToSlot({ slot });
+  };
+
+  #propagateCaveReferenceToAllSlots(): void {
+    const startSlot = this.renderRoot.querySelector('slot[name="overlay-start"]') as HTMLSlotElement | null;
+    const centerSlot = this.renderRoot.querySelector('slot[name="overlay-center"]') as HTMLSlotElement | null;
+    this.#propagateCaveReferenceToSlot({ slot: startSlot });
+    this.#propagateCaveReferenceToSlot({ slot: centerSlot });
+  }
+
+  #propagateCaveReferenceToSlot(options: { slot: HTMLSlotElement | null }): void {
+    if (!options.slot) return;
+    const assignedElements = options.slot.assignedElements({ flatten: true });
+    for (const element of assignedElements) {
+      if (!(element instanceof HTMLElement)) continue;
+      (element as CaveGameObjectReferenceTarget).caveGameObject = this;
+    }
+  }
+
   protected override render(): TemplateResult {
     const shape = new MultiCurveSvgTemplate(
       this.#curveGenerator.referencePoints,
@@ -115,7 +168,15 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
 
     return html`
       <h3>Cave Screen</h3>
-      <game-polygon .width=${this.#canvasLength * 3} .height=${300} .polygon=${shape as unknown as GamePolygon['polygon']}></game-polygon>
+      <div class="cave-layout">
+        <game-polygon .width=${this.#canvasLength * 3} .height=${300} .polygon=${shape as unknown as GamePolygon['polygon']}></game-polygon>
+        <div class="overlay-layer">
+          <slot name="overlay-start" @slotchange=${this.#onOverlaySlotChange}></slot>
+        </div>
+        <div class="overlay-layer">
+          <slot name="overlay-center" @slotchange=${this.#onOverlaySlotChange}></slot>
+        </div>
+      </div>
     `;
   }
 }
