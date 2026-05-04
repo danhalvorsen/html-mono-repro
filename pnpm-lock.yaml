@@ -639,6 +639,37 @@ importers:
         specifier: ^7.1.7
         version: 7.3.2(@types/node@25.6.0)(lightningcss@1.32.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
+  Applications/game/game-objects:
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  Applications/game/game-scroller:
+    dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../../../packages/core-design-patterns
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../packages/core-math
+      '@monorepo/game-objects':
+        specifier: workspace:*
+        version: link:../game-objects
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.10
+        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+
   Applications/git-watcher/node-watcher:
     dependencies:
       '@monorepo/core-console-cli':
@@ -3874,6 +3905,12 @@ importers:
       '@monorepo/core-pdf-writer':
         specifier: workspace:*
         version: link:../core-pdf-writer
+      '@monorepo/core-tag-syntax-abstract':
+        specifier: workspace:*
+        version: link:../core-tag-syntax-abstract
+      '@monorepo/core-tag-syntax-basic':
+        specifier: workspace:*
+        version: link:../core-tag-syntax-basic
       lit:
         specifier: ^3.3.2
         version: 3.3.2
@@ -3887,15 +3924,6 @@ importers:
       vite:
         specifier: ^8.0.4
         version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
-
-  packages/core-pdf-modules/pdf-reading/dist/core-pdf-reader-pid:
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
 
   packages/core-placement-layout:
     devDependencies:

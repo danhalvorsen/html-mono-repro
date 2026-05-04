@@ -1,13 +1,23 @@
-# fix-pid-view-show-original-first.ps1
+# fix-pdf-reading-image-fragment-filter.ps1
 #
 # Fix:
-# - No spinner deadlock.
-# - PID.pdf is loaded once as an in-memory binary copy.
-# - Original PDF is rendered first.
-# - "Find all fragments" only adds an SVG overlay layer.
-# - "Show original PDF" clears the overlay.
-# - No PDF writing.
-# - No mutation of public/PID.pdf.
+#   "Show all layers" shows image-looking fragments,
+#   but "Show image fragments" does not.
+#
+# Cause:
+#   The image filter is too strict:
+#     fragment.kind === FragmentKinds.Image
+#
+# Fix:
+#   Normalize fragment.kind inside the view and filter by local kind:
+#     text | rectangle | image | unknown
+#
+# Run:
+#   cd C:\Users\danha\source\repos\HTML\MonoRepro
+#   powershell -ExecutionPolicy Bypass -File .\fix-pdf-reading-image-fragment-filter.ps1
+#
+# Then:
+#   pnpm --filter "pdf-reading" build
 
 param(
     [string] $AppRoot = "C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-pdf-modules\pdf-reading"
@@ -20,7 +30,7 @@ function Assert-FileExists {
     param([string] $Path)
 
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
-        throw "Required file not found: $Path"
+        throw "File not found: $Path"
     }
 }
 
@@ -35,416 +45,224 @@ function Set-Utf8NoBomFile {
 }
 
 $pidViewFile = Join-Path $AppRoot "src\views\pid-pdf-view.ts"
-$publicPidPdf = Join-Path $AppRoot "public\PID.pdf"
 
 Assert-FileExists $pidViewFile
-Assert-FileExists $publicPidPdf
 
-$pidViewContent = @'
-import { LitElement, css, html, svg, type TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
-import pdfWorkerUrl from "pdfjs-dist/legacy/build/pdf.worker.mjs?url";
-import type { PdfFragment } from "@monorepo/core-pdf-domain";
-import { PdfEngine } from "../../../core-pdf-reader/src/engine/PdfEngine.js";
+$text = Get-Content -LiteralPath $pidViewFile -Raw
 
-const PID_PDF_URL = "/PID.pdf" as const;
-const PDF_SCALE = 1.35 as const;
+# Keep FragmentKinds import if already present, but the view will no longer depend on enum identity for filtering.
+$text = [regex]::Replace(
+    $text,
+    'import\s+\{\s*FragmentKinds,\s*type\s+PdfFragment\s*\}\s+from\s+["'']@monorepo/core-pdf-domain["''];',
+    'import type { PdfFragment } from "@monorepo/core-pdf-domain";',
+    1
+)
 
-pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+# Add local normalized kind type after LayerMode.
+$text = [regex]::Replace(
+    $text,
+    'type LayerMode =\s*\| "original"\s*\| "text"\s*\| "rectangle"\s*\| "image"\s*\| "all-fragments"\s*\| "all-layers";',
+    @'
+type LayerMode =
+  | "original"
+  | "text"
+  | "rectangle"
+  | "image"
+  | "all-fragments"
+  | "all-layers";
 
-type PdfPageRenderInfo = Readonly<{
-  pageNumber: number;
-  width: number;
-  height: number;
-}>;
+type OverlayFragmentKind =
+  | "text"
+  | "rectangle"
+  | "image"
+  | "unknown";
+'@,
+    1
+)
 
-type PdfJsViewport = Readonly<{
-  width: number;
-  height: number;
-}>;
+# Replace visibility filter with normalized kind filtering.
+$text = [regex]::Replace(
+    $text,
+    '(?s)  private isFragmentVisibleInCurrentMode\(fragment: PdfFragment\): boolean \{\r?\n.*?\r?\n  \}\r?\n\r?\n  private resolveFragmentCssClass',
+    @'
+  private isFragmentVisibleInCurrentMode(fragment: PdfFragment): boolean {
+    const kind = this.resolveOverlayFragmentKind(fragment);
 
-type PdfJsRenderTask = Readonly<{
-  promise: Promise<void>;
-}>;
+    switch (this.layerMode) {
+      case "text":
+        return kind === "text";
 
-type PdfJsPage = Readonly<{
-  getViewport(options: { scale: number }): PdfJsViewport;
-  render(options: {
-    canvasContext: CanvasRenderingContext2D;
-    viewport: PdfJsViewport;
-  }): PdfJsRenderTask;
-}>;
+      case "rectangle":
+        return kind === "rectangle";
 
-type PdfJsDocument = Readonly<{
-  numPages: number;
-  getPage(pageNumber: number): Promise<PdfJsPage>;
-}>;
+      case "image":
+        return kind === "image";
 
-@customElement("pdf-pid-view")
-export class PdfPidView extends LitElement {
-  private originalPdfBinary: Uint8Array | null = null;
-  private visiblePdfBinary: Uint8Array | null = null;
-  private pdfDocument: PdfJsDocument | null = null;
+      case "all-fragments":
+      case "all-layers":
+        return true;
 
-  @state()
-  private pages: readonly PdfPageRenderInfo[] = [];
-
-  @state()
-  private fragments: readonly PdfFragment[] = [];
-
-  @state()
-  private isLoadingPdf = true;
-
-  @state()
-  private isFindingFragments = false;
-
-  @state()
-  private message: string | null = null;
-
-  @state()
-  private error: string | null = null;
-
-  protected override async firstUpdated(): Promise<void> {
-    await this.loadAndRenderOriginalPdf();
+      case "original":
+        return false;
+    }
   }
 
-  protected override render(): TemplateResult {
-    return html`
-      <section class="workspace">
-        <aside class="menu" aria-label="PDF tools">
-          <button
-            type="button"
-            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
-            @click=${this.findFragments}
-          >
-            ${this.isFindingFragments ? "Finding fragments..." : "Find all fragments"}
-          </button>
+  private resolveFragmentCssClass
+'@,
+    1
+)
 
-          <button
-            type="button"
-            class="secondary"
-            ?disabled=${this.isLoadingPdf || this.isFindingFragments || this.fragments.length === 0}
-            @click=${this.showOriginalPdf}
-          >
-            Show original PDF
-          </button>
+# Replace CSS class resolver with normalized kind resolver.
+$text = [regex]::Replace(
+    $text,
+    '(?s)  private resolveFragmentCssClass\(fragment: PdfFragment\): string \{\r?\n.*?\r?\n  \}\r?\n\r?\n  private resolveFragmentOverlayY',
+    @'
+  private resolveFragmentCssClass(fragment: PdfFragment): string {
+    switch (this.resolveOverlayFragmentKind(fragment)) {
+      case "text":
+        return "fragment fragment-text";
 
-          ${this.message === null ? html`` : html`<p class="message">${this.message}</p>`}
-          ${this.error === null ? html`` : html`<p class="error">${this.error}</p>`}
-        </aside>
+      case "rectangle":
+        return "fragment fragment-rectangle";
 
-        <main class="viewer" aria-label="PID PDF viewer">
-          ${this.pages.length === 0
-            ? html`<p class="loading">${this.isLoadingPdf ? "Loading PID.pdf..." : "No PDF pages rendered."}</p>`
-            : this.pages.map((page) => this.renderPage(page))}
-        </main>
-      </section>
-    `;
+      case "image":
+        return "fragment fragment-image";
+
+      case "unknown":
+        return "fragment fragment-unknown";
+    }
   }
 
-  private renderPage(page: PdfPageRenderInfo): TemplateResult {
-    const pageFragments = this.fragments.filter(
-      (fragment) => fragment.pageNumber === page.pageNumber,
-    );
+  private resolveFragmentOverlayY
+'@,
+    1
+)
 
-    return html`
-      <section
-        class="page"
-        style=${`width:${page.width}px;height:${page.height}px;`}
-        aria-label=${`Page ${page.pageNumber}`}
-      >
-        <canvas
-          data-page-number=${page.pageNumber}
-          width=${page.width}
-          height=${page.height}
-        ></canvas>
+# Replace text Y correction to use normalized kind.
+$text = [regex]::Replace(
+    $text,
+    'if \(fragment\.kind === FragmentKinds\.Text\) \{\s*return Math\.max\(0, box\.position\.y - box\.height\);\s*\}',
+    'if (this.resolveOverlayFragmentKind(fragment) === "text") {
+      return Math.max(0, box.position.y - box.height);
+    }',
+    1
+)
 
-        <svg
-          class="overlay"
-          width=${page.width}
-          height=${page.height}
-          viewBox=${`0 0 ${page.width} ${page.height}`}
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          ${pageFragments.map((fragment) => this.renderFragment(fragment))}
-        </svg>
-      </section>
-    `;
-  }
+# Replace message count block if present.
+$text = [regex]::Replace(
+    $text,
+    '(?s)      this\.message =\r?\n        `Showing \$\{label\}\. Visible: \$\{visibleCount\}\. ` \+\r?\n        `Text: \$\{this\.countKind\(FragmentKinds\.Text\)\}\. ` \+\r?\n        `Rectangles: \$\{this\.countKind\(FragmentKinds\.Rectangle\)\}\. ` \+\r?\n        `Images: \$\{this\.countKind\(FragmentKinds\.Image\)\}\. ` \+\r?\n        `Total: \$\{this\.fragments\.length\}\.`;',
+    @'
+      this.message =
+        `Showing ${label}. Visible: ${visibleCount}. ` +
+        `Text: ${this.countKind("text")}. ` +
+        `Rectangles: ${this.countKind("rectangle")}. ` +
+        `Images: ${this.countKind("image")}. ` +
+        `Unknown: ${this.countKind("unknown")}. ` +
+        `Total: ${this.fragments.length}.`;
+'@,
+    1
+)
 
-  private renderFragment(fragment: PdfFragment): TemplateResult {
-    const box = fragment.boundingBox;
+# Replace countVisibleFragments.
+$text = [regex]::Replace(
+    $text,
+    '(?s)  private countVisibleFragments\(mode: Exclude<LayerMode, "original">\): number \{\r?\n.*?\r?\n  \}\r?\n\r?\n  private countKind',
+    @'
+  private countVisibleFragments(mode: Exclude<LayerMode, "original">): number {
+    return this.fragments.filter((fragment) => {
+      const kind = this.resolveOverlayFragmentKind(fragment);
 
-    return svg`
-      <rect
-        x=${box.position.x * PDF_SCALE}
-        y=${box.position.y * PDF_SCALE}
-        width=${box.width * PDF_SCALE}
-        height=${box.height * PDF_SCALE}
-        vector-effect="non-scaling-stroke"
-      ></rect>
-    `;
-  }
+      switch (mode) {
+        case "text":
+          return kind === "text";
 
-  private async loadAndRenderOriginalPdf(): Promise<void> {
-    this.isLoadingPdf = true;
-    this.message = null;
-    this.error = null;
-    this.fragments = [];
+        case "rectangle":
+          return kind === "rectangle";
 
-    try {
-      const response = await fetch(PID_PDF_URL, { cache: "no-store" });
+        case "image":
+          return kind === "image";
 
-      if (!response.ok) {
-        throw new Error(`Failed to load ${PID_PDF_URL}. HTTP ${response.status}.`);
+        case "all-fragments":
+        case "all-layers":
+          return true;
       }
-
-      const sourceBinary = new Uint8Array(await response.arrayBuffer());
-
-      // "Clone" model:
-      // originalPdfBinary is never mutated.
-      // visiblePdfBinary is the rendered document instance.
-      this.originalPdfBinary = new Uint8Array(sourceBinary);
-      this.visiblePdfBinary = new Uint8Array(sourceBinary);
-
-      this.pdfDocument = await this.openPdfDocument(this.visiblePdfBinary);
-      this.pages = await this.createPageRenderInfos(this.pdfDocument);
-
-      // Important: render the page DOM first. Do not wait with isLoadingPdf=true,
-      // otherwise the canvases are never in the DOM and rendering can spin forever.
-      this.isLoadingPdf = false;
-      this.message = `Showing original PID.pdf. Pages: ${this.pages.length}.`;
-
-      await this.updateComplete;
-      await this.renderPdfPages();
-    } catch (error) {
-      this.isLoadingPdf = false;
-      this.error = error instanceof Error ? error.message : String(error);
-    }
+    }).length;
   }
 
-  private async openPdfDocument(binary: Uint8Array): Promise<PdfJsDocument> {
-    const loadingTask = pdfjs.getDocument({
-      data: new Uint8Array(binary),
-      useSystemFonts: true,
-    });
+  private countKind
+'@,
+    1
+)
 
-    return (await loadingTask.promise) as PdfJsDocument;
+# Replace countKind and add normalized kind resolver.
+$text = [regex]::Replace(
+    $text,
+    '(?s)  private countKind\(kind: PdfFragment\["kind"\]\): number \{\r?\n.*?\r?\n  \}\r?\n\r?\n  public static override readonly styles = css`',
+    @'
+  private countKind(kind: OverlayFragmentKind): number {
+    return this.fragments.filter((fragment) =>
+      this.resolveOverlayFragmentKind(fragment) === kind,
+    ).length;
   }
 
-  private async createPageRenderInfos(
-    document: PdfJsDocument,
-  ): Promise<readonly PdfPageRenderInfo[]> {
-    const pages: PdfPageRenderInfo[] = [];
+  private resolveOverlayFragmentKind(fragment: PdfFragment): OverlayFragmentKind {
+    const rawKind = String(fragment.kind).trim().toLowerCase();
 
-    for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
-      const page = await document.getPage(pageNumber);
-      const viewport = page.getViewport({ scale: PDF_SCALE });
-
-      pages.push({
-        pageNumber,
-        width: Math.ceil(viewport.width),
-        height: Math.ceil(viewport.height),
-      });
+    if (rawKind === "text" || rawKind.endsWith(".text") || rawKind.includes("text")) {
+      return "text";
     }
 
-    return pages;
+    if (
+      rawKind === "rectangle" ||
+      rawKind.endsWith(".rectangle") ||
+      rawKind.includes("rectangle")
+    ) {
+      return "rectangle";
+    }
+
+    if (rawKind === "image" || rawKind.endsWith(".image") || rawKind.includes("image")) {
+      return "image";
+    }
+
+    return "unknown";
   }
-
-  private async renderPdfPages(): Promise<void> {
-    if (this.pdfDocument === null || this.pages.length === 0) {
-      return;
-    }
-
-    await this.updateComplete;
-
-    for (const pageInfo of this.pages) {
-      const canvas = this.renderRoot.querySelector(
-        `canvas[data-page-number="${pageInfo.pageNumber}"]`,
-      );
-
-      if (!(canvas instanceof HTMLCanvasElement)) {
-        continue;
-      }
-
-      const context = canvas.getContext("2d");
-
-      if (context === null) {
-        continue;
-      }
-
-      const page = await this.pdfDocument.getPage(pageInfo.pageNumber);
-      const viewport = page.getViewport({ scale: PDF_SCALE });
-
-      canvas.width = Math.ceil(viewport.width);
-      canvas.height = Math.ceil(viewport.height);
-
-      await page.render({
-        canvasContext: context,
-        viewport,
-      }).promise;
-    }
-  }
-
-  private readonly findFragments = async (): Promise<void> => {
-    if (this.originalPdfBinary === null || this.isFindingFragments) {
-      return;
-    }
-
-    this.isFindingFragments = true;
-    this.message = null;
-    this.error = null;
-
-    try {
-      const sourceCopy = new Uint8Array(this.originalPdfBinary);
-      this.fragments = await new PdfEngine().readFragments(sourceCopy);
-      this.message = `Fragment overlay enabled. Fragments: ${this.fragments.length}.`;
-    } catch (error) {
-      this.error = error instanceof Error ? error.message : String(error);
-    } finally {
-      this.isFindingFragments = false;
-    }
-  };
-
-  private readonly showOriginalPdf = (): void => {
-    this.fragments = [];
-    this.message = "Showing original PID.pdf.";
-    this.error = null;
-  };
 
   public static override readonly styles = css`
-    :host {
-      display: block;
-      width: 100%;
-      height: 100%;
-      min-width: 0;
-      min-height: 0;
-      overflow: hidden;
-    }
+'@,
+    1
+)
 
-    .workspace {
-      display: grid;
-      grid-template-columns: 220px minmax(0, 1fr);
-      width: 100%;
-      height: 100%;
-      min-width: 0;
-      min-height: 0;
-      overflow: hidden;
-      background: #3b3b3b;
-    }
+# Ensure image mode keeps original PDF visible.
+$text = $text.Replace(
+    ".mode-text .original-layer,
+    .mode-rectangle .original-layer,
+    .mode-image .original-layer,
+    .mode-all-fragments .original-layer {",
+    ".mode-text .original-layer,
+    .mode-rectangle .original-layer,
+    .mode-all-fragments .original-layer {"
+)
 
-    .menu {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      min-width: 0;
-      min-height: 0;
-      padding: 0.85rem;
-      border-right: 1px solid var(--line);
-      background: var(--surface);
-      overflow: auto;
-    }
-
-    button {
-      width: 100%;
-      min-height: 2.5rem;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--bg-ink);
-      color: #f9f5ea;
-      font: inherit;
-      font-size: 0.92rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    button.secondary {
-      background: #f9f4e9;
-      color: var(--text);
-    }
-
-    button:disabled {
-      opacity: 0.65;
-      cursor: wait;
-    }
-
-    .message,
-    .error,
-    .loading {
-      margin: 0;
-      font-size: 0.82rem;
-      line-height: 1.35;
-      overflow-wrap: anywhere;
-    }
-
-    .message,
-    .loading {
-      color: var(--text-muted);
-    }
-
-    .error {
-      color: #9b1c1c;
-    }
-
-    .viewer {
-      min-width: 0;
-      min-height: 0;
-      overflow: auto;
-      display: grid;
-      justify-items: center;
-      align-content: start;
-      gap: 1rem;
-      padding: 1rem;
-      background: #3b3b3b;
-    }
-
-    .page {
-      position: relative;
-      flex: 0 0 auto;
-      background: #ffffff;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
-    }
-
-    canvas,
-    .overlay {
-      position: absolute;
-      inset: 0;
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    .overlay {
-      pointer-events: none;
-    }
-
-    .overlay rect {
-      fill: rgba(255, 0, 0, 0.08);
-      stroke: rgba(255, 0, 0, 0.9);
-      stroke-width: 1;
-    }
-
-    @media (max-width: 840px) {
-      .workspace {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto minmax(0, 1fr);
-      }
-
-      .menu {
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-    }
-  `;
+if ($text -notmatch "\.mode-image \.original-layer") {
+    $text = $text.Replace(
+        "    .mode-all-layers .original-layer,
+    .mode-all-layers .fragment-layer {
+      visibility: visible;
+    }",
+        "    .mode-image .original-layer,
+    .mode-image .fragment-layer,
+    .mode-all-layers .original-layer,
+    .mode-all-layers .fragment-layer {
+      visibility: visible;
+    }"
+    )
 }
-'@
 
-Set-Utf8NoBomFile -Path $pidViewFile -Content $pidViewContent
+Set-Utf8NoBomFile -Path $pidViewFile -Content $text
 
-Write-Host "Fixed PID view:"
+Write-Host "Fixed image fragment filtering in:"
 Write-Host "  $pidViewFile"
 Write-Host ""
-Write-Host "Now run:"
-Write-Host "  pnpm build"
+Write-Host "Run:"
+Write-Host "  pnpm --filter `"pdf-reading`" build"

@@ -10,6 +10,20 @@ const PDF_SCALE = 1.35 as const;
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
+type LayerMode =
+  | "original"
+  | "text"
+  | "rectangle"
+  | "image"
+  | "all-fragments"
+  | "all-layers";
+
+type OverlayFragmentKind =
+  | "text"
+  | "rectangle"
+  | "image"
+  | "unknown";
+
 type PdfPageRenderInfo = Readonly<{
   pageNumber: number;
   width: number;
@@ -41,7 +55,6 @@ type PdfJsDocument = Readonly<{
 @customElement("pdf-pid-view")
 export class PdfPidView extends LitElement {
   private originalPdfBinary: Uint8Array | null = null;
-  private visiblePdfBinary: Uint8Array | null = null;
   private pdfDocument: PdfJsDocument | null = null;
 
   @state()
@@ -49,6 +62,12 @@ export class PdfPidView extends LitElement {
 
   @state()
   private fragments: readonly PdfFragment[] = [];
+
+  @state()
+  private hasLoadedFragments = false;
+
+  @state()
+  private layerMode: LayerMode = "original";
 
   @state()
   private isLoadingPdf = true;
@@ -72,19 +91,56 @@ export class PdfPidView extends LitElement {
         <aside class="menu" aria-label="PDF tools">
           <button
             type="button"
+            class=${this.layerMode === "original" ? "active" : ""}
             ?disabled=${this.isLoadingPdf || this.isFindingFragments}
-            @click=${this.findFragments}
+            @click=${this.showOriginalLayer}
           >
-            ${this.isFindingFragments ? "Finding fragments..." : "Find all fragments"}
+            Show PID.pdf
           </button>
 
           <button
             type="button"
-            class="secondary"
-            ?disabled=${this.isLoadingPdf || this.isFindingFragments || this.fragments.length === 0}
-            @click=${this.showOriginalPdf}
+            class=${this.layerMode === "text" ? "active" : ""}
+            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
+            @click=${this.showTextFragments}
           >
-            Show original PDF
+            Show text fragments
+          </button>
+
+          <button
+            type="button"
+            class=${this.layerMode === "rectangle" ? "active" : ""}
+            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
+            @click=${this.showRectangleFragments}
+          >
+            Show rectangles
+          </button>
+
+          <button
+            type="button"
+            class=${this.layerMode === "image" ? "active" : ""}
+            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
+            @click=${this.showImageFragments}
+          >
+            Show image fragments
+          </button>
+
+          <button
+            type="button"
+            class=${this.layerMode === "all-fragments" ? "active" : ""}
+            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
+            @click=${this.showAllFragments}
+          >
+            Show all fragments
+          </button>
+
+          <button
+            type="button"
+            class=${this.layerMode === "all-layers" ? "active" : ""}
+            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
+            @click=${this.showAllLayers}
+          >
+            Show all layers
           </button>
 
           ${this.message === null ? html`` : html`<p class="message">${this.message}</p>`}
@@ -101,24 +157,23 @@ export class PdfPidView extends LitElement {
   }
 
   private renderPage(page: PdfPageRenderInfo): TemplateResult {
-    const pageFragments = this.fragments.filter(
-      (fragment) => fragment.pageNumber === page.pageNumber,
-    );
+    const pageFragments = this.getVisibleFragments(page.pageNumber);
 
     return html`
       <section
-        class="page"
+        class=${`page mode-${this.layerMode}`}
         style=${`width:${page.width}px;height:${page.height}px;`}
         aria-label=${`Page ${page.pageNumber}`}
       >
         <canvas
+          class="original-layer"
           data-page-number=${page.pageNumber}
           width=${page.width}
           height=${page.height}
         ></canvas>
 
         <svg
-          class="overlay"
+          class="fragment-layer"
           width=${page.width}
           height=${page.height}
           viewBox=${`0 0 ${page.width} ${page.height}`}
@@ -136,8 +191,9 @@ export class PdfPidView extends LitElement {
 
     return svg`
       <rect
+        class=${this.resolveFragmentCssClass(fragment)}
         x=${box.position.x * PDF_SCALE}
-        y=${box.position.y * PDF_SCALE}
+        y=${this.resolveFragmentOverlayY(fragment) * PDF_SCALE}
         width=${box.width * PDF_SCALE}
         height=${box.height * PDF_SCALE}
         vector-effect="non-scaling-stroke"
@@ -145,11 +201,72 @@ export class PdfPidView extends LitElement {
     `;
   }
 
+  private getVisibleFragments(pageNumber: number): readonly PdfFragment[] {
+    if (this.layerMode === "original") {
+      return [];
+    }
+
+    return this.fragments.filter((fragment) =>
+      fragment.pageNumber === pageNumber &&
+      this.isFragmentVisibleInCurrentMode(fragment),
+    );
+  }
+
+  private isFragmentVisibleInCurrentMode(fragment: PdfFragment): boolean {
+    const kind = this.resolveOverlayFragmentKind(fragment);
+
+    switch (this.layerMode) {
+      case "text":
+        return kind === "text";
+
+      case "rectangle":
+        return kind === "rectangle";
+
+      case "image":
+        return kind === "image";
+
+      case "all-fragments":
+      case "all-layers":
+        return true;
+
+      case "original":
+        return false;
+    }
+  }
+
+  private resolveFragmentCssClass(fragment: PdfFragment): string {
+    switch (this.resolveOverlayFragmentKind(fragment)) {
+      case "text":
+        return "fragment fragment-text";
+
+      case "rectangle":
+        return "fragment fragment-rectangle";
+
+      case "image":
+        return "fragment fragment-image";
+
+      case "unknown":
+        return "fragment fragment-unknown";
+    }
+  }
+
+  private resolveFragmentOverlayY(fragment: PdfFragment): number {
+    const box = fragment.boundingBox;
+
+    if (this.resolveOverlayFragmentKind(fragment) === "text") {
+      return Math.max(0, box.position.y - box.height);
+    }
+
+    return box.position.y;
+  }
+
   private async loadAndRenderOriginalPdf(): Promise<void> {
     this.isLoadingPdf = true;
+    this.layerMode = "original";
     this.message = null;
     this.error = null;
     this.fragments = [];
+    this.hasLoadedFragments = false;
 
     try {
       const response = await fetch(PID_PDF_URL, { cache: "no-store" });
@@ -158,21 +275,14 @@ export class PdfPidView extends LitElement {
         throw new Error(`Failed to load ${PID_PDF_URL}. HTTP ${response.status}.`);
       }
 
-      const sourceBinary = new Uint8Array(await response.arrayBuffer());
+      const binary = new Uint8Array(await response.arrayBuffer());
 
-      // "Clone" model:
-      // originalPdfBinary is never mutated.
-      // visiblePdfBinary is the rendered document instance.
-      this.originalPdfBinary = new Uint8Array(sourceBinary);
-      this.visiblePdfBinary = new Uint8Array(sourceBinary);
-
-      this.pdfDocument = await this.openPdfDocument(this.visiblePdfBinary);
+      this.originalPdfBinary = new Uint8Array(binary);
+      this.pdfDocument = await this.openPdfDocument(new Uint8Array(binary));
       this.pages = await this.createPageRenderInfos(this.pdfDocument);
 
-      // Important: render the page DOM first. Do not wait with isLoadingPdf=true,
-      // otherwise the canvases are never in the DOM and rendering can spin forever.
       this.isLoadingPdf = false;
-      this.message = `Showing original PID.pdf. Pages: ${this.pages.length}.`;
+      this.message = `Showing PID.pdf. Pages: ${this.pages.length}.`;
 
       await this.updateComplete;
       await this.renderPdfPages();
@@ -245,31 +355,131 @@ export class PdfPidView extends LitElement {
     }
   }
 
-  private readonly findFragments = async (): Promise<void> => {
-    if (this.originalPdfBinary === null || this.isFindingFragments) {
+  private readonly showOriginalLayer = (): void => {
+    this.layerMode = "original";
+    this.message = "Showing PID.pdf.";
+    this.error = null;
+  };
+
+  private readonly showTextFragments = async (): Promise<void> => {
+    await this.showFragmentLayer("text", "text fragments");
+  };
+
+  private readonly showRectangleFragments = async (): Promise<void> => {
+    await this.showFragmentLayer("rectangle", "rectangle fragments");
+  };
+
+  private readonly showImageFragments = async (): Promise<void> => {
+    await this.showFragmentLayer("image", "image fragments");
+  };
+
+  private readonly showAllFragments = async (): Promise<void> => {
+    await this.showFragmentLayer("all-fragments", "all fragments");
+  };
+
+  private readonly showAllLayers = async (): Promise<void> => {
+    await this.showFragmentLayer("all-layers", "all layers");
+  };
+
+  private async showFragmentLayer(
+    mode: Exclude<LayerMode, "original">,
+    label: string,
+  ): Promise<void> {
+    try {
+      await this.ensureFragments();
+
+      this.layerMode = mode;
+      this.error = null;
+
+      const visibleCount = this.countVisibleFragments(mode);
+      this.message =
+        `Showing ${label}. Visible: ${visibleCount}. ` +
+        `Text: ${this.countKind("text")}. ` +
+        `Rectangles: ${this.countKind("rectangle")}. ` +
+        `Images: ${this.countKind("image")}. ` +
+        `Unknown: ${this.countKind("unknown")}. ` +
+        `Total: ${this.fragments.length}.`;
+    } catch {
+      // ensureFragments has already populated this.error.
+    }
+  }
+
+  private async ensureFragments(): Promise<void> {
+    if (this.hasLoadedFragments || this.originalPdfBinary === null) {
+      return;
+    }
+
+    if (this.isFindingFragments) {
       return;
     }
 
     this.isFindingFragments = true;
-    this.message = null;
+    this.message = "Finding fragments...";
     this.error = null;
 
     try {
       const sourceCopy = new Uint8Array(this.originalPdfBinary);
+
+      // Important: store ALL fragment kinds.
+      // Do not filter image fragments here, otherwise "Show image fragments" has nothing to render.
       this.fragments = await new PdfEngine().readFragments(sourceCopy);
-      this.message = `Fragment overlay enabled. Fragments: ${this.fragments.length}.`;
+      this.hasLoadedFragments = true;
     } catch (error) {
       this.error = error instanceof Error ? error.message : String(error);
+      throw error;
     } finally {
       this.isFindingFragments = false;
     }
-  };
+  }
 
-  private readonly showOriginalPdf = (): void => {
-    this.fragments = [];
-    this.message = "Showing original PID.pdf.";
-    this.error = null;
-  };
+  private countVisibleFragments(mode: Exclude<LayerMode, "original">): number {
+    return this.fragments.filter((fragment) => {
+      const kind = this.resolveOverlayFragmentKind(fragment);
+
+      switch (mode) {
+        case "text":
+          return kind === "text";
+
+        case "rectangle":
+          return kind === "rectangle";
+
+        case "image":
+          return kind === "image";
+
+        case "all-fragments":
+        case "all-layers":
+          return true;
+      }
+    }).length;
+  }
+
+  private countKind(kind: OverlayFragmentKind): number {
+    return this.fragments.filter((fragment) =>
+      this.resolveOverlayFragmentKind(fragment) === kind,
+    ).length;
+  }
+
+  private resolveOverlayFragmentKind(fragment: PdfFragment): OverlayFragmentKind {
+    const rawKind = String(fragment.kind).trim().toLowerCase();
+
+    if (rawKind === "text" || rawKind.endsWith(".text") || rawKind.includes("text")) {
+      return "text";
+    }
+
+    if (
+      rawKind === "rectangle" ||
+      rawKind.endsWith(".rectangle") ||
+      rawKind.includes("rectangle")
+    ) {
+      return "rectangle";
+    }
+
+    if (rawKind === "image" || rawKind.endsWith(".image") || rawKind.includes("image")) {
+      return "image";
+    }
+
+    return "unknown";
+  }
 
   public static override readonly styles = css`
     :host {
@@ -309,17 +519,17 @@ export class PdfPidView extends LitElement {
       min-height: 2.5rem;
       border: 1px solid var(--line);
       border-radius: 8px;
-      background: var(--bg-ink);
-      color: #f9f5ea;
+      background: #f9f4e9;
+      color: var(--text);
       font: inherit;
       font-size: 0.92rem;
       font-weight: 700;
       cursor: pointer;
     }
 
-    button.secondary {
-      background: #f9f4e9;
-      color: var(--text);
+    button.active {
+      background: var(--bg-ink);
+      color: #f9f5ea;
     }
 
     button:disabled {
@@ -364,8 +574,8 @@ export class PdfPidView extends LitElement {
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
     }
 
-    canvas,
-    .overlay {
+    .original-layer,
+    .fragment-layer {
       position: absolute;
       inset: 0;
       display: block;
@@ -373,14 +583,52 @@ export class PdfPidView extends LitElement {
       height: 100%;
     }
 
-    .overlay {
+    .fragment-layer {
       pointer-events: none;
     }
 
-    .overlay rect {
-      fill: rgba(255, 0, 0, 0.08);
-      stroke: rgba(255, 0, 0, 0.9);
+    .mode-text .original-layer,
+    .mode-rectangle .original-layer,
+    .mode-all-fragments .original-layer {
+      visibility: hidden;
+    }
+
+    .mode-original .fragment-layer {
+      visibility: hidden;
+    }
+
+    .mode-image .original-layer,
+    .mode-image .fragment-layer,
+    .mode-all-layers .original-layer,
+    .mode-all-layers .fragment-layer {
+      visibility: visible;
+    }
+
+    .fragment-layer rect.fragment {
       stroke-width: 1;
+    }
+
+    .fragment-layer rect.fragment-text {
+      fill: rgba(30, 144, 255, 0.12);
+      stroke: rgba(30, 144, 255, 0.95);
+    }
+
+    .fragment-layer rect.fragment-rectangle {
+      fill: rgba(34, 197, 94, 0.12);
+      stroke: rgba(22, 163, 74, 0.95);
+    }
+
+    .fragment-layer rect.fragment-image {
+      fill: rgba(168, 85, 247, 0.35);
+      stroke: rgba(147, 51, 234, 1);
+      stroke-width: 2;
+      stroke-dasharray: 6 4;
+    }
+
+    .fragment-layer rect.fragment-unknown {
+      fill: rgba(255, 0, 0, 0.10);
+      stroke: rgba(255, 0, 0, 0.85);
+      stroke-dasharray: 2 2;
     }
 
     @media (max-width: 840px) {
