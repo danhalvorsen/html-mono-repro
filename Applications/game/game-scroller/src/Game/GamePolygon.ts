@@ -86,6 +86,7 @@ export class GamePolygon extends LitElement {
         height=${this.height}
         viewBox=${`0 0 ${this.width} ${this.height}`}
         xmlns="http://www.w3.org/2000/svg"
+        style="overflow: visible;"
       >
         ${this.polygon.svg}
       </svg>

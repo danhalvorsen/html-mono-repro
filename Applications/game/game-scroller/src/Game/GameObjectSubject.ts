@@ -13,18 +13,23 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject 
   #unsubscribeFromScheduler: (() => void) | null = null;
   #scheduler: TimeSchdulerObserver | null = null;
 
-  private subject: GamePolygon = new SvgRectangleBuilder()
-    .withX(20)
-    .withY(20)
-    .withLength(120)
-    .withHeigth(80)
-    .withCanvasSize(500, 300)
-    .withStyle({
-      fill: '#4ade80',
-      stroke: '#166534',
-      strokeWidth: 2
-    })
-    .build();
+  private subject: GamePolygon;
+
+  public constructor(subject?: GamePolygon) {
+    super();
+    this.subject = subject ?? new SvgRectangleBuilder()
+      .withX(20)
+      .withY(20)
+      .withLength(120)
+      .withHeigth(80)
+      .withCanvasSize(500, 300)
+      .withStyle({
+        fill: '#4ade80',
+        stroke: '#166534',
+        strokeWidth: 2
+      })
+      .build();
+  }
 
   setScheduler(timeSchedulerObserver: TimeSchdulerObserver): void {
     this.#unsubscribeFromScheduler?.();
