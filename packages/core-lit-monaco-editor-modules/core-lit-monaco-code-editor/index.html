@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monaco Code Editor Module</title>
+    <script type="module" src="/src/index.ts"></script>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #0f1727;
+      }
+    </style>
+  </head>
+  <body>
+    <code-editor language="typescript">
+      <script type="text/javascript">
+function hello(name) {
+  return `Hello, ${name}`;
+}
+
+console.log(hello("from core-lit-monaco-code-editor"));
+      </script>
+    </code-editor>
+  </body>
+</html>

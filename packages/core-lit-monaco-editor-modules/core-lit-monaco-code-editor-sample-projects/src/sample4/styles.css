@@ -1,0 +1,66 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: #f4f7ff;
+  color: #10203c;
+}
+
+.cluster-playground {
+  max-width: 1180px;
+  margin: 1.2rem auto;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid #d4deef;
+  background: #fff;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(160px, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
+}
+
+.controls label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+}
+
+input {
+  font: inherit;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid #b9cae5;
+  border-radius: 7px;
+}
+
+#status {
+  margin: 0.6rem 0 0.25rem;
+  font-weight: 600;
+}
+
+#stats {
+  margin: 0;
+  color: #33517f;
+  font-size: 0.9rem;
+  word-break: break-word;
+}
+
+#download-link {
+  display: inline-block;
+  margin: 0.75rem 0;
+  color: #1546ad;
+  text-decoration: none;
+}
+
+#download-link:hover {
+  text-decoration: underline;
+}
+
+.result {
+  margin-top: 0.5rem;
+}
+
+pdf-presenter {
+  display: block;
+}

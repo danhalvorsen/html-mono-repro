@@ -1,0 +1,47 @@
+<main class="cluster-playground">
+  <h1>Sample 4: PDF DBSCAN + Writer</h1>
+  <p>
+    Load a PDF, tune cluster parameters, and a new PDF is rendered with cluster bounding boxes.
+  </p>
+
+  <section class="controls">
+    <label>
+      PDF File
+      <input id="pdf-file" type="file" accept="application/pdf" />
+    </label>
+
+    <label>
+      epsilon
+      <input id="epsilon" type="number" step="0.5" min="0.1" value="14" />
+    </label>
+
+    <label>
+      minPoints
+      <input id="min-points" type="number" step="1" min="1" value="4" />
+    </label>
+
+    <label>
+      minClusterItems
+      <input id="min-cluster-items" type="number" step="1" min="1" value="3" />
+    </label>
+
+    <label>
+      maxClusters
+      <input id="max-clusters" type="number" step="1" min="1" value="30" />
+    </label>
+
+    <label>
+      bboxPadding
+      <input id="bbox-padding" type="number" step="0.5" min="0" value="2" />
+    </label>
+  </section>
+
+  <p id="status">Load a PDF file first.</p>
+  <p id="stats">No run yet.</p>
+
+  <a id="download-link" href="#">Download rendered PDF</a>
+
+  <section class="result">
+    <pdf-presenter id="pdf-result" width="1000" height="720"></pdf-presenter>
+  </section>
+</main>

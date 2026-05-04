@@ -1,0 +1,99 @@
+{
+  "fileName": "Kiwi.pdf",
+  "pageNumber": 1,
+  "exportedAtUtc": "2026-04-24T05:32:15.068Z",
+  "metadata": {
+    "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+    "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+    "creationDateUtc": "2026-04-13T07:57:21.000Z",
+    "modificationDateUtc": "2026-04-24T05:32:14.000Z",
+    "pageCount": 24
+  },
+  "imageCount": 7,
+  "images": [
+    {
+      "pageNumber": 1,
+      "boundingBox": {
+        "position": {
+          "x": 32.4877777,
+          "y": 462.128005
+        },
+        "width": 219,
+        "height": 310
+      },
+      "name": "Im0"
+    },
+    {
+      "pageNumber": 1,
+      "boundingBox": {
+        "position": {
+          "x": 445.8077698,
+          "y": 475.7433375
+        },
+        "width": 252,
+        "height": 253
+      },
+      "name": "Im1"
+    },
+    {
+      "pageNumber": 1,
+      "boundingBox": {
+        "position": {
+          "x": 30.5198766,
+          "y": 154.7859833
+        },
+        "width": 124,
+        "height": 209
+      },
+      "name": "Im2"
+    },
+    {
+      "pageNumber": 1,
+      "boundingBox": {
+        "position": {
+          "x": 224.2692546,
+          "y": 164.8581693
+        },
+        "width": 123,
+        "height": 209
+      },
+      "name": "Im3"
+    },
+    {
+      "pageNumber": 1,
+      "boundingBox": {
+        "position": {
+          "x": 78.4467564,
+          "y": 141.8242076
+        },
+        "width": 142,
+        "height": 243
+      },
+      "name": "Im4"
+    },
+    {
+      "pageNumber": 1,
+      "boundingBox": {
+        "position": {
+          "x": 153.4388076,
+          "y": 134.5070868
+        },
+        "width": 138,
+        "height": 243
+      },
+      "name": "Im5"
+    },
+    {
+      "pageNumber": 1,
+      "boundingBox": {
+        "position": {
+          "x": 434.446534,
+          "y": 135.5053537
+        },
+        "width": 256,
+        "height": 231
+      },
+      "name": "Im6"
+    }
+  ]
+}

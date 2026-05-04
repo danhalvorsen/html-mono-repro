@@ -15,3 +15,5 @@ export * from './functional/result/result.js';
 export * from './token/commandCarrier.js';
 export * from './token/queryCarriere.js';
 export * from './visitor/visitor.js';
+
+export * from './observer/observer.js';
