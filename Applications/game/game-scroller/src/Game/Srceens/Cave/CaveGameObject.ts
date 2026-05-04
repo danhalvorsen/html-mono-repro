@@ -42,20 +42,52 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
   scheduler?: TimeSchdulerObserver;
 
   readonly #curveGenerator = new GamePolygonGeneratorController(this, {
-    canvasLength: this.#canvasLength,
-    amplitude: 100,
-    baselineY: 150,
-    periodsAcrossFrame: 4,
-    samplesPerFrame: 1200,
-    upperInterval: { min: 16, max: 48 },
-    lowerInterval: { min: 6, max: 18 },
-    upperSkew: 0.55,
-    lowerSkew: -0.1,
-    noiseWindowSize: 28,
-    upperNoiseAmplifier: 100,
-    lowerNoiseAmplifier: 10,
-    upperVariationInfluence: 16,
-    lowerVariationInfluence: 6
+    reference: {
+      geometry: {
+        canvasLength: this.#canvasLength,
+        samplesPerFrame: 700,
+        amplitude: 100,
+        baselineY: 150,
+        periodsAcrossFrame: 4
+      },
+      noise: {
+        noiseWindowSize: 40,
+        profileSmoothingPasses: 2,
+        spikeSuppressionFactor: 1.35
+      }
+    },
+    upper: {
+      geometry: {
+        canvasLength: this.#canvasLength,
+        amplitude: 100
+      },
+      distribution: {
+        interval: { min: 10, max: 24 },
+        skew: 0.25,
+        variationInfluence: 5
+      },
+      noise: {
+        noiseAmplifier: 18
+      }
+    },
+    lower: {
+      geometry: {
+        canvasLength: this.#canvasLength,
+        amplitude: 100
+      },
+      distribution: {
+        interval: { min: 6, max: 18 },
+        skew: -0.1,
+        variationInfluence: 6
+      },
+      noise: {
+        noiseAmplifier: 10
+      },
+      shape: {
+        flattenStrength: 0.5,
+        flattenPeriodScale: 0.5
+      }
+    }
   });
 
   protected override updated(changed: Map<string, unknown>): void {
