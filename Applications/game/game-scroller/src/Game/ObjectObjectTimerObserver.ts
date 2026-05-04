@@ -1,15 +1,17 @@
-import type { IGameObjectSubject } from "./GameObjectSubject";
+export interface ITimeObserver {
+    onTime(time: number): void;
+}
 
 export class TimeSchdulerObserver {
-    #observers = new Set<IGameObjectSubject>();
+    #observers = new Set<ITimeObserver>();
     #animationFrameId: number | null = null;
 
-    subscribe(observer: IGameObjectSubject): () => void {
+    subscribe(observer: ITimeObserver): () => void {
         this.#observers.add(observer);
         return () => this.unsubscribe(observer);
     }
 
-    unsubscribe(observer: IGameObjectSubject): boolean {
+    unsubscribe(observer: ITimeObserver): boolean {
         return this.#observers.delete(observer);
     }
 

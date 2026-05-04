@@ -11,6 +11,7 @@
   "dependencies": {
     "lit": "^3.3.2",
     "@monorepo/core-math": "workspace:*",
+    "@monorepo/core-math-probability": "workspace:*",
     "@monorepo/core-design-patterns": "workspace:*",
     "@monorepo/game-objects": "workspace:*" 
   },
