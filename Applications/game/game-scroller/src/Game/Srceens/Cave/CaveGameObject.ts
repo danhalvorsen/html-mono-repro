@@ -3,12 +3,32 @@
 import { LitElement, css, html, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import type { ITimeObserver, TimeSchdulerObserver } from '../../ObjectObjectTimerObserver.js';
+import type { ITimeObserver, TimeSchdulerObserver } from '../../TimeSchdulerObserver.js';
 import { GamePolygon } from '../../GamePolygon.js';
 import { GamePolygonGeneratorController } from './GamePolygonGeneratorController.js';
 import type { Point2 } from '@monorepo/core-math';
-import { MultiCurveSvgTemplate } from './MultiCurveSvgTemplate.js';
+import { MultiCurveSvgTemplate, type ReferenceCurveRenderStyle } from './MultiCurveSvgTemplate.js';
 import type { ICamera } from '../../ICamera.js';
+
+type CaveNoiseMaterialOptions = {
+  readonly patternInset: number;
+  readonly upper: {
+    readonly baseFrequency: { readonly x: number; readonly y: number };
+    readonly numOctaves: number;
+    readonly seed: number;
+    readonly blurStdDeviation: number;
+    readonly baseFill: string;
+    readonly overlayOpacity: number;
+  };
+  readonly lower: {
+    readonly baseFrequency: { readonly x: number; readonly y: number };
+    readonly numOctaves: number;
+    readonly seed: number;
+    readonly blurStdDeviation: number;
+    readonly baseFill: string;
+    readonly overlayOpacity: number;
+  };
+};
 
 type CaveGameObjectReferenceTarget = HTMLElement & {
   caveGameObject?: CaveGameObject;
@@ -52,8 +72,11 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
   `;
 
   readonly #canvasLength = 500;
+  readonly #referenceAmplitude = 100;
+  readonly #minReferenceCurveGap = this.#referenceAmplitude / 2;
   #unsubscribe: (() => void) | null = null;
   #unsubscribeFromCamera: (() => void) | null = null;
+  #lastNoiseReloadAtMs = 0;
 
   @property({ attribute: false })
   public scheduler?: TimeSchdulerObserver;
@@ -70,12 +93,48 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
   @property({ type: Boolean })
   public showCameraViewBox = false;
 
+  @property({ type: Boolean })
+  public showReferenceCurve = true;
+
+  @property({ type: String })
+  public referenceCurveRenderStyle: ReferenceCurveRenderStyle = 'solid';
+
+  @property({ type: Boolean })
+  public closeUpperLowerToBounds = true;
+
+  @property({ type: String })
+  public noiseMaterialOptionsUrl = '/cave-noise-material.json';
+
+  @property({ attribute: false })
+  public noiseMaterialOptions: Partial<CaveNoiseMaterialOptions> = {
+    patternInset: 0.02,
+    upper: {
+      baseFrequency: { x: 0.12, y: 0.18 },
+      numOctaves: 4,
+      seed: 11,
+      blurStdDeviation: 0,
+      baseFill: '#3b271b',
+      overlayOpacity: 1
+    },
+    lower: {
+      baseFrequency: { x: 0.1, y: 0.15 },
+      numOctaves: 4,
+      seed: 19,
+      blurStdDeviation: 0,
+      baseFill: '#2e1f15',
+      overlayOpacity: 1
+    }
+  };
+
+  @property({ type: Number })
+  public noiseMaterialReloadIntervalMs = 0;
+
   readonly #curveGenerator = new GamePolygonGeneratorController(this, {
     reference: {
       geometry: {
         canvasLength: this.#canvasLength,
         samplesPerFrame: 700,
-        amplitude: 100,
+        amplitude: this.#referenceAmplitude,
         baselineY: 150,
         periodsAcrossFrame: 4
       },
@@ -97,29 +156,37 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
       },
       noise: {
         noiseAmplifier: 18
+      },
+      limits: {
+        minDistanceFromReference: this.#minReferenceCurveGap
       }
     },
     lower: {
       geometry: {
         canvasLength: this.#canvasLength,
-        amplitude: 100
+        amplitude: 0.000001
       },
       distribution: {
-        interval: { min: 6, max: 18 },
+        interval: { min: 2, max: 4 },
         skew: -0.1,
-        variationInfluence: 6
+        variationInfluence: 0.75
       },
       noise: {
-        noiseAmplifier: 10
+        noiseAmplifier: 0.5
       },
       shape: {
-        flattenStrength: 0.5,
-        flattenPeriodScale: 0.5
+        flattenStrength: 1,
+        flattenPeriodScale: 0.1
+      },
+      limits: {
+        minDistanceFromReference: this.#minReferenceCurveGap,
+        maxOffsetFromReference: 6
       }
     }
   });
 
-  protected override firstUpdated(): void {
+  protected override async firstUpdated(): Promise<void> {
+    await this.#loadNoiseMaterialOptions();
     this.#propagateCaveReferenceToAllSlots();
   }
 
@@ -146,7 +213,10 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
   }
 
   public onTime(time: number): void {
-    void time;
+    if (this.noiseMaterialReloadIntervalMs <= 0) return;
+    if (time - this.#lastNoiseReloadAtMs < this.noiseMaterialReloadIntervalMs) return;
+    this.#lastNoiseReloadAtMs = time;
+    void this.#loadNoiseMaterialOptions();
   }
 
   public getReferenceCurve(): readonly Point2[] {
@@ -191,6 +261,33 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
     this.#propagateCaveReferenceToSlot({ slot: centerSlot });
   }
 
+  async #loadNoiseMaterialOptions(): Promise<void> {
+    try {
+      const cacheBustedUrl = `${this.noiseMaterialOptionsUrl}?t=${Date.now()}`;
+      const response = await fetch(cacheBustedUrl, { cache: 'no-store' });
+      if (!response.ok) return;
+
+      const json = (await response.json()) as Partial<CaveNoiseMaterialOptions>;
+      const mergedUpper = {
+        ...(this.noiseMaterialOptions.upper ?? {}),
+        ...(json.upper ?? {})
+      } as CaveNoiseMaterialOptions['upper'];
+      const mergedLower = {
+        ...(this.noiseMaterialOptions.lower ?? {}),
+        ...(json.lower ?? {})
+      } as CaveNoiseMaterialOptions['lower'];
+
+      this.noiseMaterialOptions = {
+        ...this.noiseMaterialOptions,
+        ...json,
+        upper: mergedUpper,
+        lower: mergedLower
+      };
+    } catch {
+      // Keep built-in defaults if runtime JSON is missing/invalid.
+    }
+  }
+
   #propagateCaveReferenceToSlot(options: { readonly slot: HTMLSlotElement | null }): void {
     if (!options.slot) return;
 
@@ -231,7 +328,14 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
     const shape = new MultiCurveSvgTemplate(
       this.#curveGenerator.referencePoints,
       this.#curveGenerator.upperPoints,
-      this.#curveGenerator.lowerPoints
+      this.#curveGenerator.lowerPoints,
+      {
+        showReferenceCurve: this.showReferenceCurve,
+        referenceCurveRenderStyle: this.referenceCurveRenderStyle,
+        closeCurvesToBounds: this.closeUpperLowerToBounds,
+        boundsWidth: worldWidth,
+        boundsHeight: worldHeight
+      }
     );
 
     return html`

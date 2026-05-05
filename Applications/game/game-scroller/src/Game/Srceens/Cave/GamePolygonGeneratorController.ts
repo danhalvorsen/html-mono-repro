@@ -3,11 +3,11 @@ import type { ReactiveController, ReactiveControllerHost } from 'lit';
 import { CurveOptionsBuilder } from './CurveOptionsBuilder.js';
 import type { IGamePolygonGeneratorOptions, INormalizedGeneratorOptions } from './CurveOptions.js';
 import {
-  LowerCurveBandStrategy,
   UpperCurveBandStrategy,
   buildPoints,
   createProjectionContext
 } from './strategies/CurveBandStrategy.js';
+import { LowerCurveLineStrategy } from './strategies/LowerCurveLineStrategy.js';
 import { CaveReferenceCurveStrategy } from './strategies/ReferenceCurveStrategy.js';
 import { SkewNormalVariationStrategy } from './strategies/SkewNormalVariationStrategy.js';
 
@@ -25,7 +25,11 @@ export class GamePolygonGeneratorController implements ReactiveController {
   readonly #config: INormalizedGeneratorOptions;
   readonly #referenceStrategy = new CaveReferenceCurveStrategy();
   readonly #upperVariationStrategy = new SkewNormalVariationStrategy(1);
-  readonly #lowerVariationStrategy = new SkewNormalVariationStrategy(1.6);
+  readonly #lowerLineStrategy = new LowerCurveLineStrategy(10, {
+    slowPeriodsAcrossFrame: 1,
+    waveAmplitude: 1.8,
+    referenceInfluence: 0.05
+  });
 
   readonly #state: IGeneratorState = {
     phase: 0,
@@ -77,16 +81,10 @@ export class GamePolygonGeneratorController implements ReactiveController {
     });
 
     const upperVariation = this.#upperVariationStrategy.create(this.#config.upper, sampleCount);
-    const lowerVariation = this.#lowerVariationStrategy.create(this.#config.lower, sampleCount);
 
-    const upperBand = new UpperCurveBandStrategy();
-    const lowerBand = new LowerCurveBandStrategy({
-      baselineY: this.#config.reference.geometry.baselineY,
-      periodsAcrossFrame: this.#config.reference.geometry.periodsAcrossFrame,
-      flattenStrength: this.#config.lower.shape.flattenStrength,
-      flattenPeriodScale: this.#config.lower.shape.flattenPeriodScale
+    const upperBand = new UpperCurveBandStrategy({
+      minDistanceFromReference: this.#config.upper.limits.minDistanceFromReference
     });
-
     const upperPoints = referencePoints.map((point, index) => {
       return {
         x: point.x,
@@ -101,17 +99,15 @@ export class GamePolygonGeneratorController implements ReactiveController {
       };
     });
 
-    const lowerPoints = referencePoints.map((point, index) => {
+    this.#lowerLineStrategy.setReference(
+      referencePoints,
+      this.#config.lower.limits.minDistanceFromReference
+    );
+
+    const lowerPoints = referencePoints.map((point) => {
       return {
         x: point.x,
-        y: lowerBand.project(
-          createProjectionContext({
-            point,
-            index,
-            frameLength,
-            variation: lowerVariation
-          })
-        )
+        y: this.#lowerLineStrategy.yAt(point)
       };
     });
 

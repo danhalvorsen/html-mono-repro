@@ -659,6 +659,9 @@ importers:
       '@monorepo/core-math-probability':
         specifier: workspace:*
         version: link:../../../packages/core-math-probability
+      '@monorepo/core-scene-graph':
+        specifier: workspace:*
+        version: link:../../../packages/core-scene-graph
       '@monorepo/game-objects':
         specifier: workspace:*
         version: link:../game-objects

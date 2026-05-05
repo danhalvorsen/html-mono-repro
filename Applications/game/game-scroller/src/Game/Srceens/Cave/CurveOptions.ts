@@ -33,6 +33,7 @@ export interface ICurveShapeOptions {
 
 export interface ICurveLimitsOptions {
   readonly maxOffsetFromReference?: number;
+  readonly minDistanceFromReference?: number;
 }
 
 export interface ICurveRuntimeOptions {
@@ -82,6 +83,7 @@ export interface INormalizedCurveShapeOptions {
 
 export interface INormalizedCurveLimitsOptions {
   readonly maxOffsetFromReference: number;
+  readonly minDistanceFromReference: number;
 }
 
 export interface INormalizedCurveRuntimeOptions {

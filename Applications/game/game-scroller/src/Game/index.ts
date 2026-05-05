@@ -6,4 +6,4 @@ export * from './GameCanvas.js';
 export * from './GameObjectSubject.js';
 export * from './GamePolygon.js';
 export * from './GameScreen.js';
-export * from './ObjectObjectTimerObserver.js';
+export * from './TimeSchdulerObserver.js';

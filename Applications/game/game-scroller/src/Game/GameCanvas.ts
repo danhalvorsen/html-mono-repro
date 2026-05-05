@@ -4,12 +4,13 @@ import { html, LitElement, type TemplateResult } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { customElement, property } from 'lit/decorators.js';
  
-import type { TimeSchdulerObserver } from './ObjectObjectTimerObserver.js';
+import type { TimeSchdulerObserver } from './TimeSchdulerObserver.js';
 
 import './Srceens/Cave/CaveGameObject.js';
-import '../GameObjects/RectangleGameObjects.js';
+import { RectangleGameObject } from '../GameObjects/RectangleGameObjects.js';
 import type { ICamera, ICameraFollowTarget } from './ICamera.js';
 import { GameObjectPlacementFactory } from './GameObjectPlacementFactory.js';
+import { SceneGraph, SceneNode } from '@monorepo/core-scene-graph'; 
 
 export type GameObjectViewModel = {
   readonly id: string;
@@ -26,6 +27,9 @@ const placementFactory = new GameObjectPlacementFactory();
 @customElement('game-canvas')
 export class GameCanvas extends LitElement {
   private readonly gameObjects = placementFactory.create();
+  private readonly sceneRoot = new SceneNode('game-canvas-root');
+  private readonly scene = new SceneGraph(this.sceneRoot);
+  readonly #sceneAttachedObjects = new WeakSet<RectangleGameObject>();
   #isCameraTargetBound = false;
 
   @property({ attribute: false })
@@ -43,7 +47,14 @@ export class GameCanvas extends LitElement {
   @property({ type: Boolean })
   public showCameraViewBox = false;
 
+  protected override willUpdate(): void {
+    this.scene.update();
+  }
+
   protected override updated(changed: Map<string, unknown>): void {
+    this.#attachRenderedObjectsToScene();
+    this.scene.update();
+
     if (this.showCameraViewBox) return;
     if (!this.camera) return;
     if (!changed.has('camera') && this.#isCameraTargetBound) return;
@@ -55,6 +66,16 @@ export class GameCanvas extends LitElement {
     this.#isCameraTargetBound = true;
   }
 
+  #attachRenderedObjectsToScene(): void {
+    const objects = this.renderRoot.querySelectorAll('rectangle-game-object');
+    for (const object of objects) {
+      if (!(object instanceof RectangleGameObject)) continue;
+      if (this.#sceneAttachedObjects.has(object)) continue;
+      this.scene.add(object);
+      this.#sceneAttachedObjects.add(object);
+    }
+  }
+
   protected override render(): TemplateResult {
     return html`
       <cave-game-object
@@ -63,6 +84,7 @@ export class GameCanvas extends LitElement {
         .viewportWidth=${this.viewportWidth}
         .viewportHeight=${this.viewportHeight}
         .showCameraViewBox=${this.showCameraViewBox}
+        .showReferenceCurve=${false}
       >
         ${repeat(
           this.gameObjects,

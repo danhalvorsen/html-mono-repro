@@ -3,7 +3,7 @@
 import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
  
-import type { TimeSchdulerObserver } from './ObjectObjectTimerObserver.js';
+import type { TimeSchdulerObserver } from './TimeSchdulerObserver.js';
 import './GameCanvas.js';
 import type { ICamera } from './ICamera.js';
 import { Camera } from './Camera.js';

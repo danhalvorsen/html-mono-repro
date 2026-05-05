@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { TimeSchdulerObserver, type ITimeObserver } from '../../src/Game/ObjectObjectTimerObserver.js';
+import { TimeSchdulerObserver, type ITimeObserver } from '../../src/Game/TimeSchdulerObserver.js';
 
 class FakeGameObjectObserver implements ITimeObserver {
   readonly receivedTimes: number[] = [];

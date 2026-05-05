@@ -17,7 +17,6 @@ export interface ICameraOptions {
 export class Camera extends LitElement implements ICamera {
   readonly #observers = new Set<CameraObserver>();
 
-  #scheduler?: TimeSchdulerObserver;
   #unsubscribeFromScheduler: (() => void) | null = null;
 
   #viewport: ICameraSize;
@@ -62,7 +61,6 @@ export class Camera extends LitElement implements ICamera {
   public setScheduler(scheduler?: TimeSchdulerObserver): void {
     this.#unsubscribeFromScheduler?.();
     this.#unsubscribeFromScheduler = null;
-    this.#scheduler = scheduler;
     this.#unsubscribeFromScheduler = scheduler?.subscribe(this) ?? null;
   }
 
@@ -89,6 +87,22 @@ export class Camera extends LitElement implements ICamera {
   public onTime(time: number): void {
     void time;
     this.#centerOnFollowTarget();
+  }
+
+  public getPosistion(): Point2 {
+    return this.position;
+  }
+
+  public getWorldPosistion(): Point2 {
+    return this.position;
+  }
+
+  public getRotation(): Point2 {
+    return { x: 0, y: 0 };
+  }
+
+  public getWorldRotation(): Point2 {
+    return { x: 0, y: 0 };
   }
 
   public override disconnectedCallback(): void {

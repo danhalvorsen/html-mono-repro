@@ -2,7 +2,7 @@
 
 import type { Point2 } from '@monorepo/core-math';
 import type { IGameObjectSubject } from './GameObjectSubject';
-import type { TimeSchdulerObserver } from './ObjectObjectTimerObserver';
+import type { TimeSchdulerObserver } from './TimeSchdulerObserver';
  
 export interface ICameraSize {
   readonly width: number;
