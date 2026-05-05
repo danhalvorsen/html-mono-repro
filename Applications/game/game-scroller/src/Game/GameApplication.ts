@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { TimeSchdulerObserver } from './ObjectObjectTimerObserver.js';
+import { TimeSchdulerObserver } from './TimeSchdulerObserver.js';
 import './GameScreen.js';
 
 @customElement('game-application')

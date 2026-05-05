@@ -21,6 +21,7 @@ const FragmentStrokeColors = Object.freeze({
   [FragmentKinds.Text]: rgb(0, 0, 1),
   [FragmentKinds.Rectangle]: rgb(1, 0, 0),
   [FragmentKinds.Image]: rgb(0, 0.6, 0),
+  [FragmentKinds.Path]: rgb(1, 0.6, 0),
 } as const);
 
 describe("KISS: draw all PDF fragments on PID.pdf", () => {

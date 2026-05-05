@@ -9,6 +9,7 @@ export * from './core/ImageFragment.js';
 export * from './core/IPoint.js';
 export * from './core/ITextFragment.js';
 export * from './core/Point.js';
+export * from './core/PathFragment.js';
 export * from './core/RectangleFragment.js';
 export * from './pdf-domain/document/IPdfBinarySource.js';
 export * from './core/Rectangle.js';
@@ -26,5 +27,7 @@ export * from './pdf-domain/fragments/IPdfTextFragment.js';
 export * from './core/TextFragment.js';
 export * from './core/IInterval.js';
 export * from './core/IBoundingBox.js';
+export * from './pdf-domain/fragments/IPdfPathSegment.js';
+export * from './pdf-domain/fragments/IPdfPathFragment.js';
 export * from './pdf-domain/fragments/IPdfRectangleFragment.js';
 export * from './pdf-domain/fragments/IPdfFragment.js'

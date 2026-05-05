@@ -12,6 +12,7 @@ const DEFAULT_GLOBAL_OPTIONS = {
   baselineY: 150,
   samplesPerFrame: 700,
   maxOffsetFromReference: 140,
+  minDistanceFromReference: 8,
   noiseWindowSize: 24,
   noiseAmplifier: 3,
   profileSmoothingPasses: 2,
@@ -87,7 +88,8 @@ export class CurveOptionsBuilder {
         flattenPeriodScale: options.shape?.flattenPeriodScale ?? DEFAULT_GLOBAL_OPTIONS.flattenPeriodScale
       },
       limits: {
-        maxOffsetFromReference: options.limits?.maxOffsetFromReference ?? DEFAULT_GLOBAL_OPTIONS.maxOffsetFromReference
+        maxOffsetFromReference: options.limits?.maxOffsetFromReference ?? DEFAULT_GLOBAL_OPTIONS.maxOffsetFromReference,
+        minDistanceFromReference: options.limits?.minDistanceFromReference ?? DEFAULT_GLOBAL_OPTIONS.minDistanceFromReference
       },
       runtime: {
         randomSource: options.runtime?.randomSource ?? new Mulberry32RandomSource(DEFAULT_GLOBAL_OPTIONS.randomSeed)

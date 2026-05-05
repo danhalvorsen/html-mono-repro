@@ -46,6 +46,9 @@ export class PdfFragmentWriter extends GuardedAdapter implements IPdfFragmentWri
                 case FragmentKinds.Image:
                     throw new Error("Fragment kind 'image' is not supported for write operations.");
 
+                case FragmentKinds.Path:
+                    throw new Error("Fragment kind 'path' is not supported for write operations.");
+
                 default:
                     throw new Error(`Unsupported fragment kind '${(fragment as { kind?: string; }).kind ?? "unknown"}'.`);
             }

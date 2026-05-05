@@ -1,27 +1,25 @@
 import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import type { TimeSchdulerObserver } from './ObjectObjectTimerObserver';
+import type { TimeSchdulerObserver } from './TimeSchdulerObserver';
 import { SvgRectangleBuilder } from './Builders/SvgPolygonBuilder';
 import type { GamePolygon } from './GamePolygon';
-import type { Point, Point2 } from '@monorepo/core-math';
+import { Matrix, type IMatrix, type Point, type Point2 } from '@monorepo/core-math';
 import { GameObjectAnimationController } from './Animation/GameObjectAnimationController';
+import type { ISceneNode } from '../../../../../packages/core-scene-graph/dist/ISceneNode';
+import type { Vector2 } from '../GameObjects/RectangleGameObjects';
+import type { ICaveGameObjectReference } from './ICaveGameObjectReference';
 
-export interface ICurveCollection {
-  readonly reference: readonly Point2[];
-  readonly upper: readonly Point2[];
-  readonly lower: readonly Point2[];
-}
-
-export interface ICaveGameObjectReference {
-  getGeneratedCurves(): ICurveCollection;
-}
-
-export interface IGameObjectSubject extends LitElement {
+export interface IGameObjectSubject {
   onTime(time: number): void;
+  getPosistion(): Vector2 ;
+  getWorldPosistion(): Vector2 ;
+  getRotation(): Vector2;
+  getWorldRotation(): Vector2;
+ 
 }
 
 @customElement('game-object-subject')
-export class GameObjectSubject extends LitElement implements IGameObjectSubject {
+export class GameObjectSubject extends LitElement implements IGameObjectSubject, ISceneNode {
   #unsubscribeFromScheduler: (() => void) | null = null;
   readonly #canvasWidth = 1500;
   readonly #canvasHeight = 300;
@@ -46,6 +44,8 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject 
 
   private subject: GamePolygon;
   readonly #animationController: GameObjectAnimationController;
+  #currentPoint: Point2 = { x: 20, y: 20 };
+  #currentRotationRadians = 0;
 
   public constructor(subject?: GamePolygon) {
     super();
@@ -54,9 +54,30 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject 
       host: this,
       indexOffsetRatio: this.indexOffsetRatio,
       onFrame: ({ point, rotationRadians }) => {
+        this.#currentPoint = { x: point.x, y: point.y };
+        this.#currentRotationRadians = rotationRadians;
+        this.local = Matrix.translation(point.x, point.y).multiply(
+          Matrix.rotation(rotationRadians)
+        );
         this.subject = this.#buildSubjectAt(point, rotationRadians);
       }
     });
+  }
+
+  public local: IMatrix = Matrix.identity(3);
+  public world: IMatrix = Matrix.identity(3);
+  public name = 'game-object-subject';
+
+  public updateWorld(parent?: IMatrix): void {
+    this.world = parent ? parent.multiply(this.local) : this.local;
+  }
+
+  public operation(): void {
+    this.updateWorld();
+  }
+
+  public getChildren(): readonly ISceneNode[] {
+    return [];
   }
 
   setScheduler(timeSchedulerObserver: TimeSchdulerObserver): void {
@@ -89,6 +110,30 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject 
 
   onTime(time: number): void {
     this.#animationController.onTime(time);
+  }
+
+  public getPosistion(): Vector2 {
+    return { x: this.#currentPoint.x, y: this.#currentPoint.y };
+  }
+
+  public getWorldPosistion(): Vector2 {
+    return this.getPosistion();
+  }
+
+  public getRotation(): Vector2 {
+    return { x: this.#currentRotationRadians, y: 0 };
+  }
+
+  public getWorldRotation(): Vector2 {
+    return this.getRotation();
+  }
+
+  public getCurrentPoint(): Point2 | null {
+    return { x: this.#currentPoint.x, y: this.#currentPoint.y };
+  }
+
+  public getCurrentRotationRadians(): number {
+    return this.#currentRotationRadians;
   }
 
   #buildSubjectAt(point: Point2, rotationRadians: number): GamePolygon {

@@ -2,6 +2,7 @@ import type { Point } from '@monorepo/core-math';
 import {
   html,
   LitElement,
+  nothing,
   svg,
   type SVGTemplateResult,
   type TemplateResult
@@ -32,6 +33,7 @@ export type SvgPolygonStyle = {
   readonly fill?: string;
   readonly stroke?: string;
   readonly strokeWidth?: number;
+  readonly strokeDasharray?: string;
   readonly closed?: boolean;
 };
 
@@ -40,6 +42,7 @@ export class SvgPolygon implements ISvgTemplate {
   readonly #fill: string;
   readonly #stroke: string;
   readonly #strokeWidth: number;
+  readonly #strokeDasharray: string | null;
   readonly #closed: boolean;
 
   public constructor(
@@ -50,6 +53,7 @@ export class SvgPolygon implements ISvgTemplate {
     this.#fill = style.fill ?? 'none';
     this.#stroke = style.stroke ?? 'black';
     this.#strokeWidth = style.strokeWidth ?? 1;
+    this.#strokeDasharray = style.strokeDasharray ?? null;
     this.#closed = style.closed ?? true;
   }
 
@@ -61,6 +65,7 @@ export class SvgPolygon implements ISvgTemplate {
           fill=${this.#fill}
           stroke=${this.#stroke}
           stroke-width=${this.#strokeWidth}
+          stroke-dasharray=${this.#strokeDasharray ?? nothing}
         ></polyline>
       `;
     }
@@ -71,6 +76,7 @@ export class SvgPolygon implements ISvgTemplate {
         fill=${this.#fill}
         stroke=${this.#stroke}
         stroke-width=${this.#strokeWidth}
+        stroke-dasharray=${this.#strokeDasharray ?? nothing}
       ></polygon>
     `;
   }

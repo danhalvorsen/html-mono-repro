@@ -1,8 +1,6 @@
 import type { Point2 } from '@monorepo/core-math';
 import type { ICurveVariationProfile } from './SkewNormalVariationStrategy.js';
 
-const MIN_CURVE_GAP = 1;
-
 export interface ICurveBandProjectionContext {
   readonly referenceY: number;
   readonly index: number;
@@ -15,6 +13,11 @@ export interface ILowerCurveBandStrategyOptions {
   readonly periodsAcrossFrame: number;
   readonly flattenStrength: number;
   readonly flattenPeriodScale: number;
+  readonly minDistanceFromReference: number;
+}
+
+export interface IUpperCurveBandStrategyOptions {
+  readonly minDistanceFromReference: number;
 }
 
 export interface ICurveBandStrategy {
@@ -41,10 +44,19 @@ export interface ICreateProjectionContextOptions {
 }
 
 export class UpperCurveBandStrategy implements ICurveBandStrategy {
+  readonly #options: IUpperCurveBandStrategyOptions;
+
+  public constructor(options: IUpperCurveBandStrategyOptions) {
+    this.#options = options;
+  }
+
   public project(context: ICurveBandProjectionContext): number {
     const offset = context.variation.offset[context.index] ?? 0;
     const shape = context.variation.shape[context.index] ?? 0;
-    return Math.min(context.referenceY - offset + shape, context.referenceY - MIN_CURVE_GAP);
+    return Math.min(
+      context.referenceY - offset + shape,
+      context.referenceY - this.#options.minDistanceFromReference
+    );
   }
 }
 
@@ -67,7 +79,10 @@ export class LowerCurveBandStrategy implements ICurveBandStrategy {
     const suppressedReference =
       this.#options.baselineY + (context.referenceY - this.#options.baselineY) * (1 - flatten);
 
-    return Math.max(suppressedReference + offset + shape, context.referenceY + MIN_CURVE_GAP);
+    return Math.max(
+      suppressedReference + offset + shape,
+      context.referenceY + this.#options.minDistanceFromReference
+    );
   }
 }
 

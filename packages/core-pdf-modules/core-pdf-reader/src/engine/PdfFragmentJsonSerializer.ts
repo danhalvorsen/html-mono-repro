@@ -28,6 +28,11 @@ export class PdfFragmentJsonSerializer implements IPdfFragmentJsonSerializer {
     readonly fontName?: string;
     readonly fontFamily?: string;
     readonly fontSize?: number;
+    readonly segments?: readonly {
+      readonly index: number;
+      readonly operator: string;
+      readonly boundingBox: PdfFragment["boundingBox"];
+    }[];
   }[] {
     return Object.freeze(
       fragments.map((fragment, index) => Object.freeze({
@@ -44,6 +49,13 @@ export class PdfFragmentJsonSerializer implements IPdfFragmentJsonSerializer {
         }),
         ...(fragment.kind === FragmentKinds.Text && typeof fragment.fontSize === "number" && {
           fontSize: fragment.fontSize,
+        }),
+        ...(fragment.kind === FragmentKinds.Path && {
+          segments: fragment.segments.map((segment) => ({
+            index: segment.index,
+            operator: segment.operator,
+            boundingBox: segment.boundingBox,
+          })),
         }),
       })),
     );

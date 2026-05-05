@@ -1,0 +1,19 @@
+{
+  "patternInset": 0.02,
+  "upper": {
+    "baseFrequency": { "x": 0.1, "y": 0.100 },
+    "numOctaves": 3,
+    "seed": 1,
+    "blurStdDeviation": 1,
+    "baseFill": "#04A4",
+    "overlayOpacity": 0.5
+  },
+  "lower": {
+    "baseFrequency": { "x": 0.1, "y": 0.15 },
+    "numOctaves": 1,
+    "seed": 19,
+    "blurStdDeviation": 0,
+    "baseFill": "#00FF00",
+    "overlayOpacity": 1
+  }
+}

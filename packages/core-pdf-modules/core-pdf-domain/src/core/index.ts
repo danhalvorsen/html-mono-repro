@@ -9,5 +9,6 @@ export * from './ImageFragment.js';
 export * from './IPoint.js';
 export * from './ITextFragment.js';
 export * from './Point.js';
+export * from './PathFragment.js';
 export * from './RectangleFragment.js';
 export * from './Rectangle.js';
