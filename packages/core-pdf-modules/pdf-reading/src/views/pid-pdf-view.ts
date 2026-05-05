@@ -3,6 +3,7 @@ import { customElement, state } from "lit/decorators.js";
 import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 import pdfWorkerUrl from "pdfjs-dist/legacy/build/pdf.worker.mjs?url";
 import type { PdfFragment } from "@monorepo/core-pdf-domain";
+import { DbscanPdfFragmentClusterer } from "@monorepo/core-pdf-dbscan";
 import { PdfEngine } from "../../../core-pdf-reader/src/engine/PdfEngine.js";
 
 const PID_PDF_URL = "/PID.pdf" as const;
@@ -13,15 +14,22 @@ pdfjs.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 type LayerMode =
   | "original"
   | "text"
+  | "path"
   | "rectangle"
   | "image"
   | "all-fragments"
-  | "all-layers";
+  | "all-layers"
+  | "dbscan-1"
+  | "dbscan-2"
+  | "dbscan-3"
+  | "dbscan-4"
+  | "dbscan-ai";
 
 type OverlayFragmentKind =
   | "text"
   | "rectangle"
   | "image"
+  | "path"
   | "unknown";
 
 type PdfPageRenderInfo = Readonly<{
@@ -54,8 +62,20 @@ type PdfJsDocument = Readonly<{
 
 @customElement("pdf-pid-view")
 export class PdfPidView extends LitElement {
+  private static readonly DBSCAN_CONFIGS = {
+    "dbscan-1": { eps: 1.5, minPts: 4, label: "DBSCAN #1 (tight)" },
+    "dbscan-2": { eps: 3.0, minPts: 4, label: "DBSCAN #2" },
+    "dbscan-3": { eps: 6.0, minPts: 5, label: "DBSCAN #3" },
+    "dbscan-4": { eps: 10.0, minPts: 6, label: "DBSCAN #4 (loose)" },
+    "dbscan-ai": { eps: 4.5, minPts: 5, label: "SC-SCAN AI suggested" },
+  } as const;
+
   private originalPdfBinary: Uint8Array | null = null;
   private pdfDocument: PdfJsDocument | null = null;
+  private readonly dbscanClusterer = new DbscanPdfFragmentClusterer();
+  private dbscanClusterIndexByFragment = new Map<PdfFragment, number>();
+  private dbscanClusterCount = 0;
+  private dbscanNoiseCount = 0;
 
   @state()
   private pages: readonly PdfPageRenderInfo[] = [];
@@ -109,6 +129,15 @@ export class PdfPidView extends LitElement {
 
           <button
             type="button"
+            class=${this.layerMode === "path" ? "active" : ""}
+            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
+            @click=${this.showPathFragments}
+          >
+            Show path fragments
+          </button>
+
+          <button
+            type="button"
             class=${this.layerMode === "rectangle" ? "active" : ""}
             ?disabled=${this.isLoadingPdf || this.isFindingFragments}
             @click=${this.showRectangleFragments}
@@ -141,6 +170,51 @@ export class PdfPidView extends LitElement {
             @click=${this.showAllLayers}
           >
             Show all layers
+          </button>
+
+          <button
+            type="button"
+            class=${this.layerMode === "dbscan-1" ? "active" : ""}
+            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
+            @click=${this.showDbscan1}
+          >
+            DBSCAN #1
+          </button>
+
+          <button
+            type="button"
+            class=${this.layerMode === "dbscan-2" ? "active" : ""}
+            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
+            @click=${this.showDbscan2}
+          >
+            DBSCAN #2
+          </button>
+
+          <button
+            type="button"
+            class=${this.layerMode === "dbscan-3" ? "active" : ""}
+            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
+            @click=${this.showDbscan3}
+          >
+            DBSCAN #3
+          </button>
+
+          <button
+            type="button"
+            class=${this.layerMode === "dbscan-4" ? "active" : ""}
+            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
+            @click=${this.showDbscan4}
+          >
+            DBSCAN #4
+          </button>
+
+          <button
+            type="button"
+            class=${this.layerMode === "dbscan-ai" ? "active" : ""}
+            ?disabled=${this.isLoadingPdf || this.isFindingFragments}
+            @click=${this.showDbscanAi}
+          >
+            SC-SCAN AI suggested
           </button>
 
           ${this.message === null ? html`` : html`<p class="message">${this.message}</p>`}
@@ -188,6 +262,8 @@ export class PdfPidView extends LitElement {
 
   private renderFragment(fragment: PdfFragment): TemplateResult {
     const box = fragment.boundingBox;
+    const clusterStyle = this.getDbscanStrokeStyle(fragment);
+    const clusterId = this.dbscanClusterIndexByFragment.get(fragment);
 
     return svg`
       <rect
@@ -197,6 +273,8 @@ export class PdfPidView extends LitElement {
         width=${box.width * PDF_SCALE}
         height=${box.height * PDF_SCALE}
         vector-effect="non-scaling-stroke"
+        style=${clusterStyle}
+        data-cluster-id=${clusterId === undefined ? "" : String(clusterId + 1)}
       ></rect>
     `;
   }
@@ -219,6 +297,9 @@ export class PdfPidView extends LitElement {
       case "text":
         return kind === "text";
 
+      case "path":
+        return kind === "path";
+
       case "rectangle":
         return kind === "rectangle";
 
@@ -229,12 +310,23 @@ export class PdfPidView extends LitElement {
       case "all-layers":
         return true;
 
+      case "dbscan-1":
+      case "dbscan-2":
+      case "dbscan-3":
+      case "dbscan-4":
+      case "dbscan-ai":
+        return this.dbscanClusterIndexByFragment.has(fragment);
+
       case "original":
         return false;
     }
   }
 
   private resolveFragmentCssClass(fragment: PdfFragment): string {
+    if (this.isDbscanMode(this.layerMode)) {
+      return "fragment fragment-dbscan";
+    }
+
     switch (this.resolveOverlayFragmentKind(fragment)) {
       case "text":
         return "fragment fragment-text";
@@ -244,6 +336,9 @@ export class PdfPidView extends LitElement {
 
       case "image":
         return "fragment fragment-image";
+
+      case "path":
+        return "fragment fragment-path";
 
       case "unknown":
         return "fragment fragment-unknown";
@@ -365,6 +460,10 @@ export class PdfPidView extends LitElement {
     await this.showFragmentLayer("text", "text fragments");
   };
 
+  private readonly showPathFragments = async (): Promise<void> => {
+    await this.showFragmentLayer("path", "path fragments");
+  };
+
   private readonly showRectangleFragments = async (): Promise<void> => {
     await this.showFragmentLayer("rectangle", "rectangle fragments");
   };
@@ -381,6 +480,26 @@ export class PdfPidView extends LitElement {
     await this.showFragmentLayer("all-layers", "all layers");
   };
 
+  private readonly showDbscan1 = async (): Promise<void> => {
+    await this.showDbscanLayer("dbscan-1");
+  };
+
+  private readonly showDbscan2 = async (): Promise<void> => {
+    await this.showDbscanLayer("dbscan-2");
+  };
+
+  private readonly showDbscan3 = async (): Promise<void> => {
+    await this.showDbscanLayer("dbscan-3");
+  };
+
+  private readonly showDbscan4 = async (): Promise<void> => {
+    await this.showDbscanLayer("dbscan-4");
+  };
+
+  private readonly showDbscanAi = async (): Promise<void> => {
+    await this.showDbscanLayer("dbscan-ai");
+  };
+
   private async showFragmentLayer(
     mode: Exclude<LayerMode, "original">,
     label: string,
@@ -395,12 +514,49 @@ export class PdfPidView extends LitElement {
       this.message =
         `Showing ${label}. Visible: ${visibleCount}. ` +
         `Text: ${this.countKind("text")}. ` +
+        `Paths: ${this.countKind("path")}. ` +
         `Rectangles: ${this.countKind("rectangle")}. ` +
         `Images: ${this.countKind("image")}. ` +
         `Unknown: ${this.countKind("unknown")}. ` +
         `Total: ${this.fragments.length}.`;
     } catch {
       // ensureFragments has already populated this.error.
+    }
+  }
+
+  private async showDbscanLayer(
+    mode: Extract<LayerMode, "dbscan-1" | "dbscan-2" | "dbscan-3" | "dbscan-4" | "dbscan-ai">,
+  ): Promise<void> {
+    try {
+      await this.ensureFragments();
+
+      const config = PdfPidView.DBSCAN_CONFIGS[mode];
+      const result = this.dbscanClusterer.cluster(
+        this.fragments,
+        config.eps,
+        config.minPts,
+      );
+
+      const assignment = new Map<PdfFragment, number>();
+      result.clusters.forEach((cluster, clusterIndex) => {
+        cluster.items.forEach((fragment) => {
+          assignment.set(fragment, clusterIndex);
+        });
+      });
+
+      this.dbscanClusterIndexByFragment = assignment;
+      this.dbscanClusterCount = result.clusters.length;
+      this.dbscanNoiseCount = result.noise.length;
+      this.layerMode = mode;
+      this.error = null;
+      this.message =
+        `${config.label}. eps=${config.eps}, minPts=${config.minPts}. ` +
+        `Clusters: ${this.dbscanClusterCount}. ` +
+        `Clustered fragments: ${this.dbscanClusterIndexByFragment.size}. ` +
+        `Noise: ${this.dbscanNoiseCount}. ` +
+        `Total: ${this.fragments.length}.`;
+    } catch (error) {
+      this.error = error instanceof Error ? error.message : String(error);
     }
   }
 
@@ -440,6 +596,9 @@ export class PdfPidView extends LitElement {
         case "text":
           return kind === "text";
 
+        case "path":
+          return kind === "path";
+
         case "rectangle":
           return kind === "rectangle";
 
@@ -449,8 +608,40 @@ export class PdfPidView extends LitElement {
         case "all-fragments":
         case "all-layers":
           return true;
+
+        case "dbscan-1":
+        case "dbscan-2":
+        case "dbscan-3":
+        case "dbscan-4":
+        case "dbscan-ai":
+          return this.dbscanClusterIndexByFragment.has(fragment);
       }
     }).length;
+  }
+
+  private isDbscanMode(mode: LayerMode): boolean {
+    return (
+      mode === "dbscan-1"
+      || mode === "dbscan-2"
+      || mode === "dbscan-3"
+      || mode === "dbscan-4"
+      || mode === "dbscan-ai"
+    );
+  }
+
+  private getDbscanStrokeStyle(fragment: PdfFragment): string {
+    if (!this.isDbscanMode(this.layerMode)) {
+      return "";
+    }
+
+    const clusterIndex = this.dbscanClusterIndexByFragment.get(fragment);
+
+    if (clusterIndex === undefined) {
+      return "";
+    }
+
+    const hue = (clusterIndex * 47) % 360;
+    return `fill: transparent; stroke: hsla(${hue}, 95%, 45%, 0.95);`;
   }
 
   private countKind(kind: OverlayFragmentKind): number {
@@ -464,6 +655,10 @@ export class PdfPidView extends LitElement {
 
     if (rawKind === "text" || rawKind.endsWith(".text") || rawKind.includes("text")) {
       return "text";
+    }
+
+    if (rawKind === "path" || rawKind.endsWith(".path") || rawKind.includes("path")) {
+      return "path";
     }
 
     if (
@@ -588,6 +783,7 @@ export class PdfPidView extends LitElement {
     }
 
     .mode-text .original-layer,
+    .mode-path .original-layer,
     .mode-rectangle .original-layer,
     .mode-all-fragments .original-layer {
       visibility: hidden;
@@ -600,7 +796,12 @@ export class PdfPidView extends LitElement {
     .mode-image .original-layer,
     .mode-image .fragment-layer,
     .mode-all-layers .original-layer,
-    .mode-all-layers .fragment-layer {
+    .mode-all-layers .fragment-layer,
+    .mode-dbscan-1 .fragment-layer,
+    .mode-dbscan-2 .fragment-layer,
+    .mode-dbscan-3 .fragment-layer,
+    .mode-dbscan-4 .fragment-layer,
+    .mode-dbscan-ai .fragment-layer {
       visibility: visible;
     }
 
@@ -609,26 +810,37 @@ export class PdfPidView extends LitElement {
     }
 
     .fragment-layer rect.fragment-text {
-      fill: rgba(30, 144, 255, 0.12);
+      fill: transparent;
       stroke: rgba(30, 144, 255, 0.95);
     }
 
     .fragment-layer rect.fragment-rectangle {
-      fill: rgba(34, 197, 94, 0.12);
+      fill: transparent;
       stroke: rgba(22, 163, 74, 0.95);
     }
 
     .fragment-layer rect.fragment-image {
-      fill: rgba(168, 85, 247, 0.35);
+      fill: transparent;
       stroke: rgba(147, 51, 234, 1);
       stroke-width: 2;
       stroke-dasharray: 6 4;
     }
 
+    .fragment-layer rect.fragment-path {
+      fill: transparent;
+      stroke: rgba(217, 119, 6, 0.95);
+      stroke-width: 1.2;
+    }
+
     .fragment-layer rect.fragment-unknown {
-      fill: rgba(255, 0, 0, 0.10);
+      fill: transparent;
       stroke: rgba(255, 0, 0, 0.85);
       stroke-dasharray: 2 2;
+    }
+
+    .fragment-layer rect.fragment-dbscan {
+      fill: transparent;
+      stroke-width: 0.9;
     }
 
     @media (max-width: 840px) {

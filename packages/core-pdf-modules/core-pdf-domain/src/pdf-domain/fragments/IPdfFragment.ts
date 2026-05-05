@@ -1,5 +1,6 @@
 import type { IPdfImageFragment } from "./IPdfImageFragment.js";
 import type { IFragment } from "./IFragment.js";
+import type { IPdfPathFragment } from "./IPdfPathFragment.js";
 import type { IPdfRectangleFragment } from "./IPdfRectangleFragment.js";
 import type { IPdfTextFragment } from "./IPdfTextFragment.js";
 import type { FragmentKind } from "./PdfFragmentKind.js";
@@ -12,6 +13,7 @@ export interface IPdfFragment extends IFragment {
 export type PdfFragment =
   | IPdfTextFragment
   | IPdfImageFragment
+  | IPdfPathFragment
   | IPdfRectangleFragment;
 
 export type AnyPdfFragmentBase = IPdfFragment;
@@ -27,4 +29,3 @@ export class PdfFragmentSpecification extends Specification<PdfFragmentBase> {
     throw new Error("Method not implemented.");
   }
 }
-

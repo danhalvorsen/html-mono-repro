@@ -8,11 +8,12 @@ import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 type Matrix = readonly [number, number, number, number, number, number];
 
 const identity: Matrix = [1, 0, 0, 1, 0, 0];
+const minVisualSize = 0.2;
 
 export class PdfRectangleExtractor {
   public async readRectangleFragments(
     binary: Uint8Array,
-    textFragments: readonly Pick<IPdfTextFragment, "pageNumber" | "boundingBox">[] = [],
+    _textFragments: readonly Pick<IPdfTextFragment, "pageNumber" | "boundingBox">[] = [],
   ): Promise<readonly IPdfRectangleFragment[]> {
     const loadingTask = pdfjs.getDocument({
       data: new Uint8Array(binary),
@@ -83,61 +84,36 @@ export class PdfRectangleExtractor {
           finalMatrix,
         );
 
-        const width = mapped.maxX - mapped.minX;
-        const height = mapped.maxY - mapped.minY;
-        if (width <= 0 || height <= 0) {
+        const width = Math.max(0, mapped.maxX - mapped.minX);
+        const height = Math.max(0, mapped.maxY - mapped.minY);
+
+        // Keep line-like geometry (zero width or zero height) by giving it a tiny
+        // visual thickness, so symbols built from thin strokes are not discarded.
+        if (width === 0 && height === 0) {
           continue;
         }
+
+        const normalizedWidth = width > 0 ? width : minVisualSize;
+        const normalizedHeight = height > 0 ? height : minVisualSize;
+        const normalizedX = width > 0 ? mapped.minX : mapped.minX - minVisualSize / 2;
+        const normalizedY = height > 0 ? mapped.minY : mapped.minY - minVisualSize / 2;
 
         fragments.push({
           kind: FragmentKinds.Rectangle,
           pageNumber,
           boundingBox: {
             position: {
-              x: mapped.minX,
-              y: mapped.minY,
+              x: normalizedX,
+              y: normalizedY,
             },
-            width,
-            height,
+            width: normalizedWidth,
+            height: normalizedHeight,
           },
         });
       }
     }
 
-    return Object.freeze(this.filterOverlaidTextRectangles(fragments, textFragments));
-  }
-
-  private filterOverlaidTextRectangles(
-    rectangles: readonly IPdfRectangleFragment[],
-    textFragments: readonly Pick<IPdfTextFragment, "pageNumber" | "boundingBox">[],
-  ): readonly IPdfRectangleFragment[] {
-    if (textFragments.length === 0) {
-      return rectangles;
-    }
-
-    return rectangles.filter((rectangle) =>
-      !textFragments.some((text) =>
-        text.pageNumber === rectangle.pageNumber
-        && this.contains(
-          rectangle,
-          text.boundingBox.position.x,
-          text.boundingBox.position.y,
-        ),
-      ),
-    );
-  }
-
-  private contains(
-    rectangle: IPdfRectangleFragment,
-    x: number,
-    y: number,
-  ): boolean {
-    const left = rectangle.boundingBox.position.x;
-    const top = rectangle.boundingBox.position.y;
-    const right = left + rectangle.boundingBox.width;
-    const bottom = top + rectangle.boundingBox.height;
-
-    return x >= left && x <= right && y >= top && y <= bottom;
+    return Object.freeze(fragments);
   }
 
   private multiply(left: Matrix, right: Matrix): Matrix {

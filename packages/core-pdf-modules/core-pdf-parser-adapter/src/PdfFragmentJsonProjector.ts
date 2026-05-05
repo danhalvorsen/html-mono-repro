@@ -3,6 +3,7 @@ import {
 } from "@monorepo/core-pdf-domain";
 import type {
   IPdfImageFragment,
+  IPdfPathFragment,
   IPdfRectangleFragment,
   IPdfTextFragment,
   PdfFragment,
@@ -31,6 +32,9 @@ export class PdfFragmentJsonProjector
 
         case FragmentKinds.Rectangle:
           return this.mapRectangleFragment(fragment);
+
+        case FragmentKinds.Path:
+          return this.mapPathFragment(fragment);
       }
     });
 
@@ -90,6 +94,33 @@ export class PdfFragmentJsonProjector
         width: fragment.boundingBox.width,
         height: fragment.boundingBox.height,
       },
+    };
+  }
+
+  private mapPathFragment(fragment: IPdfPathFragment): object {
+    return {
+      kind: fragment.kind,
+      pageNumber: fragment.pageNumber,
+      boundingBox: {
+        position: {
+          x: fragment.boundingBox.position.x,
+          y: fragment.boundingBox.position.y,
+        },
+        width: fragment.boundingBox.width,
+        height: fragment.boundingBox.height,
+      },
+      segments: fragment.segments.map((segment) => ({
+        index: segment.index,
+        operator: segment.operator,
+        boundingBox: {
+          position: {
+            x: segment.boundingBox.position.x,
+            y: segment.boundingBox.position.y,
+          },
+          width: segment.boundingBox.width,
+          height: segment.boundingBox.height,
+        },
+      })),
     };
   }
 }

@@ -51,6 +51,7 @@ export abstract class GuardedAdapter {
       case FragmentKinds.Text:
       case FragmentKinds.Image:
       case FragmentKinds.Rectangle:
+      case FragmentKinds.Path:
         break;
 
       default:

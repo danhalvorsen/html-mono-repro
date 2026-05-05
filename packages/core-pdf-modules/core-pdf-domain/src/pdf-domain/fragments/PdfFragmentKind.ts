@@ -2,6 +2,7 @@ export const FragmentKinds = Object.freeze({
   Text: "text",
   Image: "image",
   Rectangle: "rectangle",
+  Path: "path",
 } as const);
 
 export type FragmentKind =

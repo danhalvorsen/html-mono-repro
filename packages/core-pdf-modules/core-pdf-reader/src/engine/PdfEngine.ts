@@ -5,12 +5,14 @@ import type { IPdfTextFragment } from "../IPdfTextFragment.js";
 import type { IPdfEngine } from "./IPdfEngine.js";
 import type { IPdfDocumentFactory } from "./IPdfDocumentFactory.js";
 import { PdfJsDocumentFactory } from "./PdfJsDocumentFactory.js";
+import { PdfPathExtractor } from "./PdfPathExtractor.js";
 import { PdfRectangleExtractor } from "./PdfRectangleExtractor.js";
 
 export class PdfEngine implements IPdfEngine {
   public readonly name = "pdfjs-composite-engine";
   public constructor(
     private readonly documentFactory: IPdfDocumentFactory = new PdfJsDocumentFactory(),
+    private readonly pathExtractor: PdfPathExtractor = new PdfPathExtractor(),
     private readonly rectangleExtractor: PdfRectangleExtractor = new PdfRectangleExtractor(),
   ) {}
 
@@ -42,6 +44,7 @@ export class PdfEngine implements IPdfEngine {
     binary: Uint8Array,
   ): Promise<readonly PdfFragment[]> {
     const textFragments = await this.readTextFragments(binary);
+    const pathFragments = await this.pathExtractor.readPathFragments(binary);
     const rectangleFragments =
       await this.rectangleExtractor.readRectangleFragments(
         binary,
@@ -65,7 +68,11 @@ export class PdfEngine implements IPdfEngine {
       }),
     );
 
-    return Object.freeze([...normalizedTextFragments, ...rectangleFragments]);
+    return Object.freeze([
+      ...normalizedTextFragments,
+      ...pathFragments,
+      ...rectangleFragments,
+    ]);
   }
 
   public async readTextFragments(

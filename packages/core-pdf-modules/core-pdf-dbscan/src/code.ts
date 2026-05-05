@@ -473,6 +473,7 @@ export class DbscanPdfFragmentClusterer {
       fragment.kind !== FragmentKinds.Text
       && fragment.kind !== FragmentKinds.Image
       && fragment.kind !== FragmentKinds.Rectangle
+      && fragment.kind !== FragmentKinds.Path
     ) {
       throw new Error(`fragments[${index}].kind is invalid.`);
     }
