@@ -83,6 +83,8 @@ export default class SvgOctaveAdapter {
   stroke-linecap="butt"
   stroke-linejoin="miter"
   vector-effect="non-scaling-stroke"
+  data-note="${p.geometry.name}"
+  data-is-black="${p.isBlack ? "1" : "0"}"
 />
 `;
   }

@@ -1,4 +1,16 @@
 
+// Legacy canonical tangent geometry for one full octave.
+// Keep coordinates unchanged unless explicitly migrating geometry.
+export type LegacyTangentGeometry = {
+  name: string;
+  points: number[][];
+};
+
+export type LegacyOctaveGeometry = {
+  whiteKeys: LegacyTangentGeometry[];
+  blackKeys: LegacyTangentGeometry[];
+};
+
 export const DEFAULT_OCTAVE_GEOMETRY = {
   whiteKeys: [
     { name: "C", points: [[0,100],[15,100],[15,60],[24,60],[24,0],[0,0]] },
@@ -17,3 +29,9 @@ export const DEFAULT_OCTAVE_GEOMETRY = {
     { name: "As", points: [[141,100],[155,100],[155,60],[141,60]] }
   ]
 };
+
+// Convenience list preserving render order (whites first, blacks last).
+export const LEGACY_ALL_TANGENTS: LegacyTangentGeometry[] = [
+  ...DEFAULT_OCTAVE_GEOMETRY.whiteKeys,
+  ...DEFAULT_OCTAVE_GEOMETRY.blackKeys
+];
