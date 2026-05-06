@@ -1,26 +1,34 @@
-import type { ReactiveController, ReactiveControllerHost } from "lit";
+import type { ReactiveController, ReactiveControllerHost } from 'lit';
 import type {
   Polygon,
   PolygonCollisionResult,
   PolygonCollisionSystem,
-} from "@monorepo/core-collision-polygons";
+} from '@monorepo/core-collision-polygons';
 import type {
   IGameObjectObservableSubject,
   IGameObjectSubject,
-} from "../GameObjectSubject.js";
-import { CollisionIntersectionControl } from "./Objects/Intersection/CollisionIntersectionControl.js";
-import { ObservedGameObjectBinding } from "./Objects/Observable/ObservedGameObjectBinding.js";
+} from '../GameObjectSubject.js';
+import { CollisionIntersectionControl } from './Objects/Intersection/CollisionIntersectionControl.js';
+import { ObservedGameObjectBinding } from './Objects/Observable/ObservedGameObjectBinding.js';
 
-export type CollisionObservedGameObject = IGameObjectSubject &
+export type CollisionObservedGameObject =
+  IGameObjectSubject &
   IGameObjectObservableSubject;
 
+export interface CollisionTargetPolygons {
+  readonly upper: Polygon | null;
+  readonly lower: Polygon | null;
+}
+
 export type SourceCollisionPolygonProvider = (
-  observedGameObject: CollisionObservedGameObject,
+  observedGameObject: CollisionObservedGameObject
 ) => Polygon | null;
 
-export type TargetCollisionPolygonProvider = () => Polygon | null;
+export type TargetCollisionPolygonProvider = () => CollisionTargetPolygons;
 
-export type CollisionResultObserver = (result: PolygonCollisionResult) => void;
+export type CollisionResultObserver = (
+  result: PolygonCollisionResult
+) => void;
 
 export interface CollisionSystemReactiveControllerOptions {
   readonly host: ReactiveControllerHost;
@@ -35,7 +43,7 @@ export interface ICollisionReactiveController {
   readonly lastResult: PolygonCollisionResult | null;
 
   setObservedGameObject(
-    observedGameObject: CollisionObservedGameObject | null | undefined,
+    observedGameObject: CollisionObservedGameObject | null | undefined
   ): void;
 
   checkCollision(): PolygonCollisionResult | null;
@@ -60,9 +68,9 @@ export class CollisionSystemReactiveController
     });
 
     this.#observer = new ObservedGameObjectBinding({
-      onObservedGameObjectChanged: (observedGameObject) => {
+      onObservedGameObjectChanged: observedGameObject => {
         this.#intersectionControl.setObservedGameObject(observedGameObject);
-        this.#intersectionControl.checkCollision();
+        this.checkCollision();
       },
     });
 
@@ -77,22 +85,18 @@ export class CollisionSystemReactiveController
     return this.#intersectionControl.lastResult;
   }
 
-  public hostDisconnected(): void {
-    this.#observer.clear();
-    this.#intersectionControl.clear();
-  }
-
   public setObservedGameObject(
-    observedGameObject: CollisionObservedGameObject | null | undefined,
+    observedGameObject: CollisionObservedGameObject | null | undefined
   ): void {
     this.#observer.bind(observedGameObject ?? null);
   }
+
   public checkCollision(): PolygonCollisionResult | null {
-    console.log("checking collision");
-    const result = this.#intersectionControl.checkCollision();
-    if (result?.hasCollide) {
-      console.log("collision", result);
-    }
-    return result;
+    return this.#intersectionControl.checkCollision();
+  }
+
+  public hostDisconnected(): void {
+    this.#observer.clear();
+    this.#intersectionControl.clear();
   }
 }

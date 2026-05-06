@@ -1,10 +1,10 @@
-import type { CollisionObservedGameObject } from "../../CollisionSystemReactiveController.js";
-import { GameObjectSubjectEventName } from "../../GameObjectSubjectEventName.js";
-import type { ObservedGameObjectBindingOptions } from "./ObservedGameObjectBindingOptions.js";
+import type { CollisionObservedGameObject } from '../../CollisionSystemReactiveController.js';
+import { GameObjectSubjectEventName } from '../../GameObjectSubjectEventName.js';
+import type { ObservedGameObjectBindingOptions } from './ObservedGameObjectBindingOptions.js';
 
 export class ObservedGameObjectBinding {
   readonly #onObservedGameObjectChanged: (
-    observedGameObject: CollisionObservedGameObject | null,
+    observedGameObject: CollisionObservedGameObject | null
   ) => void;
 
   #observedGameObject: CollisionObservedGameObject | null = null;
@@ -17,8 +17,6 @@ export class ObservedGameObjectBinding {
   public get observedGameObject(): CollisionObservedGameObject | null {
     return this.#observedGameObject;
   }
-
-  // FILE: src/Game/Collision/Objects/Observable/ObservedGameObjectBinding.ts
 
   public bind(observedGameObject: CollisionObservedGameObject | null): void {
     this.#unsubscribeFromCurrent();
@@ -34,11 +32,12 @@ export class ObservedGameObjectBinding {
       GameObjectSubjectEventName.PositionChanged,
       () => {
         this.#onObservedGameObjectChanged(this.#observedGameObject);
-      },
+      }
     );
 
     this.#onObservedGameObjectChanged(this.#observedGameObject);
   }
+
   public clear(): void {
     this.#unsubscribeFromCurrent();
     this.#observedGameObject = null;

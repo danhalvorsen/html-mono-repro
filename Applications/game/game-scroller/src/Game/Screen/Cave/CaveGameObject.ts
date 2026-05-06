@@ -1,174 +1,54 @@
-// FILE: src/Game/Srceens/Cave/CaveGameObject.ts
-import { Vector2 as CollisionVector2 } from '@monorepo/core-math';
-import { Polygon } from '@monorepo/core-collision-polygons';
-import { LitElement, css, html, type TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { styleMap } from "lit/directives/style-map.js";
+import { Vector2 as CollisionVector2, type Point2 } from '@monorepo/core-math';
+import {
+  Polygon as CollisionPolygon,
+  type PolygonCollisionResult,
+} from '@monorepo/core-collision-polygons';
+import { LitElement, css, html, type TemplateResult } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { styleMap } from 'lit/directives/style-map.js';
+import type {
+  CollisionObservedGameObject,
+  CollisionTargetPolygons,
+  ICollisionReactiveController,
+} from '../../Collision/CollisionSystemReactiveController.js';
+import { MultiCurveSvgTemplate, type ReferenceCurveRenderStyle } from '../../Elements/Polygon/MultiCurveSvgTemplate.js';
+import type { GamePolygon } from '../../Elements/Polygon/GamePolygon.js';
+import type { ICamera } from '../../ICamera.js';
 import type {
   ITimeObserver,
   TimeSchdulerObserver,
-} from "../../TimeSchdulerObserver.js";
-
-import { GamePolygonGeneratorController } from "../../../GameObjects/GamePolygonGeneratorController.js";
-import type { IGamePolygonGeneratorOptions } from "../../../GameObjects/GamePolygonGeneratorController.js";
-import type { Point2 } from "@monorepo/core-math";
+} from '../../TimeSchdulerObserver.js';
 import {
-  MultiCurveSvgTemplate,
-  type ReferenceCurveRenderStyle,
-} from "../../Elements/Polygon/MultiCurveSvgTemplate.js";
-import type { ICamera } from "../../ICamera.js";
-import type { CollisionObservedGameObject, ICollisionReactiveController } from "../../Collision/CollisionSystemReactiveController.js";
-import type { GamePolygon } from '../../Elements/Polygon/GamePolygon.js';
- 
-type CaveNoiseMaterialOptions = {
-  readonly patternInset: number;
-  readonly upper: {
-    readonly baseFrequency: { readonly x: number; readonly y: number };
-    readonly numOctaves: number;
-    readonly seed: number;
-    readonly blurStdDeviation: number;
-    readonly baseFill: string;
-    readonly overlayOpacity: number;
-  };
-  readonly lower: {
-    readonly baseFrequency: { readonly x: number; readonly y: number };
-    readonly numOctaves: number;
-    readonly seed: number;
-    readonly blurStdDeviation: number;
-    readonly baseFill: string;
-    readonly overlayOpacity: number;
-  };
-};
+  GamePolygonGeneratorController,
+} from '../../../GameObjects/GamePolygonGeneratorController.js';
+import {
+  CaveCurveOptionsValue,
+  CaveNoiseOptionsValue,
+  CaveRenderOptionsValue,
+  CaveViewportOptionsValue,
+  MergeCaveNoiseMaterialOptions,
+  type CaveCurveOptions,
+  type CaveNoiseMaterialOptions,
+  type CaveNoiseOptions,
+  type CaveRenderOptions,
+  type CaveViewportOptions,
+} from './CaveGameObjectOptions.js';
+import {
+  DefaultCaveCurveOptionsPresetResolver,
+  type CaveCurveOptionsPresetResolver,
+} from './CaveCurveOptionsPresetResolver.js';
 
 type CaveGameObjectReferenceTarget = HTMLElement & {
   caveGameObject?: CaveGameObject;
 };
 
-const DEFAULT_CAVE_CURVE_OPTIONS: IGamePolygonGeneratorOptions = {
-  reference: {
-    geometry: {
-      canvasLength: 500,
-      samplesPerFrame: 700,
-      amplitude: 100,
-      baselineY: 150,
-      periodsAcrossFrame: 4,
-    },
-    noise: {
-      noiseWindowSize: 40,
-      profileSmoothingPasses: 2,
-      spikeSuppressionFactor: 1.35,
-    },
-  },
-  upper: {
-    geometry: {
-      canvasLength: 500,
-      amplitude: 100,
-    },
-    distribution: {
-      interval: { min: 10, max: 24 },
-      skew: 0.25,
-      variationInfluence: 5,
-    },
-    noise: {
-      noiseAmplifier: 18,
-    },
-    limits: {
-      minDistanceFromReference: 50,
-    },
-  },
-  lower: {
-    geometry: {
-      canvasLength: 500,
-      amplitude: 0.000001,
-    },
-    distribution: {
-      interval: { min: 2, max: 4 },
-      skew: -0.1,
-      variationInfluence: 0.75,
-    },
-    noise: {
-      noiseAmplifier: 0.5,
-    },
-    shape: {
-      flattenStrength: 1,
-      flattenPeriodScale: 0.1,
-    },
-    limits: {
-      minDistanceFromReference: 50,
-      maxOffsetFromReference: 6,
-    },
-  },
-};
-
-const TRAINING_CAVE_CURVE_OPTIONS: IGamePolygonGeneratorOptions = {
-  reference: {
-    geometry: {
-      canvasLength: 500,
-      samplesPerFrame: 700,
-      amplitude: 60,
-      baselineY: 150,
-      periodsAcrossFrame: 2,
-    },
-    noise: {
-      noiseWindowSize: 28,
-      profileSmoothingPasses: 3,
-      spikeSuppressionFactor: 1.15,
-    },
-  },
-  upper: {
-    geometry: {
-      canvasLength: 500,
-      amplitude: 70,
-    },
-    distribution: {
-      interval: { min: 14, max: 30 },
-      skew: 0.08,
-      variationInfluence: 3,
-    },
-    noise: {
-      noiseAmplifier: 10,
-    },
-    limits: {
-      minDistanceFromReference: 62,
-    },
-  },
-  lower: {
-    geometry: {
-      canvasLength: 500,
-      amplitude: 0.000001,
-    },
-    distribution: {
-      interval: { min: 3, max: 7 },
-      skew: -0.02,
-      variationInfluence: 0.45,
-    },
-    noise: {
-      noiseAmplifier: 0.32,
-    },
-    shape: {
-      flattenStrength: 1,
-      flattenPeriodScale: 0.08,
-    },
-    limits: {
-      minDistanceFromReference: 62,
-      maxOffsetFromReference: 5,
-    },
-  },
-};
-
-function resolveCurveOptionsPreset(
-  preset: string,
-): IGamePolygonGeneratorOptions {
-  if (preset === "training") {
-    return TRAINING_CAVE_CURVE_OPTIONS;
-  }
-
-  return DEFAULT_CAVE_CURVE_OPTIONS;
-}
-
-@customElement("cave-game-object")
+@customElement('cave-game-object')
 export class CaveGameObject extends LitElement implements ITimeObserver {
   public static override styles = css`
+    :host([collision-flash]) .cave-layout {
+      filter: drop-shadow(0 0 10px #ef4444) saturate(1.8);
+    }
+
     .camera-viewport {
       position: relative;
       overflow: hidden;
@@ -179,6 +59,7 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
       width: fit-content;
       transform-origin: left top;
       will-change: transform;
+      transition: filter 40ms linear;
     }
 
     .overlay-layer {
@@ -195,8 +76,8 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
       pointer-events: none;
     }
 
-    ::slotted([slot="overlay-start"]),
-    ::slotted([slot="overlay-center"]) {
+    ::slotted([slot='overlay-start']),
+    ::slotted([slot='overlay-center']) {
       position: absolute;
       inset: 0;
       display: block;
@@ -204,9 +85,15 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
   `;
 
   readonly #canvasLength = 500;
+  readonly #curveOptionsPresetResolver: CaveCurveOptionsPresetResolver =
+    new DefaultCaveCurveOptionsPresetResolver();
+  readonly #noiseMaterialMerger = new MergeCaveNoiseMaterialOptions();
+
+  #curveGenerator!: GamePolygonGeneratorController;
   #unsubscribe: (() => void) | null = null;
   #unsubscribeFromCamera: (() => void) | null = null;
   #lastNoiseReloadAtMs = 0;
+  #collisionFlashTimeoutId: number | null = null;
 
   @property({ attribute: false })
   public scheduler?: TimeSchdulerObserver;
@@ -214,68 +101,162 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
   @property({ attribute: false })
   public camera?: ICamera;
 
-  @property({ type: Number })
-  public viewportWidth?: number;
+  @property({ attribute: false })
+  public collisionReactiveController: ICollisionReactiveController | null = null;
 
-  @property({ type: Number })
-  public viewportHeight?: number;
-
-  @property({ type: Boolean })
-  public showCameraViewBox = false;
-
-  @property({ type: Boolean })
-  public showReferenceCurve = true;
-
-  @property({ type: String })
-  public referenceCurveRenderStyle: ReferenceCurveRenderStyle = "solid";
-
-  @property({ type: Boolean })
-  public closeUpperLowerToBounds = true;
-
-  @property({ type: String })
-  public noiseMaterialOptionsUrl = "/cave-noise-material.json";
-
-  @property({ type: String })
-  public curveOptionsPreset = "default";
+  @property({ type: Boolean, reflect: true, attribute: 'collision-flash' })
+  public collisionFlash = false;
 
   @property({ attribute: false })
-  public noiseMaterialOptions: Partial<CaveNoiseMaterialOptions> = {
-    patternInset: 0.02,
-    upper: {
-      baseFrequency: { x: 0.12, y: 0.18 },
-      numOctaves: 4,
-      seed: 11,
-      blurStdDeviation: 0,
-      baseFill: "#3b271b",
-      overlayOpacity: 1,
-    },
-    lower: {
-      baseFrequency: { x: 0.1, y: 0.15 },
-      numOctaves: 4,
-      seed: 19,
-      blurStdDeviation: 0,
-      baseFill: "#2e1f15",
-      overlayOpacity: 1,
-    },
-  };
+  public viewportOptions: CaveViewportOptions =
+    CaveViewportOptionsValue.createDefault();
 
-  @property({ type: Number })
-  public noiseMaterialReloadIntervalMs = 0;
+@property({ attribute: false })
+public caveRenderOptions: CaveRenderOptions =
+  CaveRenderOptionsValue.createDefault();
 
   @property({ attribute: false })
-  public collisionReactiveController: ICollisionReactiveController | null =
-    null;
+  public curveOptions: CaveCurveOptions =
+    CaveCurveOptionsValue.createDefault();
 
-  #curveGenerator = new GamePolygonGeneratorController(
-    this,
-    resolveCurveOptionsPreset(this.curveOptionsPreset),
-  );
+  @property({ attribute: false })
+  public noiseOptions: CaveNoiseOptions =
+    CaveNoiseOptionsValue.createDefault();
 
-  public observeGameObject(gameObject: CollisionObservedGameObject | null): void {
-    //ToDo: This should be trigged inside the reactive controller
-  this.collisionReactiveController?.setObservedGameObject(gameObject);
-  this.collisionReactiveController?.checkCollision();
-}
+  public constructor() {
+    super();
+
+    this.#curveGenerator = new GamePolygonGeneratorController(
+      this,
+      this.#curveOptionsPresetResolver.resolve(this.curveOptions.preset)
+    );
+  }
+
+  public get viewportWidth(): number | undefined {
+    return this.viewportOptions.width;
+  }
+
+  @property({ type: Number })
+  public set viewportWidth(value: number | undefined) {
+    this.viewportOptions = new CaveViewportOptionsValue(
+      value,
+      this.viewportOptions.height,
+      this.viewportOptions.showCameraViewBox
+    );
+  }
+
+  public get viewportHeight(): number | undefined {
+    return this.viewportOptions.height;
+  }
+
+  @property({ type: Number })
+  public set viewportHeight(value: number | undefined) {
+    this.viewportOptions = new CaveViewportOptionsValue(
+      this.viewportOptions.width,
+      value,
+      this.viewportOptions.showCameraViewBox
+    );
+  }
+
+  public get showCameraViewBox(): boolean {
+    return this.viewportOptions.showCameraViewBox;
+  }
+
+  @property({ type: Boolean })
+  public set showCameraViewBox(value: boolean) {
+    this.viewportOptions = new CaveViewportOptionsValue(
+      this.viewportOptions.width,
+      this.viewportOptions.height,
+      value
+    );
+  }
+
+  public get showReferenceCurve(): boolean {
+    return this.caveRenderOptions.showReferenceCurve;
+  }
+
+  @property({ type: Boolean })
+  public set showReferenceCurve(value: boolean) {
+    this.caveRenderOptions = new CaveRenderOptionsValue(
+      value,
+      this.caveRenderOptions.referenceCurveRenderStyle,
+      this.caveRenderOptions.closeUpperLowerToBounds
+    );
+  }
+
+  public get referenceCurveRenderStyle(): ReferenceCurveRenderStyle {
+    return this.caveRenderOptions.referenceCurveRenderStyle;
+  }
+
+  @property({ type: String })
+  public set referenceCurveRenderStyle(value: ReferenceCurveRenderStyle) {
+    this.caveRenderOptions = new CaveRenderOptionsValue(
+      this.caveRenderOptions.showReferenceCurve,
+      value,
+      this.caveRenderOptions.closeUpperLowerToBounds
+    );
+  }
+
+  public get closeUpperLowerToBounds(): boolean {
+    return this.caveRenderOptions.closeUpperLowerToBounds;
+  }
+
+  @property({ type: Boolean })
+  public set closeUpperLowerToBounds(value: boolean) {
+    this.caveRenderOptions = new CaveRenderOptionsValue(
+      this.caveRenderOptions.showReferenceCurve,
+      this.caveRenderOptions.referenceCurveRenderStyle,
+      value
+    );
+  }
+
+  public get curveOptionsPreset(): string {
+    return this.curveOptions.preset;
+  }
+
+  @property({ type: String })
+  public set curveOptionsPreset(value: string) {
+    this.curveOptions = new CaveCurveOptionsValue(value);
+  }
+
+  public get noiseMaterialOptionsUrl(): string {
+    return this.noiseOptions.materialOptionsUrl;
+  }
+
+  @property({ type: String })
+  public set noiseMaterialOptionsUrl(value: string) {
+    this.noiseOptions = new CaveNoiseOptionsValue(
+      value,
+      this.noiseOptions.reloadIntervalMs,
+      this.noiseOptions.materialOptions
+    );
+  }
+
+  public get noiseMaterialReloadIntervalMs(): number {
+    return this.noiseOptions.reloadIntervalMs;
+  }
+
+  @property({ type: Number })
+  public set noiseMaterialReloadIntervalMs(value: number) {
+    this.noiseOptions = new CaveNoiseOptionsValue(
+      this.noiseOptions.materialOptionsUrl,
+      value,
+      this.noiseOptions.materialOptions
+    );
+  }
+
+  public get noiseMaterialOptions(): CaveNoiseMaterialOptions {
+    return this.noiseOptions.materialOptions;
+  }
+
+  @property({ attribute: false })
+  public set noiseMaterialOptions(value: CaveNoiseMaterialOptions) {
+    this.noiseOptions = new CaveNoiseOptionsValue(
+      this.noiseOptions.materialOptionsUrl,
+      this.noiseOptions.reloadIntervalMs,
+      value
+    );
+  }
 
   protected override async firstUpdated(): Promise<void> {
     await this.#loadNoiseMaterialOptions();
@@ -283,25 +264,29 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
   }
 
   protected override updated(changed: Map<string, unknown>): void {
-    if (changed.has("curveOptionsPreset")) {
+    if (changed.has('curveOptions')) {
       this.#curveGenerator = new GamePolygonGeneratorController(
         this,
-        resolveCurveOptionsPreset(this.curveOptionsPreset),
+        this.#curveOptionsPresetResolver.resolve(this.curveOptions.preset)
       );
+
+      this.collisionReactiveController?.checkCollision();
       this.requestUpdate();
     }
 
-    if (changed.has("scheduler")) {
+    if (changed.has('scheduler')) {
       this.#unsubscribe?.();
       this.#unsubscribe = this.scheduler?.subscribe(this) ?? null;
     }
 
-    if (changed.has("camera")) {
+    if (changed.has('camera')) {
       this.#unsubscribeFromCamera?.();
       this.#unsubscribeFromCamera =
         this.camera?.subscribe(() => this.requestUpdate()) ?? null;
     }
-    if (changed.has("collisionReactiveController")) {
+
+    if (changed.has('collisionReactiveController')) {
+      this.collisionReactiveController?.checkCollision();
     }
   }
 
@@ -312,23 +297,67 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
     this.#unsubscribeFromCamera?.();
     this.#unsubscribeFromCamera = null;
 
+    if (this.#collisionFlashTimeoutId !== null) {
+      window.clearTimeout(this.#collisionFlashTimeoutId);
+      this.#collisionFlashTimeoutId = null;
+    }
+
+    this.collisionReactiveController?.setObservedGameObject(null);
+
     super.disconnectedCallback();
   }
-public getTargetPolygon(): Polygon | null {
-  const curves = this.getGeneratedCurves();
 
-  if (curves.upper.length < 2) {
-    return null;
+  public observeGameObject(gameObject: CollisionObservedGameObject | null): void {
+    this.collisionReactiveController?.setObservedGameObject(gameObject);
+    this.collisionReactiveController?.checkCollision();
   }
 
-return Polygon.open(
-  curves.upper.map(point => new CollisionVector2(point.x, point.y)) as readonly CollisionVector2[]
-);
-}
+  public getCollisionTargetPolygons(): CollisionTargetPolygons {
+    const curves = this.getGeneratedCurves();
+
+    return {
+      upper: this.#createOpenCollisionPolygon(curves.upper),
+      lower: this.#createOpenCollisionPolygon(curves.lower),
+    };
+  }
+
+  public getTargetPolygon(): CollisionPolygon | null {
+    return this.getCollisionTargetPolygons().upper;
+  }
+
+  public handleCollisionResult(result: PolygonCollisionResult): void {
+    if (result.hasCollide) {
+      this.flashCollision(90);
+    }
+  }
+
+  public flashCollision(durationMs = 90): void {
+    if (!Number.isFinite(durationMs) || durationMs < 50) {
+      throw new RangeError('Collision flash duration must be a finite number >= 50.');
+    }
+
+    if (this.#collisionFlashTimeoutId !== null) {
+      window.clearTimeout(this.#collisionFlashTimeoutId);
+      this.#collisionFlashTimeoutId = null;
+    }
+
+    this.collisionFlash = true;
+
+    this.#collisionFlashTimeoutId = window.setTimeout(() => {
+      this.collisionFlash = false;
+      this.#collisionFlashTimeoutId = null;
+    }, durationMs);
+  }
+
   public onTime(time: number): void {
-    if (this.noiseMaterialReloadIntervalMs <= 0) return;
-    if (time - this.#lastNoiseReloadAtMs < this.noiseMaterialReloadIntervalMs)
+    if (this.noiseOptions.reloadIntervalMs <= 0) {
       return;
+    }
+
+    if (time - this.#lastNoiseReloadAtMs < this.noiseOptions.reloadIntervalMs) {
+      return;
+    }
+
     this.#lastNoiseReloadAtMs = time;
     void this.#loadNoiseMaterialOptions();
   }
@@ -356,9 +385,14 @@ return Polygon.open(
 
   public getReferenceCenterPoint(): Point2 | undefined {
     const points = this.#curveGenerator.referencePoints;
-    if (points.length === 0) return undefined;
+
+    if (points.length === 0) {
+      return undefined;
+    }
+
     const middleIndex = Math.floor(points.length / 2);
     const middle = points[middleIndex];
+
     return middle ? { x: middle.x, y: middle.y } : undefined;
   }
 
@@ -367,55 +401,71 @@ return Polygon.open(
     this.#propagateCaveReferenceToSlot({ slot });
   };
 
+  #createOpenCollisionPolygon(
+    points: readonly { readonly x: number; readonly y: number }[]
+  ): CollisionPolygon | null {
+    if (points.length < 2) {
+      return null;
+    }
+
+    return CollisionPolygon.open(
+      points.map(point => new CollisionVector2(point.x, point.y))
+    );
+  }
+
   #propagateCaveReferenceToAllSlots(): void {
     const startSlot = this.renderRoot.querySelector(
-      'slot[name="overlay-start"]',
+      'slot[name="overlay-start"]'
     ) as HTMLSlotElement | null;
+
     const centerSlot = this.renderRoot.querySelector(
-      'slot[name="overlay-center"]',
+      'slot[name="overlay-center"]'
     ) as HTMLSlotElement | null;
 
     this.#propagateCaveReferenceToSlot({ slot: startSlot });
     this.#propagateCaveReferenceToSlot({ slot: centerSlot });
   }
 
-  async #loadNoiseMaterialOptions(): Promise<void> {
-    try {
-      const cacheBustedUrl = `${this.noiseMaterialOptionsUrl}?t=${Date.now()}`;
-      const response = await fetch(cacheBustedUrl, { cache: "no-store" });
-      if (!response.ok) return;
-
-      const json = (await response.json()) as Partial<CaveNoiseMaterialOptions>;
-      const mergedUpper = {
-        ...(this.noiseMaterialOptions.upper ?? {}),
-        ...(json.upper ?? {}),
-      } as CaveNoiseMaterialOptions["upper"];
-      const mergedLower = {
-        ...(this.noiseMaterialOptions.lower ?? {}),
-        ...(json.lower ?? {}),
-      } as CaveNoiseMaterialOptions["lower"];
-
-      this.noiseMaterialOptions = {
-        ...this.noiseMaterialOptions,
-        ...json,
-        upper: mergedUpper,
-        lower: mergedLower,
-      };
-    } catch {
-      // Keep built-in defaults if runtime JSON is missing/invalid.
-    }
-  }
-
   #propagateCaveReferenceToSlot(options: {
     readonly slot: HTMLSlotElement | null;
   }): void {
-    if (!options.slot) return;
+    if (!options.slot) {
+      return;
+    }
 
     const assignedElements = options.slot.assignedElements({ flatten: true });
 
     for (const element of assignedElements) {
-      if (!(element instanceof HTMLElement)) continue;
+      if (!(element instanceof HTMLElement)) {
+        continue;
+      }
+
       (element as CaveGameObjectReferenceTarget).caveGameObject = this;
+    }
+  }
+
+  async #loadNoiseMaterialOptions(): Promise<void> {
+    try {
+      const cacheBustedUrl = `${this.noiseOptions.materialOptionsUrl}?t=${Date.now()}`;
+      const response = await fetch(cacheBustedUrl, { cache: 'no-store' });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const loaded = (await response.json()) as Partial<CaveNoiseMaterialOptions>;
+      const materialOptions = this.#noiseMaterialMerger.merge(
+        this.noiseOptions.materialOptions,
+        loaded
+      );
+
+      this.noiseOptions = new CaveNoiseOptionsValue(
+        this.noiseOptions.materialOptionsUrl,
+        this.noiseOptions.reloadIntervalMs,
+        materialOptions
+      );
+    } catch {
+      // Keep current options if runtime JSON is missing or invalid.
     }
   }
 
@@ -423,26 +473,33 @@ return Polygon.open(
     const worldWidth = this.#canvasLength * 3;
     const worldHeight = 300;
     const cameraView = this.camera?.getView();
-    const isMiniMap = this.showCameraViewBox;
-    const viewportWidth = this.viewportWidth ?? cameraView?.width ?? worldWidth;
+    const isMiniMap = this.viewportOptions.showCameraViewBox;
+
+    const viewportWidth = this.viewportOptions.width ?? cameraView?.width ?? worldWidth;
     const viewportHeight =
-      this.viewportHeight ?? cameraView?.height ?? worldHeight;
+      this.viewportOptions.height ?? cameraView?.height ?? worldHeight;
+
     const scale = isMiniMap
       ? Math.min(viewportWidth / worldWidth, viewportHeight / worldHeight)
       : 1;
+
     const scaledWorldWidth = worldWidth * scale;
     const scaledWorldHeight = worldHeight * scale;
+
     const offsetX = isMiniMap
       ? (viewportWidth - scaledWorldWidth) / 2
       : cameraView
-      ? -cameraView.x
-      : 0;
+        ? -cameraView.x
+        : 0;
+
     const offsetY = isMiniMap
       ? (viewportHeight - scaledWorldHeight) / 2
       : cameraView
-      ? -cameraView.y
-      : 0;
+        ? -cameraView.y
+        : 0;
+
     const transform = `translate3d(${offsetX}px, ${offsetY}px, 0) scale(${scale})`;
+
     const cameraViewBoxStyle = cameraView
       ? styleMap({
           left: `${offsetX + cameraView.x * scale}px`,
@@ -457,12 +514,12 @@ return Polygon.open(
       this.#curveGenerator.upperPoints,
       this.#curveGenerator.lowerPoints,
       {
-        showReferenceCurve: this.showReferenceCurve,
-        referenceCurveRenderStyle: this.referenceCurveRenderStyle,
-        closeCurvesToBounds: this.closeUpperLowerToBounds,
+        showReferenceCurve: this.caveRenderOptions.showReferenceCurve,
+        referenceCurveRenderStyle: this.caveRenderOptions.referenceCurveRenderStyle,
+        closeCurvesToBounds: this.caveRenderOptions.closeUpperLowerToBounds,
         boundsWidth: worldWidth,
         boundsHeight: worldHeight,
-      },
+      }
     );
 
     return html`
@@ -482,7 +539,7 @@ return Polygon.open(
           <game-polygon
             .width=${worldWidth}
             .height=${worldHeight}
-            .polygon=${shape as unknown as GamePolygon["polygon"]}
+            .polygon=${shape as unknown as GamePolygon['polygon']}
           ></game-polygon>
 
           <div class="overlay-layer">
@@ -500,7 +557,7 @@ return Polygon.open(
           </div>
         </div>
 
-        ${this.showCameraViewBox && cameraView
+        ${this.viewportOptions.showCameraViewBox && cameraView
           ? html`<div class="camera-viewbox" style=${cameraViewBoxStyle}></div>`
           : null}
       </div>
@@ -510,6 +567,6 @@ return Polygon.open(
 
 declare global {
   interface HTMLElementTagNameMap {
-    "cave-game-object": CaveGameObject;
+    'cave-game-object': CaveGameObject;
   }
 }

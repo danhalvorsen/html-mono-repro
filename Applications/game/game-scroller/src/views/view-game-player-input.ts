@@ -1,18 +1,20 @@
-// FILE: src/views/view-game-player-input.ts
-
-import { Polygon, PolygonCollisionSystemRoot } from '@monorepo/core-collision-polygons';
+import { Vector2 as CollisionVector2 } from '@monorepo/core-math';
+import {
+  Polygon as CollisionPolygon,
+  PolygonCollisionSystemRoot,
+} from '@monorepo/core-collision-polygons';
 import { LitElement, css, html, type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { Camera } from '../Game/Camera.js';
 import {
   CollisionSystemReactiveController,
   type CollisionObservedGameObject,
+  type CollisionTargetPolygons,
 } from '../Game/Collision/index.js';
 import '../Game/Screen/Cave/CaveGameObject.js';
 import { PlayerInputController, WasdXPlayerKeyMap } from '../Game/Input/index.js';
 import { TimeSchdulerObserver } from '../Game/TimeSchdulerObserver.js';
 import { PlayerGameObject } from '../GameObjects/PlayerGameObject.js';
-import { Vector2 } from '@monorepo/core-math';
 
 @customElement('view-game-player-input')
 export class ViewGamePlayerInput extends LitElement {
@@ -53,6 +55,13 @@ export class ViewGamePlayerInput extends LitElement {
     world: { width: 1500, height: 300 },
   });
 
+  private readonly playerInputController = new PlayerInputController(
+    this,
+    new WasdXPlayerKeyMap(),
+    undefined,
+    window
+  );
+
   private readonly collisionReactiveController =
     new CollisionSystemReactiveController({
       host: this,
@@ -63,24 +72,23 @@ export class ViewGamePlayerInput extends LitElement {
         const cave = this.renderRoot.querySelector('cave-game-object');
 
         if (!isCollisionTargetProvider(cave)) {
-          return null;
+          return emptyCollisionTargetPolygons();
         }
 
-        return cave.getTargetPolygon();
+        return cave.getCollisionTargetPolygons();
       },
       onCollisionResult: result => {
-        if (result.hasCollide) {
-          console.log('collision', result);
+        if (!result.hasCollide) {
+          return;
+        }
+
+        const cave = this.renderRoot.querySelector('cave-game-object');
+
+        if (isCollisionFeedbackCave(cave)) {
+          cave.flashCollision(90);
         }
       },
     });
-
-  private readonly playerInputController = new PlayerInputController(
-    this,
-    new WasdXPlayerKeyMap(),
-    undefined,
-    window
-  );
 
   public override connectedCallback(): void {
     super.connectedCallback();
@@ -88,29 +96,26 @@ export class ViewGamePlayerInput extends LitElement {
     this.scheduler.start();
   }
 
-// FILE: src/views/view-game-player-input.ts
+  protected override async firstUpdated(): Promise<void> {
+    const player = this.renderRoot.querySelector('player-game-object');
 
-// FILE: src/views/view-game-player-input.ts
+    if (!(player instanceof PlayerGameObject)) {
+      return;
+    }
 
-protected override async firstUpdated(): Promise<void> {
-  const player = this.renderRoot.querySelector('player-game-object');
+    this.camera.setFollowTarget(player);
 
-  if (!(player instanceof PlayerGameObject)) {
-    return;
+    const cave = this.renderRoot.querySelector('cave-game-object');
+
+    if (!isCollisionObservingCave(cave)) {
+      return;
+    }
+
+    await cave.updateComplete;
+
+    cave.observeGameObject(player);
   }
 
-  this.camera.setFollowTarget(player);
-
-  const cave = this.renderRoot.querySelector('cave-game-object');
-
-  if (!isCollisionObservingCave(cave)) {
-    return;
-  }
-
-  await cave.updateComplete;
-
-  cave.observeGameObject(player);
-}
   public override disconnectedCallback(): void {
     this.scheduler.stop();
     this.camera.setFollowTarget(undefined);
@@ -149,29 +154,55 @@ protected override async firstUpdated(): Promise<void> {
     `;
   }
 
- private createSourcePolygon(
-  observedGameObject: CollisionObservedGameObject
-): Polygon {
-  const position = observedGameObject.getWorldPosistion();
-  const halfSize = 8;
+  private createSourcePolygon(
+    observedGameObject: CollisionObservedGameObject
+  ): CollisionPolygon {
+    const position = observedGameObject.getWorldPosistion();
+    const size = resolveObservedGameObjectSize(observedGameObject);
+    const halfSize = size / 2;
 
-  return Polygon.closed([
-    new Vector2(position.x - halfSize, position.y - halfSize),
-    new Vector2(position.x + halfSize, position.y - halfSize),
-    new Vector2(position.x + halfSize, position.y + halfSize),
-    new Vector2(position.x - halfSize, position.y + halfSize),
-  ]);
+    return CollisionPolygon.closed([
+      new CollisionVector2(position.x - halfSize, position.y - halfSize),
+      new CollisionVector2(position.x + halfSize, position.y - halfSize),
+      new CollisionVector2(position.x + halfSize, position.y + halfSize),
+      new CollisionVector2(position.x - halfSize, position.y + halfSize),
+    ]);
+  }
 }
+
+function resolveObservedGameObjectSize(
+  observedGameObject: CollisionObservedGameObject
+): number {
+  const candidate = (observedGameObject as { readonly size?: unknown }).size;
+
+  if (typeof candidate !== 'number') {
+    return 16;
+  }
+
+  if (!Number.isFinite(candidate) || candidate <= 0) {
+    return 16;
+  }
+
+  return candidate;
+}
+
+function emptyCollisionTargetPolygons(): CollisionTargetPolygons {
+  return {
+    upper: null,
+    lower: null,
+  };
 }
 
 function isCollisionObservingCave(
   value: unknown
 ): value is HTMLElement & {
+  readonly updateComplete: Promise<boolean>;
   observeGameObject(gameObject: CollisionObservedGameObject | null): void;
 } {
   return (
     typeof value === 'object' &&
     value !== null &&
+    'updateComplete' in value &&
     'observeGameObject' in value &&
     typeof value.observeGameObject === 'function'
   );
@@ -180,13 +211,26 @@ function isCollisionObservingCave(
 function isCollisionTargetProvider(
   value: unknown
 ): value is {
-  getTargetPolygon(): Polygon | null;
+  getCollisionTargetPolygons(): CollisionTargetPolygons;
 } {
   return (
     typeof value === 'object' &&
     value !== null &&
-    'getTargetPolygon' in value &&
-    typeof value.getTargetPolygon === 'function'
+    'getCollisionTargetPolygons' in value &&
+    typeof value.getCollisionTargetPolygons === 'function'
+  );
+}
+
+function isCollisionFeedbackCave(
+  value: unknown
+): value is {
+  flashCollision(durationMs?: number): void;
+} {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'flashCollision' in value &&
+    typeof value.flashCollision === 'function'
   );
 }
 

@@ -1,5 +1,10 @@
-# FILE: fix-collision-controller-contract.ps1
-# Run from: Applications/game/game-scroller
+# FILE: fix-keyboard-input-after-collision.ps1
+# Run from:
+#   Applications/game/game-scroller
+#
+# Then:
+#   pnpm build
+#   pnpm test
 
 [CmdletBinding()]
 param(
@@ -35,207 +40,96 @@ function Join-ModulePath {
   return Join-Path $Root ($RelativePath.Replace("/", [System.IO.Path]::DirectorySeparatorChar))
 }
 
-function Write-ModuleFile {
-  param(
-    [string] $Root,
-    [string] $RelativePath,
-    [string] $Content
-  )
-
-  $path = Join-ModulePath -Root $Root -RelativePath $RelativePath
-  $directory = Split-Path -Parent $path
-
-  if (-not (Test-Path -LiteralPath $directory -PathType Container)) {
-    New-Item -ItemType Directory -Path $directory | Out-Null
-  }
-
-  [System.IO.File]::WriteAllText(
-    $path,
-    $Content.Trim() + [Environment]::NewLine,
-    $Utf8NoBom
-  )
-
-  Write-Host "wrote $RelativePath"
-}
-
 $Root = Resolve-ModuleRoot -Path $ModuleRoot
+$RelativePath = "src/views/view-game-player-input.ts"
+$Path = Join-ModulePath -Root $Root -RelativePath $RelativePath
 
-Write-ModuleFile -Root $Root -RelativePath "src/Game/Collision/CollisionSystemReactiveController.ts" -Content @'
-import type { ReactiveController, ReactiveControllerHost } from 'lit';
-import type {
-  Polygon,
-  PolygonCollisionResult,
-  PolygonCollisionSystem,
-} from '@monorepo/core-collision-polygons';
-import type {
-  IGameObjectObservableSubject,
-  IGameObjectSubject,
-} from '../GameObjectSubject.js';
-import { CollisionIntersectionControl } from './Objects/Intersection/CollisionIntersectionControl.js';
-import { ObservedGameObjectBinding } from './Objects/Observable/ObservedGameObjectBinding.js';
-
-export type CollisionObservedGameObject =
-  IGameObjectSubject &
-  IGameObjectObservableSubject;
-
-export type SourceCollisionPolygonProvider = (
-  observedGameObject: CollisionObservedGameObject
-) => Polygon | null;
-
-export type TargetCollisionPolygonProvider = () => Polygon | null;
-
-export type CollisionResultObserver = (
-  result: PolygonCollisionResult
-) => void;
-
-export interface CollisionSystemReactiveControllerOptions {
-  readonly host: ReactiveControllerHost;
-  readonly collisionSystem: PolygonCollisionSystem;
-  readonly sourcePolygonProvider: SourceCollisionPolygonProvider;
-  readonly targetPolygonProvider: TargetCollisionPolygonProvider;
-  readonly onCollisionResult?: CollisionResultObserver;
+if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+  throw "File not found: $RelativePath"
 }
 
-export class CollisionSystemReactiveController implements ReactiveController {
-  readonly #host: ReactiveControllerHost;
-  readonly #observer: ObservedGameObjectBinding;
-  readonly #intersectionControl: CollisionIntersectionControl;
+$Content = [System.IO.File]::ReadAllText($Path)
 
-  public constructor(options: CollisionSystemReactiveControllerOptions) {
-    this.#host = options.host;
+$Content = $Content.Replace(
+@'
+      onCollisionResult: result => {
+        this.playerInputController.setEnabled(!result.hasCollide);
 
-    this.#intersectionControl = new CollisionIntersectionControl({
-      collisionSystem: options.collisionSystem,
-      sourcePolygonProvider: options.sourcePolygonProvider,
-      targetPolygonProvider: options.targetPolygonProvider,
-      onCollisionResult: options.onCollisionResult ?? null,
-      onStateChanged: () => this.#host.requestUpdate(),
-    });
+        if (!result.hasCollide) {
+          return;
+        }
 
-    this.#observer = new ObservedGameObjectBinding({
-      onObservedGameObjectChanged: observedGameObject => {
-        this.#intersectionControl.setObservedGameObject(observedGameObject);
-        this.#intersectionControl.checkCollision();
+        const cave = this.renderRoot.querySelector('cave-game-object');
+
+        if (isCollisionFeedbackCave(cave)) {
+          cave.flashCollision(90);
+        }
       },
-    });
+'@,
+@'
+      onCollisionResult: result => {
+        if (!result.hasCollide) {
+          return;
+        }
 
-    this.#host.addController(this);
-  }
+        const cave = this.renderRoot.querySelector('cave-game-object');
 
-  public get observedGameObject(): CollisionObservedGameObject | null {
-    return this.#observer.observedGameObject;
-  }
-
-  public get lastResult(): PolygonCollisionResult | null {
-    return this.#intersectionControl.lastResult;
-  }
-
-  public hostDisconnected(): void {
-    this.#observer.clear();
-    this.#intersectionControl.clear();
-  }
-
-  public setObservedGameObject(
-    observedGameObject: CollisionObservedGameObject | null | undefined
-  ): void {
-    this.#observer.bind(observedGameObject ?? null);
-  }
-
-  public checkCollision(): PolygonCollisionResult | null {
-    return this.#intersectionControl.checkCollision();
-  }
-}
+        if (isCollisionFeedbackCave(cave)) {
+          cave.flashCollision(90);
+        }
+      },
 '@
+)
 
-Write-ModuleFile -Root $Root -RelativePath "src/Game/Collision/Objects/Intersection/CollisionIntersectionControlOptions.ts" -Content @'
-import type { PolygonCollisionSystem } from '@monorepo/core-collision-polygons';
-import type {
-  CollisionResultObserver,
-  SourceCollisionPolygonProvider,
-  TargetCollisionPolygonProvider,
-} from '../../CollisionSystemReactiveController.js';
+$Content = $Content.Replace(
+@'
+      onCollisionResult: result => {
+        this.playerInputController.setEnabled(!result.hasCollide);
+        if (!result.hasCollide) {
+          return;
+        }
 
-export interface CollisionIntersectionControlOptions {
-  readonly collisionSystem: PolygonCollisionSystem;
-  readonly sourcePolygonProvider: SourceCollisionPolygonProvider;
-  readonly targetPolygonProvider: TargetCollisionPolygonProvider;
-  readonly onCollisionResult: CollisionResultObserver | null;
-  readonly onStateChanged: () => void;
-}
+        const cave = this.renderRoot.querySelector('cave-game-object');
+
+        if (isCollisionFeedbackCave(cave)) {
+          cave.flashCollision(90);
+        }
+      },
+'@,
+@'
+      onCollisionResult: result => {
+        if (!result.hasCollide) {
+          return;
+        }
+
+        const cave = this.renderRoot.querySelector('cave-game-object');
+
+        if (isCollisionFeedbackCave(cave)) {
+          cave.flashCollision(90);
+        }
+      },
 '@
+)
 
-Write-ModuleFile -Root $Root -RelativePath "src/Game/Collision/Objects/Intersection/CollisionIntersectionControl.ts" -Content @'
-import type {
-  PolygonCollisionResult,
-  PolygonCollisionSystem,
-} from '@monorepo/core-collision-polygons';
-import type { CollisionObservedGameObject } from '../../CollisionSystemReactiveController.js';
-import type { CollisionIntersectionControlOptions } from './CollisionIntersectionControlOptions.js';
+$Content = $Content.Replace(
+  "        this.playerInputController.setEnabled(!result.hasCollide);`r`n",
+  ""
+)
 
-export class CollisionIntersectionControl {
-  readonly #collisionSystem: PolygonCollisionSystem;
-  readonly #sourcePolygonProvider: CollisionIntersectionControlOptions['sourcePolygonProvider'];
-  readonly #targetPolygonProvider: CollisionIntersectionControlOptions['targetPolygonProvider'];
-  readonly #onCollisionResult: CollisionIntersectionControlOptions['onCollisionResult'];
-  readonly #onStateChanged: () => void;
+$Content = $Content.Replace(
+  "        this.playerInputController.setEnabled(!result.hasCollide);`n",
+  ""
+)
 
-  #observedGameObject: CollisionObservedGameObject | null = null;
-  #lastResult: PolygonCollisionResult | null = null;
+[System.IO.File]::WriteAllText(
+  $Path,
+  $Content.TrimEnd() + [Environment]::NewLine,
+  $Utf8NoBom
+)
 
-  public constructor(options: CollisionIntersectionControlOptions) {
-    this.#collisionSystem = options.collisionSystem;
-    this.#sourcePolygonProvider = options.sourcePolygonProvider;
-    this.#targetPolygonProvider = options.targetPolygonProvider;
-    this.#onCollisionResult = options.onCollisionResult;
-    this.#onStateChanged = options.onStateChanged;
-  }
-
-  public get lastResult(): PolygonCollisionResult | null {
-    return this.#lastResult;
-  }
-
-  public setObservedGameObject(
-    observedGameObject: CollisionObservedGameObject | null
-  ): void {
-    this.#observedGameObject = observedGameObject;
-  }
-
-  public clear(): void {
-    this.#observedGameObject = null;
-    this.#setLastResult(null);
-  }
-
-  public checkCollision(): PolygonCollisionResult | null {
-    if (!this.#observedGameObject) {
-      this.#setLastResult(null);
-      return null;
-    }
-
-    const source = this.#sourcePolygonProvider(this.#observedGameObject);
-    const target = this.#targetPolygonProvider();
-
-    if (!source || !target) {
-      this.#setLastResult(null);
-      return null;
-    }
-
-    const result = this.#collisionSystem.detect({
-      source,
-      target,
-    });
-
-    this.#setLastResult(result);
-    this.#onCollisionResult?.(result);
-
-    return result;
-  }
-
-  #setLastResult(result: PolygonCollisionResult | null): void {
-    this.#lastResult = result;
-    this.#onStateChanged();
-  }
-}
-'@
-
-Write-Host "restored CollisionSystemReactiveController provider contract"
-Write-Host "next: pnpm build"
+Write-Host "patched $RelativePath"
+Write-Host "removed collision-driven PlayerInputController disabling"
+Write-Host ""
+Write-Host "next:"
+Write-Host "  pnpm build"
+Write-Host "  pnpm test"

@@ -1,4 +1,5 @@
 import type {
+  Polygon as CollisionPolygon,
   PolygonCollisionResult,
   PolygonCollisionSystem,
 } from '@monorepo/core-collision-polygons';
@@ -45,22 +46,52 @@ export class CollisionIntersectionControl {
     }
 
     const source = this.#sourcePolygonProvider(this.#observedGameObject);
-    const target = this.#targetPolygonProvider();
+    const targets = this.#targetPolygonProvider();
 
-    if (!source || !target) {
+    if (!source) {
       this.#setLastResult(null);
       return null;
     }
 
-    const result = this.#collisionSystem.detect({
+    const upperResult = this.#detectAgainstTarget(source, targets.upper);
+
+    if (upperResult?.hasCollide) {
+      this.#setLastResult(upperResult);
+      this.#onCollisionResult?.(upperResult);
+      return upperResult;
+    }
+
+    const lowerResult = this.#detectAgainstTarget(source, targets.lower);
+
+    if (lowerResult?.hasCollide) {
+      this.#setLastResult(lowerResult);
+      this.#onCollisionResult?.(lowerResult);
+      return lowerResult;
+    }
+
+    const lastResult = lowerResult ?? upperResult;
+
+    this.#setLastResult(lastResult);
+
+    if (lastResult) {
+      this.#onCollisionResult?.(lastResult);
+    }
+
+    return lastResult;
+  }
+
+  #detectAgainstTarget(
+    source: CollisionPolygon,
+    target: CollisionPolygon | null
+  ): PolygonCollisionResult | null {
+    if (!target) {
+      return null;
+    }
+
+    return this.#collisionSystem.detect({
       source,
       target,
     });
-
-    this.#setLastResult(result);
-    this.#onCollisionResult?.(result);
-
-    return result;
   }
 
   #setLastResult(result: PolygonCollisionResult | null): void {
