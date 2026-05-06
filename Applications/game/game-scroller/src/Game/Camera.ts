@@ -93,6 +93,10 @@ export class Camera extends LitElement implements ICamera {
     return this.position;
   }
 
+  public setPosistion(position: Point2): void {
+    this.#setPosition(position);
+  }
+
   public getWorldPosistion(): Point2 {
     return this.position;
   }

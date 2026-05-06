@@ -18,8 +18,7 @@
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["packages/*/src"]
-  ,
+  "include": ["packages/*/src"],
   "exclude": [
     "node_modules",
     "dist",

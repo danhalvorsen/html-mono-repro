@@ -83,7 +83,7 @@ export class PlayerInputController implements ReactiveController {
     const code = this.#codeParser.parse(rawCode);
 
     if (code === null) return;
-    if (!this.#keyMap.isMapped(code)) return;
+    if (!this.#isMapped(code)) return;
 
     const changed = pressed
       ? this.#addPressedCode(code)
@@ -98,5 +98,15 @@ export class PlayerInputController implements ReactiveController {
     const size = this.#pressedCodes.size;
     this.#pressedCodes.add(code);
     return this.#pressedCodes.size !== size;
+  }
+
+  #isMapped(code: BrowserKeyboardCode): boolean {
+    return (
+      code === this.#keyMap.moveUp ||
+      code === this.#keyMap.moveDown ||
+      code === this.#keyMap.moveLeft ||
+      code === this.#keyMap.moveRight ||
+      code === this.#keyMap.fire
+    );
   }
 }

@@ -1,28 +1,51 @@
 import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { TimeSchdulerObserver } from './TimeSchdulerObserver';
-import { SvgRectangleBuilder } from './Builders/SvgPolygonBuilder';
-import type { GamePolygon } from './GamePolygon';
+import { SvgRectangleBuilder } from './Elements/Polygon/SvgPolygonBuilder';
+import type { GamePolygon } from './Elements/Polygon/GamePolygon';
 import { Matrix, type IMatrix, type Point, type Point2 } from '@monorepo/core-math';
 import { GameObjectAnimationController } from './Animation/GameObjectAnimationController';
 import type { ISceneNode } from '../../../../../packages/core-scene-graph/dist/ISceneNode';
 import type { Vector2 } from '../GameObjects/RectangleGameObjects';
-import type { ICaveGameObjectReference } from './ICaveGameObjectReference';
+import type { ICaveGameObjectReference } from './Screen/Cave/ICaveGameObjectReference';
+import type { PlayerInputController } from './Input';
+import { TypedSubject, type Observer } from '@monorepo/core-design-patterns';
 
 export interface IGameObjectSubject {
   onTime(time: number): void;
-  getPosistion(): Vector2 ;
-  getWorldPosistion(): Vector2 ;
+  getPosistion(): Vector2;
+  setPosistion(position: Vector2): void;
+  getWorldPosistion(): Vector2;
   getRotation(): Vector2;
   getWorldRotation(): Vector2;
- 
+}
+
+export type GameObjectSubjectEvents = {
+  positionChanged: Vector2;
+  rotationChanged: Vector2;
+  timeAdvanced: number;
+};
+
+export interface IGameObjectObservableSubject {
+  subscribeState<K extends keyof GameObjectSubjectEvents>(
+    eventName: K,
+    observer: Observer<GameObjectSubjectEvents, K>
+  ): () => void;
+  unsubscribeState<K extends keyof GameObjectSubjectEvents>(
+    eventName: K,
+    observer: Observer<GameObjectSubjectEvents, K>
+  ): boolean;
 }
 
 @customElement('game-object-subject')
-export class GameObjectSubject extends LitElement implements IGameObjectSubject, ISceneNode {
+export class GameObjectSubject
+  extends LitElement
+  implements IGameObjectSubject, IGameObjectObservableSubject, ISceneNode
+{
   #unsubscribeFromScheduler: (() => void) | null = null;
   readonly #canvasWidth = 1500;
   readonly #canvasHeight = 300;
+  readonly #stateSubject = new TypedSubject<GameObjectSubjectEvents>();
 
   @property({ attribute: false })
   caveGameObject?: ICaveGameObjectReference;
@@ -33,6 +56,12 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject,
   @property({ type: Number })
   size = 10;
 
+  @property({ type: Number })
+  positionX = 20;
+  
+  @property({ type: Number })
+  positionY = 20;
+
   @property({ type: String })
   fill = '#60a5fa';
 
@@ -42,28 +71,35 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject,
   @property({ type: Number })
   indexOffsetRatio = 0;
 
+  @property({ attribute: false })
+  controller?: PlayerInputController;
+
   private subject: GamePolygon;
   readonly #animationController: GameObjectAnimationController;
-  #currentPoint: Point2 = { x: 20, y: 20 };
   #currentRotationRadians = 0;
+  #lastTimeMs: number | null = null;
+  readonly #manualMoveSpeedPerSecond = 180;
 
   public constructor(subject?: GamePolygon) {
     super();
-    this.subject = subject ?? this.#buildSubjectAt({ x: 20, y: 20 }, 0);
+    this.subject = subject ?? this.#buildSubjectAt({ x: this.positionX, y: this.positionY }, 0);
     this.#animationController = new GameObjectAnimationController({
       host: this,
       indexOffsetRatio: this.indexOffsetRatio,
       onFrame: ({ point, rotationRadians }) => {
-        this.#currentPoint = { x: point.x, y: point.y };
+        this.positionX = point.x;
+        this.positionY = point.y;
         this.#currentRotationRadians = rotationRadians;
-        this.local = Matrix.translation(point.x, point.y).multiply(
-          Matrix.rotation(rotationRadians)
+        this.#applyTransformAndGeometry(
+          { x: this.positionX, y: this.positionY },
+          this.#currentRotationRadians
         );
-        this.subject = this.#buildSubjectAt(point, rotationRadians);
+        this.#stateSubject.notify('positionChanged', this.getPosistion());
+        this.#stateSubject.notify('rotationChanged', this.getRotation());
       }
     });
   }
-
+  
   public local: IMatrix = Matrix.identity(3);
   public world: IMatrix = Matrix.identity(3);
   public name = 'game-object-subject';
@@ -80,8 +116,34 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject,
     return [];
   }
 
+  public setPosistion(position: Vector2): void {
+    this.positionX = position.x;
+    this.positionY = position.y;
+    this.#applyTransformAndGeometry(
+      { x: this.positionX, y: this.positionY },
+      this.#currentRotationRadians
+    );
+    this.#stateSubject.notify('positionChanged', this.getPosistion());
+    this.#stateSubject.notify('rotationChanged', this.getRotation());
+    this.requestUpdate();
+  }
+  
   setScheduler(timeSchedulerObserver: TimeSchdulerObserver): void {
     this.scheduler = timeSchedulerObserver;
+  }
+
+  public subscribeState<K extends keyof GameObjectSubjectEvents>(
+    eventName: K,
+    observer: Observer<GameObjectSubjectEvents, K>
+  ): () => void {
+    return this.#stateSubject.subscribe(eventName, observer);
+  }
+
+  public unsubscribeState<K extends keyof GameObjectSubjectEvents>(
+    eventName: K,
+    observer: Observer<GameObjectSubjectEvents, K>
+  ): boolean {
+    return this.#stateSubject.unsubscribe(eventName, observer);
   }
 
   protected override updated(changed: Map<string, unknown>): void {
@@ -91,9 +153,11 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject,
     }
 
     if (changed.has('fill') || changed.has('stroke') || changed.has('size')) {
-      const point = this.#animationController.getCurrentPoint() ?? { x: 20, y: 20 };
-      const rotationRadians = this.#animationController.getCurrentRotationRadians();
-      this.subject = this.#buildSubjectAt(point, rotationRadians);
+      this.subject = this.#buildSubjectAt(this.getPosistion(), this.#currentRotationRadians);
+    }
+
+    if (changed.has('positionX') || changed.has('positionY')) {
+      this.#applyTransformAndGeometry(this.getPosistion(), this.#currentRotationRadians);
     }
 
     if (changed.has('indexOffsetRatio')) {
@@ -109,11 +173,68 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject,
   }
 
   onTime(time: number): void {
+    this.#stateSubject.notify('timeAdvanced', time);
+    if (this.controller) {
+      this.#onTimeByController(time);
+      return;
+    }
+
+    this.#lastTimeMs = null;
     this.#animationController.onTime(time);
   }
 
+  #onTimeByController(time: number): void {
+    const previousTime = this.#lastTimeMs;
+    this.#lastTimeMs = time;
+    if (previousTime === null) return;
+
+    const deltaMs = Math.max(0, time - previousTime);
+    if (deltaMs === 0) return;
+
+    const horizontalAxis = this.controller?.horizontalAxis ?? 0;
+    const verticalAxis = this.controller?.verticalAxis ?? 0;
+    const firePressed = this.controller?.isFirePressed ?? false;
+    if (horizontalAxis === 0 && verticalAxis === 0) {
+      if (firePressed) {
+        this.fill = '#f59e0b';
+        this.stroke = '#b45309';
+      } else {
+        this.fill = '#60a5fa';
+        this.stroke = '#1d4ed8';
+      }
+      return;
+    }
+
+    const deltaSeconds = deltaMs / 1000;
+    const step = this.#manualMoveSpeedPerSecond * deltaSeconds;
+    const nextX = this.#clamp(this.positionX + horizontalAxis * step, 0, this.#canvasWidth);
+    const nextY = this.#clamp(this.positionY + verticalAxis * step, 0, this.#canvasHeight);
+    const nextRotation = Math.atan2(verticalAxis, horizontalAxis || 0.000001);
+    const nextPoint: Point2 = { x: nextX, y: nextY };
+
+    this.positionX = nextPoint.x;
+    this.positionY = nextPoint.y;
+    this.#currentRotationRadians = nextRotation;
+    this.#applyTransformAndGeometry(this.getPosistion(), this.#currentRotationRadians);
+    this.#stateSubject.notify('positionChanged', this.getPosistion());
+    this.#stateSubject.notify('rotationChanged', this.getRotation());
+
+    if (firePressed) {
+      this.fill = '#f59e0b';
+      this.stroke = '#b45309';
+    } else {
+      this.fill = '#60a5fa';
+      this.stroke = '#1d4ed8';
+    }
+    this.requestUpdate();
+  }
+
+  #clamp(value: number, min: number, max: number): number {
+    return Math.min(max, Math.max(min, value));
+  }
+
   public getPosistion(): Vector2 {
-    return { x: this.#currentPoint.x, y: this.#currentPoint.y };
+    return { x: this.positionX, y: this.positionY };
   }
 
   public getWorldPosistion(): Vector2 {
@@ -129,11 +250,18 @@ export class GameObjectSubject extends LitElement implements IGameObjectSubject,
   }
 
   public getCurrentPoint(): Point2 | null {
-    return { x: this.#currentPoint.x, y: this.#currentPoint.y };
+    return { x: this.positionX, y: this.positionY };
   }
 
   public getCurrentRotationRadians(): number {
     return this.#currentRotationRadians;
+  }
+
+  #applyTransformAndGeometry(point: Point2, rotationRadians: number): void {
+    this.local = Matrix.translation(point.x, point.y).multiply(
+      Matrix.rotation(rotationRadians)
+    );
+    this.subject = this.#buildSubjectAt(point, rotationRadians);
   }
 
   #buildSubjectAt(point: Point2, rotationRadians: number): GamePolygon {

@@ -10,6 +10,6 @@ export default defineConfig({
     pool: 'threads',
   },
   resolve: {
-    // Add aliases or other resolve options here if needed
+   
   }
 });

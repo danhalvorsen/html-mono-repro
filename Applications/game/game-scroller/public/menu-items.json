@@ -1,0 +1,32 @@
+[
+  {
+    "id": "game",
+    "label": "Game",
+    "icon": "🎮"
+  },
+  {
+    "id": "game - render a polygon",
+    "label": "Game - Render a Polygon",
+    "icon": "🎮"
+  },
+  {
+    "id": "game - player keyboard",
+    "label": "Game - Player Keyboard",
+    "icon": "⌨️"
+  },
+  {
+    "id": "diagnostics",
+    "label": "Diagnostics",
+    "icon": "📈"
+  },
+  {
+    "id": "help",
+    "label": "Help",
+    "icon": "❓"
+  },
+  {
+    "id": "settings",
+    "label": "Settings",
+    "icon": "⚙️"
+  }
+]

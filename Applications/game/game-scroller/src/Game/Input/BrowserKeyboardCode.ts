@@ -1,4 +1,8 @@
 export const BrowserKeyboardCode = {
+  KeyW: 'KeyW',
+  KeyA: 'KeyA',
+  KeyD: 'KeyD',
+  KeyX: 'KeyX',
   ArrowUp: 'ArrowUp',
   ArrowDown: 'ArrowDown',
   ArrowLeft: 'ArrowLeft',

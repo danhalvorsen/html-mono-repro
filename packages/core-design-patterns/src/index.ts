@@ -16,4 +16,4 @@ export * from './token/commandCarrier.js';
 export * from './token/queryCarriere.js';
 export * from './visitor/visitor.js';
 
-export * from './observer/observer.js';
+export * from './observer/index.js';

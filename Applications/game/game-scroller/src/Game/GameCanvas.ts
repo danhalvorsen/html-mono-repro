@@ -6,7 +6,7 @@ import { customElement, property } from 'lit/decorators.js';
  
 import type { TimeSchdulerObserver } from './TimeSchdulerObserver.js';
 
-import './Srceens/Cave/CaveGameObject.js';
+import './Screen/Cave/CaveGameObject.js';
 import { RectangleGameObject } from '../GameObjects/RectangleGameObjects.js';
 import type { ICamera, ICameraFollowTarget } from './ICamera.js';
 import { GameObjectPlacementFactory } from './GameObjectPlacementFactory.js';

@@ -2,13 +2,12 @@ import type { Point } from '@monorepo/core-math';
 import {
   html,
   LitElement,
-  nothing,
-  svg,
   type SVGTemplateResult,
   type TemplateResult
 } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-
+import { SvgPolygon } from './SvgPolygon';
+ 
 export interface ISvgTemplate {
   readonly svg: SVGTemplateResult;
 }
@@ -36,66 +35,6 @@ export type SvgPolygonStyle = {
   readonly strokeDasharray?: string;
   readonly closed?: boolean;
 };
-
-export class SvgPolygon implements ISvgTemplate {
-  readonly #polygon: IPolygon;
-  readonly #fill: string;
-  readonly #stroke: string;
-  readonly #strokeWidth: number;
-  readonly #strokeDasharray: string | null;
-  readonly #closed: boolean;
-
-  public constructor(
-    polygon: IPolygon,
-    style: SvgPolygonStyle = {}
-  ) {
-    this.#polygon = polygon;
-    this.#fill = style.fill ?? 'none';
-    this.#stroke = style.stroke ?? 'black';
-    this.#strokeWidth = style.strokeWidth ?? 1;
-    this.#strokeDasharray = style.strokeDasharray ?? null;
-    this.#closed = style.closed ?? true;
-  }
-
-  public get svg(): SVGTemplateResult {
-    if (!this.#closed) {
-      return svg`
-        <polyline
-          points=${this.#toSvgPointList()}
-          fill=${this.#fill}
-          stroke=${this.#stroke}
-          stroke-width=${this.#strokeWidth}
-          stroke-dasharray=${this.#strokeDasharray ?? nothing}
-        ></polyline>
-      `;
-    }
-
-    return svg`
-      <polygon
-        points=${this.#toSvgPointList()}
-        fill=${this.#fill}
-        stroke=${this.#stroke}
-        stroke-width=${this.#strokeWidth}
-        stroke-dasharray=${this.#strokeDasharray ?? nothing}
-      ></polygon>
-    `;
-  }
-
-  #toSvgPointList(): string {
-    return this.#polygon.points
-      .map(point => `${point.x},${point.y}`)
-      .join(' ');
-  }
-}
-
-export class SvgOpenPolygon extends SvgPolygon {
-  public constructor(
-    polygon: IPolygon,
-    style: Omit<SvgPolygonStyle, 'closed'> = {}
-  ) {
-    super(polygon, { ...style, closed: false });
-  }
-}
 
 @customElement('game-polygon')
 export class GamePolygon extends LitElement {
