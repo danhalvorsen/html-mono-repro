@@ -2,6 +2,7 @@ import { Vector2 as CollisionVector2 } from '@monorepo/core-math';
 import {
   Polygon as CollisionPolygon,
   PolygonCollisionSystemRoot,
+  type PolygonCollisionResult,
 } from '@monorepo/core-collision-polygons';
 import { LitElement, css, html, type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
@@ -10,7 +11,8 @@ import {
   CollisionSystemReactiveController,
   type CollisionObservedGameObject,
   type CollisionTargetPolygons,
-} from '../Game/Collision/index.js';
+  type ICollisionReactiveController,
+} from '../Game/Collision/CollisionSystemReactiveController.js';
 import '../Game/Screen/Cave/CaveGameObject.js';
 import { PlayerInputController, WasdXPlayerKeyMap } from '../Game/Input/index.js';
 import { TimeSchdulerObserver } from '../Game/TimeSchdulerObserver.js';
@@ -62,7 +64,7 @@ export class ViewGamePlayerInput extends LitElement {
     window
   );
 
-  private readonly collisionReactiveController =
+  private readonly collisionReactiveController: ICollisionReactiveController =
     new CollisionSystemReactiveController({
       host: this,
       collisionSystem: PolygonCollisionSystemRoot.createDefault(),
@@ -78,15 +80,7 @@ export class ViewGamePlayerInput extends LitElement {
         return cave.getCollisionTargetPolygons();
       },
       onCollisionResult: result => {
-        if (!result.hasCollide) {
-          return;
-        }
-
-        const cave = this.renderRoot.querySelector('cave-game-object');
-
-        if (isCollisionFeedbackCave(cave)) {
-          cave.flashCollision(90);
-        }
+        this.handleCollisionResult(result);
       },
     });
 
@@ -148,10 +142,21 @@ export class ViewGamePlayerInput extends LitElement {
             .size=${16}
             fill="#60a5fa"
             stroke="#1d4ed8"
+            positionX=${10}
+            positionY=${200}
+
           ></player-game-object>
         </cave-game-object>
       </section>
     `;
+  }
+
+  private handleCollisionResult(result: PolygonCollisionResult): void {
+    const cave = this.renderRoot.querySelector('cave-game-object');
+
+    if (isCollisionFeedbackCave(cave)) {
+      cave.handleCollisionResult(result);
+    }
   }
 
   private createSourcePolygon(
@@ -224,6 +229,7 @@ function isCollisionTargetProvider(
 function isCollisionFeedbackCave(
   value: unknown
 ): value is {
+  handleCollisionResult(result: PolygonCollisionResult): void;
   flashCollision(durationMs?: number): void;
 } {
   return (

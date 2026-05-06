@@ -42,6 +42,11 @@ type CaveGameObjectReferenceTarget = HTMLElement & {
   caveGameObject?: CaveGameObject;
 };
 
+type CollisionMovementConstraintTarget = {
+  acceptCurrentPosition(): void;
+  rejectCurrentPosition(): void;
+};
+
 @customElement('cave-game-object')
 export class CaveGameObject extends LitElement implements ITimeObserver {
   public static override styles = css`
@@ -326,9 +331,29 @@ public caveRenderOptions: CaveRenderOptions =
   }
 
   public handleCollisionResult(result: PolygonCollisionResult): void {
+    this.#propagateCollisionResultToObservedGameObject(result);
+
     if (result.hasCollide) {
       this.flashCollision(90);
     }
+  }
+
+  #propagateCollisionResultToObservedGameObject(
+    result: PolygonCollisionResult
+  ): void {
+    const observedGameObject =
+      this.collisionReactiveController?.observedGameObject ?? null;
+
+    if (!isCollisionMovementConstraintTarget(observedGameObject)) {
+      return;
+    }
+
+    if (result.hasCollide) {
+      observedGameObject.rejectCurrentPosition();
+      return;
+    }
+
+    observedGameObject.acceptCurrentPosition();
   }
 
   public flashCollision(durationMs = 90): void {
@@ -563,6 +588,19 @@ public caveRenderOptions: CaveRenderOptions =
       </div>
     `;
   }
+}
+
+function isCollisionMovementConstraintTarget(
+  value: unknown
+): value is CollisionMovementConstraintTarget {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'acceptCurrentPosition' in value &&
+    'rejectCurrentPosition' in value &&
+    typeof value.acceptCurrentPosition === 'function' &&
+    typeof value.rejectCurrentPosition === 'function'
+  );
 }
 
 declare global {

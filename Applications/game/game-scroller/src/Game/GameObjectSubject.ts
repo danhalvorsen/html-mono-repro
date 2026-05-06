@@ -37,10 +37,20 @@ export interface IGameObjectObservableSubject {
   ): boolean;
 }
 
+export interface ICollisionMovementConstraintTarget {
+  acceptCurrentPosition(): void;
+  rejectCurrentPosition(): void;
+}
+
+type GameObjectMotionState = {
+  readonly position: Point2;
+  readonly rotationRadians: number;
+};
+
 @customElement('game-object-subject')
 export class GameObjectSubject
   extends LitElement
-  implements IGameObjectSubject, IGameObjectObservableSubject, ISceneNode
+  implements IGameObjectSubject, IGameObjectObservableSubject, ICollisionMovementConstraintTarget, ISceneNode
 {
   #unsubscribeFromScheduler: (() => void) | null = null;
   readonly #canvasWidth = 1500;
@@ -77,6 +87,10 @@ export class GameObjectSubject
   private subject: GamePolygon;
   readonly #animationController: GameObjectAnimationController;
   #currentRotationRadians = 0;
+  #lastAcceptedMotionState: GameObjectMotionState = {
+    position: { x: this.positionX, y: this.positionY },
+    rotationRadians: 0
+  };
   #lastTimeMs: number | null = null;
   readonly #manualMoveSpeedPerSecond = 180;
 
@@ -123,6 +137,39 @@ export class GameObjectSubject
       { x: this.positionX, y: this.positionY },
       this.#currentRotationRadians
     );
+    this.#stateSubject.notify('positionChanged', this.getPosistion());
+    this.#stateSubject.notify('rotationChanged', this.getRotation());
+    this.requestUpdate();
+  }
+
+  public acceptCurrentPosition(): void {
+    this.#lastAcceptedMotionState = {
+      position: this.getPosistion(),
+      rotationRadians: this.#currentRotationRadians
+    };
+  }
+
+  public rejectCurrentPosition(): void {
+    const accepted = this.#lastAcceptedMotionState;
+    const current = this.getPosistion();
+
+    if (
+      current.x === accepted.position.x &&
+      current.y === accepted.position.y &&
+      this.#currentRotationRadians === accepted.rotationRadians
+    ) {
+      return;
+    }
+
+    this.positionX = accepted.position.x;
+    this.positionY = accepted.position.y;
+    this.#currentRotationRadians = accepted.rotationRadians;
+
+    this.#applyTransformAndGeometry(
+      accepted.position,
+      accepted.rotationRadians
+    );
+
     this.#stateSubject.notify('positionChanged', this.getPosistion());
     this.#stateSubject.notify('rotationChanged', this.getRotation());
     this.requestUpdate();
@@ -186,7 +233,10 @@ export class GameObjectSubject
   #onTimeByController(time: number): void {
     const previousTime = this.#lastTimeMs;
     this.#lastTimeMs = time;
-    if (previousTime === null) return;
+    if (previousTime === null) {
+      this.acceptCurrentPosition();
+      return;
+    }
 
     const deltaMs = Math.max(0, time - previousTime);
     if (deltaMs === 0) return;
@@ -211,6 +261,8 @@ export class GameObjectSubject
     const nextY = this.#clamp(this.positionY + verticalAxis * step, 0, this.#canvasHeight);
     const nextRotation = Math.atan2(verticalAxis, horizontalAxis || 0.000001);
     const nextPoint: Point2 = { x: nextX, y: nextY };
+
+    this.acceptCurrentPosition();
 
     this.positionX = nextPoint.x;
     this.positionY = nextPoint.y;
