@@ -1,1 +1,1 @@
-export * from '../Elements/Polygon/SvgPolygonBuilder.js';
+export * from "@monorepo/game-assets-shapes";

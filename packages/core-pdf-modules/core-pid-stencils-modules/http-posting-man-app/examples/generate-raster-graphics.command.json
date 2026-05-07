@@ -1,0 +1,8 @@
+{
+  "type": "GenerateRasterGraphicsCommand",
+  "category": "valves",
+  "itemName": "ball-valve",
+  "formats": ["png"],
+  "stepDegrees": 90,
+  "resolutions": [[128, 128]]
+}

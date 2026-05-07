@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" data-root-name="pid.feeders" data-shape-name="Proportional Feeder (Rotary Valve)" data-aspect="variable" data-strokewidth="inherit">
+  <title>Proportional Feeder (Rotary Valve)</title>
+  <metadata>
+    <mxgraph-shape root-name="pid.feeders" name="Proportional Feeder (Rotary Valve)" w="100" h="100" aspect="variable" strokewidth="inherit">
+      <connections>
+        <constraint name="N" perimeter="0" x="0.5" y="0" />
+        <constraint name="S" perimeter="0" x="0.5" y="1" />
+      </connections>
+    </mxgraph-shape>
+  </metadata>
+  <g data-layer="background">
+    <ellipse cx="50" cy="50" rx="50" ry="50" fill="none" stroke="currentColor" stroke-width="inherit" />
+  </g>
+  <g data-layer="foreground">
+    <path d="M 0 50 L 100 50 M 75.8 7 L 24.2 93 M 24.2 7 L 75.8 93" fill="none" stroke="currentColor" stroke-width="inherit" />
+    <ellipse cx="50" cy="50" rx="5" ry="5" fill="currentColor" stroke="currentColor" stroke-width="inherit" />
+  </g>
+</svg>

@@ -1,9 +1,7 @@
+import { Polygon, SvgPolygon } from "@monorepo/game-assets-shapes";
 import { LitElement, css, html, type TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import "../Game/index.js";
-import { Polygon } from "../Game/Elements/Polygon/GamePolygon.js";
-import { SvgPolygon } from "../Game/Elements/Polygon/SvgPolygon.js";
-
 @customElement("view-game-polygon")
 export class ViewGamePolygon extends LitElement {
   static styles = css`
@@ -67,4 +65,7 @@ declare global {
     "view-game-polygon": ViewGamePolygon;
   }
 }
+
+
+
 

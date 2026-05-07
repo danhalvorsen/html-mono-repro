@@ -1,0 +1,23 @@
+{
+  "sourceDirectory": "../read-xml-create-svg/generated/svgs",
+  "outputDirectory": "./generated/training-images",
+  "outputFormats": ["svg", "png"],
+  "rotation": {
+    "angleStepDegrees": 36,
+    "includeOriginal": true
+  },
+  "noise": {
+    "enabled": true,
+    "strategies": [
+      {
+        "name": "random-lines",
+        "parameters": {
+          "seed": 12345,
+          "lineCount": 4,
+          "strokeWidth": 1,
+          "opacity": 0.18
+        }
+      }
+    ]
+  }
+}

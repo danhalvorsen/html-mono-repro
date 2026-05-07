@@ -1,9 +1,6 @@
 import type { Point2 } from '@monorepo/core-math';
 import { type SVGTemplateResult, svg } from 'lit';
-import { type ISvgTemplate, Polygon } from './GamePolygon';
-import { SvgOpenPolygon } from './SvgOpenPolygon';
-import { SvgPolygon } from './SvgPolygon';
-
+import { type ISvgTemplate, Polygon, SvgOpenPolygon, SvgPolygon } from "@monorepo/game-assets-shapes";
 export type ReferenceCurveRenderStyle = 'solid' | 'dashed';
 
 export class MultiCurveSvgTemplate implements ISvgTemplate {
@@ -112,3 +109,6 @@ export class MultiCurveSvgTemplate implements ISvgTemplate {
     return svg``;
   }
 }
+
+
+

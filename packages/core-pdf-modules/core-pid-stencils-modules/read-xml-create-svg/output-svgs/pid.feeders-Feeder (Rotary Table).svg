@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 104.65 100" width="104.65" height="100" data-root-name="pid.feeders" data-shape-name="Feeder (Rotary Table)" data-aspect="variable" data-strokewidth="inherit">
+  <title>Feeder (Rotary Table)</title>
+  <metadata>
+    <mxgraph-shape root-name="pid.feeders" name="Feeder (Rotary Table)" w="104.65" h="100" aspect="variable" strokewidth="inherit">
+      <connections>
+        <constraint name="N" perimeter="0" x="0.5" y="0" />
+      </connections>
+    </mxgraph-shape>
+  </metadata>
+  <g data-layer="background">
+    <path d="M 2.33 0 L 102.33 0 M 52.33 0 L 52.33 100 M 62.33 40 A 50 20 0 1 1 42.33 40 M 36.33 37 L 42.33 40 L 36.33 43" fill="none" stroke="currentColor" stroke-width="inherit" />
+  </g>
+  <g data-layer="foreground">
+  </g>
+</svg>

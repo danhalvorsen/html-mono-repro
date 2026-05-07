@@ -1,15 +1,25 @@
-# FILE: powershell.ps1
+# FILE: code.ps1
 # Run from: Applications/game/game-scroller
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$Root = (Get-Location).Path
+$GameScrollerRoot = (Get-Location).Path
+$GameModulesRoot = Split-Path -Parent $GameScrollerRoot
 
-$rectanglePath = Join-Path $Root "src\GameObjects\RectangleGameObjects.ts"
-$playerPath = Join-Path $Root "src\GameObjects\PlayerGameObject.ts"
-$svgPolygonTemplatePath = Join-Path $Root "src\GameObjects\SvgPolygonTemplate.ts"
-$viewPath = Join-Path $Root "src\views\view-game-player-input.ts"
+$ShapesPackageName = "@monorepo/game-assets-shapes"
+$ShapesModuleRoot = Join-Path $GameModulesRoot "game-assets-shapes"
+$ShapesSrcRoot = Join-Path $ShapesModuleRoot "src"
+
+$GameScrollerPackageJson = Join-Path $GameScrollerRoot "package.json"
+$SourcePolygonFolder = Join-Path $GameScrollerRoot "src\Game\Elements\Polygon"
+
+$ShapeFiles = @(
+    "GamePolygon.ts",
+    "SvgPolygon.ts",
+    "SvgOpenPolygon.ts",
+    "SvgPolygonBuilder.ts"
+)
 
 function Assert-FileExists {
     param(
@@ -22,6 +32,18 @@ function Assert-FileExists {
     }
 }
 
+function Ensure-Directory {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $Path
+    )
+
+    if (-not (Test-Path $Path)) {
+        New-Item -ItemType Directory -Path $Path | Out-Null
+        Write-Host "Created folder: $Path"
+    }
+}
+
 function Write-CodeFile {
     param(
         [Parameter(Mandatory = $true)]
@@ -31,509 +53,457 @@ function Write-CodeFile {
         [string] $Content
     )
 
+    Ensure-Directory -Path (Split-Path -Parent $Path)
     Set-Content -Path $Path -Value $Content -Encoding UTF8
     Write-Host "Written: $Path"
 }
 
-Assert-FileExists -Path $rectanglePath
-Assert-FileExists -Path $playerPath
-Assert-FileExists -Path $svgPolygonTemplatePath
-Assert-FileExists -Path $viewPath
+function Read-TextFile {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $Path
+    )
 
-Write-CodeFile -Path $svgPolygonTemplatePath -Content @'
-import type { Point2 } from "@monorepo/core-math";
-import { html, type TemplateResult } from "lit";
-import { Polygon } from "../Game/Elements/Polygon/GamePolygon.js";
-import { SvgPolygon } from "../Game/Elements/Polygon/SvgPolygon.js";
-import { BaseGameObjectShapeTemplate } from "./BaseGameObjectShapeTemplate.js";
-
-export type SvgPolygonTemplateOptions = {
-  readonly width: number;
-  readonly height: number;
-  readonly points: readonly Point2[];
-  readonly fill: string;
-  readonly stroke: string;
-  readonly strokeWidth: number;
-};
-
-export class SvgPolygonTemplate extends BaseGameObjectShapeTemplate {
-  public constructor(private readonly options: SvgPolygonTemplateOptions) {
-    super();
-  }
-
-  public override render(): TemplateResult {
-    const polygon = new SvgPolygon(new Polygon(this.options.points), {
-      fill: this.options.fill,
-      stroke: this.options.stroke,
-      strokeWidth: this.options.strokeWidth,
-    });
-
-    return html`
-      <svg
-        width=${this.options.width}
-        height=${this.options.height}
-        viewBox=${`${-this.options.width / 2} ${-this.options.height / 2} ${this.options.width} ${this.options.height}`}
-        aria-hidden="true"
-      >
-        ${polygon.svg}
-      </svg>
-    `;
-  }
-}
-'@
-
-Write-CodeFile -Path $rectanglePath -Content @'
-import { Vector2 } from "@monorepo/core-math";
-import { type CSSResultGroup } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { BaseGameObject } from "./BaseGameObject.js";
-import { SvgPolygonTemplate } from "./SvgPolygonTemplate.js";
-
-@customElement("rectangle-game-object")
-export class RectangleGameObject extends BaseGameObject {
-  public static override styles: CSSResultGroup = BaseGameObject.styles;
-
-  @property({ type: Number })
-  public strokeWidth = 2;
-
-  protected override willUpdate(): void {
-    const halfSize = this.size / 2;
-
-    this.shapeTemplate = new SvgPolygonTemplate({
-      width: this.size,
-      height: this.size,
-      points: [
-        new Vector2(-halfSize, -halfSize),
-        new Vector2(halfSize, -halfSize),
-        new Vector2(halfSize, halfSize),
-        new Vector2(-halfSize, halfSize),
-      ],
-      fill: this.fill,
-      stroke: this.stroke,
-      strokeWidth: this.strokeWidth,
-    });
-  }
+    Assert-FileExists -Path $Path
+    return Get-Content -Path $Path -Raw
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    "rectangle-game-object": RectangleGameObject;
-  }
-}
-'@
+function Save-TextFile {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $Path,
 
-Write-CodeFile -Path $playerPath -Content @'
-import { Vector2 } from "@monorepo/core-math";
-import { customElement } from "lit/decorators.js";
-import { RectangleGameObject } from "./RectangleGameObjects.js";
+        [Parameter(Mandatory = $true)]
+        [string] $Content
+    )
 
-@customElement("player-game-object")
-export class PlayerGameObject extends RectangleGameObject {
-  public override getPosistion(): Vector2 {
-    const currentPoint = this.getCurrentPoint();
-
-    return currentPoint
-      ? new Vector2(currentPoint.x, currentPoint.y)
-      : new Vector2(this.positionX, this.positionY);
-  }
+    Set-Content -Path $Path -Value $Content -Encoding UTF8
+    Write-Host "Patched: $Path"
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    "player-game-object": PlayerGameObject;
-  }
-}
-'@
+function Replace-TextInFile {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $Path,
 
-Write-CodeFile -Path $viewPath -Content @'
-import { Vector2 as CollisionVector2, type Point2 } from "@monorepo/core-math";
-import {
-  Polygon as CollisionPolygon,
-  PolygonCollisionSystemRoot,
-  type PolygonCollisionResult,
-} from "@monorepo/core-collision-polygons";
-import { LitElement, css, html, type TemplateResult } from "lit";
-import { customElement } from "lit/decorators.js";
-import { Camera } from "../Game/Camera.js";
-import {
-  CollisionSystemReactiveController,
-  type CollisionObservedGameObject,
-  type CollisionTargetPolygons,
-  type ICollisionReactiveController,
-} from "../Game/Collision/CollisionSystemReactiveController.js";
-import type { ICollisionMovementConstraintTarget } from "../Game/GameObjectSubject.js";
-import "../Game/Screen/Cave/CaveGameObject.js";
-import {
-  PlayerInputController,
-  WasdXPlayerKeyMap,
-} from "../Game/Input/index.js";
-import { TimeSchdulerObserver } from "../Game/TimeSchdulerObserver.js";
-import { PlayerGameObject } from "../GameObjects/PlayerGameObject.js";
+        [Parameter(Mandatory = $true)]
+        [string] $Search,
 
-interface CaveGeneratedCurvesProvider {
-  getGeneratedCurves(): {
-    readonly reference: readonly Point2[];
-    readonly upper: readonly Point2[];
-    readonly lower: readonly Point2[];
-  };
-}
+        [Parameter(Mandatory = $true)]
+        [string] $Replacement
+    )
 
-@customElement("view-game-player-input")
-export class ViewGamePlayerInput extends LitElement {
-  public static override styles = css`
-    :host {
-      display: block;
+    if (-not (Test-Path $Path)) {
+        return
     }
 
-    .panel {
-      border: 1px solid #2a3042;
-      border-radius: 12px;
-      background: #121523;
-      padding: 14px;
+    $content = Get-Content -Path $Path -Raw
+    $nextContent = $content.Replace($Search, $Replacement)
+
+    if ($nextContent -eq $content) {
+        return
     }
 
-    h2 {
-      margin: 0 0 8px 0;
-      font-size: 16px;
-      color: #bdc8f4;
+    Save-TextFile -Path $Path -Content $nextContent
+}
+
+function Replace-RegexInFile {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $Path,
+
+        [Parameter(Mandatory = $true)]
+        [string] $Pattern,
+
+        [Parameter(Mandatory = $true)]
+        [string] $Replacement
+    )
+
+    if (-not (Test-Path $Path)) {
+        return
     }
 
-    p {
-      margin: 0 0 12px 0;
-      color: #9fb0ea;
-      font-size: 13px;
+    $content = Get-Content -Path $Path -Raw
+    $nextContent = [regex]::Replace($content, $Pattern, $Replacement)
+
+    if ($nextContent -eq $content) {
+        return
     }
 
-    cave-game-object {
-      display: block;
-      width: 100%;
+    Save-TextFile -Path $Path -Content $nextContent
+}
+
+function Remove-RegexFromFile {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $Path,
+
+        [Parameter(Mandatory = $true)]
+        [string] $Pattern
+    )
+
+    if (-not (Test-Path $Path)) {
+        return
     }
-  `;
 
-  private readonly scheduler = new TimeSchdulerObserver();
+    $content = Get-Content -Path $Path -Raw
+    $nextContent = [regex]::Replace($content, $Pattern, "")
 
-  private readonly camera = new Camera({
-    viewport: { width: 900, height: 300 },
-    world: { width: 1500, height: 300 },
-  });
+    if ($nextContent -eq $content) {
+        return
+    }
 
-  private readonly playerInputController = new PlayerInputController(
-    this,
-    new WasdXPlayerKeyMap(),
-    undefined,
-    window,
-  );
+    Save-TextFile -Path $Path -Content $nextContent
+}
 
-  private readonly collisionReactiveController: ICollisionReactiveController =
-    new CollisionSystemReactiveController({
-      host: this,
-      collisionSystem: PolygonCollisionSystemRoot.createDefault(),
-      sourcePolygonProvider: (observedGameObject) =>
-        this.createSourcePolygon(observedGameObject),
-      targetPolygonProvider: () => {
-        const cave = this.renderRoot.querySelector("cave-game-object");
+function Move-ShapeFile {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $FileName
+    )
 
-        if (!isCollisionTargetProvider(cave)) {
-          return emptyCollisionTargetPolygons();
+    $sourcePath = Join-Path $SourcePolygonFolder $FileName
+    $targetPath = Join-Path $ShapesSrcRoot $FileName
+
+    if ((Test-Path $sourcePath) -and (Test-Path $targetPath)) {
+        Remove-Item -Path $sourcePath -Force
+        Write-Host "Removed duplicate source after previous partial move: $sourcePath"
+        return
+    }
+
+    if (Test-Path $targetPath) {
+        Write-Host "Already moved: $targetPath"
+        return
+    }
+
+    Assert-FileExists -Path $sourcePath
+    Ensure-Directory -Path $ShapesSrcRoot
+    Move-Item -Path $sourcePath -Destination $targetPath
+    Write-Host "Moved: $sourcePath -> $targetPath"
+}
+
+function Get-PackageVersionOrDefault {
+    param(
+        [Parameter(Mandatory = $true)]
+        [pscustomobject] $PackageJson,
+
+        [Parameter(Mandatory = $true)]
+        [string] $Name,
+
+        [Parameter(Mandatory = $true)]
+        [string] $DefaultValue
+    )
+
+    $dependency = $PackageJson.dependencies.PSObject.Properties |
+        Where-Object { $_.Name -eq $Name } |
+        Select-Object -First 1
+
+    if ($null -ne $dependency) {
+        return [string] $dependency.Value
+    }
+
+    $devDependency = $PackageJson.devDependencies.PSObject.Properties |
+        Where-Object { $_.Name -eq $Name } |
+        Select-Object -First 1
+
+    if ($null -ne $devDependency) {
+        return [string] $devDependency.Value
+    }
+
+    return $DefaultValue
+}
+
+function Ensure-PackageDependency {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $PackageJsonPath,
+
+        [Parameter(Mandatory = $true)]
+        [string] $DependencyName,
+
+        [Parameter(Mandatory = $true)]
+        [string] $Version
+    )
+
+    Assert-FileExists -Path $PackageJsonPath
+
+    $packageJson = Get-Content -Path $PackageJsonPath -Raw | ConvertFrom-Json
+
+    if ($null -eq $packageJson.dependencies) {
+        $packageJson | Add-Member -MemberType NoteProperty -Name "dependencies" -Value ([pscustomobject]@{})
+    }
+
+    $existing = $packageJson.dependencies.PSObject.Properties |
+        Where-Object { $_.Name -eq $DependencyName } |
+        Select-Object -First 1
+
+    if ($null -eq $existing) {
+        $packageJson.dependencies | Add-Member -MemberType NoteProperty -Name $DependencyName -Value $Version
+    }
+    else {
+        $packageJson.dependencies.$DependencyName = $Version
+    }
+
+    $packageJson |
+        ConvertTo-Json -Depth 32 |
+        Set-Content -Path $PackageJsonPath -Encoding UTF8
+
+    Write-Host "Dependency ensured: $DependencyName -> $Version"
+}
+
+function Normalize-NewShapeModuleImports {
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "GamePolygon.ts") `
+        -Search "import { SvgPolygon } from './SvgPolygon';" `
+        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
+
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "GamePolygon.ts") `
+        -Search "import { SvgPolygon } from './SvgPolygon.js';" `
+        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
+
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "SvgPolygon.ts") `
+        -Search "import type { ISvgTemplate, IPolygon, SvgPolygonStyle } from './GamePolygon';" `
+        -Replacement 'import type { ISvgTemplate, IPolygon, SvgPolygonStyle } from "./GamePolygon.js";'
+
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "SvgPolygon.ts") `
+        -Search "import type { ISvgTemplate, IPolygon, SvgPolygonStyle } from './GamePolygon.js';" `
+        -Replacement 'import type { ISvgTemplate, IPolygon, SvgPolygonStyle } from "./GamePolygon.js";'
+
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "SvgOpenPolygon.ts") `
+        -Search "import type { IPolygon, SvgPolygonStyle } from './GamePolygon';" `
+        -Replacement 'import type { IPolygon, SvgPolygonStyle } from "./GamePolygon.js";'
+
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "SvgOpenPolygon.ts") `
+        -Search "import type { IPolygon, SvgPolygonStyle } from './GamePolygon.js';" `
+        -Replacement 'import type { IPolygon, SvgPolygonStyle } from "./GamePolygon.js";'
+
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "SvgOpenPolygon.ts") `
+        -Search "import { SvgPolygon } from './SvgPolygon';" `
+        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
+
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "SvgOpenPolygon.ts") `
+        -Search "import { SvgPolygon } from './SvgPolygon.js';" `
+        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
+
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "SvgPolygonBuilder.ts") `
+        -Search "from './GamePolygon';" `
+        -Replacement 'from "./GamePolygon.js";'
+
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "SvgPolygonBuilder.ts") `
+        -Search "from './GamePolygon.js';" `
+        -Replacement 'from "./GamePolygon.js";'
+
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "SvgPolygonBuilder.ts") `
+        -Search "import { SvgPolygon } from './SvgPolygon';" `
+        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
+
+    Replace-TextInFile `
+        -Path (Join-Path $ShapesSrcRoot "SvgPolygonBuilder.ts") `
+        -Search "import { SvgPolygon } from './SvgPolygon.js';" `
+        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
+}
+
+function Patch-GameScrollerImports {
+    $multiCurvePath = Join-Path $SourcePolygonFolder "MultiCurveSvgTemplate.ts"
+
+    if (Test-Path $multiCurvePath) {
+        Remove-RegexFromFile `
+            -Path $multiCurvePath `
+            -Pattern '(?m)^\s*import\s+\{\s*type\s+ISvgTemplate,\s*Polygon\s*\}\s+from\s+["'']\.\/GamePolygon(?:\.js)?["''];\s*\r?\n?'
+
+        Remove-RegexFromFile `
+            -Path $multiCurvePath `
+            -Pattern '(?m)^\s*import\s+\{\s*SvgOpenPolygon\s*\}\s+from\s+["'']\.\/SvgOpenPolygon(?:\.js)?["''];\s*\r?\n?'
+
+        Remove-RegexFromFile `
+            -Path $multiCurvePath `
+            -Pattern '(?m)^\s*import\s+\{\s*SvgPolygon\s*\}\s+from\s+["'']\.\/SvgPolygon(?:\.js)?["''];\s*\r?\n?'
+
+        $content = Get-Content -Path $multiCurvePath -Raw
+
+        if ($content -notmatch '@monorepo/game-assets-shapes') {
+            $content =
+                'import { type ISvgTemplate, Polygon, SvgOpenPolygon, SvgPolygon } from "@monorepo/game-assets-shapes";' +
+                [Environment]::NewLine +
+                $content.TrimStart()
+
+            Save-TextFile -Path $multiCurvePath -Content $content
         }
-
-        return cave.getCollisionTargetPolygons();
-      },
-      onCollisionResult: (result) => {
-        this.handleCollisionResult(result);
-      },
-    });
-
-  public override connectedCallback(): void {
-    super.connectedCallback();
-    this.camera.setScheduler(this.scheduler);
-    this.scheduler.start();
-  }
-
-  protected override async firstUpdated(): Promise<void> {
-    const player = this.renderRoot.querySelector("player-game-object");
-
-    if (!(player instanceof PlayerGameObject)) {
-      return;
     }
 
-    const cave = this.renderRoot.querySelector("cave-game-object");
-
-    if (isCollisionObservingCave(cave)) {
-      await cave.updateComplete;
+    $builderReExportPath = Join-Path $GameScrollerRoot "src\Game\Builders\SvgPolygonBuilder.ts"
+    if (Test-Path $builderReExportPath) {
+        Write-CodeFile -Path $builderReExportPath -Content @'
+export * from "@monorepo/game-assets-shapes";
+'@
     }
 
-    if (isCaveGeneratedCurvesProvider(cave)) {
-      this.placePlayerInsideCave(player, cave);
+    $gameIndexPath = Join-Path $GameScrollerRoot "src\Game\index.ts"
+    if (Test-Path $gameIndexPath) {
+        Remove-RegexFromFile `
+            -Path $gameIndexPath `
+            -Pattern '(?m)^\s*export\s+\*\s+from\s+["'']\.\/Elements\/Polygon\/GamePolygon\.js["''];\s*\r?\n?'
+
+        $content = Get-Content -Path $gameIndexPath -Raw
+
+        if ($content -notmatch 'export\s+\*\s+from\s+["'']@monorepo/game-assets-shapes["''];') {
+            $content = $content.TrimEnd() + [Environment]::NewLine + 'export * from "@monorepo/game-assets-shapes";' + [Environment]::NewLine
+            Save-TextFile -Path $gameIndexPath -Content $content
+        }
     }
 
-    this.camera.setFollowTarget(player);
+    $svgPolygonTemplatePath = Join-Path $GameScrollerRoot "src\GameObjects\SvgPolygonTemplate.ts"
+    if (Test-Path $svgPolygonTemplatePath) {
+        Remove-RegexFromFile `
+            -Path $svgPolygonTemplatePath `
+            -Pattern '(?m)^\s*import\s+\{\s*Polygon\s*\}\s+from\s+["'']\.\.\/Game\/Elements\/Polygon\/GamePolygon\.js["''];\s*\r?\n?'
 
-    if (isCollisionObservingCave(cave)) {
-      cave.observeGameObject(player);
-    }
-  }
+        Remove-RegexFromFile `
+            -Path $svgPolygonTemplatePath `
+            -Pattern '(?m)^\s*import\s+\{\s*SvgPolygon\s*\}\s+from\s+["'']\.\.\/Game\/Elements\/Polygon\/SvgPolygon\.js["''];\s*\r?\n?'
 
-  public override disconnectedCallback(): void {
-    this.scheduler.stop();
-    this.camera.setFollowTarget(undefined);
-    this.camera.setScheduler(undefined);
-    this.collisionReactiveController.setObservedGameObject(null);
-    super.disconnectedCallback();
-  }
+        $content = Get-Content -Path $svgPolygonTemplatePath -Raw
 
-  protected override render(): TemplateResult {
-    return html`
-      <section class="panel">
-        <h2>Player Keyboard Input</h2>
-        <p>Controls: W(up), A(left), D(right), X(down), Space(fire).</p>
+        if ($content -notmatch '@monorepo/game-assets-shapes') {
+            $content =
+                'import { Polygon, SvgPolygon } from "@monorepo/game-assets-shapes";' +
+                [Environment]::NewLine +
+                $content.TrimStart()
 
-        <cave-game-object
-          .scheduler=${this.scheduler}
-          .camera=${this.camera}
-          .collisionReactiveController=${this.collisionReactiveController}
-          .viewportWidth=${900}
-          .viewportHeight=${300}
-          .showReferenceCurve=${false}
-          .closeUpperLowerToBounds=${true}
-        >
-          <player-game-object
-            slot="overlay-start"
-            .scheduler=${this.scheduler}
-            .controller=${this.playerInputController}
-            .positionX=${100}
-            .positionY=${150}
-            .size=${16}
-            .fill=${"#60a5fa"}
-            .stroke=${"#1d4ed8"}
-          ></player-game-object>
-        </cave-game-object>
-      </section>
-    `;
-  }
-
-  private placePlayerInsideCave(
-    player: PlayerGameObject,
-    cave: CaveGeneratedCurvesProvider,
-  ): void {
-    const curves = cave.getGeneratedCurves();
-
-    const startPoint = resolvePointInsideCorridor({
-      x: 100,
-      fallbackY: 150,
-      size: player.size,
-      reference: curves.reference,
-      upper: curves.upper,
-      lower: curves.lower,
-    });
-
-    player.setPosistion(new CollisionVector2(startPoint.x, startPoint.y));
-    player.acceptCurrentPosition();
-  }
-
-  private handleCollisionResult(result: PolygonCollisionResult): void {
-    this.applyCollisionMovementConstraint(result);
-
-    const cave = this.renderRoot.querySelector("cave-game-object");
-
-    if (isCollisionFeedbackCave(cave)) {
-      cave.handleCollisionResult(result);
-    }
-  }
-
-  private applyCollisionMovementConstraint(result: PolygonCollisionResult): void {
-    const player = this.renderRoot.querySelector("player-game-object");
-
-    if (!isCollisionMovementConstraintTarget(player)) {
-      return;
+            Save-TextFile -Path $svgPolygonTemplatePath -Content $content
+        }
     }
 
-    if (result.hasCollide) {
-      player.rejectCurrentPosition();
-      return;
+    $viewGamePolygonPath = Join-Path $GameScrollerRoot "src\views\view-game-polygon.ts"
+    if (Test-Path $viewGamePolygonPath) {
+        Remove-RegexFromFile `
+            -Path $viewGamePolygonPath `
+            -Pattern '(?m)^\s*import\s+\{\s*Polygon\s*\}\s+from\s+["'']\.\.\/Game\/Elements\/Polygon\/GamePolygon\.js["''];\s*\r?\n?'
+
+        Remove-RegexFromFile `
+            -Path $viewGamePolygonPath `
+            -Pattern '(?m)^\s*import\s+\{\s*SvgPolygon\s*\}\s+from\s+["'']\.\.\/Game\/Elements\/Polygon\/SvgPolygon\.js["''];\s*\r?\n?'
+
+        $content = Get-Content -Path $viewGamePolygonPath -Raw
+
+        if ($content -notmatch '@monorepo/game-assets-shapes') {
+            $content =
+                'import { Polygon, SvgPolygon } from "@monorepo/game-assets-shapes";' +
+                [Environment]::NewLine +
+                $content.TrimStart()
+
+            Save-TextFile -Path $viewGamePolygonPath -Content $content
+        }
     }
 
-    player.acceptCurrentPosition();
-  }
-
-  private createSourcePolygon(
-    observedGameObject: CollisionObservedGameObject,
-  ): CollisionPolygon {
-    const position = observedGameObject.getWorldPosistion();
-    const size = resolveObservedGameObjectSize(observedGameObject);
-    const halfSize = size / 2;
-
-    return CollisionPolygon.closed([
-      new CollisionVector2(position.x - halfSize, position.y - halfSize),
-      new CollisionVector2(position.x + halfSize, position.y - halfSize),
-      new CollisionVector2(position.x + halfSize, position.y + halfSize),
-      new CollisionVector2(position.x - halfSize, position.y + halfSize),
-    ]);
-  }
-}
-
-function resolvePointInsideCorridor(options: {
-  readonly x: number;
-  readonly fallbackY: number;
-  readonly size: number;
-  readonly reference: readonly Point2[];
-  readonly upper: readonly Point2[];
-  readonly lower: readonly Point2[];
-}): Point2 {
-  const upper = findNearestPointByX(options.upper, options.x);
-  const lower = findNearestPointByX(options.lower, options.x);
-  const reference = findNearestPointByX(options.reference, options.x);
-
-  if (upper === null || lower === null) {
-    return {
-      x: options.x,
-      y: reference?.y ?? options.fallbackY,
-    };
-  }
-
-  const halfSize = Math.max(0, options.size / 2);
-  const minY = Math.min(upper.y, lower.y) + halfSize;
-  const maxY = Math.max(upper.y, lower.y) - halfSize;
-  const preferredY = reference?.y ?? (minY + maxY) / 2;
-
-  if (maxY < minY) {
-    return {
-      x: options.x,
-      y: (upper.y + lower.y) / 2,
-    };
-  }
-
-  return {
-    x: options.x,
-    y: clamp(preferredY, minY, maxY),
-  };
-}
-
-function findNearestPointByX(
-  points: readonly Point2[],
-  x: number,
-): Point2 | null {
-  const first = points[0];
-
-  if (first === undefined) {
-    return null;
-  }
-
-  let nearest = first;
-  let nearestDistance = Math.abs(first.x - x);
-
-  for (const point of points) {
-    const distance = Math.abs(point.x - x);
-
-    if (distance >= nearestDistance) {
-      continue;
+    $cavePath = Join-Path $GameScrollerRoot "src\Game\Screen\Cave\CaveGameObject.ts"
+    if (Test-Path $cavePath) {
+        Replace-RegexInFile `
+            -Path $cavePath `
+            -Pattern 'import\s+type\s+\{\s*GamePolygon\s*\}\s+from\s+["'']\.\.\/\.\.\/Elements\/Polygon\/GamePolygon\.js["''];' `
+            -Replacement 'import type { GamePolygon } from "@monorepo/game-assets-shapes";'
     }
+}
 
-    nearest = point;
-    nearestDistance = distance;
+Assert-FileExists -Path $GameScrollerPackageJson
+Ensure-Directory -Path $ShapesSrcRoot
+
+foreach ($file in $ShapeFiles) {
+    Move-ShapeFile -FileName $file
+}
+
+$gameScrollerPackage = Get-Content -Path $GameScrollerPackageJson -Raw | ConvertFrom-Json
+$litVersion = Get-PackageVersionOrDefault -PackageJson $gameScrollerPackage -Name "lit" -DefaultValue "^3.0.0"
+$typescriptVersion = Get-PackageVersionOrDefault -PackageJson $gameScrollerPackage -Name "typescript" -DefaultValue "^5.0.0"
+
+Write-CodeFile -Path (Join-Path $ShapesModuleRoot "package.json") -Content @"
+{
+  "name": "$ShapesPackageName",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@monorepo/core-math": "workspace:*",
+    "lit": "$litVersion"
+  },
+  "devDependencies": {
+    "typescript": "$typescriptVersion"
   }
-
-  return nearest;
 }
+"@
 
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value));
-}
-
-function resolveObservedGameObjectSize(
-  observedGameObject: CollisionObservedGameObject,
-): number {
-  const candidate = (observedGameObject as { readonly size?: unknown }).size;
-
-  if (typeof candidate !== "number") {
-    return 16;
-  }
-
-  if (!Number.isFinite(candidate) || candidate <= 0) {
-    return 16;
-  }
-
-  return candidate;
-}
-
-function emptyCollisionTargetPolygons(): CollisionTargetPolygons {
-  return {
-    upper: null,
-    lower: null,
-  };
-}
-
-function isCollisionObservingCave(
-  value: unknown,
-): value is HTMLElement & {
-  readonly updateComplete: Promise<boolean>;
-  observeGameObject(gameObject: CollisionObservedGameObject | null): void;
-} {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "updateComplete" in value &&
-    "observeGameObject" in value &&
-    typeof value.observeGameObject === "function"
-  );
-}
-
-function isCaveGeneratedCurvesProvider(
-  value: unknown,
-): value is CaveGeneratedCurvesProvider {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "getGeneratedCurves" in value &&
-    typeof value.getGeneratedCurves === "function"
-  );
-}
-
-function isCollisionTargetProvider(
-  value: unknown,
-): value is {
-  getCollisionTargetPolygons(): CollisionTargetPolygons;
-} {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "getCollisionTargetPolygons" in value &&
-    typeof value.getCollisionTargetPolygons === "function"
-  );
-}
-
-function isCollisionMovementConstraintTarget(
-  value: unknown,
-): value is ICollisionMovementConstraintTarget {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "acceptCurrentPosition" in value &&
-    "rejectCurrentPosition" in value &&
-    typeof value.acceptCurrentPosition === "function" &&
-    typeof value.rejectCurrentPosition === "function"
-  );
-}
-
-function isCollisionFeedbackCave(
-  value: unknown,
-): value is {
-  handleCollisionResult(result: PolygonCollisionResult): void;
-  flashCollision(durationMs?: number): void;
-} {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "flashCollision" in value &&
-    typeof value.flashCollision === "function"
-  );
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "view-game-player-input": ViewGamePlayerInput;
-  }
+Write-CodeFile -Path (Join-Path $ShapesModuleRoot "tsconfig.json") -Content @'
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "lib": ["ES2022", "DOM"],
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": ["src/**/*.ts"]
 }
 '@
 
-Write-Host "Fixed player placement and keyboard movement ownership."
+Write-CodeFile -Path (Join-Path $ShapesSrcRoot "index.ts") -Content @'
+export {
+  GamePolygon,
+  Polygon,
+  type IPolygon,
+  type ISvgTemplate,
+  type SvgPolygonStyle,
+} from "./GamePolygon.js";
+
+export { SvgPolygon } from "./SvgPolygon.js";
+export { SvgOpenPolygon } from "./SvgOpenPolygon.js";
+
+export {
+  SvgPolygonBuilder,
+  SvgRectangleBuilder,
+  type IBuilder,
+  type PointMapper,
+  type PolygonBuilderOptions,
+} from "./SvgPolygonBuilder.js";
+'@
+
+Normalize-NewShapeModuleImports
+Patch-GameScrollerImports
+
+Ensure-PackageDependency `
+    -PackageJsonPath $GameScrollerPackageJson `
+    -DependencyName $ShapesPackageName `
+    -Version "workspace:*"
+
+Write-Host "Shape migration completed."
+Write-Host "Run:"
+Write-Host "  pnpm --filter $ShapesPackageName build"
+Write-Host "  pnpm --filter game-scroller build"

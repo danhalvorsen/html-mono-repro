@@ -1,0 +1,16 @@
+{
+  "type": "GenerateTrainingImages",
+  "config": {
+    "sourceDirectory": "../read-xml-create-svg/generated/svgs",
+    "outputDirectory": "../training-image-api/generated/training-images",
+    "outputFormats": ["svg", "png"],
+    "rotation": {
+      "angleStepDegrees": 36,
+      "includeOriginal": true
+    },
+    "noise": {
+      "enabled": false,
+      "strategies": []
+    }
+  }
+}

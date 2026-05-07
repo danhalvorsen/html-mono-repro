@@ -1,7 +1,6 @@
+import { Polygon, SvgPolygon } from "@monorepo/game-assets-shapes";
 import type { Point2 } from "@monorepo/core-math";
 import { html, type TemplateResult } from "lit";
-import { Polygon } from "../Game/Elements/Polygon/GamePolygon.js";
-import { SvgPolygon } from "../Game/Elements/Polygon/SvgPolygon.js";
 import { BaseGameObjectShapeTemplate } from "./BaseGameObjectShapeTemplate.js";
 
 export type SvgPolygonTemplateOptions = {
@@ -37,3 +36,6 @@ export class SvgPolygonTemplate extends BaseGameObjectShapeTemplate {
     `;
   }
 }
+
+
+

@@ -1,0 +1,25 @@
+{
+  "name": "read-xml-create-svg",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "convert": "node dist/src/cli.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "export-svg": "node dist/src/cli.js export-svg ./tests/feeders.xml ./output-svgs",
+    "create-products": "tsx ./src/create-products/create-products.ts --input ./data --output ./generated/svgs",
+    "create-svgs": "tsx ./src/create-svgs/create-svgs.ts --input ./data --output ./generated/svgs",
+    "create-all": "pnpm create-products && pnpm create-svgs"
+  },
+  "dependencies": {
+    "@xmldom/xmldom": "^0.8.10"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4",
+    "tsx": "^4.19.2"
+  }
+}

@@ -17,7 +17,7 @@ import {
   MultiCurveSvgTemplate,
   type ReferenceCurveRenderStyle,
 } from "../../Elements/Polygon/MultiCurveSvgTemplate.js";
-import type { GamePolygon } from "../../Elements/Polygon/GamePolygon.js";
+import type { GamePolygon } from "@monorepo/game-assets-shapes";
 import type { ICamera } from "../../ICamera.js";
 import type {
   ITimeObserver,
@@ -675,4 +675,5 @@ declare global {
     "cave-game-object": CaveGameObject;
   }
 }
+
 

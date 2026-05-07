@@ -16,7 +16,8 @@
     "@monorepo/core-design-patterns": "workspace:*",
     "@monorepo/core-scene-graph": "workspace:*",
     "@monorepo/core-collision-polygons": "workspace:*",
-    "@monorepo/game-motion": "workspace:*"
+    "@monorepo/game-motion": "workspace:*",
+    "@monorepo/game-assets-svg-primitive-shapes": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

@@ -1,0 +1,31 @@
+{
+  "name": "http-posting-man-app",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.json",
+    "post": "tsx ./src/cli.ts",
+    "post:command": "tsx ./src/cli.ts command",
+    "post:query": "tsx ./src/cli.ts query",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@monorepo/core-console-cli": "workspace:*",
+    "@monorepo/core-design-patterns-cqrs-no-json": "workspace:*",
+    "@monorepo/core-http-messages-http-client": "workspace:*",
+    "@monorepo/core-http-messages": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4",
+    "chai": "^5.1.2",
+    "@types/chai": "^5.0.1"
+  }
+}
