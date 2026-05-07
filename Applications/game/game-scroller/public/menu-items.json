@@ -7,12 +7,17 @@
   {
     "id": "game - render a polygon",
     "label": "Game - Render a Polygon",
-    "icon": "🎮"
+    "icon": "🔷"
   },
   {
     "id": "game - player keyboard",
     "label": "Game - Player Keyboard",
     "icon": "⌨️"
+  },
+  {
+    "id": "game - rocket demo",
+    "label": "Game - Rocket Demo",
+    "icon": "🚀"
   },
   {
     "id": "diagnostics",

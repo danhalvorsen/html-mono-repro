@@ -1,3 +1,4 @@
+import "../GameObjects/index.js";
 // FILE: src/Game/index.ts
 
 export * from './GameApplication.js';

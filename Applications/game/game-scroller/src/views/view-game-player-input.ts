@@ -1,26 +1,38 @@
-import { Vector2 as CollisionVector2 } from '@monorepo/core-math';
+import { Vector2 as CollisionVector2, type Point2 } from "@monorepo/core-math";
 import {
   Polygon as CollisionPolygon,
   PolygonCollisionSystemRoot,
   type PolygonCollisionResult,
-} from '@monorepo/core-collision-polygons';
-import { LitElement, css, html, type TemplateResult } from 'lit';
-import { customElement } from 'lit/decorators.js';
-import { Camera } from '../Game/Camera.js';
+} from "@monorepo/core-collision-polygons";
+import { LitElement, css, html, type TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { Camera } from "../Game/Camera.js";
 import {
   CollisionSystemReactiveController,
   type CollisionObservedGameObject,
   type CollisionTargetPolygons,
   type ICollisionReactiveController,
-} from '../Game/Collision/CollisionSystemReactiveController.js';
-import '../Game/Screen/Cave/CaveGameObject.js';
-import { PlayerInputController, WasdXPlayerKeyMap } from '../Game/Input/index.js';
-import { TimeSchdulerObserver } from '../Game/TimeSchdulerObserver.js';
-import { PlayerGameObject } from '../GameObjects/PlayerGameObject.js';
+} from "../Game/Collision/CollisionSystemReactiveController.js";
+import type { ICollisionMovementConstraintTarget } from "../Game/GameObjectSubject.js";
+import "../Game/Screen/Cave/CaveGameObject.js";
+import {
+  PlayerInputController,
+  WasdXPlayerKeyMap,
+} from "../Game/Input/index.js";
+import { TimeSchdulerObserver } from "../Game/TimeSchdulerObserver.js";
+import { PlayerGameObject } from "../GameObjects/PlayerGameObject.js";
 
-@customElement('view-game-player-input')
+interface CaveGeneratedCurvesProvider {
+  getGeneratedCurves(): {
+    readonly reference: readonly Point2[];
+    readonly upper: readonly Point2[];
+    readonly lower: readonly Point2[];
+  };
+}
+
+@customElement("view-game-player-input")
 export class ViewGamePlayerInput extends LitElement {
-  static styles = css`
+  public static override styles = css`
     :host {
       display: block;
     }
@@ -61,17 +73,17 @@ export class ViewGamePlayerInput extends LitElement {
     this,
     new WasdXPlayerKeyMap(),
     undefined,
-    window
+    window,
   );
 
   private readonly collisionReactiveController: ICollisionReactiveController =
     new CollisionSystemReactiveController({
       host: this,
       collisionSystem: PolygonCollisionSystemRoot.createDefault(),
-      sourcePolygonProvider: observedGameObject =>
+      sourcePolygonProvider: (observedGameObject) =>
         this.createSourcePolygon(observedGameObject),
       targetPolygonProvider: () => {
-        const cave = this.renderRoot.querySelector('cave-game-object');
+        const cave = this.renderRoot.querySelector("cave-game-object");
 
         if (!isCollisionTargetProvider(cave)) {
           return emptyCollisionTargetPolygons();
@@ -79,7 +91,7 @@ export class ViewGamePlayerInput extends LitElement {
 
         return cave.getCollisionTargetPolygons();
       },
-      onCollisionResult: result => {
+      onCollisionResult: (result) => {
         this.handleCollisionResult(result);
       },
     });
@@ -91,23 +103,27 @@ export class ViewGamePlayerInput extends LitElement {
   }
 
   protected override async firstUpdated(): Promise<void> {
-    const player = this.renderRoot.querySelector('player-game-object');
+    const player = this.renderRoot.querySelector("player-game-object");
 
     if (!(player instanceof PlayerGameObject)) {
       return;
     }
 
-    this.camera.setFollowTarget(player);
+    const cave = this.renderRoot.querySelector("cave-game-object");
 
-    const cave = this.renderRoot.querySelector('cave-game-object');
-
-    if (!isCollisionObservingCave(cave)) {
-      return;
+    if (isCollisionObservingCave(cave)) {
+      await cave.updateComplete;
     }
 
-    await cave.updateComplete;
+    if (isCaveGeneratedCurvesProvider(cave)) {
+      this.placePlayerInsideCave(player, cave);
+    }
 
-    cave.observeGameObject(player);
+    this.camera.setFollowTarget(player);
+
+    if (isCollisionObservingCave(cave)) {
+      cave.observeGameObject(player);
+    }
   }
 
   public override disconnectedCallback(): void {
@@ -118,7 +134,7 @@ export class ViewGamePlayerInput extends LitElement {
     super.disconnectedCallback();
   }
 
-  protected render(): TemplateResult {
+  protected override render(): TemplateResult {
     return html`
       <section class="panel">
         <h2>Player Keyboard Input</h2>
@@ -140,27 +156,60 @@ export class ViewGamePlayerInput extends LitElement {
             .positionX=${100}
             .positionY=${150}
             .size=${16}
-            fill="#60a5fa"
-            stroke="#1d4ed8"
-            positionX=${10}
-            positionY=${200}
-
+            .fill=${"#60a5fa"}
+            .stroke=${"#1d4ed8"}
           ></player-game-object>
         </cave-game-object>
       </section>
     `;
   }
 
+  private placePlayerInsideCave(
+    player: PlayerGameObject,
+    cave: CaveGeneratedCurvesProvider,
+  ): void {
+    const curves = cave.getGeneratedCurves();
+
+    const startPoint = resolvePointInsideCorridor({
+      x: 100,
+      fallbackY: 150,
+      size: player.size,
+      reference: curves.reference,
+      upper: curves.upper,
+      lower: curves.lower,
+    });
+
+    player.setPosistion(new CollisionVector2(startPoint.x, startPoint.y));
+    player.acceptCurrentPosition();
+  }
+
   private handleCollisionResult(result: PolygonCollisionResult): void {
-    const cave = this.renderRoot.querySelector('cave-game-object');
+    this.applyCollisionMovementConstraint(result);
+
+    const cave = this.renderRoot.querySelector("cave-game-object");
 
     if (isCollisionFeedbackCave(cave)) {
       cave.handleCollisionResult(result);
     }
   }
 
+  private applyCollisionMovementConstraint(result: PolygonCollisionResult): void {
+    const player = this.renderRoot.querySelector("player-game-object");
+
+    if (!isCollisionMovementConstraintTarget(player)) {
+      return;
+    }
+
+    if (result.hasCollide) {
+      player.rejectCurrentPosition();
+      return;
+    }
+
+    player.acceptCurrentPosition();
+  }
+
   private createSourcePolygon(
-    observedGameObject: CollisionObservedGameObject
+    observedGameObject: CollisionObservedGameObject,
   ): CollisionPolygon {
     const position = observedGameObject.getWorldPosistion();
     const size = resolveObservedGameObjectSize(observedGameObject);
@@ -175,12 +224,80 @@ export class ViewGamePlayerInput extends LitElement {
   }
 }
 
+function resolvePointInsideCorridor(options: {
+  readonly x: number;
+  readonly fallbackY: number;
+  readonly size: number;
+  readonly reference: readonly Point2[];
+  readonly upper: readonly Point2[];
+  readonly lower: readonly Point2[];
+}): Point2 {
+  const upper = findNearestPointByX(options.upper, options.x);
+  const lower = findNearestPointByX(options.lower, options.x);
+  const reference = findNearestPointByX(options.reference, options.x);
+
+  if (upper === null || lower === null) {
+    return {
+      x: options.x,
+      y: reference?.y ?? options.fallbackY,
+    };
+  }
+
+  const halfSize = Math.max(0, options.size / 2);
+  const minY = Math.min(upper.y, lower.y) + halfSize;
+  const maxY = Math.max(upper.y, lower.y) - halfSize;
+  const preferredY = reference?.y ?? (minY + maxY) / 2;
+
+  if (maxY < minY) {
+    return {
+      x: options.x,
+      y: (upper.y + lower.y) / 2,
+    };
+  }
+
+  return {
+    x: options.x,
+    y: clamp(preferredY, minY, maxY),
+  };
+}
+
+function findNearestPointByX(
+  points: readonly Point2[],
+  x: number,
+): Point2 | null {
+  const first = points[0];
+
+  if (first === undefined) {
+    return null;
+  }
+
+  let nearest = first;
+  let nearestDistance = Math.abs(first.x - x);
+
+  for (const point of points) {
+    const distance = Math.abs(point.x - x);
+
+    if (distance >= nearestDistance) {
+      continue;
+    }
+
+    nearest = point;
+    nearestDistance = distance;
+  }
+
+  return nearest;
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
 function resolveObservedGameObjectSize(
-  observedGameObject: CollisionObservedGameObject
+  observedGameObject: CollisionObservedGameObject,
 ): number {
   const candidate = (observedGameObject as { readonly size?: unknown }).size;
 
-  if (typeof candidate !== 'number') {
+  if (typeof candidate !== "number") {
     return 16;
   }
 
@@ -199,49 +316,73 @@ function emptyCollisionTargetPolygons(): CollisionTargetPolygons {
 }
 
 function isCollisionObservingCave(
-  value: unknown
+  value: unknown,
 ): value is HTMLElement & {
   readonly updateComplete: Promise<boolean>;
   observeGameObject(gameObject: CollisionObservedGameObject | null): void;
 } {
   return (
-    typeof value === 'object' &&
+    typeof value === "object" &&
     value !== null &&
-    'updateComplete' in value &&
-    'observeGameObject' in value &&
-    typeof value.observeGameObject === 'function'
+    "updateComplete" in value &&
+    "observeGameObject" in value &&
+    typeof value.observeGameObject === "function"
+  );
+}
+
+function isCaveGeneratedCurvesProvider(
+  value: unknown,
+): value is CaveGeneratedCurvesProvider {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "getGeneratedCurves" in value &&
+    typeof value.getGeneratedCurves === "function"
   );
 }
 
 function isCollisionTargetProvider(
-  value: unknown
+  value: unknown,
 ): value is {
   getCollisionTargetPolygons(): CollisionTargetPolygons;
 } {
   return (
-    typeof value === 'object' &&
+    typeof value === "object" &&
     value !== null &&
-    'getCollisionTargetPolygons' in value &&
-    typeof value.getCollisionTargetPolygons === 'function'
+    "getCollisionTargetPolygons" in value &&
+    typeof value.getCollisionTargetPolygons === "function"
+  );
+}
+
+function isCollisionMovementConstraintTarget(
+  value: unknown,
+): value is ICollisionMovementConstraintTarget {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "acceptCurrentPosition" in value &&
+    "rejectCurrentPosition" in value &&
+    typeof value.acceptCurrentPosition === "function" &&
+    typeof value.rejectCurrentPosition === "function"
   );
 }
 
 function isCollisionFeedbackCave(
-  value: unknown
+  value: unknown,
 ): value is {
   handleCollisionResult(result: PolygonCollisionResult): void;
   flashCollision(durationMs?: number): void;
 } {
   return (
-    typeof value === 'object' &&
+    typeof value === "object" &&
     value !== null &&
-    'flashCollision' in value &&
-    typeof value.flashCollision === 'function'
+    "flashCollision" in value &&
+    typeof value.flashCollision === "function"
   );
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'view-game-player-input': ViewGamePlayerInput;
+    "view-game-player-input": ViewGamePlayerInput;
   }
 }

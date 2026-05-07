@@ -1,3 +1,4 @@
+import { Vector2 } from "@monorepo/core-math";
 import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { TimeSchdulerObserver } from './TimeSchdulerObserver';
@@ -6,8 +7,7 @@ import type { GamePolygon } from './Elements/Polygon/GamePolygon';
 import { Matrix, type IMatrix, type Point, type Point2 } from '@monorepo/core-math';
 import { GameObjectAnimationController } from './Animation/GameObjectAnimationController';
 import type { ISceneNode } from '../../../../../packages/core-scene-graph/dist/ISceneNode';
-import type { Vector2 } from '../GameObjects/RectangleGameObjects';
-import type { ICaveGameObjectReference } from './Screen/Cave/ICaveGameObjectReference';
+//import type { ICaveGameObjectReference } from './Screen/Cave/ICaveGameObjectReference';
 import type { PlayerInputController } from './Input';
 import { TypedSubject, type Observer } from '@monorepo/core-design-patterns';
 
@@ -58,8 +58,7 @@ export class GameObjectSubject
   readonly #stateSubject = new TypedSubject<GameObjectSubjectEvents>();
 
   @property({ attribute: false })
-  caveGameObject?: ICaveGameObjectReference;
-
+ 
   @property({ attribute: false })
   scheduler?: TimeSchdulerObserver;
 
@@ -286,7 +285,7 @@ export class GameObjectSubject
   }
 
   public getPosistion(): Vector2 {
-    return { x: this.positionX, y: this.positionY };
+    return new Vector2(this.positionX, this.positionY );
   }
 
   public getWorldPosistion(): Vector2 {
@@ -294,7 +293,7 @@ export class GameObjectSubject
   }
 
   public getRotation(): Vector2 {
-    return { x: this.#currentRotationRadians, y: 0 };
+    return new Vector2(this.#currentRotationRadians, 0 );
   }
 
   public getWorldRotation(): Vector2 {
@@ -302,7 +301,7 @@ export class GameObjectSubject
   }
 
   public getCurrentPoint(): Point2 | null {
-    return { x: this.positionX, y: this.positionY };
+    return new Vector2(this.positionX, this.positionY );
   }
 
   public getCurrentRotationRadians(): number {
@@ -347,13 +346,12 @@ export class GameObjectSubject
     const cos = Math.cos(options.rotationRadians);
     const sin = Math.sin(options.rotationRadians);
 
-    return {
-      x: options.center.x + dx * cos - dy * sin,
-      y: options.center.y + dx * sin + dy * cos
-    };
+    return new Vector2(options.center.x + dx * cos - dy * sin, options.center.y + dx * sin + dy * cos
+    );
   }
 
   protected render(): TemplateResult {
     return html`${this.subject}`;
   }
 }
+

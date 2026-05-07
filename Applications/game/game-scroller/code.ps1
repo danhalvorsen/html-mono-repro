@@ -1,424 +1,539 @@
 # FILE: powershell.ps1
 # Run from: Applications/game/game-scroller
 
-$ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
+$ErrorActionPreference = "Stop"
 
-$root = (Get-Location).Path
+$Root = (Get-Location).Path
 
-function Read-SourceFile {
-    param([Parameter(Mandatory)] [string] $Path)
+$rectanglePath = Join-Path $Root "src\GameObjects\RectangleGameObjects.ts"
+$playerPath = Join-Path $Root "src\GameObjects\PlayerGameObject.ts"
+$svgPolygonTemplatePath = Join-Path $Root "src\GameObjects\SvgPolygonTemplate.ts"
+$viewPath = Join-Path $Root "src\views\view-game-player-input.ts"
+
+function Assert-FileExists {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $Path
+    )
 
     if (-not (Test-Path $Path)) {
-        throw "File not found: $Path"
+        throw "Expected file was not found: $Path"
     }
-
-    return (Get-Content -Raw -Path $Path).Replace("`r`n", "`n")
 }
 
-function Write-SourceFile {
+function Write-CodeFile {
     param(
-        [Parameter(Mandatory)] [string] $Path,
-        [Parameter(Mandatory)] [string] $Text
+        [Parameter(Mandatory = $true)]
+        [string] $Path,
+
+        [Parameter(Mandatory = $true)]
+        [string] $Content
     )
 
-    $windowsText = $Text.Replace("`n", "`r`n")
-    Set-Content -Path $Path -Value $windowsText -Encoding UTF8 -NoNewline
+    Set-Content -Path $Path -Value $Content -Encoding UTF8
+    Write-Host "Written: $Path"
 }
 
-function Replace-Required {
-    param(
-        [Parameter(Mandatory)] [string] $Path,
-        [Parameter(Mandatory)] [string] $Old,
-        [Parameter(Mandatory)] [string] $New
-    )
+Assert-FileExists -Path $rectanglePath
+Assert-FileExists -Path $playerPath
+Assert-FileExists -Path $svgPolygonTemplatePath
+Assert-FileExists -Path $viewPath
 
-    $text = Read-SourceFile -Path $Path
-    $oldNormalized = $Old.Replace("`r`n", "`n")
-    $newNormalized = $New.Replace("`r`n", "`n")
+Write-CodeFile -Path $svgPolygonTemplatePath -Content @'
+import type { Point2 } from "@monorepo/core-math";
+import { html, type TemplateResult } from "lit";
+import { Polygon } from "../Game/Elements/Polygon/GamePolygon.js";
+import { SvgPolygon } from "../Game/Elements/Polygon/SvgPolygon.js";
+import { BaseGameObjectShapeTemplate } from "./BaseGameObjectShapeTemplate.js";
 
-    if (-not $text.Contains($oldNormalized)) {
-        throw "Expected source block was not found in: $Path"
-    }
+export type SvgPolygonTemplateOptions = {
+  readonly width: number;
+  readonly height: number;
+  readonly points: readonly Point2[];
+  readonly fill: string;
+  readonly stroke: string;
+  readonly strokeWidth: number;
+};
 
-    Write-SourceFile -Path $Path -Text $text.Replace($oldNormalized, $newNormalized)
+export class SvgPolygonTemplate extends BaseGameObjectShapeTemplate {
+  public constructor(private readonly options: SvgPolygonTemplateOptions) {
+    super();
+  }
+
+  public override render(): TemplateResult {
+    const polygon = new SvgPolygon(new Polygon(this.options.points), {
+      fill: this.options.fill,
+      stroke: this.options.stroke,
+      strokeWidth: this.options.strokeWidth,
+    });
+
+    return html`
+      <svg
+        width=${this.options.width}
+        height=${this.options.height}
+        viewBox=${`${-this.options.width / 2} ${-this.options.height / 2} ${this.options.width} ${this.options.height}`}
+        aria-hidden="true"
+      >
+        ${polygon.svg}
+      </svg>
+    `;
+  }
+}
+'@
+
+Write-CodeFile -Path $rectanglePath -Content @'
+import { Vector2 } from "@monorepo/core-math";
+import { type CSSResultGroup } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { BaseGameObject } from "./BaseGameObject.js";
+import { SvgPolygonTemplate } from "./SvgPolygonTemplate.js";
+
+@customElement("rectangle-game-object")
+export class RectangleGameObject extends BaseGameObject {
+  public static override styles: CSSResultGroup = BaseGameObject.styles;
+
+  @property({ type: Number })
+  public strokeWidth = 2;
+
+  protected override willUpdate(): void {
+    const halfSize = this.size / 2;
+
+    this.shapeTemplate = new SvgPolygonTemplate({
+      width: this.size,
+      height: this.size,
+      points: [
+        new Vector2(-halfSize, -halfSize),
+        new Vector2(halfSize, -halfSize),
+        new Vector2(halfSize, halfSize),
+        new Vector2(-halfSize, halfSize),
+      ],
+      fill: this.fill,
+      stroke: this.stroke,
+      strokeWidth: this.strokeWidth,
+    });
+  }
 }
 
-$viewPath = Join-Path $root "src\views\view-game-player-input.ts"
-$cavePath = Join-Path $root "src\Game\Screen\Cave\CaveGameObject.ts"
-$gameObjectSubjectPath = Join-Path $root "src\Game\GameObjectSubject.ts"
+declare global {
+  interface HTMLElementTagNameMap {
+    "rectangle-game-object": RectangleGameObject;
+  }
+}
+'@
 
-# ---------------------------------------------------------------------
-# Fix view-game-player-input.ts:
-# - Use canonical collision controller import path.
-# - Type the controller as ICollisionReactiveController.
-# - Delegate collision result handling back into CaveGameObject.
-# ---------------------------------------------------------------------
+Write-CodeFile -Path $playerPath -Content @'
+import { Vector2 } from "@monorepo/core-math";
+import { customElement } from "lit/decorators.js";
+import { RectangleGameObject } from "./RectangleGameObjects.js";
 
-Replace-Required `
-    -Path $viewPath `
-    -Old @'
-import {
-  Polygon as CollisionPolygon,
-  PolygonCollisionSystemRoot,
-} from '@monorepo/core-collision-polygons';
-'@ `
-    -New @'
+@customElement("player-game-object")
+export class PlayerGameObject extends RectangleGameObject {
+  public override getPosistion(): Vector2 {
+    const currentPoint = this.getCurrentPoint();
+
+    return currentPoint
+      ? new Vector2(currentPoint.x, currentPoint.y)
+      : new Vector2(this.positionX, this.positionY);
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "player-game-object": PlayerGameObject;
+  }
+}
+'@
+
+Write-CodeFile -Path $viewPath -Content @'
+import { Vector2 as CollisionVector2, type Point2 } from "@monorepo/core-math";
 import {
   Polygon as CollisionPolygon,
   PolygonCollisionSystemRoot,
   type PolygonCollisionResult,
-} from '@monorepo/core-collision-polygons';
-'@
-
-Replace-Required `
-    -Path $viewPath `
-    -Old @'
-import {
-  CollisionSystemReactiveController,
-  type CollisionObservedGameObject,
-  type CollisionTargetPolygons,
-} from '../Game/Collision/index.js';
-'@ `
-    -New @'
+} from "@monorepo/core-collision-polygons";
+import { LitElement, css, html, type TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+import { Camera } from "../Game/Camera.js";
 import {
   CollisionSystemReactiveController,
   type CollisionObservedGameObject,
   type CollisionTargetPolygons,
   type ICollisionReactiveController,
-} from '../Game/Collision/CollisionSystemReactiveController.js';
-'@
+} from "../Game/Collision/CollisionSystemReactiveController.js";
+import type { ICollisionMovementConstraintTarget } from "../Game/GameObjectSubject.js";
+import "../Game/Screen/Cave/CaveGameObject.js";
+import {
+  PlayerInputController,
+  WasdXPlayerKeyMap,
+} from "../Game/Input/index.js";
+import { TimeSchdulerObserver } from "../Game/TimeSchdulerObserver.js";
+import { PlayerGameObject } from "../GameObjects/PlayerGameObject.js";
 
-Replace-Required `
-    -Path $viewPath `
-    -Old @'
-  private readonly collisionReactiveController =
-    new CollisionSystemReactiveController({
-'@ `
-    -New @'
+interface CaveGeneratedCurvesProvider {
+  getGeneratedCurves(): {
+    readonly reference: readonly Point2[];
+    readonly upper: readonly Point2[];
+    readonly lower: readonly Point2[];
+  };
+}
+
+@customElement("view-game-player-input")
+export class ViewGamePlayerInput extends LitElement {
+  public static override styles = css`
+    :host {
+      display: block;
+    }
+
+    .panel {
+      border: 1px solid #2a3042;
+      border-radius: 12px;
+      background: #121523;
+      padding: 14px;
+    }
+
+    h2 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      color: #bdc8f4;
+    }
+
+    p {
+      margin: 0 0 12px 0;
+      color: #9fb0ea;
+      font-size: 13px;
+    }
+
+    cave-game-object {
+      display: block;
+      width: 100%;
+    }
+  `;
+
+  private readonly scheduler = new TimeSchdulerObserver();
+
+  private readonly camera = new Camera({
+    viewport: { width: 900, height: 300 },
+    world: { width: 1500, height: 300 },
+  });
+
+  private readonly playerInputController = new PlayerInputController(
+    this,
+    new WasdXPlayerKeyMap(),
+    undefined,
+    window,
+  );
+
   private readonly collisionReactiveController: ICollisionReactiveController =
     new CollisionSystemReactiveController({
-'@
+      host: this,
+      collisionSystem: PolygonCollisionSystemRoot.createDefault(),
+      sourcePolygonProvider: (observedGameObject) =>
+        this.createSourcePolygon(observedGameObject),
+      targetPolygonProvider: () => {
+        const cave = this.renderRoot.querySelector("cave-game-object");
 
-Replace-Required `
-    -Path $viewPath `
-    -Old @'
-      onCollisionResult: result => {
-        if (!result.hasCollide) {
-          return;
+        if (!isCollisionTargetProvider(cave)) {
+          return emptyCollisionTargetPolygons();
         }
 
-        const cave = this.renderRoot.querySelector('cave-game-object');
-
-        if (isCollisionFeedbackCave(cave)) {
-          cave.flashCollision(90);
-        }
+        return cave.getCollisionTargetPolygons();
       },
-'@ `
-    -New @'
-      onCollisionResult: result => {
+      onCollisionResult: (result) => {
         this.handleCollisionResult(result);
       },
-'@
+    });
 
-Replace-Required `
-    -Path $viewPath `
-    -Old @'
-  private createSourcePolygon(
-    observedGameObject: CollisionObservedGameObject
-  ): CollisionPolygon {
-'@ `
-    -New @'
+  public override connectedCallback(): void {
+    super.connectedCallback();
+    this.camera.setScheduler(this.scheduler);
+    this.scheduler.start();
+  }
+
+  protected override async firstUpdated(): Promise<void> {
+    const player = this.renderRoot.querySelector("player-game-object");
+
+    if (!(player instanceof PlayerGameObject)) {
+      return;
+    }
+
+    const cave = this.renderRoot.querySelector("cave-game-object");
+
+    if (isCollisionObservingCave(cave)) {
+      await cave.updateComplete;
+    }
+
+    if (isCaveGeneratedCurvesProvider(cave)) {
+      this.placePlayerInsideCave(player, cave);
+    }
+
+    this.camera.setFollowTarget(player);
+
+    if (isCollisionObservingCave(cave)) {
+      cave.observeGameObject(player);
+    }
+  }
+
+  public override disconnectedCallback(): void {
+    this.scheduler.stop();
+    this.camera.setFollowTarget(undefined);
+    this.camera.setScheduler(undefined);
+    this.collisionReactiveController.setObservedGameObject(null);
+    super.disconnectedCallback();
+  }
+
+  protected override render(): TemplateResult {
+    return html`
+      <section class="panel">
+        <h2>Player Keyboard Input</h2>
+        <p>Controls: W(up), A(left), D(right), X(down), Space(fire).</p>
+
+        <cave-game-object
+          .scheduler=${this.scheduler}
+          .camera=${this.camera}
+          .collisionReactiveController=${this.collisionReactiveController}
+          .viewportWidth=${900}
+          .viewportHeight=${300}
+          .showReferenceCurve=${false}
+          .closeUpperLowerToBounds=${true}
+        >
+          <player-game-object
+            slot="overlay-start"
+            .scheduler=${this.scheduler}
+            .controller=${this.playerInputController}
+            .positionX=${100}
+            .positionY=${150}
+            .size=${16}
+            .fill=${"#60a5fa"}
+            .stroke=${"#1d4ed8"}
+          ></player-game-object>
+        </cave-game-object>
+      </section>
+    `;
+  }
+
+  private placePlayerInsideCave(
+    player: PlayerGameObject,
+    cave: CaveGeneratedCurvesProvider,
+  ): void {
+    const curves = cave.getGeneratedCurves();
+
+    const startPoint = resolvePointInsideCorridor({
+      x: 100,
+      fallbackY: 150,
+      size: player.size,
+      reference: curves.reference,
+      upper: curves.upper,
+      lower: curves.lower,
+    });
+
+    player.setPosistion(new CollisionVector2(startPoint.x, startPoint.y));
+    player.acceptCurrentPosition();
+  }
+
   private handleCollisionResult(result: PolygonCollisionResult): void {
-    const cave = this.renderRoot.querySelector('cave-game-object');
+    this.applyCollisionMovementConstraint(result);
+
+    const cave = this.renderRoot.querySelector("cave-game-object");
 
     if (isCollisionFeedbackCave(cave)) {
       cave.handleCollisionResult(result);
     }
   }
 
-  private createSourcePolygon(
-    observedGameObject: CollisionObservedGameObject
-  ): CollisionPolygon {
-'@
+  private applyCollisionMovementConstraint(result: PolygonCollisionResult): void {
+    const player = this.renderRoot.querySelector("player-game-object");
 
-Replace-Required `
-    -Path $viewPath `
-    -Old @'
-function isCollisionFeedbackCave(
-  value: unknown
-): value is {
-  flashCollision(durationMs?: number): void;
+    if (!isCollisionMovementConstraintTarget(player)) {
+      return;
+    }
+
+    if (result.hasCollide) {
+      player.rejectCurrentPosition();
+      return;
+    }
+
+    player.acceptCurrentPosition();
+  }
+
+  private createSourcePolygon(
+    observedGameObject: CollisionObservedGameObject,
+  ): CollisionPolygon {
+    const position = observedGameObject.getWorldPosistion();
+    const size = resolveObservedGameObjectSize(observedGameObject);
+    const halfSize = size / 2;
+
+    return CollisionPolygon.closed([
+      new CollisionVector2(position.x - halfSize, position.y - halfSize),
+      new CollisionVector2(position.x + halfSize, position.y - halfSize),
+      new CollisionVector2(position.x + halfSize, position.y + halfSize),
+      new CollisionVector2(position.x - halfSize, position.y + halfSize),
+    ]);
+  }
+}
+
+function resolvePointInsideCorridor(options: {
+  readonly x: number;
+  readonly fallbackY: number;
+  readonly size: number;
+  readonly reference: readonly Point2[];
+  readonly upper: readonly Point2[];
+  readonly lower: readonly Point2[];
+}): Point2 {
+  const upper = findNearestPointByX(options.upper, options.x);
+  const lower = findNearestPointByX(options.lower, options.x);
+  const reference = findNearestPointByX(options.reference, options.x);
+
+  if (upper === null || lower === null) {
+    return {
+      x: options.x,
+      y: reference?.y ?? options.fallbackY,
+    };
+  }
+
+  const halfSize = Math.max(0, options.size / 2);
+  const minY = Math.min(upper.y, lower.y) + halfSize;
+  const maxY = Math.max(upper.y, lower.y) - halfSize;
+  const preferredY = reference?.y ?? (minY + maxY) / 2;
+
+  if (maxY < minY) {
+    return {
+      x: options.x,
+      y: (upper.y + lower.y) / 2,
+    };
+  }
+
+  return {
+    x: options.x,
+    y: clamp(preferredY, minY, maxY),
+  };
+}
+
+function findNearestPointByX(
+  points: readonly Point2[],
+  x: number,
+): Point2 | null {
+  const first = points[0];
+
+  if (first === undefined) {
+    return null;
+  }
+
+  let nearest = first;
+  let nearestDistance = Math.abs(first.x - x);
+
+  for (const point of points) {
+    const distance = Math.abs(point.x - x);
+
+    if (distance >= nearestDistance) {
+      continue;
+    }
+
+    nearest = point;
+    nearestDistance = distance;
+  }
+
+  return nearest;
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
+function resolveObservedGameObjectSize(
+  observedGameObject: CollisionObservedGameObject,
+): number {
+  const candidate = (observedGameObject as { readonly size?: unknown }).size;
+
+  if (typeof candidate !== "number") {
+    return 16;
+  }
+
+  if (!Number.isFinite(candidate) || candidate <= 0) {
+    return 16;
+  }
+
+  return candidate;
+}
+
+function emptyCollisionTargetPolygons(): CollisionTargetPolygons {
+  return {
+    upper: null,
+    lower: null,
+  };
+}
+
+function isCollisionObservingCave(
+  value: unknown,
+): value is HTMLElement & {
+  readonly updateComplete: Promise<boolean>;
+  observeGameObject(gameObject: CollisionObservedGameObject | null): void;
 } {
-'@ `
-    -New @'
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "updateComplete" in value &&
+    "observeGameObject" in value &&
+    typeof value.observeGameObject === "function"
+  );
+}
+
+function isCaveGeneratedCurvesProvider(
+  value: unknown,
+): value is CaveGeneratedCurvesProvider {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "getGeneratedCurves" in value &&
+    typeof value.getGeneratedCurves === "function"
+  );
+}
+
+function isCollisionTargetProvider(
+  value: unknown,
+): value is {
+  getCollisionTargetPolygons(): CollisionTargetPolygons;
+} {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "getCollisionTargetPolygons" in value &&
+    typeof value.getCollisionTargetPolygons === "function"
+  );
+}
+
+function isCollisionMovementConstraintTarget(
+  value: unknown,
+): value is ICollisionMovementConstraintTarget {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "acceptCurrentPosition" in value &&
+    "rejectCurrentPosition" in value &&
+    typeof value.acceptCurrentPosition === "function" &&
+    typeof value.rejectCurrentPosition === "function"
+  );
+}
+
 function isCollisionFeedbackCave(
-  value: unknown
+  value: unknown,
 ): value is {
   handleCollisionResult(result: PolygonCollisionResult): void;
   flashCollision(durationMs?: number): void;
 } {
-'@
-
-# ---------------------------------------------------------------------
-# Fix CaveGameObject.ts:
-# - Keep player-game-object as a slot child.
-# - Use collision result propagation to accept/reject the player movement.
-# ---------------------------------------------------------------------
-
-Replace-Required `
-    -Path $cavePath `
-    -Old @'
-type CaveGameObjectReferenceTarget = HTMLElement & {
-  caveGameObject?: CaveGameObject;
-};
-
-@customElement('cave-game-object')
-'@ `
-    -New @'
-type CaveGameObjectReferenceTarget = HTMLElement & {
-  caveGameObject?: CaveGameObject;
-};
-
-type CollisionMovementConstraintTarget = {
-  acceptCurrentPosition(): void;
-  rejectCurrentPosition(): void;
-};
-
-@customElement('cave-game-object')
-'@
-
-Replace-Required `
-    -Path $cavePath `
-    -Old @'
-  public handleCollisionResult(result: PolygonCollisionResult): void {
-    if (result.hasCollide) {
-      this.flashCollision(90);
-    }
-  }
-'@ `
-    -New @'
-  public handleCollisionResult(result: PolygonCollisionResult): void {
-    this.#propagateCollisionResultToObservedGameObject(result);
-
-    if (result.hasCollide) {
-      this.flashCollision(90);
-    }
-  }
-
-  #propagateCollisionResultToObservedGameObject(
-    result: PolygonCollisionResult
-  ): void {
-    const observedGameObject =
-      this.collisionReactiveController?.observedGameObject ?? null;
-
-    if (!isCollisionMovementConstraintTarget(observedGameObject)) {
-      return;
-    }
-
-    if (result.hasCollide) {
-      observedGameObject.rejectCurrentPosition();
-      return;
-    }
-
-    observedGameObject.acceptCurrentPosition();
-  }
-'@
-
-Replace-Required `
-    -Path $cavePath `
-    -Old @'
-declare global {
-  interface HTMLElementTagNameMap {
-    'cave-game-object': CaveGameObject;
-  }
-}
-'@ `
-    -New @'
-function isCollisionMovementConstraintTarget(
-  value: unknown
-): value is CollisionMovementConstraintTarget {
   return (
-    typeof value === 'object' &&
+    typeof value === "object" &&
     value !== null &&
-    'acceptCurrentPosition' in value &&
-    'rejectCurrentPosition' in value &&
-    typeof value.acceptCurrentPosition === 'function' &&
-    typeof value.rejectCurrentPosition === 'function'
+    "flashCollision" in value &&
+    typeof value.flashCollision === "function"
   );
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'cave-game-object': CaveGameObject;
+    "view-game-player-input": ViewGamePlayerInput;
   }
 }
 '@
 
-# ---------------------------------------------------------------------
-# Fix GameObjectSubject.ts:
-# - Add movement acceptance/rejection contract.
-# - Store last accepted motion state.
-# - Roll back when CaveGameObject rejects a colliding movement.
-# ---------------------------------------------------------------------
-
-Replace-Required `
-    -Path $gameObjectSubjectPath `
-    -Old @'
-export interface IGameObjectObservableSubject {
-  subscribeState<K extends keyof GameObjectSubjectEvents>(
-    eventName: K,
-    observer: Observer<GameObjectSubjectEvents, K>
-  ): () => void;
-  unsubscribeState<K extends keyof GameObjectSubjectEvents>(
-    eventName: K,
-    observer: Observer<GameObjectSubjectEvents, K>
-  ): boolean;
-}
-
-@customElement('game-object-subject')
-'@ `
-    -New @'
-export interface IGameObjectObservableSubject {
-  subscribeState<K extends keyof GameObjectSubjectEvents>(
-    eventName: K,
-    observer: Observer<GameObjectSubjectEvents, K>
-  ): () => void;
-  unsubscribeState<K extends keyof GameObjectSubjectEvents>(
-    eventName: K,
-    observer: Observer<GameObjectSubjectEvents, K>
-  ): boolean;
-}
-
-export interface ICollisionMovementConstraintTarget {
-  acceptCurrentPosition(): void;
-  rejectCurrentPosition(): void;
-}
-
-type GameObjectMotionState = {
-  readonly position: Point2;
-  readonly rotationRadians: number;
-};
-
-@customElement('game-object-subject')
-'@
-
-Replace-Required `
-    -Path $gameObjectSubjectPath `
-    -Old @'
-  implements IGameObjectSubject, IGameObjectObservableSubject, ISceneNode
-'@ `
-    -New @'
-  implements IGameObjectSubject, IGameObjectObservableSubject, ICollisionMovementConstraintTarget, ISceneNode
-'@
-
-Replace-Required `
-    -Path $gameObjectSubjectPath `
-    -Old @'
-  #currentRotationRadians = 0;
-  #lastTimeMs: number | null = null;
-'@ `
-    -New @'
-  #currentRotationRadians = 0;
-  #lastAcceptedMotionState: GameObjectMotionState = {
-    position: { x: this.positionX, y: this.positionY },
-    rotationRadians: 0
-  };
-  #lastTimeMs: number | null = null;
-'@
-
-Replace-Required `
-    -Path $gameObjectSubjectPath `
-    -Old @'
-  public setPosistion(position: Vector2): void {
-    this.positionX = position.x;
-    this.positionY = position.y;
-    this.#applyTransformAndGeometry(
-      { x: this.positionX, y: this.positionY },
-      this.#currentRotationRadians
-    );
-    this.#stateSubject.notify('positionChanged', this.getPosistion());
-    this.#stateSubject.notify('rotationChanged', this.getRotation());
-    this.requestUpdate();
-  }
-  
-  setScheduler(timeSchedulerObserver: TimeSchdulerObserver): void {
-'@ `
-    -New @'
-  public setPosistion(position: Vector2): void {
-    this.positionX = position.x;
-    this.positionY = position.y;
-    this.#applyTransformAndGeometry(
-      { x: this.positionX, y: this.positionY },
-      this.#currentRotationRadians
-    );
-    this.#stateSubject.notify('positionChanged', this.getPosistion());
-    this.#stateSubject.notify('rotationChanged', this.getRotation());
-    this.requestUpdate();
-  }
-
-  public acceptCurrentPosition(): void {
-    this.#lastAcceptedMotionState = {
-      position: this.getPosistion(),
-      rotationRadians: this.#currentRotationRadians
-    };
-  }
-
-  public rejectCurrentPosition(): void {
-    const accepted = this.#lastAcceptedMotionState;
-    const current = this.getPosistion();
-
-    if (
-      current.x === accepted.position.x &&
-      current.y === accepted.position.y &&
-      this.#currentRotationRadians === accepted.rotationRadians
-    ) {
-      return;
-    }
-
-    this.positionX = accepted.position.x;
-    this.positionY = accepted.position.y;
-    this.#currentRotationRadians = accepted.rotationRadians;
-
-    this.#applyTransformAndGeometry(
-      accepted.position,
-      accepted.rotationRadians
-    );
-
-    this.#stateSubject.notify('positionChanged', this.getPosistion());
-    this.#stateSubject.notify('rotationChanged', this.getRotation());
-    this.requestUpdate();
-  }
-  
-  setScheduler(timeSchedulerObserver: TimeSchdulerObserver): void {
-'@
-
-Replace-Required `
-    -Path $gameObjectSubjectPath `
-    -Old @'
-    if (previousTime === null) return;
-'@ `
-    -New @'
-    if (previousTime === null) {
-      this.acceptCurrentPosition();
-      return;
-    }
-'@
-
-Replace-Required `
-    -Path $gameObjectSubjectPath `
-    -Old @'
-    const nextPoint: Point2 = { x: nextX, y: nextY };
-
-    this.positionX = nextPoint.x;
-'@ `
-    -New @'
-    const nextPoint: Point2 = { x: nextX, y: nextY };
-
-    this.acceptCurrentPosition();
-
-    this.positionX = nextPoint.x;
-'@
-
-Write-Host "Patched player input collision propagation."
-Write-Host "Now run: pnpm build"
+Write-Host "Fixed player placement and keyboard movement ownership."
