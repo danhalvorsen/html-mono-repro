@@ -652,28 +652,41 @@ importers:
         specifier: ^7.1.7
         version: 7.3.2(@types/node@25.6.0)(lightningcss@1.32.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
-  Applications/game/game-assets-svg-primitive-shapes:
+  Applications/game/cave-temp/game-assets-shapes:
     dependencies:
       '@monorepo/core-math':
         specifier: workspace:*
-        version: link:../../../packages/core-math
+        version: link:../../../../packages/core-math
       lit:
-        specifier: ^3.3.2
+        specifier: ^3.3.1
         version: 3.3.2
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  Applications/game/cave-temp/game-assets-svg-primitive-shapes:
+    dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../../packages/core-math
     devDependencies:
       typescript:
         specifier: ~6.0.2
         version: 6.0.3
 
-  Applications/game/game-feature-background:
+  Applications/game/cave-temp/game-feature-cave:
     dependencies:
       '@monorepo/core-math':
         specifier: workspace:*
-        version: link:../../../packages/core-math
+        version: link:../../../../packages/core-math
+      '@monorepo/game-assets-svg-primitive-shapes':
+        specifier: workspace:*
+        version: link:../game-assets-svg-primitive-shapes
+      lit:
+        specifier: ^3.0.0
+        version: 3.3.2
     devDependencies:
-      chai:
-        specifier: ^6.2.2
-        version: 6.2.2
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -681,15 +694,25 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  Applications/game/game-feature-cave:
+  Applications/game/cave-temp/game-feature-cave-collision-detection:
+    dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../../packages/core-math
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  Applications/game/game-feature-background:
     dependencies:
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../packages/core-math
     devDependencies:
-      chai:
-        specifier: ^6.2.2
-        version: 6.2.2
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -703,9 +726,6 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/core-math
     devDependencies:
-      chai:
-        specifier: ^6.2.2
-        version: 6.2.2
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -826,9 +846,12 @@ importers:
       '@monorepo/core-scene-graph':
         specifier: workspace:*
         version: link:../../../packages/core-scene-graph
-      '@monorepo/game-assets-svg-primitive-shapes':
+      '@monorepo/game-assets-shapes':
+        specifier: file:../cave-temp/game-assets-shapes
+        version: file:Applications/game/cave-temp/game-assets-shapes
+      '@monorepo/game-feature-cave':
         specifier: workspace:*
-        version: link:../game-assets-svg-primitive-shapes
+        version: link:../cave-temp/game-feature-cave
       '@monorepo/game-motion':
         specifier: workspace:*
         version: link:../game-motion
@@ -6052,6 +6075,9 @@ packages:
     peerDependencies:
       '@types/react': '>=16'
       react: '>=16'
+
+  '@monorepo/game-assets-shapes@file:Applications/game/cave-temp/game-assets-shapes':
+    resolution: {directory: Applications/game/cave-temp/game-assets-shapes, type: directory}
 
   '@napi-rs/canvas-android-arm64@0.1.97':
     resolution: {integrity: sha512-V1c/WVw+NzH8vk7ZK/O8/nyBSCQimU8sfMsB/9qeSvdkGKNU7+mxy/bIF0gTgeBFmHpj30S4E9WHMSrxXGQuVQ==}
@@ -11546,6 +11572,11 @@ snapshots:
       '@types/mdx': 2.0.13
       '@types/react': 19.2.14
       react: 19.2.5
+
+  '@monorepo/game-assets-shapes@file:Applications/game/cave-temp/game-assets-shapes':
+    dependencies:
+      '@monorepo/core-math': link:packages/core-math
+      lit: 3.3.2
 
   '@napi-rs/canvas-android-arm64@0.1.97':
     optional: true

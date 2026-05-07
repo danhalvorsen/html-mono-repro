@@ -8,4 +8,5 @@ export * from './GameObjectSubject.js';
 export * from './GameScreen.js';
 export * from './TimeSchdulerObserver.js';
 export * from "@monorepo/game-assets-shapes";
+import './Elements/Polygon/GamePolygon.js';
 

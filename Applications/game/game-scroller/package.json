@@ -1,5 +1,5 @@
 {
-  "name": "game-scroller",
+  "name": "@monorepo/game-scroller",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -17,7 +17,8 @@
     "@monorepo/core-scene-graph": "workspace:*",
     "@monorepo/core-collision-polygons": "workspace:*",
     "@monorepo/game-motion": "workspace:*",
-    "@monorepo/game-assets-svg-primitive-shapes": "workspace:*"
+    "@monorepo/game-assets-shapes": "file:../cave-temp/game-assets-shapes",
+    "@monorepo/game-feature-cave": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

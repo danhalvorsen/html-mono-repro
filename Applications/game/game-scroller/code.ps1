@@ -1,509 +1,604 @@
 # FILE: code.ps1
-# Run from: Applications/game/game-scroller
-
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-
-$GameScrollerRoot = (Get-Location).Path
-$GameModulesRoot = Split-Path -Parent $GameScrollerRoot
-
-$ShapesPackageName = "@monorepo/game-assets-shapes"
-$ShapesModuleRoot = Join-Path $GameModulesRoot "game-assets-shapes"
-$ShapesSrcRoot = Join-Path $ShapesModuleRoot "src"
-
-$GameScrollerPackageJson = Join-Path $GameScrollerRoot "package.json"
-$SourcePolygonFolder = Join-Path $GameScrollerRoot "src\Game\Elements\Polygon"
-
-$ShapeFiles = @(
-    "GamePolygon.ts",
-    "SvgPolygon.ts",
-    "SvgOpenPolygon.ts",
-    "SvgPolygonBuilder.ts"
+param(
+    [string] $GameScrollerRoot = "C:\Users\danha\source\repos\HTML\MonoRepro\Applications\game\game-scroller"
 )
 
-function Assert-FileExists {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string] $Path
-    )
-
-    if (-not (Test-Path $Path)) {
-        throw "Expected file was not found: $Path"
-    }
-}
+$ErrorActionPreference = "Stop"
 
 function Ensure-Directory {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string] $Path
-    )
+    param([Parameter(Mandatory = $true)][string] $Path)
 
-    if (-not (Test-Path $Path)) {
+    if (-not (Test-Path -LiteralPath $Path -PathType Container)) {
         New-Item -ItemType Directory -Path $Path | Out-Null
-        Write-Host "Created folder: $Path"
     }
 }
 
-function Write-CodeFile {
+function Write-Utf8File {
     param(
-        [Parameter(Mandatory = $true)]
-        [string] $Path,
-
-        [Parameter(Mandatory = $true)]
-        [string] $Content
+        [Parameter(Mandatory = $true)][string] $Path,
+        [Parameter(Mandatory = $true)][string] $Content
     )
 
-    Ensure-Directory -Path (Split-Path -Parent $Path)
-    Set-Content -Path $Path -Value $Content -Encoding UTF8
-    Write-Host "Written: $Path"
+    $directory = Split-Path -Parent $Path
+    Ensure-Directory -Path $directory
+
+    Set-Content -LiteralPath $Path -Value $Content -Encoding utf8
+    Write-Host "Wrote: $Path"
 }
 
-function Read-TextFile {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string] $Path
-    )
-
-    Assert-FileExists -Path $Path
-    return Get-Content -Path $Path -Raw
+if (-not (Test-Path -LiteralPath $GameScrollerRoot -PathType Container)) {
+    throw "GameScrollerRoot does not exist: $GameScrollerRoot"
 }
 
-function Save-TextFile {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string] $Path,
+$path = Join-Path $GameScrollerRoot "src\GameObjects\CaveGameObject.ts"
 
-        [Parameter(Mandatory = $true)]
-        [string] $Content
-    )
+Write-Utf8File `
+    -Path $path `
+    -Content @'
+import { Vector2 } from '@monorepo/core-math';
+import {
+  Cave,
+  CoefficientReferenceCurveGenerator,
+  ProgressiveTriangleStrip,
+  defaultReferenceCurveDefinition,
+  type CaveScene,
+  type ProgressiveTriangleStripOptions,
+  type ProgressiveTriangleStripResult,
+  type ReferenceCurveDefinition,
+} from '@monorepo/game-feature-cave';
+import { css, html, type CSSResultGroup, type TemplateResult } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
+import { BaseGameObject } from './BaseGameObject.js';
+import type { BaseGameObjectOptions } from './BaseGameObjectOptions.js';
+import { CaveBaseGameObjectShapeTemplate } from './CaveBaseGameObjectShapeTemplate.js';
+import './TriangleStripGameObject.js';
 
-    Set-Content -Path $Path -Value $Content -Encoding UTF8
-    Write-Host "Patched: $Path"
-}
+const DEFAULT_WORLD_WIDTH = 500;
+const MIN_WORLD_WIDTH = 320;
+const WORLD_HEIGHT = 300;
 
-function Replace-TextInFile {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string] $Path,
+@customElement('cave-base-game-object')
+export class CaveGameObject extends BaseGameObject {
+  public static override styles: CSSResultGroup = [
+    BaseGameObject.styles ?? [],
+    css`
+      :host {
+        display: block;
+        position: relative;
+        width: 100%;
+        min-width: ${MIN_WORLD_WIDTH}px;
+        height: ${WORLD_HEIGHT}px;
+        border: 1px solid #2a3042;
+        border-radius: 12px;
+        background: #0f1118;
+        overflow: hidden;
+        pointer-events: auto;
+      }
 
-        [Parameter(Mandatory = $true)]
-        [string] $Search,
+      .controls {
+        pointer-events: auto;
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 1000;
+        width: min(230px, calc(100% - 16px));
+        display: grid;
+        gap: 6px;
+        padding: 8px;
+        border: 1px solid #26314f;
+        border-radius: 10px;
+        background: rgba(13, 18, 32, 0.92);
+        color: #e5e7eb;
+        font: 12px/1.2 system-ui, sans-serif;
+      }
 
-        [Parameter(Mandatory = $true)]
-        [string] $Replacement
-    )
+      .control {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 6px;
+        align-items: center;
+      }
 
-    if (-not (Test-Path $Path)) {
-        return
+      .control label {
+        color: #cbd5e1;
+      }
+
+      .control output {
+        color: #93c5fd;
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      }
+
+      .control input {
+        grid-column: 1 / -1;
+        width: 100%;
+        pointer-events: auto;
+      }
+
+      .buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      button {
+        pointer-events: auto;
+        border: 1px solid #3b82f6;
+        background: #14213d;
+        color: #e5e7eb;
+        padding: 5px 8px;
+        border-radius: 7px;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #1d2f57;
+      }
+
+      .stats {
+        color: #94a3b8;
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      }
+    `,
+  ];
+
+  @property({ type: Boolean })
+  public showTriangleStrip = true;
+
+  @property({ type: Boolean })
+  public showCollisionPolygon = true;
+
+  @property({ type: Number })
+  public referenceAmplitude = 42;
+
+  @property({ type: Number })
+  public referencePeriodsAcrossFrame = 2;
+
+  @property({ type: Number })
+  public referencePhase = 0;
+
+  @property({ type: Number })
+  public verticalSlope = 0;
+
+  @property({ type: Number })
+  public referenceSamplesPerFrame = 180;
+
+  @property({ type: Number })
+  public caveHalfHeight = 64;
+
+  @property({ type: Number })
+  public maximumVerticalDeviation = 10;
+
+  @property({ type: Number })
+  public maximumDerivativeDelta = 0.07;
+
+  @property({ type: Number })
+  public maximumPointStride = 48;
+
+  @property({ type: Number })
+  public minimumPointStride = 1;
+
+  @state()
+  private worldWidth = DEFAULT_WORLD_WIDTH;
+
+  #scene!: CaveScene;
+  #triangleStrip!: ProgressiveTriangleStripResult;
+  #resizeObserver: ResizeObserver | null = null;
+
+  public constructor() {
+    super();
+
+    this.positionX = DEFAULT_WORLD_WIDTH / 2;
+    this.positionY = WORLD_HEIGHT / 2;
+    this.options = this.createBaseGameObjectOptions();
+
+    this.rebuildCave();
+  }
+
+  public override connectedCallback(): void {
+    super.connectedCallback();
+
+    this.#resizeObserver = new ResizeObserver(() => {
+      this.updateResponsiveWidth();
+    });
+
+    this.#resizeObserver.observe(this);
+
+    queueMicrotask(() => this.updateResponsiveWidth());
+  }
+
+  public override disconnectedCallback(): void {
+    this.#resizeObserver?.disconnect();
+    this.#resizeObserver = null;
+
+    super.disconnectedCallback();
+  }
+
+  protected override render(): TemplateResult {
+    return html`
+      <section class="controls" @click=${this.stopEvent}>
+        ${this.renderRange({
+          label: 'amplitude',
+          value: this.referenceAmplitude,
+          min: -90,
+          max: 90,
+          step: 1,
+          onInput: this.onReferenceAmplitudeInput,
+        })}
+
+        ${this.renderRange({
+          label: 'periods',
+          value: this.referencePeriodsAcrossFrame,
+          min: 0.25,
+          max: 8,
+          step: 0.25,
+          onInput: this.onReferencePeriodsInput,
+        })}
+
+        ${this.renderRange({
+          label: 'phase',
+          value: this.referencePhase,
+          min: -3.14,
+          max: 3.14,
+          step: 0.01,
+          onInput: this.onReferencePhaseInput,
+        })}
+
+        ${this.renderRange({
+          label: 'vertical slope',
+          value: this.verticalSlope,
+          min: -180,
+          max: 180,
+          step: 1,
+          onInput: this.onVerticalSlopeInput,
+        })}
+
+        ${this.renderRange({
+          label: 'samples',
+          value: this.referenceSamplesPerFrame,
+          min: 20,
+          max: 400,
+          step: 10,
+          onInput: this.onReferenceSamplesInput,
+        })}
+
+        ${this.renderRange({
+          label: 'cave height',
+          value: this.caveHalfHeight,
+          min: 20,
+          max: 120,
+          step: 1,
+          onInput: this.onCaveHalfHeightInput,
+        })}
+
+        ${this.renderRange({
+          label: 'vertical error',
+          value: this.maximumVerticalDeviation,
+          min: 0,
+          max: 40,
+          step: 1,
+          onInput: this.onMaximumVerticalDeviationInput,
+        })}
+
+        ${this.renderRange({
+          label: 'derivative error',
+          value: this.maximumDerivativeDelta,
+          min: 0,
+          max: 0.5,
+          step: 0.01,
+          onInput: this.onMaximumDerivativeDeltaInput,
+        })}
+
+        ${this.renderRange({
+          label: 'max stride',
+          value: this.maximumPointStride,
+          min: 2,
+          max: 120,
+          step: 1,
+          onInput: this.onMaximumPointStrideInput,
+        })}
+
+        <div class="buttons">
+          <button type="button" @click=${this.toggleTriangleStrip}>
+            strip: ${this.showTriangleStrip ? 'on' : 'off'}
+          </button>
+
+          <button type="button" @click=${this.toggleCollisionPolygon}>
+            hull: ${this.showCollisionPolygon ? 'on' : 'off'}
+          </button>
+        </div>
+
+        <div class="stats">
+          width=${this.worldWidth}
+          visual=${this.#scene.polygon.points.length}
+          strip=${this.#triangleStrip.polygon.points.length}
+          retained=${this.#triangleStrip.retainedIndices.length}
+        </div>
+      </section>
+
+      ${super.render()}
+
+      <triangle-strip-game-object
+        .positionX=${this.worldWidth / 2}
+        .positionY=${WORLD_HEIGHT / 2}
+        .options=${this.createBaseGameObjectOptions()}
+        .worldWidth=${this.worldWidth}
+        .worldHeight=${WORLD_HEIGHT}
+        .triangleStrip=${this.#triangleStrip}
+        .visible=${this.showTriangleStrip}
+      ></triangle-strip-game-object>
+    `;
+  }
+
+  private updateResponsiveWidth(): void {
+    const measuredWidth = Math.round(this.getBoundingClientRect().width);
+    const nextWidth = Math.max(
+      MIN_WORLD_WIDTH,
+      measuredWidth || DEFAULT_WORLD_WIDTH,
+    );
+
+    if (nextWidth === this.worldWidth) {
+      return;
     }
 
-    $content = Get-Content -Path $Path -Raw
-    $nextContent = $content.Replace($Search, $Replacement)
+    this.worldWidth = nextWidth;
+    this.positionX = nextWidth / 2;
+    this.options = this.createBaseGameObjectOptions();
+    this.rebuildCave();
+  }
 
-    if ($nextContent -eq $content) {
-        return
+  private renderRange(options: {
+    readonly label: string;
+    readonly value: number;
+    readonly min: number;
+    readonly max: number;
+    readonly step: number;
+    readonly onInput: (event: Event) => void;
+  }): TemplateResult {
+    return html`
+      <div class="control">
+        <label>${options.label}</label>
+        <output>${this.formatNumber(options.value)}</output>
+        <input
+          type="range"
+          min=${options.min}
+          max=${options.max}
+          step=${options.step}
+          .value=${String(options.value)}
+          @input=${options.onInput}
+        />
+      </div>
+    `;
+  }
+
+  private readonly onReferenceAmplitudeInput = (event: Event): void => {
+    this.referenceAmplitude = this.readRangeNumber(event);
+    this.rebuildCave();
+  };
+
+  private readonly onReferencePeriodsInput = (event: Event): void => {
+    this.referencePeriodsAcrossFrame = this.readRangeNumber(event);
+    this.rebuildCave();
+  };
+
+  private readonly onReferencePhaseInput = (event: Event): void => {
+    this.referencePhase = this.readRangeNumber(event);
+    this.rebuildCave();
+  };
+
+  private readonly onVerticalSlopeInput = (event: Event): void => {
+    this.verticalSlope = this.readRangeNumber(event);
+    this.rebuildCave();
+  };
+
+  private readonly onReferenceSamplesInput = (event: Event): void => {
+    this.referenceSamplesPerFrame = Math.round(this.readRangeNumber(event));
+    this.rebuildCave();
+  };
+
+  private readonly onCaveHalfHeightInput = (event: Event): void => {
+    this.caveHalfHeight = this.readRangeNumber(event);
+    this.rebuildCave();
+  };
+
+  private readonly onMaximumVerticalDeviationInput = (event: Event): void => {
+    this.maximumVerticalDeviation = this.readRangeNumber(event);
+    this.rebuildCave();
+  };
+
+  private readonly onMaximumDerivativeDeltaInput = (event: Event): void => {
+    this.maximumDerivativeDelta = this.readRangeNumber(event);
+    this.rebuildCave();
+  };
+
+  private readonly onMaximumPointStrideInput = (event: Event): void => {
+    this.maximumPointStride = Math.round(this.readRangeNumber(event));
+    this.rebuildCave();
+  };
+
+  private readonly toggleTriangleStrip = (event: Event): void => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.showTriangleStrip = !this.showTriangleStrip;
+  };
+
+  private readonly toggleCollisionPolygon = (event: Event): void => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.showCollisionPolygon = !this.showCollisionPolygon;
+    this.rebuildCaveShapeTemplate();
+  };
+
+  private readonly stopEvent = (event: Event): void => {
+    event.stopPropagation();
+  };
+
+  private rebuildCave(): void {
+    const generated = createCaveScene({
+      worldWidth: this.worldWidth,
+      amplitude: this.referenceAmplitude,
+      periodsAcrossFrame: this.referencePeriodsAcrossFrame,
+      phase: this.referencePhase,
+      verticalSlope: this.verticalSlope,
+      samplesPerFrame: this.referenceSamplesPerFrame,
+      caveHalfHeight: this.caveHalfHeight,
+      progressiveTriangleStripOptions: {
+        maximumVerticalDeviation: this.maximumVerticalDeviation,
+        maximumDerivativeDelta: this.maximumDerivativeDelta,
+        minimumPointStride: this.minimumPointStride,
+        maximumPointStride: this.maximumPointStride,
+      },
+    });
+
+    this.#scene = generated.scene;
+    this.#triangleStrip = generated.triangleStrip;
+    this.rebuildCaveShapeTemplate();
+    this.requestUpdate();
+  }
+
+  private rebuildCaveShapeTemplate(): void {
+    this.shapeTemplate = new CaveBaseGameObjectShapeTemplate({
+      scene: this.#scene,
+      width: this.worldWidth,
+      height: WORLD_HEIGHT,
+      showCollisionPolygon: this.showCollisionPolygon,
+    });
+  }
+
+  private createBaseGameObjectOptions(): BaseGameObjectOptions {
+    return {
+      width: this.worldWidth,
+      height: WORLD_HEIGHT,
+      rotationRadians: 0,
+    };
+  }
+
+  private readRangeNumber(event: Event): number {
+    const target = event.target;
+
+    if (!(target instanceof HTMLInputElement)) {
+      throw new Error('Expected range input event target.');
     }
 
-    Save-TextFile -Path $Path -Content $nextContent
-}
+    const value = Number(target.value);
 
-function Replace-RegexInFile {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string] $Path,
-
-        [Parameter(Mandatory = $true)]
-        [string] $Pattern,
-
-        [Parameter(Mandatory = $true)]
-        [string] $Replacement
-    )
-
-    if (-not (Test-Path $Path)) {
-        return
+    if (!Number.isFinite(value)) {
+      throw new Error(`Invalid range input value: ${target.value}`);
     }
 
-    $content = Get-Content -Path $Path -Raw
-    $nextContent = [regex]::Replace($content, $Pattern, $Replacement)
-
-    if ($nextContent -eq $content) {
-        return
-    }
-
-    Save-TextFile -Path $Path -Content $nextContent
-}
-
-function Remove-RegexFromFile {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string] $Path,
-
-        [Parameter(Mandatory = $true)]
-        [string] $Pattern
-    )
-
-    if (-not (Test-Path $Path)) {
-        return
-    }
-
-    $content = Get-Content -Path $Path -Raw
-    $nextContent = [regex]::Replace($content, $Pattern, "")
-
-    if ($nextContent -eq $content) {
-        return
-    }
-
-    Save-TextFile -Path $Path -Content $nextContent
-}
-
-function Move-ShapeFile {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string] $FileName
-    )
-
-    $sourcePath = Join-Path $SourcePolygonFolder $FileName
-    $targetPath = Join-Path $ShapesSrcRoot $FileName
-
-    if ((Test-Path $sourcePath) -and (Test-Path $targetPath)) {
-        Remove-Item -Path $sourcePath -Force
-        Write-Host "Removed duplicate source after previous partial move: $sourcePath"
-        return
-    }
-
-    if (Test-Path $targetPath) {
-        Write-Host "Already moved: $targetPath"
-        return
-    }
-
-    Assert-FileExists -Path $sourcePath
-    Ensure-Directory -Path $ShapesSrcRoot
-    Move-Item -Path $sourcePath -Destination $targetPath
-    Write-Host "Moved: $sourcePath -> $targetPath"
-}
-
-function Get-PackageVersionOrDefault {
-    param(
-        [Parameter(Mandatory = $true)]
-        [pscustomobject] $PackageJson,
-
-        [Parameter(Mandatory = $true)]
-        [string] $Name,
-
-        [Parameter(Mandatory = $true)]
-        [string] $DefaultValue
-    )
-
-    $dependency = $PackageJson.dependencies.PSObject.Properties |
-        Where-Object { $_.Name -eq $Name } |
-        Select-Object -First 1
-
-    if ($null -ne $dependency) {
-        return [string] $dependency.Value
-    }
-
-    $devDependency = $PackageJson.devDependencies.PSObject.Properties |
-        Where-Object { $_.Name -eq $Name } |
-        Select-Object -First 1
-
-    if ($null -ne $devDependency) {
-        return [string] $devDependency.Value
-    }
-
-    return $DefaultValue
-}
-
-function Ensure-PackageDependency {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string] $PackageJsonPath,
-
-        [Parameter(Mandatory = $true)]
-        [string] $DependencyName,
-
-        [Parameter(Mandatory = $true)]
-        [string] $Version
-    )
-
-    Assert-FileExists -Path $PackageJsonPath
-
-    $packageJson = Get-Content -Path $PackageJsonPath -Raw | ConvertFrom-Json
-
-    if ($null -eq $packageJson.dependencies) {
-        $packageJson | Add-Member -MemberType NoteProperty -Name "dependencies" -Value ([pscustomobject]@{})
-    }
-
-    $existing = $packageJson.dependencies.PSObject.Properties |
-        Where-Object { $_.Name -eq $DependencyName } |
-        Select-Object -First 1
-
-    if ($null -eq $existing) {
-        $packageJson.dependencies | Add-Member -MemberType NoteProperty -Name $DependencyName -Value $Version
-    }
-    else {
-        $packageJson.dependencies.$DependencyName = $Version
-    }
-
-    $packageJson |
-        ConvertTo-Json -Depth 32 |
-        Set-Content -Path $PackageJsonPath -Encoding UTF8
-
-    Write-Host "Dependency ensured: $DependencyName -> $Version"
-}
-
-function Normalize-NewShapeModuleImports {
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "GamePolygon.ts") `
-        -Search "import { SvgPolygon } from './SvgPolygon';" `
-        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
-
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "GamePolygon.ts") `
-        -Search "import { SvgPolygon } from './SvgPolygon.js';" `
-        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
-
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "SvgPolygon.ts") `
-        -Search "import type { ISvgTemplate, IPolygon, SvgPolygonStyle } from './GamePolygon';" `
-        -Replacement 'import type { ISvgTemplate, IPolygon, SvgPolygonStyle } from "./GamePolygon.js";'
-
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "SvgPolygon.ts") `
-        -Search "import type { ISvgTemplate, IPolygon, SvgPolygonStyle } from './GamePolygon.js';" `
-        -Replacement 'import type { ISvgTemplate, IPolygon, SvgPolygonStyle } from "./GamePolygon.js";'
-
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "SvgOpenPolygon.ts") `
-        -Search "import type { IPolygon, SvgPolygonStyle } from './GamePolygon';" `
-        -Replacement 'import type { IPolygon, SvgPolygonStyle } from "./GamePolygon.js";'
-
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "SvgOpenPolygon.ts") `
-        -Search "import type { IPolygon, SvgPolygonStyle } from './GamePolygon.js';" `
-        -Replacement 'import type { IPolygon, SvgPolygonStyle } from "./GamePolygon.js";'
-
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "SvgOpenPolygon.ts") `
-        -Search "import { SvgPolygon } from './SvgPolygon';" `
-        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
-
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "SvgOpenPolygon.ts") `
-        -Search "import { SvgPolygon } from './SvgPolygon.js';" `
-        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
-
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "SvgPolygonBuilder.ts") `
-        -Search "from './GamePolygon';" `
-        -Replacement 'from "./GamePolygon.js";'
-
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "SvgPolygonBuilder.ts") `
-        -Search "from './GamePolygon.js';" `
-        -Replacement 'from "./GamePolygon.js";'
-
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "SvgPolygonBuilder.ts") `
-        -Search "import { SvgPolygon } from './SvgPolygon';" `
-        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
-
-    Replace-TextInFile `
-        -Path (Join-Path $ShapesSrcRoot "SvgPolygonBuilder.ts") `
-        -Search "import { SvgPolygon } from './SvgPolygon.js';" `
-        -Replacement 'import { SvgPolygon } from "./SvgPolygon.js";'
-}
-
-function Patch-GameScrollerImports {
-    $multiCurvePath = Join-Path $SourcePolygonFolder "MultiCurveSvgTemplate.ts"
-
-    if (Test-Path $multiCurvePath) {
-        Remove-RegexFromFile `
-            -Path $multiCurvePath `
-            -Pattern '(?m)^\s*import\s+\{\s*type\s+ISvgTemplate,\s*Polygon\s*\}\s+from\s+["'']\.\/GamePolygon(?:\.js)?["''];\s*\r?\n?'
-
-        Remove-RegexFromFile `
-            -Path $multiCurvePath `
-            -Pattern '(?m)^\s*import\s+\{\s*SvgOpenPolygon\s*\}\s+from\s+["'']\.\/SvgOpenPolygon(?:\.js)?["''];\s*\r?\n?'
-
-        Remove-RegexFromFile `
-            -Path $multiCurvePath `
-            -Pattern '(?m)^\s*import\s+\{\s*SvgPolygon\s*\}\s+from\s+["'']\.\/SvgPolygon(?:\.js)?["''];\s*\r?\n?'
-
-        $content = Get-Content -Path $multiCurvePath -Raw
-
-        if ($content -notmatch '@monorepo/game-assets-shapes') {
-            $content =
-                'import { type ISvgTemplate, Polygon, SvgOpenPolygon, SvgPolygon } from "@monorepo/game-assets-shapes";' +
-                [Environment]::NewLine +
-                $content.TrimStart()
-
-            Save-TextFile -Path $multiCurvePath -Content $content
-        }
-    }
-
-    $builderReExportPath = Join-Path $GameScrollerRoot "src\Game\Builders\SvgPolygonBuilder.ts"
-    if (Test-Path $builderReExportPath) {
-        Write-CodeFile -Path $builderReExportPath -Content @'
-export * from "@monorepo/game-assets-shapes";
-'@
-    }
-
-    $gameIndexPath = Join-Path $GameScrollerRoot "src\Game\index.ts"
-    if (Test-Path $gameIndexPath) {
-        Remove-RegexFromFile `
-            -Path $gameIndexPath `
-            -Pattern '(?m)^\s*export\s+\*\s+from\s+["'']\.\/Elements\/Polygon\/GamePolygon\.js["''];\s*\r?\n?'
-
-        $content = Get-Content -Path $gameIndexPath -Raw
-
-        if ($content -notmatch 'export\s+\*\s+from\s+["'']@monorepo/game-assets-shapes["''];') {
-            $content = $content.TrimEnd() + [Environment]::NewLine + 'export * from "@monorepo/game-assets-shapes";' + [Environment]::NewLine
-            Save-TextFile -Path $gameIndexPath -Content $content
-        }
-    }
-
-    $svgPolygonTemplatePath = Join-Path $GameScrollerRoot "src\GameObjects\SvgPolygonTemplate.ts"
-    if (Test-Path $svgPolygonTemplatePath) {
-        Remove-RegexFromFile `
-            -Path $svgPolygonTemplatePath `
-            -Pattern '(?m)^\s*import\s+\{\s*Polygon\s*\}\s+from\s+["'']\.\.\/Game\/Elements\/Polygon\/GamePolygon\.js["''];\s*\r?\n?'
-
-        Remove-RegexFromFile `
-            -Path $svgPolygonTemplatePath `
-            -Pattern '(?m)^\s*import\s+\{\s*SvgPolygon\s*\}\s+from\s+["'']\.\.\/Game\/Elements\/Polygon\/SvgPolygon\.js["''];\s*\r?\n?'
-
-        $content = Get-Content -Path $svgPolygonTemplatePath -Raw
-
-        if ($content -notmatch '@monorepo/game-assets-shapes') {
-            $content =
-                'import { Polygon, SvgPolygon } from "@monorepo/game-assets-shapes";' +
-                [Environment]::NewLine +
-                $content.TrimStart()
-
-            Save-TextFile -Path $svgPolygonTemplatePath -Content $content
-        }
-    }
-
-    $viewGamePolygonPath = Join-Path $GameScrollerRoot "src\views\view-game-polygon.ts"
-    if (Test-Path $viewGamePolygonPath) {
-        Remove-RegexFromFile `
-            -Path $viewGamePolygonPath `
-            -Pattern '(?m)^\s*import\s+\{\s*Polygon\s*\}\s+from\s+["'']\.\.\/Game\/Elements\/Polygon\/GamePolygon\.js["''];\s*\r?\n?'
-
-        Remove-RegexFromFile `
-            -Path $viewGamePolygonPath `
-            -Pattern '(?m)^\s*import\s+\{\s*SvgPolygon\s*\}\s+from\s+["'']\.\.\/Game\/Elements\/Polygon\/SvgPolygon\.js["''];\s*\r?\n?'
-
-        $content = Get-Content -Path $viewGamePolygonPath -Raw
-
-        if ($content -notmatch '@monorepo/game-assets-shapes') {
-            $content =
-                'import { Polygon, SvgPolygon } from "@monorepo/game-assets-shapes";' +
-                [Environment]::NewLine +
-                $content.TrimStart()
-
-            Save-TextFile -Path $viewGamePolygonPath -Content $content
-        }
-    }
-
-    $cavePath = Join-Path $GameScrollerRoot "src\Game\Screen\Cave\CaveGameObject.ts"
-    if (Test-Path $cavePath) {
-        Replace-RegexInFile `
-            -Path $cavePath `
-            -Pattern 'import\s+type\s+\{\s*GamePolygon\s*\}\s+from\s+["'']\.\.\/\.\.\/Elements\/Polygon\/GamePolygon\.js["''];' `
-            -Replacement 'import type { GamePolygon } from "@monorepo/game-assets-shapes";'
-    }
-}
-
-Assert-FileExists -Path $GameScrollerPackageJson
-Ensure-Directory -Path $ShapesSrcRoot
-
-foreach ($file in $ShapeFiles) {
-    Move-ShapeFile -FileName $file
-}
-
-$gameScrollerPackage = Get-Content -Path $GameScrollerPackageJson -Raw | ConvertFrom-Json
-$litVersion = Get-PackageVersionOrDefault -PackageJson $gameScrollerPackage -Name "lit" -DefaultValue "^3.0.0"
-$typescriptVersion = Get-PackageVersionOrDefault -PackageJson $gameScrollerPackage -Name "typescript" -DefaultValue "^5.0.0"
-
-Write-CodeFile -Path (Join-Path $ShapesModuleRoot "package.json") -Content @"
-{
-  "name": "$ShapesPackageName",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
-  "scripts": {
-    "build": "tsc"
-  },
-  "dependencies": {
-    "@monorepo/core-math": "workspace:*",
-    "lit": "$litVersion"
-  },
-  "devDependencies": {
-    "typescript": "$typescriptVersion"
+    return value;
+  }
+
+  private formatNumber(value: number): string {
+    return Number.isInteger(value) ? String(value) : value.toFixed(2);
   }
 }
-"@
 
-Write-CodeFile -Path (Join-Path $ShapesModuleRoot "tsconfig.json") -Content @'
-{
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "dist",
-    "rootDir": "src",
-    "lib": ["ES2022", "DOM"],
-    "skipLibCheck": true,
-    "noUncheckedIndexedAccess": true
-  },
-  "include": ["src/**/*.ts"]
+interface CaveRuntimeOptions {
+  readonly worldWidth: number;
+  readonly amplitude: number;
+  readonly periodsAcrossFrame: number;
+  readonly phase: number;
+  readonly verticalSlope: number;
+  readonly samplesPerFrame: number;
+  readonly caveHalfHeight: number;
+  readonly progressiveTriangleStripOptions: ProgressiveTriangleStripOptions;
+}
+
+function createCaveScene(options: CaveRuntimeOptions): {
+  readonly scene: CaveScene;
+  readonly triangleStrip: ProgressiveTriangleStripResult;
+} {
+  const referenceCurve = new CoefficientReferenceCurveGenerator().create(
+    createReferenceDefinition(options),
+  );
+
+  const referencePoints = applyVerticalSlope(
+    referenceCurve.points,
+    options.worldWidth,
+    options.verticalSlope,
+  );
+
+  const upperPoints = offsetPoints(referencePoints, -options.caveHalfHeight);
+  const lowerPoints = offsetPoints(referencePoints, options.caveHalfHeight);
+
+  const triangleStrip = new ProgressiveTriangleStrip(
+    upperPoints,
+    lowerPoints,
+    options.progressiveTriangleStripOptions,
+  ).create();
+
+  const scene = new Cave().create({
+    referencePoints,
+    upperPoints,
+    lowerPoints,
+    collisionUpperPoints: triangleStrip.upperPoints,
+    collisionLowerPoints: triangleStrip.lowerPoints,
+  });
+
+  return {
+    scene,
+    triangleStrip,
+  };
+}
+
+function createReferenceDefinition(
+  options: CaveRuntimeOptions,
+): ReferenceCurveDefinition {
+  return {
+    ...defaultReferenceCurveDefinition,
+    frame: {
+      canvas: {
+        length: options.worldWidth,
+      },
+      sampling: {
+        samplesPerFrame: options.samplesPerFrame,
+      },
+    },
+    expression: {
+      ...defaultReferenceCurveDefinition.expression,
+      vertical: {
+        baselineY: WORLD_HEIGHT / 2,
+        amplitude: options.amplitude,
+      },
+      horizontal: {
+        periodsAcrossFrame: options.periodsAcrossFrame,
+        phase: options.phase,
+      },
+    },
+  };
+}
+
+function applyVerticalSlope(
+  points: readonly Vector2[],
+  worldWidth: number,
+  verticalSlope: number,
+): readonly Vector2[] {
+  return points.map(point => {
+    const normalizedX = worldWidth > 0 ? point.x / worldWidth : 0;
+    return new Vector2(point.x, point.y + verticalSlope * normalizedX);
+  });
+}
+
+function offsetPoints(
+  points: readonly Vector2[],
+  yOffset: number,
+): readonly Vector2[] {
+  return points.map(point => new Vector2(point.x, point.y + yOffset));
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'cave-base-game-object': CaveGameObject;
+  }
 }
 '@
 
-Write-CodeFile -Path (Join-Path $ShapesSrcRoot "index.ts") -Content @'
-export {
-  GamePolygon,
-  Polygon,
-  type IPolygon,
-  type ISvgTemplate,
-  type SvgPolygonStyle,
-} from "./GamePolygon.js";
-
-export { SvgPolygon } from "./SvgPolygon.js";
-export { SvgOpenPolygon } from "./SvgOpenPolygon.js";
-
-export {
-  SvgPolygonBuilder,
-  SvgRectangleBuilder,
-  type IBuilder,
-  type PointMapper,
-  type PolygonBuilderOptions,
-} from "./SvgPolygonBuilder.js";
-'@
-
-Normalize-NewShapeModuleImports
-Patch-GameScrollerImports
-
-Ensure-PackageDependency `
-    -PackageJsonPath $GameScrollerPackageJson `
-    -DependencyName $ShapesPackageName `
-    -Version "workspace:*"
-
-Write-Host "Shape migration completed."
+Write-Host ""
+Write-Host "Done."
+Write-Host ""
 Write-Host "Run:"
-Write-Host "  pnpm --filter $ShapesPackageName build"
-Write-Host "  pnpm --filter game-scroller build"
+Write-Host "pnpm --filter @monorepo/game-scroller build"
+Write-Host "pnpm --filter @monorepo/game-scroller test"

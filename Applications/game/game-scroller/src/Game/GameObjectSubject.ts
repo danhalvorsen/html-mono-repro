@@ -3,7 +3,6 @@ import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { TimeSchdulerObserver } from './TimeSchdulerObserver';
 import { SvgRectangleBuilder } from './Elements/Polygon/SvgPolygonBuilder';
-import type { GamePolygon } from './Elements/Polygon/GamePolygon';
 import { Matrix, type IMatrix, type Point, type Point2 } from '@monorepo/core-math';
 import { GameObjectAnimationController } from './Animation/GameObjectAnimationController';
 import type { ISceneNode } from '../../../../../packages/core-scene-graph/dist/ISceneNode';
@@ -83,7 +82,7 @@ export class GameObjectSubject
   @property({ attribute: false })
   controller?: PlayerInputController;
 
-  private subject: GamePolygon;
+  private subject: TemplateResult;
   readonly #animationController: GameObjectAnimationController;
   #currentRotationRadians = 0;
   #lastAcceptedMotionState: GameObjectMotionState = {
@@ -93,7 +92,7 @@ export class GameObjectSubject
   #lastTimeMs: number | null = null;
   readonly #manualMoveSpeedPerSecond = 180;
 
-  public constructor(subject?: GamePolygon) {
+  public constructor(subject?: TemplateResult) {
     super();
     this.subject = subject ?? this.#buildSubjectAt({ x: this.positionX, y: this.positionY }, 0);
     this.#animationController = new GameObjectAnimationController({
@@ -285,7 +284,7 @@ export class GameObjectSubject
   }
 
   public getPosistion(): Vector2 {
-    return new Vector2(this.positionX, this.positionY );
+    return { x: this.positionX, y: this.positionY } as Vector2;
   }
 
   public getWorldPosistion(): Vector2 {
@@ -301,7 +300,7 @@ export class GameObjectSubject
   }
 
   public getCurrentPoint(): Point2 | null {
-    return new Vector2(this.positionX, this.positionY );
+    return { x: this.positionX, y: this.positionY };
   }
 
   public getCurrentRotationRadians(): number {
@@ -315,7 +314,7 @@ export class GameObjectSubject
     this.subject = this.#buildSubjectAt(point, rotationRadians);
   }
 
-  #buildSubjectAt(point: Point2, rotationRadians: number): GamePolygon {
+  #buildSubjectAt(point: Point2, rotationRadians: number): TemplateResult {
     return new SvgRectangleBuilder()
       .withLength(this.size)
       .withHeigth(this.size)
@@ -354,4 +353,10 @@ export class GameObjectSubject
     return html`${this.subject}`;
   }
 }
+
+
+
+
+
+
 

@@ -13,11 +13,11 @@
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@monorepo/core-math": "workspace:*",
-    "lit": "^3.3.2"
+    "@monorepo/core-math": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.2"

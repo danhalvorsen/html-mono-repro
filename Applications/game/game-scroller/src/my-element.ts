@@ -6,6 +6,7 @@ import "./views/view-game.js";
 import "./views/view-game-polygon.js";
 import "./views/view-game-player-input.js";
 import "./views/view-rocket-demo.js";
+import "./views/view-cave-object.js";
 import "./views/view-diagnostics.js";
 import "./views/view-help.js";
 import "./views/view-settings.js";
@@ -16,6 +17,7 @@ const VIEW_IDS = Object.freeze({
   gameRenderPolygon: "game - render a polygon",
   gamePlayerInput: "game - player keyboard",
   rocketDemo: "game - rocket demo",
+  caveObject: "game - cave object",
   diagnostics: "diagnostics",
   help: "help",
   settings: "settings",
@@ -32,6 +34,7 @@ const DEFAULT_VIEW_ITEMS: readonly ViewMenuItem[] = Object.freeze([
   { id: VIEW_IDS.gameRenderPolygon, label: "Game - Render a Polygon", icon: "🔷" },
   { id: VIEW_IDS.gamePlayerInput, label: "Game - Player Keyboard", icon: "⌨️" },
   { id: VIEW_IDS.rocketDemo, label: "Game - Rocket Demo", icon: "🚀" },
+  { id: VIEW_IDS.caveObject, label: "Game - Cave Object", icon: "🕳️" },
   { id: VIEW_IDS.diagnostics, label: "Diagnostics", icon: "📈" },
   { id: VIEW_IDS.help, label: "Help", icon: "❓" },
   { id: VIEW_IDS.settings, label: "Settings", icon: "⚙️" },
@@ -168,6 +171,9 @@ export class MyElement extends LitElement {
       case VIEW_IDS.rocketDemo:
         return html`<view-rocket-demo></view-rocket-demo>`;
 
+      case VIEW_IDS.caveObject:
+        return html`<view-cave-object></view-cave-object>`;
+
       case VIEW_IDS.diagnostics:
         return html`<view-diagnostics></view-diagnostics>`;
 
@@ -212,3 +218,7 @@ declare global {
     "my-element": MyElement;
   }
 }
+
+
+
+

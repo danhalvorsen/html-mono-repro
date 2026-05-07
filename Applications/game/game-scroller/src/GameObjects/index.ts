@@ -21,4 +21,8 @@ export { SvgPolygonTemplate } from "./SvgPolygonTemplate.js";
 export type { SvgPolygonTemplateOptions } from "./SvgPolygonTemplate.js";
 export { RectangleGameObject } from "./RectangleGameObjects.js";
 export { PlayerGameObject } from "./PlayerGameObject.js";
+export { CaveGameObject } from './CaveGameObject.js';
+export { CaveBaseGameObjectShapeTemplate } from './CaveBaseGameObjectShapeTemplate.js';
+export { TriangleStripGameObject } from './TriangleStripGameObject.js';
+export { TriangleStripGameObjectShapeTemplate } from './TriangleStripGameObjectShapeTemplate.js';
 
