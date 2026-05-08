@@ -20,7 +20,10 @@
     "@monorepo/game-motion": "workspace:*",
     "@monorepo/game-assets-shapes": "file:../cave-temp/game-assets-shapes",
     "@monorepo/game-feature-cave": "workspace:*",
-    "@monorepo/game-feature-backgrounds": "workspace:*"
+    "@monorepo/game-feature-backgrounds": "workspace:*",
+    "@monorepo/core-fsm": "workspace:*",
+    "@monorepo/core-design-composite": "workspace:*",
+    "@monorepo/core-design-composite-fsm": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

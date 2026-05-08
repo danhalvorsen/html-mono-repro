@@ -1,0 +1,1527 @@
+// AI CODE EXPORT
+// ROOT: C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-design-composite
+// GENERATED: 2026-05-08T14:44:08+02:00
+// INCLUDE_TESTS: True
+// INCLUDE_CONFIGS: True
+
+################################################################################
+// MODULE: @monorepo/core-design-composite
+// MODULE_PATH: C:\Users\danha\source\repos\HTML\MonoRepro\packages\core-design-composite
+################################################################################
+
+================================================================================
+// FILE: package.json
+
+{
+  "name": "@monorepo/core-design-composite",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+
+  "files": ["dist"],
+
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest"
+  }
+}
+
+================================================================================
+// FILE: src\behavior\button.ts
+
+import { Composite } from "../core/composite.js";
+import type { Component } from "../core/component.js";
+
+export type ButtonVariant = "primary" | "secondary" | "ghost";
+
+export class ButtonUI extends Composite {
+    constructor(child: Component, public readonly variant: ButtonVariant = "primary") {
+        super("Button", [child]);
+    }
+
+    protected createHostElement(): HTMLElement {
+        const el = document.createElement("ui-button");
+        el.setAttribute("variant", this.variant);
+        el.setAttribute("label", this.children[0]?.name ?? "");
+        return el;
+    }
+}
+
+================================================================================
+// FILE: src\behavior\clickable.ts
+
+import { Composite } from '../core/composite.js';
+import type { Component } from '../core/component.js';
+
+export class ClickableUI extends Composite {
+    constructor(child: Component) { super('Clickable', [child]); }
+    protected createHostElement(): HTMLElement { return document.createElement('ui-clickable'); }
+}
+
+================================================================================
+// FILE: src\behavior\focusable.ts
+
+import { Composite } from '../core/composite.js';
+import type { Component } from '../core/component.js';
+
+export class FocusableUI extends Composite {
+    constructor(child: Component) { super('Focusable', [child]); }
+    protected createHostElement(): HTMLElement { return document.createElement('ui-focusable'); }
+}
+
+================================================================================
+// FILE: src\behavior\hoverable.ts
+
+import { Composite } from '../core/composite.js';
+import type { Component } from '../core/component.js';
+
+export class HoverableUI extends Composite {
+    constructor(child: Component) { super('Hoverable', [child]); }
+    protected createHostElement(): HTMLElement { return document.createElement('ui-hoverable'); }
+}
+
+================================================================================
+// FILE: src\behavior\toggleable.ts
+
+import { Composite } from '../core/composite.js';
+import type { Component } from '../core/component.js';
+
+export class ToggleableUI extends Composite {
+  constructor(child: Component, public defaultState: boolean = false) {
+    super('Toggleable', [child]);
+  }
+
+  protected createHostElement(): HTMLElement {
+    const el = document.createElement('ui-toggleable') as any;
+    el.state = this.defaultState;
+    return el;
+  }
+}
+
+================================================================================
+// FILE: src\behavior\validatable.ts
+
+import { Composite } from '../core/composite.js';
+import type { Component } from '../core/component.js';
+
+export class ValidatableUI extends Composite {
+    constructor(child: Component) { super('Validatable', [child]); }
+    protected createHostElement(): HTMLElement { return document.createElement('ui-validatable'); }
+}
+
+================================================================================
+// FILE: src\core\component.ts
+
+export interface Component {
+    readonly name: string;
+    readonly children: ReadonlyArray<Component>;
+    createElement(): HTMLElement;
+}
+
+================================================================================
+// FILE: src\core\composite.ts
+
+import { Component } from "./component.js";
+
+type CompositeCtor<T> = new (name: string, nodes?: ReadonlyArray<Component>) => T;
+
+/**
+ * Slot-based composition:
+ * - createElement() returns a host element
+ * - children are appended as light-DOM so <slot> renders them
+ */
+export abstract class Composite implements Component {
+    constructor(
+        public readonly name: string,
+        private readonly nodes: ReadonlyArray<Component> = []
+    ) {}
+
+    get children(): ReadonlyArray<Component> {
+        return this.nodes;
+    }
+
+    add(child: Component): this {
+        const Ctor = this.constructor as unknown as CompositeCtor<this>;
+        return new Ctor(this.name, [...this.nodes, child]);
+    }
+
+    /** Subclasses only decide the host tag (and optionally set initial props). */
+    protected abstract createHostElement(): HTMLElement;
+
+    createElement(): HTMLElement {
+        const host = this.createHostElement();
+
+        for (const child of this.children) {
+            host.appendChild(child.createElement());
+        }
+
+        return host;
+    }
+}
+
+================================================================================
+// FILE: src\core\leaf.ts
+
+import { Component } from "./component.js";
+
+/**
+ * Leaf: a terminal node in the composite tree.
+ * Each leaf decides its own element (ui-label, ui-error, etc).
+ */
+export abstract class Leaf implements Component {
+    constructor(public readonly name: string) {}
+
+    get children(): ReadonlyArray<Component> {
+        return [];
+    }
+
+    abstract createElement(): HTMLElement;
+}
+
+================================================================================
+// FILE: src\core\ui-element.ts
+
+import { LitElement } from "lit";
+import { property } from "lit/decorators.js";
+import type { Component } from "./component.js";
+
+export abstract class UIElement<T extends Component = Component> extends LitElement {
+  // Avoid class-field shadowing: use accessor for reactive property.
+  @property({ attribute: false })
+  public accessor model!: T;
+
+  protected renderChildren() {
+    return this.model.children.map((child) => {
+      const el = child.createElement();
+      (el as any).model = child;
+      return el;
+    });
+  }
+}
+
+================================================================================
+// FILE: src\demo\demo-ui.ts
+
+import { BoxUI } from '../layout/box.js';
+import { ColumnUI } from '../layout/column.js';
+import { SpacerUI } from '../layout/spacer.js';
+import { DividerUI } from '../layout/divider.js';
+import { SurfaceUI } from '../layout/surface.js';
+
+import { LabelUI } from '../input/label.js';
+import { InputTextUI } from '../input/input-text.js';
+import { InputNumberUI } from '../input/input-number.js';
+import { InputSelectUI } from '../input/input-select.js';
+import { ErrorMessageUI } from '../input/error.js';
+
+import { ClickableUI } from '../behavior/clickable.js';
+import { HoverableUI } from '../behavior/hoverable.js';
+
+export function createDemoUI() {
+    return new BoxUI('DemoRoot')
+        .add(
+            new SurfaceUI('Form')
+                .add(
+                    new ColumnUI('FormColumn')
+                        .add(new LabelUI('Name'))
+                        .add(new InputTextUI('Your name'))
+                        .add(new SpacerUI(12))
+
+                        .add(new LabelUI('Age'))
+                        .add(new InputNumberUI('0'))
+                        .add(new SpacerUI(12))
+
+                        .add(new LabelUI('Favorite Color'))
+                        .add(new InputSelectUI(['Red', 'Green', 'Blue']))
+                        .add(new SpacerUI(12))
+
+                        .add(new ClickableUI(new HoverableUI(new LabelUI('Submit'))))
+                        .add(new SpacerUI(8))
+                        .add(new DividerUI())
+                        .add(new ErrorMessageUI('Example error message'))
+                )
+        );
+}
+
+================================================================================
+// FILE: src\demo\main.ts
+
+import { createDemoUI } from './demo-ui.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const root = document.getElementById('app');
+  if (!root) throw new Error('Missing #app element');
+
+  const ui = createDemoUI();
+  const el = ui.createElement();
+
+  // Attach the backing model to the rendered element
+  (el as any).model = ui;
+
+  root.appendChild(el);
+});
+
+================================================================================
+// FILE: src\index.ts
+
+// packages/core-design-composite/src/index.ts
+
+export * from './behavior/button.js';
+export * from './behavior/clickable.js';
+export * from './behavior/focusable.js';
+export * from './behavior/hoverable.js';
+export * from './behavior/toggleable.js';
+export * from './behavior/validatable.js';
+
+export * from './core/component.js';
+export * from './core/composite.js';
+export * from './core/leaf.js';
+export * from './core/ui-element.js';
+
+export * from './demo/demo-ui.js';
+export * from './demo/main.js';
+
+export * from './input/error.js';
+export * from './input/input-checkbox.js';
+export * from './input/input-number.js';
+export * from './input/input-select.js';
+export * from './input/input-text.js';
+export * from './input/label.js';
+
+export * from './layout/box.js';
+export * from './layout/column.js';
+export * from './layout/divider.js';
+export * from './layout/rectangle.js';
+export * from './layout/row.js';
+export * from './layout/spacer.js';
+export * from './layout/stack.js';
+export * from './layout/surface.js';
+
+export * from './web-components/ui-box.js';
+export * from './web-components/ui-button.js';
+export * from './web-components/ui-clickable.js';
+export * from './web-components/ui-column.js';
+export * from './web-components/ui-divider.js';
+export * from './web-components/ui-error.js';
+export * from './web-components/ui-focusable.js';
+export * from './web-components/ui-hoverable.js';
+export * from './web-components/ui-input-checkbox.js';
+export * from './web-components/ui-input-number.js';
+export * from './web-components/ui-input-select.js';
+export * from './web-components/ui-input-text.js';
+export * from './web-components/ui-label.js';
+export * from './web-components/ui-rectangle.js';
+export * from './web-components/ui-row.js';
+export * from './web-components/ui-spacer.js';
+export * from './web-components/ui-stack.js';
+export * from './web-components/ui-surface.js';
+export * from './web-components/ui-toggleable.js';
+export * from './web-components/ui-validatable.js';
+
+================================================================================
+// FILE: src\input\error.ts
+
+import { Leaf } from '../core/leaf.js';
+
+export class ErrorMessageUI extends Leaf {
+  constructor(message: string) {
+    super(message);
+  }
+
+  createElement(): HTMLElement {
+    const el = document.createElement('ui-error');
+    el.setAttribute('message', this.name);
+    return el;
+  }
+}
+
+================================================================================
+// FILE: src\input\input-checkbox.ts
+
+import { Leaf } from '../core/leaf.js';
+
+export class InputCheckboxUI extends Leaf {
+  constructor(label: string) {
+    super(label);
+  }
+
+  createElement(): HTMLElement {
+    const el = document.createElement('ui-input-checkbox');
+    el.setAttribute('label', this.name);
+    return el;
+  }
+}
+
+================================================================================
+// FILE: src\input\input-number.ts
+
+import { Composite } from '../core/composite.js';
+
+export class InputNumberUI extends Composite {
+  constructor(public placeholder: string = '') {
+    super('InputNumber');
+  }
+
+  protected createHostElement(): HTMLElement {
+    const el = document.createElement('ui-input-number');
+    el.setAttribute('placeholder', this.placeholder);
+    return el;
+  }
+}
+
+================================================================================
+// FILE: src\input\input-select.ts
+
+import { Composite } from '../core/composite.js';
+
+export class InputSelectUI extends Composite {
+  constructor(public options: string[]) {
+    super('InputSelect');
+  }
+
+  protected createHostElement(): HTMLElement {
+    const el = document.createElement('ui-input-select') as any;
+    el.options = this.options;
+    return el;
+  }
+}
+
+================================================================================
+// FILE: src\input\input-text.ts
+
+import { Leaf } from '../core/leaf.js';
+
+export class InputTextUI extends Leaf {
+  constructor(public placeholder: string = '') {
+    super('InputText');
+  }
+
+  createElement(): HTMLElement {
+    const el = document.createElement('ui-input-text');
+    el.setAttribute('placeholder', this.placeholder);
+    return el;
+  }
+}
+
+================================================================================
+// FILE: src\input\label.ts
+
+import { Leaf } from '../core/leaf.js';
+
+export class LabelUI extends Leaf {
+  constructor(text: string) {
+    super(text);
+  }
+
+  createElement(): HTMLElement {
+    const el = document.createElement('ui-label');
+    el.textContent = this.name; // correct for <slot> content
+    return el;
+  }
+}
+
+================================================================================
+// FILE: src\layout\box.ts
+
+import { Composite } from '../core/composite.js';
+
+export class BoxUI extends Composite {
+  protected createHostElement(): HTMLElement {
+    return document.createElement('ui-box');
+  }
+}
+
+================================================================================
+// FILE: src\layout\column.ts
+
+import { Composite } from '../core/composite.js';
+
+export class ColumnUI extends Composite {
+  protected createHostElement(): HTMLElement {
+    return document.createElement('ui-column');
+  }
+}
+
+================================================================================
+// FILE: src\layout\divider.ts
+
+import { Leaf } from '../core/leaf.js';
+
+export class DividerUI extends Leaf {
+  constructor(public direction: 'horizontal' | 'vertical' = 'horizontal') {
+    super('Divider');
+  }
+
+  createElement(): HTMLElement {
+    const el = document.createElement('ui-divider');
+    el.setAttribute('direction', this.direction);
+    return el;
+  }
+}
+
+================================================================================
+// FILE: src\layout\rectangle.ts
+
+import { Composite } from '../core/composite.js';
+
+export class RectangleUI extends Composite {
+  protected createHostElement(): HTMLElement {
+    return document.createElement('ui-rectangle');
+  }
+}
+
+================================================================================
+// FILE: src\layout\row.ts
+
+import { Composite } from '../core/composite.js';
+
+export class RowUI extends Composite {
+  protected createHostElement(): HTMLElement {
+    return document.createElement('ui-row');
+  }
+}
+
+================================================================================
+// FILE: src\layout\spacer.ts
+
+import { Leaf } from '../core/leaf.js';
+
+export class SpacerUI extends Leaf {
+  constructor(public size: number = 8) {
+    super('Spacer');
+  }
+
+  createElement(): HTMLElement {
+    const el = document.createElement('ui-spacer');
+    el.setAttribute('size', String(this.size));
+    return el;
+  }
+}
+
+================================================================================
+// FILE: src\layout\stack.ts
+
+import { Composite } from '../core/composite.js';
+
+export class StackUI extends Composite {
+  protected createHostElement(): HTMLElement {
+    return document.createElement('ui-stack');
+  }
+}
+
+================================================================================
+// FILE: src\layout\surface.ts
+
+import { Composite } from '../core/composite.js';
+
+export class SurfaceUI extends Composite {
+  protected createHostElement(): HTMLElement {
+    return document.createElement('ui-surface');
+  }
+}
+
+================================================================================
+<!-- FILE: src\README.md -->
+
+# UI Framework â€” Composite + Lit 3 + Shadow DOM
+
+This project demonstrates a fully SOLID, DRY, Open/Closed UI architecture
+based on:
+
+- Composite Pattern (OOP)
+- Runtime rendering with Web Components
+- Lit 3 with Shadow DOM
+- Behavior Wrappers
+- Layout Primitives
+- Input Primitives
+
+## Running
+
+Serve the demo folder using any static server:
+
+\\\
+cd ui-framework/demo
+npx serve .
+\\\
+
+Open:
+
+\\\
+http://localhost:3000
+\\\
+
+## Architecture
+
+- UI Element Tree is built from pure TypeScript models
+- Web Components render the tree
+- Input, layout, and behavior primitives compose arbitrarily
+- Token-based design system in \styles/style.css\
+
+See diagram in \diagrams/classes.puml\.
+
+================================================================================
+/* FILE: src\styles\style.css */
+
+:root {
+    --ui-bg-surface: #ffffff;
+    --ui-bg-elevated: #f7f7f7;
+
+    --ui-text-1: #222;
+    --ui-text-2: #555;
+
+    --ui-primary: #0d6efd;
+
+    --ui-border-light: #dddddd;
+    --ui-border-strong: #aaaaaa;
+
+    --ui-radius-sm: 4px;
+    --ui-radius-md: 8px;
+    --ui-radius-lg: 12px;
+
+    --ui-space-1: 4px;
+    --ui-space-2: 8px;
+    --ui-space-3: 12px;
+    --ui-space-4: 16px;
+}
+"# ============================================
+# BLOCK 9 â€” DEMO APP (index.html, main.ts, demo-ui.ts)
+# ============================================
+
+Write-CodeFile "ui-framework/demo/index.html" @"
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>UI Framework Demo</title>
+    <link rel='stylesheet' href='../styles/style.css'>
+</head>
+<body>
+    <div id='app'></div>
+    <script type='module' src='./main.ts'></script>
+</body>
+</html>
+
+================================================================================
+// FILE: src\web-components\ui-box.ts
+
+import { html, css, LitElement } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-box')
+export class UIBoxElement extends UIElement {
+  static styles = css`
+    :host {
+      display: block;
+      padding: 16px;
+      border-radius: 8px;
+      background: var(--ui-bg-surface, #fff);
+      box-shadow: var(--ui-shadow-1, 0 1px 3px rgba(0,0,0,0.1));
+      border: 1px solid var(--ui-border-light, #ddd);
+    }
+  `;
+
+  render() {
+    return html`<slot></slot>`;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-button.ts
+
+import { html, css } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { UIElement } from "../core/ui-element.js";
+import type { ButtonVariant } from "../behavior/button.js";
+
+@customElement("ui-button")
+export class UIButtonElement extends UIElement {
+  @property({ type: String, reflect: true })
+  accessor variant: ButtonVariant = "primary";
+
+  @property({ type: Boolean, reflect: true })
+  accessor disabled = false;
+
+  static styles = css`
+    :host {
+      display: inline-block;
+    }
+
+    button {
+      all: unset;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      padding: 8px 14px;
+      border-radius: 8px;
+
+      font: inherit;
+      line-height: 1;
+      cursor: pointer;
+      user-select: none;
+
+      border: 1px solid var(--ui-border-strong, #aaa);
+      transition: filter 0.1s ease-in-out, transform 0.02s ease-in-out;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--ui-primary, #0d6efd);
+      outline-offset: 2px;
+    }
+
+    :host([disabled]) button {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    /* Variants */
+    :host([variant="primary"]) button {
+      background: var(--ui-primary, #0d6efd);
+      color: white;
+      border-color: transparent;
+    }
+
+    :host([variant="secondary"]) button {
+      background: var(--ui-bg-elevated, #f7f7f7);
+      color: var(--ui-text-1, #222);
+    }
+
+    :host([variant="ghost"]) button {
+      background: transparent;
+      color: var(--ui-text-1, #222);
+      border-color: transparent;
+    }
+
+    :host([variant="ghost"]) button:hover {
+      filter: brightness(0.95);
+    }
+  `;
+
+  @property({ type: String, reflect: true })
+  accessor label = "";
+
+  private emitClick(e: MouseEvent) {
+    if (this.disabled) return;
+
+    this.dispatchEvent(
+      new CustomEvent("ui-click", {
+        detail: { label: this.label, sourceEvent: e },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  private onKeyDown(e: KeyboardEvent) {
+    if (this.disabled) return;
+
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this.dispatchEvent(
+        new CustomEvent("ui-click", {
+          detail: { label: this.label, sourceEvent: e },
+          bubbles: true,
+          composed: true,
+        })
+      );
+    }
+  }
+
+  render() {
+    return html`
+      <button
+        type="button"
+        ?disabled=${this.disabled}
+        @click=${(e: MouseEvent) => this.emitClick(e)}
+        @keydown=${(e: KeyboardEvent) => this.onKeyDown(e)}
+      >
+        <slot></slot>
+      </button>
+    `;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "ui-button": UIButtonElement;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-clickable.ts
+
+import { html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-clickable')
+export class UIClickableElement extends UIElement {
+  static styles = css`
+    :host {
+      display: block;
+      cursor: pointer;
+    }
+    :host(:hover) {
+      opacity: 0.9;
+    }
+  `;
+
+  render() {
+    return html`
+      <div @click=${this.handleClick}>
+        <slot></slot>
+      </div>
+    `;
+  }
+
+  private handleClick = (e: MouseEvent) => {
+    this.dispatchEvent(new CustomEvent('ui-click', { detail: e, bubbles: true, composed: true }));
+  };
+}
+
+================================================================================
+// FILE: src\web-components\ui-column.ts
+
+import { html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-column')
+export class UIColumnElement extends UIElement {
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: column;
+      gap: var(--ui-space-2, 8px);
+    }
+  `;
+
+  render() {
+    return html`<slot></slot>`;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-divider.ts
+
+import { html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-divider')
+export class UIDividerElement extends UIElement {
+  @property({ type: String })
+  accessor direction: 'horizontal' | 'vertical' = 'horizontal';
+
+  static styles = css`
+    :host {
+      display: block;
+      margin: 4px 0;
+    }
+    .horizontal {
+      height: 1px;
+      width: 100%;
+      background: var(--ui-border-light, #ddd);
+    }
+    .vertical {
+      width: 1px;
+      height: 100%;
+      background: var(--ui-border-light, #ddd);
+    }
+  `;
+
+  render() {
+    return html`
+      <div class=${this.direction}></div>
+    `;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-error.ts
+
+import { html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-error')
+export class UIErrorElement extends UIElement {
+  @property({ type: String }) accessor message = '';
+
+  static styles = css`
+    :host {
+      display: block;
+      color: red;
+      padding: 4px 0;
+      font-size: 12px;
+    }
+  `;
+
+  render() {
+    return html`${this.message}`;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-focusable.ts
+
+import { html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-focusable')
+export class UIFocusableElement extends UIElement {
+  static styles = css`
+    :host {
+      display: block;
+    }
+    :host(:focus-within) {
+      outline: 2px solid var(--ui-primary, #007bff);
+      border-radius: 6px;
+    }
+  `;
+
+  render() {
+    return html`<slot></slot>`;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-hoverable.ts
+
+import { html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-hoverable')
+export class UIHoverableElement extends UIElement {
+  static styles = css`
+    :host {
+      display: block;
+    }
+    :host(:hover) {
+      filter: brightness(1.1);
+    }
+  `;
+
+  render() {
+    return html`<slot></slot>`;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-input-checkbox.ts
+
+import { html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-input-checkbox')
+export class UIInputCheckboxElement extends UIElement {
+  @property({ type: Boolean }) checked = false;
+  @property({ type: String }) label = '';
+
+  static styles = css`
+    :host {
+      display: block;
+    }
+    label {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      cursor: pointer;
+    }
+  `;
+
+  private onToggle = (e: Event) => {
+    const el = e.target as HTMLInputElement;
+    this.checked = el.checked;
+
+    this.dispatchEvent(
+      new CustomEvent('ui-change', {
+        detail: { checked: this.checked },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  };
+
+  render() {
+    return html`
+      <label>
+        <input type="checkbox" .checked=${this.checked} @change=${this.onToggle} />
+        <span>${this.label}</span>
+      </label>
+    `;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-input-number.ts
+
+import { html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-input-number')
+export class UIInputNumberElement extends UIElement {
+  @property({ type: Number }) accessor value: number | null = null;
+  @property({ type: String }) accessor placeholder = '';
+
+  // Optional extras
+  @property({ type: Number }) accessor min: number | undefined;
+  @property({ type: Number }) accessor max: number | undefined;
+  @property({ type: Number }) accessor step: number | undefined;
+
+  static styles = css`
+    :host {
+      display: block;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+  `;
+
+  private onInput = (e: Event) => {
+    const el = e.target as HTMLInputElement;
+    this.value = el.value === '' ? null : Number(el.value);
+
+    this.dispatchEvent(
+      new CustomEvent('ui-change', {
+        detail: { value: this.value },
+        bubbles: true,
+        composed: true
+      })
+    );
+  };
+
+  render() {
+    return html`
+      <input
+        type="number"
+        .value=${this.value !== null ? String(this.value) : ''}
+        .placeholder=${this.placeholder}
+        .min=${this.min !== undefined ? String(this.min) : ''}
+        .max=${this.max !== undefined ? String(this.max) : ''}
+        .step=${this.step !== undefined ? String(this.step) : ''}
+        @input=${this.onInput}
+      />
+    `;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-input-select.ts
+
+import { html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-input-select')
+export class UIInputSelectElement extends UIElement {
+  @property({ type: Array }) accessor options: string[] = [];
+  @property({ type: String }) accessor value: string | null = null;
+
+  static styles = css`
+    :host {
+      display: block;
+    }
+    select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+  `;
+
+  private onChange = (e: Event) => {
+    const el = e.target as HTMLSelectElement;
+    this.value = el.value;
+
+    this.dispatchEvent(
+      new CustomEvent('ui-change', {
+        detail: { value: this.value },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  };
+
+  render() {
+    return html`
+      <select @change=${this.onChange}>
+        ${this.options.map(
+          o => html`<option value=${o} ?selected=${this.value === o}>${o}</option>`
+        )}
+      </select>
+    `;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-input-text.ts
+
+import { html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+ 
+@customElement('ui-input-text')
+export class UIInputTextElement extends UIElement {
+ 
+  @property({ type: String }) accessor value: string = '';
+  @property({ type: String }) accessor placeholder: string = '';
+
+  static styles = css`
+    :host {
+      display: block;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+  `;
+
+  private onInput = (e: Event) => {
+    const el = e.target as { value: string } | null;
+    this.value = el ? el.value : '';
+
+  };
+
+  render() {
+    return html`
+      <input
+        type="text"
+        .value=${this.value}
+        .placeholder=${this.placeholder}
+        @input=${this.onInput}
+      />
+    `;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-label.ts
+
+import { html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-label')
+export class UILabelElement extends UIElement {
+  static styles = css`
+    :host {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+  `;
+
+  render() {
+    return html`<label><slot></slot></label>`;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-rectangle.ts
+
+import { html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-rectangle')
+export class UIRectangleElement extends UIElement {
+  static styles = css`
+    :host {
+      display: block;
+    }
+    .boundary {
+      border: 2px solid var(--ui-border-rect, #333);
+      border-radius: var(--ui-radius-sm, 4px);
+      padding: 12px;
+    }
+  `;
+
+  render() {
+    return html`
+      <div class="boundary">
+        <slot></slot>
+      </div>
+    `;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-row.ts
+
+import { html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-row')
+export class UIRowElement extends UIElement {
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: row;
+      gap: var(--ui-space-2, 8px);
+      align-items: center;
+    }
+  `;
+
+  render() {
+    return html`<slot></slot>`;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-spacer.ts
+
+import { html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-spacer')
+export class UISpacerElement extends UIElement {
+  @property({ type: Number }) accessor size = 8;
+
+  static styles = css`
+    :host {
+      display: block;
+      width: 100%;
+    }
+  `;
+
+  render() {
+    return html`
+      <div style="height: ${this.size}px;"></div>
+    `;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-stack.ts
+
+import { html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-stack')
+export class UIStackElement extends UIElement {
+  static styles = css`
+    :host {
+      display: grid;
+      position: relative;
+    }
+    ::slotted(*) {
+      grid-area: 1 / 1;
+    }
+
+  `;
+
+  render() {
+    return html`<slot></slot>`;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-surface.ts
+
+import { html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-surface')
+export class UISurfaceElement extends UIElement {
+  static styles = css`
+    :host {
+      display: block;
+      padding: 20px;
+      background: var(--ui-bg-elevated, #fcfcfc);
+      border-radius: var(--ui-radius-md, 8px);
+      box-shadow: var(--ui-shadow-2, 0 3px 8px rgba(0,0,0,0.12));
+    }
+  `;
+
+  render() {
+    return html`<slot></slot>`;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-toggleable.ts
+
+import { html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-toggleable')
+export class UIToggleableElement extends UIElement {
+   
+  @property({ type: Boolean }) accessor state = false;
+
+  static styles = css`
+    :host {
+      display: block;
+      cursor: pointer;
+    }
+    .active {
+      background: var(--ui-primary, #007bff);
+      color: white;
+      padding: 4px;
+      border-radius: 4px;
+    }
+  `;
+
+  private toggle = () => {
+    this.state = !this.state;
+
+    this.dispatchEvent(
+      new CustomEvent('ui-change', {
+        detail: { state: this.state },
+        bubbles: true,
+        composed: true
+      })
+    );
+  };
+
+  render() {
+    return html`
+      <div class=${this.state ? 'active' : ''} @click=${this.toggle}>
+        <slot></slot>
+      </div>
+    `;
+  }
+}
+
+================================================================================
+// FILE: src\web-components\ui-validatable.ts
+
+import { html, css } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { UIElement } from '../core/ui-element.js';
+
+@customElement('ui-validatable')
+export class UIValidatableElement extends UIElement {
+  static styles = css`
+    :host {
+      display: block;
+    }
+  `;
+
+  render() {
+    return html`<slot></slot>`;
+  }
+}
+
+================================================================================
+// FILE: tests\composite.spec.ts
+
+{}
+
+================================================================================
+// FILE: tests\composite.tree.ts
+
+{}
+
+================================================================================
+// FILE: tests\composite.ts
+
+{}
+
+================================================================================
+// FILE: tests\fixtures\componentFixture.ts
+
+import { expect } from "vitest";
+import type { Component } from "../../src/core/component.js";
+
+export type Fixture<TModel extends Component = Component> = Readonly<{
+  model: TModel;
+  element: HTMLElement;
+}>;
+
+export function createComponentFixture<TModel extends Component>(model: TModel): Fixture<TModel> {
+  const element = model.createElement();
+  return { model, element };
+}
+
+/** Strict DOM query: fails fast with a good error. */
+export function $<T extends Element = Element>(
+  root: ParentNode,
+  selector: string
+): T {
+  const el = root.querySelector(selector);
+  expect(el, `Expected element for selector: ${selector}`).not.toBeNull();
+  return el as T;
+}
+
+/** Strict DOM queryAll: convenient + fails fast when empty. */
+export function $all<T extends Element = Element>(
+  root: ParentNode,
+  selector: string
+): ReadonlyArray<T> {
+  const els = Array.from(root.querySelectorAll(selector)) as T[];
+  expect(els.length, `Expected at least 1 element for selector: ${selector}`).toBeGreaterThan(0);
+  return els;
+}
+
+/** Assert host tag name in a stable way. */
+export function expectTag(el: Element, tag: string): void {
+  expect(el.tagName.toLowerCase()).toBe(tag.toLowerCase());
+}
+
+/**
+ * Host-shape assertion helper (solves: "possibly undefined" for host props).
+ * Use it only when your model sets host properties (e.g. options arrays, state flags).
+ */
+export function assertHostProps<T extends object>(
+  el: HTMLElement,
+  props: ReadonlyArray<keyof T>
+): asserts el is HTMLElement & T {
+  const anyEl = el as any;
+  for (const p of props) {
+    expect(p in anyEl, `Expected host property "${String(p)}"`).toBe(true);
+  }
+}
+
+================================================================================
+// FILE: tests\input\button.test.ts
+
+import { describe, it, expect } from "vitest";
+
+import { ButtonUI } from "../../src/input/button.js";
+import { LabelUI } from "../../src/input/label.js";
+import { createComponentFixture, expectTag, assertHostProps, $ } from "../fixtures/componentFixture.js";
+
+type ButtonVariant = "primary" | "secondary" | "ghost";
+type ButtonHost = { variant: ButtonVariant; disabled: boolean };
+
+function createButton(options?: ConstructorParameters<typeof ButtonUI>[1]) {
+  const model = new ButtonUI(new LabelUI("Submit"), options);
+  const fx = createComponentFixture(model);
+
+  // host contract
+  expectTag(fx.element, "ui-button");
+
+  // host props contract (and TS narrowing)
+  assertHostProps<ButtonHost>(fx.element, ["variant", "disabled"]);
+  const host = fx.element as HTMLElement & ButtonHost;
+
+  return { ...fx, host };
+}
+
+describe("ButtonUI (model)", () => {
+  it("defaults", () => {
+    const { host } = createButton();
+
+    expect(host.variant).toBe("primary");
+    expect(host.disabled).toBe(false);
+  });
+
+  it("applies options", () => {
+    const { host, element } = createButton({ variant: "secondary", disabled: true });
+
+    expect(host.variant).toBe("secondary");
+    expect(host.disabled).toBe(true);
+    expect(element.getAttribute("aria-disabled")).toBe("true");
+  });
+
+  it("renders child as light DOM", () => {
+    const { element } = createButton();
+
+    const label = $<HTMLElement>(element, "ui-label");
+    expect(label.textContent).toBe("Submit");
+  });
+});
+
+================================================================================
+// FILE: tsconfig.json
+
+// packages/core-design-composite/tsconfig.json  (adjusted)
+{
+  "extends": "../../tsconfig.node.json",
+  "compilerOptions": {
+    // âœ… must emit
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "dist",
+    // âœ… output
+    "outDir": "dist",
+    "rootDir": "src",
+
+    // âœ… library compile surface
+    "lib": ["ES2021", "DOM"],
+    "types": [],
+
+    // âœ… make module settings consistent (NodeNext requires module=NodeNext)
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    // decorators (keep if you actually need it)
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "tests",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "vitest.config.ts",
+    "vite.config.ts"
+  ]
+}
+
+================================================================================
+// FILE: vitest.config.ts
+
+// vitest.config.ts
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    environment: "jsdom",
+    globals: true,
+    include: ["tests/**/*.test.ts"],
+    pool: "forks",
+    isolate: true,
+  },
+
+  resolve: {
+    preserveSymlinks: true,
+    alias: {},
+    dedupe: [],
+  },
+
+  optimizeDeps: {
+    disabled: true,
+  },
+});
+

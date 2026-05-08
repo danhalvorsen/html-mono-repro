@@ -13,11 +13,11 @@ export * from './core/leaf.js';
 export * from './core/ui-element.js';
 
 export * from './demo/demo-ui.js';
-export * from './demo/main.js';
 
 export * from './input/error.js';
 export * from './input/input-checkbox.js';
 export * from './input/input-number.js';
+export * from './input/input-range.js';
 export * from './input/input-select.js';
 export * from './input/input-text.js';
 export * from './input/label.js';
@@ -41,6 +41,7 @@ export * from './web-components/ui-focusable.js';
 export * from './web-components/ui-hoverable.js';
 export * from './web-components/ui-input-checkbox.js';
 export * from './web-components/ui-input-number.js';
+export * from './web-components/ui-input-range.js';
 export * from './web-components/ui-input-select.js';
 export * from './web-components/ui-input-text.js';
 export * from './web-components/ui-label.js';

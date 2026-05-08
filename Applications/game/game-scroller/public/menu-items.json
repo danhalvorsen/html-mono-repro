@@ -2,56 +2,66 @@
   {
     "id": "game",
     "label": "Game",
-    "icon": "🎮"
+    "icon": "\ud83c\udfae"
   },
   {
     "id": "game - render a polygon",
     "label": "Game - Render a Polygon",
-    "icon": "🔷"
+    "icon": "\ud83d\udd37"
   },
   {
     "id": "game - player keyboard",
     "label": "Game - Player Keyboard",
-    "icon": "⌨️"
+    "icon": "\u2328\ufe0f"
   },
   {
     "id": "game - rocket demo",
     "label": "Game - Rocket Demo",
-    "icon": "🚀"
+    "icon": "\ud83d\ude80"
   },
   {
     "id": "game - color mangment demo",
     "label": "Color Mangment Demo",
-    "icon": "🎨"
+    "icon": "\ud83c\udfa8"
   },
   {
     "id": "game - vector field demo",
     "label": "Vector Field Demo",
-    "icon": "〰️"
+    "icon": "\u3030\ufe0f"
   },
   {
     "id": "diagnostics",
     "label": "Diagnostics",
-    "icon": "📈"
+    "icon": "\ud83d\udcc8"
   },
   {
     "id": "help",
     "label": "Help",
-    "icon": "❓"
+    "icon": "\u2753"
   },
   {
     "id": "settings",
     "label": "Settings",
-    "icon": "⚙️"
+    "icon": "\u2699\ufe0f"
   },
   {
     "id": "game - cave object",
     "label": "Game - Cave Object",
-    "icon": "🕳️"
+    "icon": "\ud83d\udd73\ufe0f"
   },
   {
     "id": "game - cave camera demo",
     "label": "Game - Cave Camera Demo",
-    "icon": "📷"
+    "icon": "\ud83d\udcf7"
+  },
+  {
+    "id": "fsm - pilot",
+    "label": "FSM Pilot",
+    "icon": "\ud83e\uddea"
+  },
+  {
+    "id": "fsm - vector field",
+    "label": "FSM - Vector Field",
+    "icon": "\ud83e\udded"
   }
 ]

@@ -13,6 +13,7 @@ import "./views/view-cave-object.js";
 import "./views/view-diagnostics.js";
 import "./views/view-help.js";
 import "./views/view-settings.js";
+import "./views/vector-field-game-view/index.js";
 import type { MenuViewChangeDetail } from "./menu-wc.js";
 
 const VIEW_IDS = Object.freeze({
@@ -27,6 +28,8 @@ const VIEW_IDS = Object.freeze({
   diagnostics: "diagnostics",
   help: "help",
   settings: "settings",
+  fsmPilot: "fsm - pilot",
+  fsmVectorField: "fsm - vector field",
 } as const);
 
 type ViewMenuItem = {
@@ -47,6 +50,8 @@ const DEFAULT_VIEW_ITEMS: readonly ViewMenuItem[] = Object.freeze([
   { id: VIEW_IDS.diagnostics, label: "Diagnostics", icon: "📈" },
   { id: VIEW_IDS.help, label: "Help", icon: "❓" },
   { id: VIEW_IDS.settings, label: "Settings", icon: "⚙️" },
+  { id: VIEW_IDS.fsmPilot, label: "FSM Pilot", icon: "🧪" },
+  { id: VIEW_IDS.fsmVectorField, label: "FSM - Vector Field", icon: "🧭" },
 ]);
 
 @customElement("my-element")
@@ -185,7 +190,8 @@ export class MyElement extends LitElement {
       
       case VIEW_IDS.colorMangmentDemo:
         return html`<view-color-mangment-demo></view-color-mangment-demo>`;
-case VIEW_IDS.caveObject:
+
+      case VIEW_IDS.caveObject:
         return html`<view-cave-object></view-cave-object>`;
 
       case VIEW_IDS.caveCameraDemo:
@@ -199,6 +205,12 @@ case VIEW_IDS.caveObject:
 
       case VIEW_IDS.settings:
         return html`<view-settings></view-settings>`;
+
+      case VIEW_IDS.fsmPilot:
+        return html`<view-fsm-pilot></view-fsm-pilot>`;
+
+      case VIEW_IDS.fsmVectorField:
+        return html`<view-vector-field-game-object-demo-fsm></view-vector-field-game-object-demo-fsm>`;
 
       default:
         return html`<view-game></view-game>`;
@@ -235,4 +247,3 @@ declare global {
     "my-element": MyElement;
   }
 }
-

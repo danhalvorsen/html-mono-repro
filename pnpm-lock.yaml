@@ -598,6 +598,28 @@ importers:
         specifier: ^8.0.0
         version: 8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
+  Applications/configuration/configuration-by-composite-lit-wc/vite-project:
+    dependencies:
+      '@monorepo/core-design-composite':
+        specifier: workspace:*
+        version: link:../../../../packages/core-design-composite
+      '@monorepo/core-design-composite-fsm':
+        specifier: workspace:*
+        version: link:../../../../packages/core-design-composite-fsm
+      '@monorepo/core-fsm':
+        specifier: workspace:*
+        version: link:../../../../packages/core-fsm
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.10
+        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+
   Applications/data-processing/vite-project:
     dependencies:
       lit:
@@ -834,9 +856,18 @@ importers:
       '@monorepo/core-collision-polygons':
         specifier: workspace:*
         version: link:../../../packages/core-collision-modules/core-collision-polygons
+      '@monorepo/core-design-composite':
+        specifier: workspace:*
+        version: link:../../../packages/core-design-composite
+      '@monorepo/core-design-composite-fsm':
+        specifier: workspace:*
+        version: link:../../../packages/core-design-composite-fsm
       '@monorepo/core-design-patterns':
         specifier: workspace:*
         version: link:../../../packages/core-design-patterns
+      '@monorepo/core-fsm':
+        specifier: workspace:*
+        version: link:../../../packages/core-fsm
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../packages/core-math
@@ -2775,6 +2806,18 @@ importers:
         version: 5.9.3
 
   packages/core-design-composite: {}
+
+  packages/core-design-composite-fsm:
+    dependencies:
+      '@monorepo/core-design-composite':
+        specifier: workspace:*
+        version: link:../core-design-composite
+      '@monorepo/core-fsm':
+        specifier: workspace:*
+        version: link:../core-fsm
+      '@monorepo/core-template-handlebar':
+        specifier: workspace:*
+        version: link:../core-template-handlebar
 
   packages/core-design-pattern-composite-tree:
     devDependencies:
