@@ -840,6 +840,9 @@ importers:
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../packages/core-math
+      '@monorepo/core-math-colors':
+        specifier: workspace:*
+        version: link:../../../packages/core-math-colors
       '@monorepo/core-math-probability':
         specifier: workspace:*
         version: link:../../../packages/core-math-probability
