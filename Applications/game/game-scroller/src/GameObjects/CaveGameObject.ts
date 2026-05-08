@@ -19,6 +19,7 @@ import './TriangleStripGameObject.js';
 const DEFAULT_WORLD_WIDTH = 500;
 const MIN_WORLD_WIDTH = 320;
 const WORLD_HEIGHT = 300;
+const UPPER_RANDOM_SEED = 73_421;
 
 @customElement('cave-base-game-object')
 export class CaveGameObject extends BaseGameObject {
@@ -44,7 +45,9 @@ export class CaveGameObject extends BaseGameObject {
         top: 8px;
         right: 8px;
         z-index: 1000;
-        width: min(230px, calc(100% - 16px));
+        width: min(250px, calc(100% - 16px));
+        max-height: calc(100% - 16px);
+        overflow: auto;
         display: grid;
         gap: 6px;
         padding: 8px;
@@ -128,6 +131,12 @@ export class CaveGameObject extends BaseGameObject {
 
   @property({ type: Number })
   public caveHalfHeight = 64;
+
+  @property({ type: Number })
+  public upperRandomMin = 0;
+
+  @property({ type: Number })
+  public upperRandomMax = 0;
 
   @property({ type: Number })
   public maximumVerticalDeviation = 10;
@@ -232,6 +241,24 @@ export class CaveGameObject extends BaseGameObject {
           max: 120,
           step: 1,
           onInput: this.onCaveHalfHeightInput,
+        })}
+
+        ${this.renderRange({
+          label: 'upper random min',
+          value: this.upperRandomMin,
+          min: -20,
+          max: 20,
+          step: 1,
+          onInput: this.onUpperRandomMinInput,
+        })}
+
+        ${this.renderRange({
+          label: 'upper random max',
+          value: this.upperRandomMax,
+          min: -20,
+          max: 20,
+          step: 1,
+          onInput: this.onUpperRandomMaxInput,
         })}
 
         ${this.renderRange({
@@ -364,6 +391,26 @@ export class CaveGameObject extends BaseGameObject {
     this.rebuildCave();
   };
 
+  private readonly onUpperRandomMinInput = (event: Event): void => {
+    this.upperRandomMin = this.readRangeNumber(event);
+
+    if (this.upperRandomMin > this.upperRandomMax) {
+      this.upperRandomMax = this.upperRandomMin;
+    }
+
+    this.rebuildCave();
+  };
+
+  private readonly onUpperRandomMaxInput = (event: Event): void => {
+    this.upperRandomMax = this.readRangeNumber(event);
+
+    if (this.upperRandomMax < this.upperRandomMin) {
+      this.upperRandomMin = this.upperRandomMax;
+    }
+
+    this.rebuildCave();
+  };
+
   private readonly onMaximumVerticalDeviationInput = (event: Event): void => {
     this.maximumVerticalDeviation = this.readRangeNumber(event);
     this.rebuildCave();
@@ -398,6 +445,10 @@ export class CaveGameObject extends BaseGameObject {
     event.stopPropagation();
   };
 
+  public getCaveScene(): CaveScene {
+    return this.#scene;
+  }
+
   private rebuildCave(): void {
     const generated = createCaveScene({
       worldWidth: this.worldWidth,
@@ -407,6 +458,10 @@ export class CaveGameObject extends BaseGameObject {
       verticalSlope: this.verticalSlope,
       samplesPerFrame: this.referenceSamplesPerFrame,
       caveHalfHeight: this.caveHalfHeight,
+      upperRandom: {
+        min: this.upperRandomMin,
+        max: this.upperRandomMax,
+      },
       progressiveTriangleStripOptions: {
         maximumVerticalDeviation: this.maximumVerticalDeviation,
         maximumDerivativeDelta: this.maximumDerivativeDelta,
@@ -467,7 +522,13 @@ interface CaveRuntimeOptions {
   readonly verticalSlope: number;
   readonly samplesPerFrame: number;
   readonly caveHalfHeight: number;
+  readonly upperRandom: UpperRandomOptions;
   readonly progressiveTriangleStripOptions: ProgressiveTriangleStripOptions;
+}
+
+interface UpperRandomOptions {
+  readonly min: number;
+  readonly max: number;
 }
 
 function createCaveScene(options: CaveRuntimeOptions): {
@@ -484,7 +545,12 @@ function createCaveScene(options: CaveRuntimeOptions): {
     options.verticalSlope,
   );
 
-  const upperPoints = offsetPoints(referencePoints, -options.caveHalfHeight);
+  const baseUpperPoints = offsetPoints(referencePoints, -options.caveHalfHeight);
+  const upperPoints = applyUpperRandomProductOffset(
+    baseUpperPoints,
+    options.upperRandom,
+  );
+
   const lowerPoints = offsetPoints(referencePoints, options.caveHalfHeight);
 
   const triangleStrip = new ProgressiveTriangleStrip(
@@ -545,6 +611,50 @@ function applyVerticalSlope(
   });
 }
 
+function applyUpperRandomProductOffset(
+  points: readonly Vector2[],
+  options: UpperRandomOptions,
+): readonly Vector2[] {
+  if (options.min === 0 && options.max === 0) {
+    return points;
+  }
+
+  return points.map((point, sampleIndex) => {
+    const first = deterministicRandomInRange(
+      sampleIndex,
+      UPPER_RANDOM_SEED,
+      options,
+    );
+
+    const second = deterministicRandomInRange(
+      sampleIndex,
+      UPPER_RANDOM_SEED + 97,
+      options,
+    );
+
+    const offset = first * second;
+
+    return new Vector2(point.x, point.y + offset);
+  });
+}
+
+function deterministicRandomInRange(
+  bucket: number,
+  seed: number,
+  options: UpperRandomOptions,
+): number {
+  const min = Math.min(options.min, options.max);
+  const max = Math.max(options.min, options.max);
+  const random = deterministicRandom01(bucket, seed);
+
+  return min + (max - min) * random;
+}
+
+function deterministicRandom01(bucket: number, seed: number): number {
+  const value = Math.sin(bucket * 12.9898 + seed * 78.233) * 43758.5453;
+  return value - Math.floor(value);
+}
+
 function offsetPoints(
   points: readonly Vector2[],
   yOffset: number,
@@ -557,3 +667,10 @@ declare global {
     'cave-base-game-object': CaveGameObject;
   }
 }
+
+
+
+
+
+
+

@@ -25,4 +25,5 @@ export { CaveGameObject } from './CaveGameObject.js';
 export { CaveBaseGameObjectShapeTemplate } from './CaveBaseGameObjectShapeTemplate.js';
 export { TriangleStripGameObject } from './TriangleStripGameObject.js';
 export { TriangleStripGameObjectShapeTemplate } from './TriangleStripGameObjectShapeTemplate.js';
+export { CameraGameObject } from './CameraGameObject.js';
 

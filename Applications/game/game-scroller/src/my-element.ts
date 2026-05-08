@@ -6,6 +6,8 @@ import "./views/view-game.js";
 import "./views/view-game-polygon.js";
 import "./views/view-game-player-input.js";
 import "./views/view-rocket-demo.js";
+import "./views/view-vector-field-game-object-demo.js";
+import "./views/view-cave-camera-demo.js";
 import "./views/view-cave-object.js";
 import "./views/view-diagnostics.js";
 import "./views/view-help.js";
@@ -17,6 +19,8 @@ const VIEW_IDS = Object.freeze({
   gameRenderPolygon: "game - render a polygon",
   gamePlayerInput: "game - player keyboard",
   rocketDemo: "game - rocket demo",
+  vectorFieldDemo: "game - vector field demo",
+  caveCameraDemo: "game - cave camera demo",
   caveObject: "game - cave object",
   diagnostics: "diagnostics",
   help: "help",
@@ -34,6 +38,8 @@ const DEFAULT_VIEW_ITEMS: readonly ViewMenuItem[] = Object.freeze([
   { id: VIEW_IDS.gameRenderPolygon, label: "Game - Render a Polygon", icon: "🔷" },
   { id: VIEW_IDS.gamePlayerInput, label: "Game - Player Keyboard", icon: "⌨️" },
   { id: VIEW_IDS.rocketDemo, label: "Game - Rocket Demo", icon: "🚀" },
+  { id: VIEW_IDS.vectorFieldDemo, label: "Vector Field Demo", icon: "〰️" },
+  { id: VIEW_IDS.caveCameraDemo, label: "Game - Cave Camera Demo", icon: "📷" },
   { id: VIEW_IDS.caveObject, label: "Game - Cave Object", icon: "🕳️" },
   { id: VIEW_IDS.diagnostics, label: "Diagnostics", icon: "📈" },
   { id: VIEW_IDS.help, label: "Help", icon: "❓" },
@@ -171,8 +177,13 @@ export class MyElement extends LitElement {
       case VIEW_IDS.rocketDemo:
         return html`<view-rocket-demo></view-rocket-demo>`;
 
+      case VIEW_IDS.vectorFieldDemo:
+        return html`<view-vector-field-game-object-demo></view-vector-field-game-object-demo>`;
       case VIEW_IDS.caveObject:
         return html`<view-cave-object></view-cave-object>`;
+
+      case VIEW_IDS.caveCameraDemo:
+        return html`<view-cave-camera-demo></view-cave-camera-demo>`;
 
       case VIEW_IDS.diagnostics:
         return html`<view-diagnostics></view-diagnostics>`;
@@ -218,7 +229,4 @@ declare global {
     "my-element": MyElement;
   }
 }
-
-
-
 

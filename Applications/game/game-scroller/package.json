@@ -18,7 +18,8 @@
     "@monorepo/core-collision-polygons": "workspace:*",
     "@monorepo/game-motion": "workspace:*",
     "@monorepo/game-assets-shapes": "file:../cave-temp/game-assets-shapes",
-    "@monorepo/game-feature-cave": "workspace:*"
+    "@monorepo/game-feature-cave": "workspace:*",
+    "@monorepo/game-feature-backgrounds": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

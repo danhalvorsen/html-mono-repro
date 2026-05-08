@@ -1,7 +1,7 @@
 {
-  "name": "@monorepo/game-feature-curve",
+  "name": "@monorepo/game-feature-backgrounds",
   "version": "1.0.0",
-  "description": "Example module scaffold.",
+  "description": "Background support library for game",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

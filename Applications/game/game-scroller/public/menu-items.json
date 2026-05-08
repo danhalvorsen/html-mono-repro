@@ -20,6 +20,11 @@
     "icon": "🚀"
   },
   {
+    "id": "game - vector field demo",
+    "label": "Vector Field Demo",
+    "icon": "〰️"
+  },
+  {
     "id": "diagnostics",
     "label": "Diagnostics",
     "icon": "📈"
@@ -38,5 +43,10 @@
     "id": "game - cave object",
     "label": "Game - Cave Object",
     "icon": "🕳️"
+  },
+  {
+    "id": "game - cave camera demo",
+    "label": "Game - Cave Camera Demo",
+    "icon": "📷"
   }
 ]
