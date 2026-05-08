@@ -1,8 +1,7 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, css, html, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { MidiChannel, MidiNote, MidiVelocity, createNoteOn } from "@monorepo/music-core-midi";
 import { EnvelopeADSR, JumpPreset, WebAudioMidiPlayer } from "@monorepo/music-core-midi-playback";
-import SvgOctaveAdapter from "../adapters/SvgOctaveAdapter";
 import {
   PianoEventName,
   type TangentHoldEndDetail,
@@ -10,75 +9,112 @@ import {
 } from "../application/PianoEventContracts";
 import { DefaultMidiNoteMapper } from "../application/DefaultMidiNoteMapper";
 import { Accords, type AccordStep } from "../music/Accords";
-import { DEFAULT_OCTAVE_GEOMETRY } from "../octave/geometry/DefaultOctaveGeometry";
-import type { Polygon2D } from "../octave/geometry/Polygon2D";
-import type { PlacedPolygon } from "../octave/PlacedPolygon";
-import type { RawPolygon2D } from "../types";
+import {
+  DEFAULT_OCTAVE_GEOMETRY,
+  type LegacyTangentGeometry
+} from "../octave/geometry/DefaultOctaveGeometry";
 import { Tangent } from "./tangent";
-import "./tangent-skin";
+import "./tangent";
+
+import { DefaultPianoTangentNamingPolicy } from "../application/PianoTangentNamingPolicy";
+type TangentTemplate = "none" | "identifier" | "debug";
 
 type HeldVoice = {
-  holdId: string;
-  note: string;
-  osc: OscillatorNode;
-  gain: GainNode;
-  polygon: SVGPolygonElement;
-  startedAtMs: number;
+  readonly holdId: string;
+  readonly note: string;
+    midiNote: number;
+  readonly osc: OscillatorNode;
+  readonly gain: GainNode;
+  readonly polygon: SVGPolygonElement;
+  readonly startedAtMs: number;
+};
+
+type TangentBounds = {
+  readonly minX: number;
+  readonly maxX: number;
+  readonly minY: number;
+  readonly maxY: number;
+  readonly width: number;
+  readonly height: number;
+};
+
+type TangentLayoutItem = {
+  readonly geometry: LegacyTangentGeometry;
+  readonly isBlack: boolean;
+  readonly leftPercent: number;
+  readonly topPercent: number;
+  readonly widthPercent: number;
+  readonly heightPercent: number;
+  readonly zIndex: number;
 };
 
 @customElement("piano-octave")
 export class PianoOctave extends LitElement {
-  static styles = css`
+  private readonly tangentNamePolicy = new DefaultPianoTangentNamingPolicy();
+
+  public static override styles = css`
     :host {
       display: block;
     }
 
     .octave-stage {
       display: block;
-    }
-
-    .octave-stage svg {
-      display: block;
-      width: 100%;
-      height: 100%;
+      overflow: visible;
+      box-sizing: border-box;
       touch-action: none;
     }
 
-    .skin-layer {
+    .tangent-layer {
       position: absolute;
       inset: 0;
-      pointer-events: none;
+      overflow: visible;
+    }
+
+    piano-tangent {
+      position: absolute;
+      display: block;
+      box-sizing: border-box;
     }
   `;
 
   @property({ type: String })
-  width = "100%";
+  public width = "100%";
 
   @property({ type: String })
-  height = "auto";
+  public height = "auto";
 
   @property({ type: String })
-  position: "static" | "relative" | "absolute" | "fixed" | "sticky" = "relative";
+  public position: "static" | "relative" | "absolute" | "fixed" | "sticky" = "relative";
 
   @property({ type: String, attribute: "top" })
-  top = "auto";
+  public top = "auto";
 
   @property({ type: String, attribute: "left" })
-  left = "auto";
+  public left = "auto";
 
   @property({ type: Number })
-  gap = 4; // reserved for future spacing control
+  public gap = 4;
 
   @property({ type: Number, attribute: "octave-index" })
-  octaveIndex = 0;
+  public octaveIndex = 0;
 
   @property({ type: Number, attribute: "label-max-width-ratio" })
-  labelMaxWidthRatio = 0.8;
+  public labelMaxWidthRatio = 0.8;
 
-  private readonly adapter = new SvgOctaveAdapter();
+  @property({ type: Boolean, attribute: "show-box" })
+  public showBox = true;
+
+  @property({ type: Number, attribute: "box-width-ratio" })
+  public boxWidthRatio = 0.8;
+
+  @property({ type: Number, attribute: "box-depth-ratio" })
+  public boxDepthRatio = 0.9;
+
+  @property({ type: String, attribute: "template" })
+  public template: TangentTemplate = "identifier";
+
   private readonly midiPlayer = new WebAudioMidiPlayer({
     ...JumpPreset,
-    // Explicit release envelope on player side.
     envelope: EnvelopeADSR.create(
       JumpPreset.envelope.attack,
       JumpPreset.envelope.decay,
@@ -86,28 +122,43 @@ export class PianoOctave extends LitElement {
       0.45
     )
   });
+
   private readonly midiChannel = MidiChannel.create(1);
   private readonly midiVelocity = MidiVelocity.create(110);
   private readonly midiNoteMapper = new DefaultMidiNoteMapper();
   private readonly holdAudioContext = new AudioContext();
   private readonly activeVoicesByPointer = new Map<number, HeldVoice>();
   private syntheticHoldSequence = 0;
-  private readonly onOctavePointerDown = (event: Event) => {
+
+  private readonly onOctavePointerDown = (event: Event): void => {
     const pointerEvent = event as PointerEvent;
     const polygon = event
       .composedPath()
       .find((node): node is SVGPolygonElement => node instanceof SVGPolygonElement);
 
-    if (!polygon) return;
+    if (polygon === undefined) {
+      return;
+    }
 
     const note = polygon.dataset.note;
-    if (!note) return;
+    if (note === undefined || note.length === 0) {
+      return;
+    }
+
     const holdId = `${this.octaveIndex}:${note}:${pointerEvent.pointerId}:${performance.now()}`;
+
     this.setPressedVisual(polygon, true);
     this.startHeldNote(pointerEvent.pointerId, note, polygon, holdId);
+
     this.dispatchEvent(
       new CustomEvent<TangentHoldStartDetail>(PianoEventName.TangentHoldStart, {
-        detail: { holdId, note, octaveIndex: this.octaveIndex },
+        detail: {
+          holdId,
+          note,
+          octaveIndex: this.octaveIndex,
+          octave: this.createOctaveEventDetail(),
+          midiNote: midiNote
+        },
         bubbles: true,
         composed: true
       })
@@ -121,69 +172,196 @@ export class PianoOctave extends LitElement {
       })
     );
   };
-  private readonly onOctavePointerUp = (event: Event) => {
+
+  private readonly onOctavePointerUp = (event: Event): void => {
     const pointerEvent = event as PointerEvent;
     this.stopHeldNote(pointerEvent.pointerId);
   };
-  private readonly geometryByName = new Map(
-    [...DEFAULT_OCTAVE_GEOMETRY.whiteKeys, ...DEFAULT_OCTAVE_GEOMETRY.blackKeys].map((k) => [k.name, k])
-  );
-  private readonly allTangents = [
-    ...DEFAULT_OCTAVE_GEOMETRY.whiteKeys,
-    ...DEFAULT_OCTAVE_GEOMETRY.blackKeys
-  ];
 
-  private computeLayout(): PlacedPolygon[] {
-    const place = (key: RawPolygon2D): PlacedPolygon => ({
-      geometry: key as unknown as Polygon2D,
-      isBlack: key.name.includes("s")
-    });
-
-    return [
-      ...DEFAULT_OCTAVE_GEOMETRY.whiteKeys.map(place),
-      ...DEFAULT_OCTAVE_GEOMETRY.blackKeys.map(place)
-    ];
+  protected override firstUpdated(): void {
+    this.renderRoot.addEventListener("pointerdown", this.onOctavePointerDown);
+    this.renderRoot.addEventListener("pointerup", this.onOctavePointerUp);
+    this.renderRoot.addEventListener("pointercancel", this.onOctavePointerUp);
+    this.renderRoot.addEventListener("pointerleave", this.onOctavePointerUp);
   }
 
-  private toSkinMetricsPercent(tangent: RawPolygon2D): { x: number; y: number; width: number } {
-    const xs = tangent.points.map((point) => point[0]);
-    const ys = tangent.points.map((point) => point[1]);
+  public override disconnectedCallback(): void {
+    this.renderRoot.removeEventListener("pointerdown", this.onOctavePointerDown);
+    this.renderRoot.removeEventListener("pointerup", this.onOctavePointerUp);
+    this.renderRoot.removeEventListener("pointercancel", this.onOctavePointerUp);
+    this.renderRoot.removeEventListener("pointerleave", this.onOctavePointerUp);
+
+    this.activeVoicesByPointer.forEach((_, pointerId) => this.stopHeldNote(pointerId));
+    void this.holdAudioContext.close();
+
+    super.disconnectedCallback();
+  }
+
+  public playAccords(
+    progression: readonly AccordStep[],
+    stepWaitMs: number,
+    holdMs: number
+  ): void {
+    const accords = new Accords(progression, stepWaitMs, holdMs);
+    accords.play(({ notes, holdMs: noteHoldMs }) => {
+      notes.forEach((note) => this.playNote(note, noteHoldMs));
+    });
+  }
+
+  public playDemoChords(): void {
+    this.playAccords(
+      [
+        { notes: ["C", "E", "G"], waitBeforeMs: 0, holdMs: 1400 },
+        { notes: ["F", "A", "C"], waitBeforeMs: 1700, holdMs: 1450 },
+        { notes: ["G", "H", "D"], waitBeforeMs: 1750, holdMs: 1500 },
+        { notes: ["C", "E", "G"], waitBeforeMs: 1900, holdMs: 1800 }
+      ],
+      1700,
+      1450
+    );
+  }
+
+  protected override render(): TemplateResult {
+    const items = this.createLayoutItems();
+
+    return html`
+      <div
+        class="octave-stage"
+        style="
+          position: ${this.position};
+          width: ${this.width};
+          height: ${this.height};
+          top: ${this.top};
+          left: ${this.left};
+        "
+      >
+        <div class="tangent-layer">
+          ${items.map((item) => this.renderTangent(item))}
+        </div>
+      </div>
+    `;
+  }
+
+  private getTangentBaseNote(item: {
+    readonly note?: string;
+    readonly geometry: { readonly name: string };
+  }): string {
+    const note = item.note ?? item.geometry.name;
+
+    if (typeof note !== "string" || note.length === 0) {
+      throw new Error("Cannot render tangent because note is missing.");
+    }
+
+    return note;
+  }
+
+  private renderTangent(item: TangentLayoutItem): TemplateResult {
+    return html`
+      <piano-tangent
+        style="
+          left: ${item.leftPercent}%;
+          top: ${item.topPercent}%;
+          width: ${item.widthPercent}%;
+          height: ${item.heightPercent}%;
+          z-index: ${item.zIndex};
+        "
+        .geometry=${item.geometry}
+        .tangentId=${this.tangentNamePolicy.toTangentId(this.getTangentBaseNote(item), this.octaveIndex)}
+        .note=${this.getTangentBaseNote(item)}
+        .isBlack=${item.isBlack}
+        .showBox=${this.showBox}
+        .boxWidthRatio=${this.boxWidthRatio}
+        .boxDepthRatio=${this.boxDepthRatio}
+        .template=${this.template}
+      ></piano-tangent>
+    `;
+  }
+
+  private createLayoutItems(): readonly TangentLayoutItem[] {
+    const allTangents = [
+      ...DEFAULT_OCTAVE_GEOMETRY.whiteKeys.map((geometry) => this.createLayoutItem(geometry, false)),
+      ...DEFAULT_OCTAVE_GEOMETRY.blackKeys.map((geometry) => this.createLayoutItem(geometry, true))
+    ];
+
+    return allTangents;
+  }
+
+  private createLayoutItem(
+    geometry: LegacyTangentGeometry,
+    isBlack: boolean
+  ): TangentLayoutItem {
+    const bounds = this.readBounds(geometry);
+    const octaveBounds = this.readOctaveBounds();
+
+    return {
+      geometry,
+      isBlack,
+      leftPercent: ((bounds.minX - octaveBounds.minX) / octaveBounds.width) * 100,
+      topPercent: ((octaveBounds.maxY - bounds.maxY) / octaveBounds.height) * 100,
+      widthPercent: (bounds.width / octaveBounds.width) * 100,
+      heightPercent: (bounds.height / octaveBounds.height) * 100,
+      zIndex: isBlack ? 2 : 1
+    };
+  }
+
+  private readOctaveBounds(): TangentBounds {
+    const allPoints = [
+      ...DEFAULT_OCTAVE_GEOMETRY.whiteKeys.flatMap((geometry) => geometry.points),
+      ...DEFAULT_OCTAVE_GEOMETRY.blackKeys.flatMap((geometry) => geometry.points)
+    ];
+
+    return this.readBoundsFromPoints(allPoints);
+  }
+
+  private readBounds(geometry: LegacyTangentGeometry): TangentBounds {
+    return this.readBoundsFromPoints(geometry.points);
+  }
+
+  private readBoundsFromPoints(points: readonly (readonly [number, number])[]): TangentBounds {
+    const xs = points.map(([x]) => x);
+    const ys = points.map(([, y]) => y);
 
     const minX = Math.min(...xs);
     const maxX = Math.max(...xs);
     const minY = Math.min(...ys);
     const maxY = Math.max(...ys);
 
-    const centerX = (minX + maxX) / 2;
-    const centerY = (minY + maxY) / 2;
-    const width = Math.max(0, maxX - minX);
-
-    // Source geometry uses X in [0..169], Y in [0..100] with 0 at bottom.
-    const xPercent = (centerX / 169) * 100;
-    const yPercent = 100 - centerY;
-    const widthPercent = (width / 169) * 100;
-
-    return { x: xPercent, y: yPercent, width: widthPercent };
+    return {
+      minX,
+      maxX,
+      minY,
+      maxY,
+      width: Math.max(1, maxX - minX),
+      height: Math.max(1, maxY - minY)
+    };
   }
 
-  private applyGeometryToSlottedTangents(): void {
-    const slot = this.renderRoot.querySelector("slot");
-    if (!(slot instanceof HTMLSlotElement)) return;
+  private flashNoteByName(note: string): void {
+    const polygon = this.findPolygonByNote(note);
+    if (polygon !== null) {
+      this.flashNote(polygon);
+    }
+  }
 
-    const tangents = slot
-      .assignedElements({ flatten: true })
-      .filter((el): el is Tangent => el instanceof Tangent);
+  private findPolygonByNote(note: string): SVGPolygonElement | null {
+    const tangents = Array.from(this.renderRoot.querySelectorAll("piano-tangent"));
 
     for (const tangent of tangents) {
-      const id = tangent.tangentId ?? tangent.note ?? "";
-      const geometry = this.geometryByName.get(id);
-      if (!geometry) continue;
+      if (!(tangent instanceof Tangent)) {
+        continue;
+      }
 
-      tangent.tangentId = geometry.name;
-      tangent.note = geometry.name;
-      tangent.isBlack = geometry.name.includes("s");
-      tangent.geometry = geometry;
+      if (tangent.note !== note && tangent.tangentId !== note) {
+        continue;
+      }
+
+      const polygon = tangent.shadowRoot?.querySelector(`polygon[data-note="${note}"]`);
+      if (polygon instanceof SVGPolygonElement) {
+        return polygon;
+      }
     }
+
+    return null;
   }
 
   private flashNote(polygon: SVGPolygonElement): void {
@@ -207,27 +385,38 @@ export class PianoOctave extends LitElement {
     const pressedColor = isBlack ? "#3b82f6" : "#93c5fd";
     const baseColor = isBlack ? "#000" : "#fff";
 
+    const rootNode = polygon.getRootNode();
+    if (rootNode instanceof ShadowRoot && rootNode.host instanceof Tangent) {
+      rootNode.host.pressed = pressed;
+    }
+
     polygon.getAnimations().forEach((animation) => animation.cancel());
     polygon.setAttribute("fill", pressed ? pressedColor : baseColor);
   }
-
-  private flashNoteByName(note: string): void {
-    const polygon = this.renderRoot.querySelector(
-      `polygon[data-note="${note}"]`
-    );
-    if (polygon instanceof SVGPolygonElement) {
-      this.flashNote(polygon);
-    }
+  private createOctaveEventDetail(): { readonly index: number } {
+    return { index: this.octaveIndex };
   }
 
+
   private playNote(note: string, holdMs: number = 280, sustain: number = 0.9): void {
-    const midiNoteNumber = this.midiNoteMapper.toMidi(note);
-    if (midiNoteNumber === null) return;
+    const midiNote = this.midiNoteMapper.toMidi(note, this.octaveIndex);
+    if (midiNote === null) {
+      return;
+    }
+
     const holdId = `${this.octaveIndex}:${note}:song:${this.syntheticHoldSequence++}`;
+
     this.flashNoteByName(note);
+
     this.dispatchEvent(
       new CustomEvent<TangentHoldStartDetail>(PianoEventName.TangentHoldStart, {
-        detail: { holdId, note, octaveIndex: this.octaveIndex },
+        detail: {
+          holdId,
+          note,
+          octaveIndex: this.octaveIndex,
+          octave: this.createOctaveEventDetail(),
+          midiNote: midiNote
+        },
         bubbles: true,
         composed: true
       })
@@ -236,7 +425,7 @@ export class PianoOctave extends LitElement {
     this.midiPlayer.play(
       createNoteOn(
         this.midiChannel,
-        MidiNote.create(midiNoteNumber),
+        MidiNote.create(midiNote),
         this.midiVelocity
       ),
       {
@@ -248,7 +437,14 @@ export class PianoOctave extends LitElement {
     window.setTimeout(() => {
       this.dispatchEvent(
         new CustomEvent<TangentHoldEndDetail>(PianoEventName.TangentHoldEnd, {
-          detail: { holdId, note, holdMs, octaveIndex: this.octaveIndex },
+          detail: {
+          holdId,
+          note,
+          holdMs,
+          octaveIndex: this.octaveIndex,
+          octave: this.createOctaveEventDetail(),
+          midiNote: midiNote
+        },
           bubbles: true,
           composed: true
         })
@@ -256,9 +452,16 @@ export class PianoOctave extends LitElement {
     }, holdMs);
   }
 
-  private startHeldNote(pointerId: number, note: string, polygon: SVGPolygonElement, holdId: string): void {
-    const midiNoteNumber = this.midiNoteMapper.toMidi(note);
-    if (midiNoteNumber === null) return;
+  private startHeldNote(
+    pointerId: number,
+    note: string,
+    polygon: SVGPolygonElement,
+    holdId: string
+  ): void {
+    const midiNote = this.midiNoteMapper.toMidi(note, this.octaveIndex);
+    if (midiNote === null) {
+      return;
+    }
 
     this.stopHeldNote(pointerId);
     void this.holdAudioContext.resume();
@@ -268,7 +471,7 @@ export class PianoOctave extends LitElement {
     const gain = this.holdAudioContext.createGain();
 
     osc.type = "sawtooth";
-    osc.frequency.value = 440 * Math.pow(2, (midiNoteNumber - 69) / 12);
+    osc.frequency.value = 440 * Math.pow(2, (midiNote - 69) / 12);
 
     gain.gain.setValueAtTime(0, now);
     gain.gain.linearRampToValueAtTime(0.16, now + 0.02);
@@ -280,6 +483,7 @@ export class PianoOctave extends LitElement {
     this.activeVoicesByPointer.set(pointerId, {
       holdId,
       note,
+      midiNote: midiNote,
       osc,
       gain,
       polygon,
@@ -289,21 +493,28 @@ export class PianoOctave extends LitElement {
 
   private stopHeldNote(pointerId: number): void {
     const voice = this.activeVoicesByPointer.get(pointerId);
-    if (!voice) return;
+    if (voice === undefined) {
+      return;
+    }
 
     const now = this.holdAudioContext.currentTime;
+
     voice.gain.gain.cancelScheduledValues(now);
     voice.gain.gain.setValueAtTime(voice.gain.gain.value, now);
     voice.gain.gain.linearRampToValueAtTime(0, now + 0.18);
     voice.osc.stop(now + 0.2);
+
     this.setPressedVisual(voice.polygon, false);
+
     this.dispatchEvent(
       new CustomEvent<TangentHoldEndDetail>(PianoEventName.TangentHoldEnd, {
         detail: {
           holdId: voice.holdId,
           note: voice.note,
           holdMs: Math.max(0, performance.now() - voice.startedAtMs),
-          octaveIndex: this.octaveIndex
+          octaveIndex: this.octaveIndex,
+          octave: this.createOctaveEventDetail(),
+          midiNote: voice.midiNote
         },
         bubbles: true,
         composed: true
@@ -312,65 +523,10 @@ export class PianoOctave extends LitElement {
 
     this.activeVoicesByPointer.delete(pointerId);
   }
+}
 
-  public playAccords(progression: readonly AccordStep[], stepWaitMs: number, holdMs: number): void {
-    const accords = new Accords(progression, stepWaitMs, holdMs);
-    accords.play(({ notes, holdMs: noteHoldMs }) => {
-      notes.forEach((note) => this.playNote(note, noteHoldMs));
-    });
-  }
-
-  public playDemoChords(): void {
-    this.playAccords(
-      [
-        { notes: ["C", "E", "G"], waitBeforeMs: 0, holdMs: 1400 },
-        { notes: ["F", "A", "C"], waitBeforeMs: 1700, holdMs: 1450 },
-        { notes: ["G", "H", "D"], waitBeforeMs: 1750, holdMs: 1500 },
-        { notes: ["C", "E", "G"], waitBeforeMs: 1900, holdMs: 1800 }
-      ],
-      1700,
-      1450
-    );
-  }
-
-  protected firstUpdated(): void {
-    this.renderRoot.addEventListener("pointerdown", this.onOctavePointerDown);
-    this.renderRoot.addEventListener("pointerup", this.onOctavePointerUp);
-    this.renderRoot.addEventListener("pointercancel", this.onOctavePointerUp);
-    this.renderRoot.addEventListener("pointerleave", this.onOctavePointerUp);
-    this.applyGeometryToSlottedTangents();
-    const slot = this.renderRoot.querySelector("slot");
-    if (slot instanceof HTMLSlotElement) {
-      slot.addEventListener("slotchange", () => this.applyGeometryToSlottedTangents());
-    }
-  }
-
-  disconnectedCallback(): void {
-    this.renderRoot.removeEventListener("pointerdown", this.onOctavePointerDown);
-    this.renderRoot.removeEventListener("pointerup", this.onOctavePointerUp);
-    this.renderRoot.removeEventListener("pointercancel", this.onOctavePointerUp);
-    this.renderRoot.removeEventListener("pointerleave", this.onOctavePointerUp);
-    this.activeVoicesByPointer.forEach((_, pointerId) => this.stopHeldNote(pointerId));
-    void this.holdAudioContext.close();
-    super.disconnectedCallback();
-  }
-
-  render() {
-    return html`
-      <div
-        class="octave-stage"
-        style="
-          position: ${this.position};
-          width: ${this.width};
-          height: ${this.height};
-          top: ${this.top};
-          left: ${this.left};
-        "
-      >
-        ${this.adapter.adapt(this.computeLayout())}
-         
-      </div>
-      <slot></slot>
-    `;
+declare global {
+  interface HTMLElementTagNameMap {
+    "piano-octave": PianoOctave;
   }
 }

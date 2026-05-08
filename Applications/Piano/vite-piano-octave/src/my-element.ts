@@ -1,17 +1,19 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, type TemplateResult } from "lit";
 import { SongFileSource } from "./application/SongFileSources";
 import "./components/piano-root";
-import "./components/piano-waterfall";
 import type { PianoRoot } from "./components/piano-root";
 
 export class MyElement extends LitElement {
+  private static readonly OCTAVE_COUNT = 7;
+  private static readonly OCTAVE_WIDTH = "320px";
+  private static readonly OCTAVE_HEIGHT = "220px";
   private static readonly GRIEG_WEDDING_DAY_DURATION_MS = 6 * 60 * 1000 + 29 * 1000;
   private static readonly MIN_PLAYBACK_SPEED = 0.001;
   private static readonly MAX_PLAYBACK_SPEED = 1;
   private static readonly MIN_SIGNAL_RATE = 0.05;
   private static readonly MAX_SIGNAL_RATE = 4;
 
-  static styles = css`
+  public static override styles = css`
     :host {
       display: block;
       padding: 16px;
@@ -30,6 +32,7 @@ export class MyElement extends LitElement {
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .controls input[type="number"] {
@@ -49,18 +52,19 @@ export class MyElement extends LitElement {
   private playbackSpeed = 1;
   private midiSignalRate = 1;
 
-  private onPlayDemoClick = () => {
+  private readonly onPlayDemoClick = (): void => {
     const piano = this.renderRoot.querySelector("#piano") as PianoRoot | null;
     piano?.playDemoChords();
   };
 
-  private onPlayGriegClick = () => {
+  private readonly onPlayGriegClick = (): void => {
     const piano = this.renderRoot.querySelector("#piano") as PianoRoot | null;
     piano?.playGriegConcertoTheme();
   };
 
-  private onPlayWeddingDayMidiClick = async () => {
+  private readonly onPlayWeddingDayMidiClick = async (): Promise<void> => {
     const piano = this.renderRoot.querySelector("#piano") as PianoRoot | null;
+
     await piano?.playMidiSongFromUrl(
       SongFileSource.GriegWeddingDay,
       MyElement.GRIEG_WEDDING_DAY_DURATION_MS
@@ -68,62 +72,77 @@ export class MyElement extends LitElement {
   };
 
   private setPlaybackSpeed(next: number): void {
-    if (!Number.isFinite(next)) return;
-    const clamped = Math.min(
+    if (!Number.isFinite(next)) {
+      return;
+    }
+
+    this.playbackSpeed = Math.min(
       MyElement.MAX_PLAYBACK_SPEED,
       Math.max(MyElement.MIN_PLAYBACK_SPEED, next)
     );
-    this.playbackSpeed = clamped;
+
     this.requestUpdate();
   }
 
-  private onPlaybackSpeedRangeInput = (event: Event) => {
+  private readonly onPlaybackSpeedRangeInput = (event: Event): void => {
     const target = event.target;
-    if (!(target instanceof HTMLInputElement)) return;
-    this.setPlaybackSpeed(Number(target.value));
+
+    if (target instanceof HTMLInputElement) {
+      this.setPlaybackSpeed(Number(target.value));
+    }
   };
 
-  private onPlaybackSpeedNumberInput = (event: Event) => {
+  private readonly onPlaybackSpeedNumberInput = (event: Event): void => {
     const target = event.target;
-    if (!(target instanceof HTMLInputElement)) return;
-    this.setPlaybackSpeed(Number(target.value));
+
+    if (target instanceof HTMLInputElement) {
+      this.setPlaybackSpeed(Number(target.value));
+    }
   };
 
   private setMidiSignalRate(next: number): void {
-    if (!Number.isFinite(next)) return;
-    const clamped = Math.min(
+    if (!Number.isFinite(next)) {
+      return;
+    }
+
+    this.midiSignalRate = Math.min(
       MyElement.MAX_SIGNAL_RATE,
       Math.max(MyElement.MIN_SIGNAL_RATE, next)
     );
-    this.midiSignalRate = clamped;
+
     this.requestUpdate();
   }
 
-  private onMidiSignalRateRangeInput = (event: Event) => {
+  private readonly onMidiSignalRateRangeInput = (event: Event): void => {
     const target = event.target;
-    if (!(target instanceof HTMLInputElement)) return;
-    this.setMidiSignalRate(Number(target.value));
+
+    if (target instanceof HTMLInputElement) {
+      this.setMidiSignalRate(Number(target.value));
+    }
   };
 
-  private onMidiSignalRateNumberInput = (event: Event) => {
+  private readonly onMidiSignalRateNumberInput = (event: Event): void => {
     const target = event.target;
-    if (!(target instanceof HTMLInputElement)) return;
-    this.setMidiSignalRate(Number(target.value));
+
+    if (target instanceof HTMLInputElement) {
+      this.setMidiSignalRate(Number(target.value));
+    }
   };
 
-  render() {
+  protected override render(): TemplateResult {
     return html`
-      <h1>Piano (1 Octave)</h1>
+      <h1>Piano (${MyElement.OCTAVE_COUNT} Octaves)</h1>
+
       <piano-root
         id="piano"
-        .octaves=${1}
-        octaveHeight="400px"
+        .octaves=${MyElement.OCTAVE_COUNT}
+        .octaveWidth=${MyElement.OCTAVE_WIDTH}
+        .octaveHeight=${MyElement.OCTAVE_HEIGHT}
         .gap=${6}
         .playbackSpeed=${this.playbackSpeed}
         .midiSignalRate=${this.midiSignalRate}
-      >
-        <piano-waterfall slot="waterfall" .octaves=${1}></piano-waterfall>
-      </piano-root>
+      ></piano-root>
+
       <div class="controls">
         <label for="playback-speed">Playback Speed</label>
         <input
@@ -146,6 +165,7 @@ export class MyElement extends LitElement {
         />
         <span>${this.playbackSpeed.toFixed(3)}x</span>
       </div>
+
       <div class="controls">
         <label for="midi-signal-rate">MIDI Signal Rate</label>
         <input
@@ -168,6 +188,7 @@ export class MyElement extends LitElement {
         />
         <span>${this.midiSignalRate.toFixed(2)}x</span>
       </div>
+
       <div class="actions">
         <button type="button" @click=${this.onPlayDemoClick}>Play Demo Chords</button>
         <button type="button" @click=${this.onPlayGriegClick}>Play Grieg Theme</button>

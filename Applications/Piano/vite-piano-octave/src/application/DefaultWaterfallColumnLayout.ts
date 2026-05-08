@@ -1,174 +1,149 @@
 import { NOTE_SYMBOLS, type NoteSymbol } from "../domain/NoteDomain";
-import { DEFAULT_OCTAVE_GEOMETRY } from "../octave/geometry/DefaultOctaveGeometry";
+import {
+  DEFAULT_OCTAVE_GEOMETRY,
+  type LegacyTangentGeometry
+} from "../octave/geometry/DefaultOctaveGeometry";
+import type { Point } from "../types";
 import type { IWaterfallColumnLayout } from "./IWaterfallColumnLayout";
+import {
+  DefaultTangentUpperLineSegmentReader,
+  type ITangentUpperLineSegmentReader,
+  type TangentUpperLineSegment
+} from "./TangentUpperLineSegment";
 
-type TangentGeometry = {
-  readonly name: string;
-  readonly points: readonly (readonly [number, number])[];
-};
-
-type LineBounds = {
-  readonly minX: number;
-  readonly maxX: number;
+export type WaterfallColumnLayoutItem = {
+  readonly column: number;
+  readonly octaveIndex: number;
+  readonly note: NoteSymbol;
+  readonly segment: TangentUpperLineSegment;
+  readonly leftRatio: number;
+  readonly widthRatio: number;
+  readonly leftPercent: number;
+  readonly widthPercent: number;
 };
 
 export class DefaultWaterfallColumnLayout implements IWaterfallColumnLayout {
-  private readonly boundsByNote = new Map<NoteSymbol, LineBounds>();
+  private static readonly COLUMNS_PER_OCTAVE = NOTE_SYMBOLS.length;
+
+  private readonly segmentReader: ITangentUpperLineSegmentReader;
+  private readonly segmentsByNote: ReadonlyMap<NoteSymbol, TangentUpperLineSegment>;
+  private readonly octaveMinX: number;
+  private readonly octaveMaxX: number;
   private readonly octaveWidth: number;
 
-  public constructor() {
-    this.boundsByNote = this.createBoundsByNote();
-    this.octaveWidth = this.readOctaveWidth();
+  public constructor(
+    segmentReader: ITangentUpperLineSegmentReader = new DefaultTangentUpperLineSegmentReader()
+  ) {
+    this.segmentReader = segmentReader;
+    this.segmentsByNote = this.createSegmentsByNote();
+
+    const segments = Array.from(this.segmentsByNote.values());
+    this.octaveMinX = Math.min(...segments.map((segment) => segment.minX));
+    this.octaveMaxX = Math.max(...segments.map((segment) => segment.maxX));
+    this.octaveWidth = Math.max(1, this.octaveMaxX - this.octaveMinX);
   }
 
-  public getColumnWidthRatios(octaveCount: number): readonly number[] {
-    if (!Number.isInteger(octaveCount) || octaveCount <= 0) {
+  public getColumnLayoutItems(octaveCount: number): readonly WaterfallColumnLayoutItem[] {
+    if (!this.isValidOctaveCount(octaveCount)) {
       return [];
     }
 
-    const ratios: number[] = [];
-    const totalWidth = this.octaveWidth * octaveCount;
+    const result: WaterfallColumnLayoutItem[] = [];
 
     for (let octaveIndex = 0; octaveIndex < octaveCount; octaveIndex += 1) {
-      for (const note of NOTE_SYMBOLS) {
-        const bounds = this.boundsByNote.get(note);
-        if (bounds === undefined) {
-          ratios.push(this.getFallbackWidthRatio(note, totalWidth));
+      for (let noteIndex = 0; noteIndex < NOTE_SYMBOLS.length; noteIndex += 1) {
+        const note = NOTE_SYMBOLS[noteIndex];
+        const segment = this.segmentsByNote.get(note);
+
+        if (segment === undefined) {
           continue;
         }
-        ratios.push((bounds.maxX - bounds.minX) / totalWidth);
+
+        const column = octaveIndex * DefaultWaterfallColumnLayout.COLUMNS_PER_OCTAVE + noteIndex;
+        const globalStart = octaveIndex * this.octaveWidth + (segment.minX - this.octaveMinX);
+        const totalWidth = this.octaveWidth * octaveCount;
+        const leftRatio = globalStart / totalWidth;
+        const widthRatio = segment.length / totalWidth;
+
+        result.push({
+          column,
+          octaveIndex,
+          note,
+          segment,
+          leftRatio,
+          widthRatio,
+          leftPercent: leftRatio * 100,
+          widthPercent: widthRatio * 100
+        });
       }
     }
 
-    return ratios;
+    return result;
+  }
+
+  public getColumnLayoutItem(
+    column: number,
+    octaveCount: number
+  ): WaterfallColumnLayoutItem | null {
+    if (!this.isValidColumn(column, octaveCount)) {
+      return null;
+    }
+
+    return this.getColumnLayoutItems(octaveCount).find((item) => item.column === column) ?? null;
+  }
+
+  public getColumnWidthRatios(octaveCount: number): readonly number[] {
+    return this.getColumnLayoutItems(octaveCount).map((item) => item.widthRatio);
   }
 
   public getColumnStartRatio(column: number, octaveCount: number): number | null {
-    if (!Number.isInteger(column) || column < 0) {
-      return null;
-    }
-
-    if (!Number.isInteger(octaveCount) || octaveCount <= 0) {
-      return null;
-    }
-
-    const totalColumns = octaveCount * NOTE_SYMBOLS.length;
-    if (column >= totalColumns) {
-      return null;
-    }
-
-    const octaveIndex = Math.floor(column / NOTE_SYMBOLS.length);
-    const noteIndex = column % NOTE_SYMBOLS.length;
-    const note = NOTE_SYMBOLS[noteIndex];
-    const bounds = this.boundsByNote.get(note);
-
-    const totalWidth = this.octaveWidth * octaveCount;
-    if (bounds === undefined) {
-      return ((octaveIndex * this.octaveWidth) + noteIndex * this.getFallbackWidthUnits(note)) / totalWidth;
-    }
-
-    const globalMinX = octaveIndex * this.octaveWidth + bounds.minX;
-    return globalMinX / totalWidth;
+    return this.getColumnLayoutItem(column, octaveCount)?.leftRatio ?? null;
   }
 
   public getColumnWidthRatio(column: number, octaveCount: number): number | null {
-    if (!Number.isInteger(column) || column < 0) {
-      return null;
-    }
-    if (!Number.isInteger(octaveCount) || octaveCount <= 0) {
-      return null;
-    }
-
-    const totalColumns = octaveCount * NOTE_SYMBOLS.length;
-    if (column >= totalColumns) {
-      return null;
-    }
-
-    const noteIndex = column % NOTE_SYMBOLS.length;
-    const note = NOTE_SYMBOLS[noteIndex];
-    const bounds = this.boundsByNote.get(note);
-    const totalWidth = this.octaveWidth * octaveCount;
-
-    if (bounds === undefined) {
-      return this.getFallbackWidthRatio(note, totalWidth);
-    }
-
-    return (bounds.maxX - bounds.minX) / totalWidth;
+    return this.getColumnLayoutItem(column, octaveCount)?.widthRatio ?? null;
   }
 
-  private createBoundsByNote(): Map<NoteSymbol, LineBounds> {
-    const map = new Map<NoteSymbol, LineBounds>();
-    const allTangents = [
-      ...DEFAULT_OCTAVE_GEOMETRY.whiteKeys,
-      ...DEFAULT_OCTAVE_GEOMETRY.blackKeys
-    ] as readonly TangentGeometry[];
+  private createSegmentsByNote(): ReadonlyMap<NoteSymbol, TangentUpperLineSegment> {
+    const map = new Map<NoteSymbol, TangentUpperLineSegment>();
 
     for (const note of NOTE_SYMBOLS) {
-      const tangent = allTangents.find((candidate) => candidate.name === note);
-      if (tangent === undefined) {
-        continue;
+      const tangent = this.findTangent(note);
+
+      if (tangent === null) {
+        throw new Error(`Missing tangent geometry for note: ${note}`);
       }
-      map.set(note, this.readUpperLineBounds(tangent));
+
+      const segment = this.segmentReader.read(tangent.points as readonly Point[]);
+
+      if (segment === null) {
+        throw new Error(`Missing upper line segment for note: ${note}`);
+      }
+
+      map.set(note, segment);
     }
 
     return map;
   }
 
-  private readUpperLineBounds(tangent: TangentGeometry): LineBounds {
-    const points = tangent.points;
-    const maxY = Math.max(...points.map((point) => point[1]));
-
-    let bestMinX = Number.POSITIVE_INFINITY;
-    let bestMaxX = Number.NEGATIVE_INFINITY;
-    let bestLength = Number.NEGATIVE_INFINITY;
-
-    for (let index = 0; index < points.length; index += 1) {
-      const current = points[index];
-      const next = points[(index + 1) % points.length];
-
-      if (current[1] !== maxY || next[1] !== maxY) {
-        continue;
-      }
-
-      const minX = Math.min(current[0], next[0]);
-      const maxX = Math.max(current[0], next[0]);
-      const length = maxX - minX;
-
-      if (length > bestLength) {
-        bestLength = length;
-        bestMinX = minX;
-        bestMaxX = maxX;
-      }
-    }
-
-    if (Number.isFinite(bestLength) && bestLength > 0) {
-      return { minX: bestMinX, maxX: bestMaxX };
-    }
-
-    return this.readFullBounds(tangent);
+  private findTangent(note: NoteSymbol): LegacyTangentGeometry | null {
+    return (
+      DEFAULT_OCTAVE_GEOMETRY.whiteKeys.find((tangent) => tangent.name === note) ??
+      DEFAULT_OCTAVE_GEOMETRY.blackKeys.find((tangent) => tangent.name === note) ??
+      null
+    );
   }
 
-  private readFullBounds(tangent: TangentGeometry): LineBounds {
-    const xs = tangent.points.map((point) => point[0]);
-    const minX = Math.min(...xs);
-    const maxX = Math.max(...xs);
-    return { minX, maxX };
+  private isValidOctaveCount(octaveCount: number): boolean {
+    return Number.isInteger(octaveCount) && octaveCount > 0;
   }
 
-  private readOctaveWidth(): number {
-    const allTangents = [
-      ...DEFAULT_OCTAVE_GEOMETRY.whiteKeys,
-      ...DEFAULT_OCTAVE_GEOMETRY.blackKeys
-    ] as readonly TangentGeometry[];
-    const xs = allTangents.flatMap((tangent) => tangent.points.map((point) => point[0]));
-    return Math.max(...xs) - Math.min(...xs);
-  }
-
-  private getFallbackWidthUnits(note: NoteSymbol): number {
-    return note.includes("s") ? 14 : 24;
-  }
-
-  private getFallbackWidthRatio(note: NoteSymbol, totalWidth: number): number {
-    return this.getFallbackWidthUnits(note) / totalWidth;
+  private isValidColumn(column: number, octaveCount: number): boolean {
+    return (
+      Number.isInteger(column) &&
+      column >= 0 &&
+      this.isValidOctaveCount(octaveCount) &&
+      column < octaveCount * DefaultWaterfallColumnLayout.COLUMNS_PER_OCTAVE
+    );
   }
 }

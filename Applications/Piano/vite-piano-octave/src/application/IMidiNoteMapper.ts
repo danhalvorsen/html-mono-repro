@@ -1,3 +1,3 @@
 export interface IMidiNoteMapper {
-  toMidi(note: string): number | null;
+  toMidi(note: string, octaveIndex?: number): number | null;
 }

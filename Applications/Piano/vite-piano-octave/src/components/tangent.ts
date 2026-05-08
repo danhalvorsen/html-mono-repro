@@ -3,8 +3,12 @@ import { customElement, property } from "lit/decorators.js";
 import type { Point } from "../types";
 import { TangentMouseClickController } from "./TangentMouseClickController";
 import type { LegacyTangentGeometry } from "../octave/geometry/DefaultOctaveGeometry";
-
-type TangentTemplate = "none" | "identifier" | "debug";
+import type { TangentSkinTemplate } from "./tangent-skin";
+import {
+  DefaultTangentUpperLineSegmentReader,
+  type TangentUpperLineSegment
+} from "../application/TangentUpperLineSegment";
+import "./tangent-skin";
 
 type Bounds = {
   readonly minX: number;
@@ -19,15 +23,37 @@ type Bounds = {
 export class Tangent extends LitElement {
   public static override styles = css`
     :host {
-      display: inline-block;
+      display: block;
+      width: 100%;
+      height: 100%;
       line-height: 0;
       box-sizing: border-box;
     }
 
-    svg {
+    .tangent {
+      position: relative;
       display: block;
       width: 100%;
-      height: auto;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    .key-svg {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      touch-action: none;
+    }
+
+    tangent-skin {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: block;
+      pointer-events: none;
     }
   `;
 
@@ -49,28 +75,43 @@ export class Tangent extends LitElement {
   @property({ type: Boolean, attribute: false })
   public pressed = false;
 
+  @property({ type: Boolean, attribute: "show-skin" })
+  public showSkin = true;
+
   @property({ type: String, attribute: "template" })
-  public template: TangentTemplate = "identifier";
+  public template: TangentSkinTemplate = "identifier";
 
   @property({ type: Boolean, attribute: "show-box" })
   public showBox = true;
 
-  @property({ type: Number, attribute: "box-width-ratio" })
-  public boxWidthRatio = 0.8;
-
-  @property({ type: Number, attribute: "box-depth-ratio" })
-  public boxDepthRatio = 0.9;
+  @property({ type: Number, attribute: "skin-margin-ratio" })
+  public skinMarginRatio = 0.1;
 
   private readonly mouseClickController = new TangentMouseClickController(this);
+  private readonly upperLineSegmentReader = new DefaultTangentUpperLineSegmentReader();
+
+  public getUpperLineSegment(): TangentUpperLineSegment | null {
+    return this.upperLineSegmentReader.read(this.getSourcePoints());
+  }
+
+  public getLength(): number {
+    return this.getUpperLineSegment()?.length ?? 0;
+  }
 
   protected override willUpdate(): void {
     if (this.geometry === null) {
       return;
     }
 
-    this.tangentId = this.geometry.name;
-    this.note = this.geometry.name;
-    this.isBlack = this.geometry.name.includes("s");
+    const previousNote = this.note;
+    const nextNote = this.geometry.name;
+
+    if (this.tangentId.length === 0 || this.tangentId === previousNote) {
+      this.tangentId = nextNote;
+    }
+
+    this.note = nextNote;
+    this.isBlack = nextNote.includes("s");
     this.points = this.geometry.points.map(([x, y]) => [x, y] as const);
   }
 
@@ -83,112 +124,45 @@ export class Tangent extends LitElement {
     const polygonPoints = this.toSvgPolygonPoints(this.points, bounds);
 
     return html`
-    
-      <svg
-        viewBox="0 0 ${bounds.width} ${bounds.height}"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-label=${this.note}
-        shape-rendering="geometricPrecision"
-      >
-        ${svg`
-          <polygon
-            points=${polygonPoints}
-            fill=${this.getFillColor()}
-            stroke="#000"
-            stroke-width="1"
-            stroke-linecap="butt"
-            stroke-linejoin="miter"
-            vector-effect="non-scaling-stroke"
-            data-note=${this.note}
-            data-tangent-id=${this.tangentId}
-            data-is-black=${this.isBlack ? "1" : "0"}
-          ></polygon>
+      <div class="tangent">
+        <svg
+          class="key-svg"
+          viewBox="0 0 ${bounds.width} ${bounds.height}"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-label=${this.note}
+          shape-rendering="geometricPrecision"
+          preserveAspectRatio="none"
+        >
+          ${svg`
+            <polygon
+              points=${polygonPoints}
+              fill=${this.getFillColor()}
+              stroke="#000"
+              stroke-width="1"
+              stroke-linecap="butt"
+              stroke-linejoin="miter"
+              vector-effect="non-scaling-stroke"
+              data-note=${this.note}
+              data-tangent-id=${this.tangentId}
+              data-is-black=${this.isBlack ? "1" : "0"}
+            ></polygon>
+          `}
+        </svg>
 
-          ${this.renderInnerBox(bounds)}
-          ${this.renderIdentifier(bounds)}
-        `}
-        
-      </svg>
-        <svg viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg">
-      <rect
-        x="0"
-        y="0"
-        width="1"
-        height="1"
-        fill="none"
-        stroke="red"
-        stroke-width="0.05"
-      ></rect>
-    </svg>
+        <tangent-skin
+          .visible=${this.showSkin}
+          .template=${this.template}
+          .tangentId=${this.tangentId}
+          .keyType=${this.isBlack ? "black" : "white"}
+          .showBox=${this.showBox}
+          .skinMarginRatio=${this.skinMarginRatio}
+        ></tangent-skin>
+      </div>
     `;
   }
 
-  private renderInnerBox(bounds: Bounds): unknown {
-    if (!this.showBox) {
-      return svg``;
-    }
-
-    const width = bounds.width * this.clamp01(this.boxWidthRatio);
-    const height = bounds.height * this.clamp01(this.boxDepthRatio);
-
-    const x = (bounds.width - width) / 2;
-    const y = bounds.height - height;
-
-    return svg`
-      <rect
-        x=${x}
-        y=${y}
-        width=${width}
-        height=${height}
-        fill="rgba(255, 0, 0, 0.08)"
-        stroke="red"
-        stroke-width="2"
-        stroke-linejoin="miter"
-        vector-effect="non-scaling-stroke"
-        pointer-events="none"
-        data-box-for=${this.tangentId}
-      ></rect>
-    `;
-  }
-
-  private renderIdentifier(bounds: Bounds): unknown {
-    if (this.template === "none") {
-      return svg``;
-    }
-
-    const x = bounds.width / 2;
-    const y = this.isBlack ? bounds.height * 0.72 : bounds.height * 0.84;
-
-    const fontSize = this.isBlack
-      ? Math.max(5, Math.min(12, bounds.width * 0.45))
-      : Math.max(7, Math.min(16, bounds.width * 0.32));
-
-    return svg`
-      ${this.template === "debug"
-        ? svg`
-            <circle
-              cx=${x}
-              cy=${y}
-              r="1.5"
-              fill=${this.isBlack ? "#ffffff" : "#111111"}
-              pointer-events="none"
-            ></circle>
-          `
-        : svg``}
-
-      <text
-        x=${x}
-        y=${y}
-        text-anchor="middle"
-        dominant-baseline="middle"
-        font-family="Segoe UI, system-ui, sans-serif"
-        font-size=${fontSize}
-        font-weight="700"
-        fill=${this.isBlack ? "#ffffff" : "#111111"}
-        pointer-events="none"
-        data-label-for=${this.tangentId}
-      >${this.tangentId}</text>
-    `;
+  private getSourcePoints(): readonly Point[] {
+    return (this.geometry?.points as readonly Point[] | undefined) ?? this.points;
   }
 
   private getFillColor(): string {
@@ -222,14 +196,6 @@ export class Tangent extends LitElement {
       width: Math.max(1, maxX - minX),
       height: Math.max(1, maxY - minY)
     };
-  }
-
-  private clamp01(value: number): number {
-    if (!Number.isFinite(value)) {
-      return 0;
-    }
-
-    return Math.max(0, Math.min(1, value));
   }
 }
 

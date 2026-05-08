@@ -1,40 +1,26 @@
-// Applications/vite-piano-octave/src/components/piano-octave-host.ts
-
-import { LitElement } from "lit";
+import { LitElement, html, type TemplateResult } from "lit";
 import { property } from "lit/decorators.js";
-import SvgOctaveAdapter from "../adapters/SvgOctaveAdapter";
-import { DEFAULT_OCTAVE_GEOMETRY } from "../octave/geometry/DefaultOctaveGeometry";
-import type { Polygon2D } from "../octave/geometry/Polygon2D";
-import type { PlacedPolygon } from "../octave/PlacedPolygon";
-import type { RawPolygon2D } from "../types";
+import "./piano-octave";
 
 export class PianoOctaveHost extends LitElement {
-
   @property({ type: Number })
-  gap = 4; // kept, but unused for now
+  public gap = 4;
 
-  private readonly adapter = new SvgOctaveAdapter();
+  @property({ type: String })
+  public width = "640px";
 
-  private computeLayout(): PlacedPolygon[] {
+  @property({ type: String })
+  public height = "200px";
 
-    const place = (key: RawPolygon2D): PlacedPolygon => {
-      const isBlack = key.name.includes("s");
-
-      return {
-        geometry: key as unknown as Polygon2D, // explicit trust boundary
-        isBlack
-      };
-    };
-
-    // Whites first, blacks last → correct z-order
-    return [
-      ...DEFAULT_OCTAVE_GEOMETRY.whiteKeys.map(place),
-      ...DEFAULT_OCTAVE_GEOMETRY.blackKeys.map(place)
-    ];
-  }
-
-  render() {
-    return this.adapter.adapt(this.computeLayout());
+  protected override render(): TemplateResult {
+    return html`
+      <piano-octave
+        .gap=${this.gap}
+        .width=${this.width}
+        .height=${this.height}
+      ></piano-octave>
+      
+    `;
   }
 }
 
