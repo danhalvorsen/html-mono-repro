@@ -1,6 +1,6 @@
 import { LitElement, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import "./components/tangent";
+import "./components/___tangent";
 import { LEGACY_ALL_TANGENTS } from "./octave/geometry/DefaultOctaveGeometry";
 
 @customElement("tangent-demo")

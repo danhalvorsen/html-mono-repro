@@ -1,1 +1,1 @@
-import "./my-element";
+import "./piano-app";

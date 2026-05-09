@@ -1,172 +1,255 @@
-import { LitElement, css, html, type TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import "./piano-octave";
-import "./piano-waterfall";
+import { html, LitElement, type TemplateResult } from "lit";
+import { customElement, property, queryAssignedElements } from "lit/decorators.js";
+import {
+  createNoteOff,
+  createNoteOn,
+  MidiChannel,
+  MidiNote,
+  MidiVelocity,
+} from "@monorepo/music-core-midi";
+import {
+  RealInstrumentPresets,
+  WebAudioMidiPlayer,
+} from "@monorepo/music-core-midi-playback";
+
+import {
+  PianoNoteEventName,
+  TangentInputEventName,
+  type PianoRootTangentEventDetail,
+  type PianoRootTangentEventKind,
+  type TangentInputEventDetail,
+} from "./PianoRootEventContracts";
+import {
+  DefaultPianoRootConfiguration,
+  type PianoRootConfiguration,
+} from "./PianoRootConfiguration";
 import type { PianoOctave } from "./piano-octave";
-import type { IPianoOctavePlayback } from "../application/IPianoOctavePlayback";
-import type { IPianoRootPlaybackService } from "../application/IPianoRootPlaybackService";
-import { PianoRootCompositionRoot } from "../composition/PianoRootCompositionRoot";
-
-@customElement("piano-root")
+import type { PianoWaterfallNew } from "./waterfall/piano-waterfall-new";
+@customElement("piano-root-new")
 export class PianoRoot extends LitElement {
-  public static override styles = css`
-    :host {
-      display: block;
-    }
+  private static readonly MIDI_TRANSPOSE_SEMITONES = 48;
 
-    .stage-scroll {
-      display: block;
-      width: 100%;
-      max-width: 100vw;
-      overflow-x: auto;
-      overflow-y: visible;
-    }
+  private midiPlayer: WebAudioMidiPlayer | null = null;
 
-    .surface {
-      position: relative;
-      width: max-content;
-      min-width: 100%;
-    }
+  @property({ attribute: false })
+  public options: PianoRootConfiguration = DefaultPianoRootConfiguration;
 
-    .waterfall-layer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: var(--waterfall-height);
-      z-index: 2;
-      pointer-events: none;
-    }
+  @queryAssignedElements({ flatten: true })
+  private readonly assignedElements!: Element[];
 
-    .waterfall-layer piano-waterfall {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
+  public override connectedCallback(): void {
+    super.connectedCallback();
 
-    .piano-row {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 0;
-      padding-top: var(--waterfall-height);
-      padding-bottom: 6px;
-      position: relative;
-      z-index: 1;
-    }
+    this.addEventListener(
+      TangentInputEventName.Pressed,
+      this.onTangentPressed as EventListener,
+    );
 
-    .piano-row piano-octave {
-      flex: 0 0 var(--octave-width);
-    }
-  `;
-
-  @property({ type: Number })
-  public octaves = 7;
-
-  @property({ type: String })
-  public octaveWidth = "320px";
-
-  @property({ type: String })
-  public octaveHeight = "220px";
-
-  @property({ type: Number })
-  public gap = 6;
-
-  @property({ type: Number })
-  public maxSimultaneousOctaves = 2;
-
-  @property({ type: Number })
-  public midiTempoBpm = 130;
-
-  @property({ type: Number })
-  public playbackSpeed = 1;
-
-  @property({ type: Number })
-  public midiSignalRate = 1;
-
-  private readonly playbackService: IPianoRootPlaybackService =
-    new PianoRootCompositionRoot().composePlaybackService();
-
-  public playDemoChords(): void {
-    this.playbackService.playDemoChords(
-      this.getOctaves(),
-      this.maxSimultaneousOctaves,
-      this.playbackSpeed
+    this.addEventListener(
+      TangentInputEventName.Released,
+      this.onTangentReleased as EventListener,
     );
   }
 
-  public async playMidiSongFromUrl(
-    url: string,
-    targetDurationMs?: number
-  ): Promise<void> {
-    await this.playbackService.playMidiSongFromUrl(
-      this.getOctaves(),
-      url,
-      this.playbackSpeed,
-      this.midiSignalRate,
-      targetDurationMs
+  public override disconnectedCallback(): void {
+    this.removeEventListener(
+      TangentInputEventName.Pressed,
+      this.onTangentPressed as EventListener,
     );
+
+    this.removeEventListener(
+      TangentInputEventName.Released,
+      this.onTangentReleased as EventListener,
+    );
+
+    super.disconnectedCallback();
   }
 
-  public playGriegConcertoTheme(): void {
-    this.playbackService.playGriegConcertoTheme(
-      this.getOctaves(),
-      this.maxSimultaneousOctaves,
-      this.playbackSpeed,
-      this.midiSignalRate
-    );
+  protected override firstUpdated(): void {
+    this.propagateToChildren();
+  }
+
+  protected override updated(): void {
+    this.applyHostLayout();
+    this.propagateToChildren();
   }
 
   protected override render(): TemplateResult {
-    const safeOctaves = this.getSafeOctaveCount();
-    const waterfallHeight = `calc(${this.octaveHeight} * 3)`;
-
-    return html`
-      <div class="stage-scroll">
-        <div
-          class="surface"
-          style="
-            --waterfall-height: ${waterfallHeight};
-            --octave-width: ${this.octaveWidth};
-          "
-        >
-          <div class="waterfall-layer">
-            <piano-waterfall .octaves=${safeOctaves}></piano-waterfall>
-          </div>
-
-          <div class="piano-row">
-            ${Array.from({ length: safeOctaves }, (_, index) => html`
-              <piano-octave
-                id=${`octave-${index + 1}`}
-                .octaveIndex=${index}
-                .gap=${this.gap}
-                .width=${this.octaveWidth}
-                .height=${this.octaveHeight}
-              ></piano-octave>
-            `)}
-          </div>
-        </div>
-      </div>
-    `;
+    return html`<slot @slotchange=${this.onSlotChange}></slot>`;
   }
 
-  private getOctaves(): readonly IPianoOctavePlayback[] {
-    return Array.from(
-      this.renderRoot.querySelectorAll("piano-octave")
-    ) as PianoOctave[];
-  }
+  private readonly onSlotChange = (): void => {
+    this.propagateToChildren();
+  };
 
-  private getSafeOctaveCount(): number {
-    if (!Number.isInteger(this.octaves) || this.octaves < 1) {
-      return 1;
+  private readonly onTangentPressed = (event: Event): void => {
+    this.dispatchPianoRootTangentEvent(
+      event,
+      PianoNoteEventName.NoteOn,
+      "pressed",
+    );
+
+    this.sendNoteOn(event);
+  };
+
+  private readonly onTangentReleased = (event: Event): void => {
+    this.dispatchPianoRootTangentEvent(
+      event,
+      PianoNoteEventName.NoteOff,
+      "released",
+    );
+
+    this.sendNoteOff(event);
+  };
+
+  private sendNoteOn(event: Event): void {
+    const detail = this.readTangentInputDetail(event);
+    const midiNote = detail?.tangent.midiNote;
+
+    console.log("PianoRootNew:sendNoteOn", {
+      midiNote,
+      note: detail?.tangent.note,
+    });
+
+    if (midiNote === null || midiNote === undefined) {
+      return;
     }
 
-    return this.octaves;
+    const player = this.getMidiPlayer();
+    if (player === null) {
+      return;
+    }
+
+    const message = createNoteOn(
+      MidiChannel.create(1),
+      MidiNote.create(midiNote),
+      MidiVelocity.create(100),
+    );
+
+    player.play(message, {
+      noteLengthSeconds: 0.01,
+      sustain: 0.2,
+    });
+  }
+
+  private sendNoteOff(event: Event): void {
+    const detail = this.readTangentInputDetail(event);
+    const midiNote = detail?.tangent.midiNote;
+
+    console.log("PianoRootNew:sendNoteOff", {
+      midiNote,
+      note: detail?.tangent.note,
+    });
+
+    if (midiNote === null || midiNote === undefined) {
+      return;
+    }
+
+    const player = this.getMidiPlayer();
+    if (player === null) {
+      return;
+    }
+
+    const message = createNoteOff(
+      MidiChannel.create(1),
+      MidiNote.create(midiNote),
+      MidiVelocity.Zero,
+    );
+
+    player.play(message, {
+      noteLengthSeconds: 0.04,
+      sustain: 0.2,
+    });
+  }
+
+  private readTangentInputDetail(event: Event): TangentInputEventDetail | null {
+    const detail = (event as CustomEvent<TangentInputEventDetail>).detail;
+
+    if (detail?.tangent === undefined) {
+      return null;
+    }
+
+    return detail;
+  }
+
+  private getMidiPlayer(): WebAudioMidiPlayer | null {
+    if (this.midiPlayer !== null) {
+      return this.midiPlayer;
+    }
+
+    try {
+      console.log("PianoRootNew:create-midi-player");
+
+      this.midiPlayer = new WebAudioMidiPlayer({
+        ...RealInstrumentPresets.synthPluck,
+      });
+
+      return this.midiPlayer;
+    } catch {
+      return null;
+    }
+  }
+
+  private dispatchPianoRootTangentEvent(
+    event: Event,
+    eventName: string,
+    kind: PianoRootTangentEventKind,
+  ): void {
+    const detail = this.readTangentInputDetail(event);
+
+    if (detail === null) {
+      return;
+    }
+
+    this.dispatchEvent(
+      new CustomEvent<PianoRootTangentEventDetail>(eventName, {
+        bubbles: true,
+        composed: true,
+        detail: {
+          kind,
+          pointerId: detail.pointerId,
+          tangent: detail.tangent,
+        },
+      }),
+    );
+  }
+
+  private propagateToChildren(): void {
+    for (const child of this.assignedElements) {
+      if (this.isWaterfall(child)) {
+        child.options = this.options.waterfall;
+        child.requestUpdate();
+        continue;
+      }
+
+      if (this.isPianoOctave(child)) {
+        const octave = this.options.octaves.find((item) => item.id === child.id);
+        child.options = octave ?? this.options.octaves[0] ?? child.options;
+        child.requestUpdate();
+      }
+    }
+  }
+
+  private applyHostLayout(): void {
+    this.style.position = "absolute";
+    this.style.left = `${this.options.root.position.x}px`;
+    this.style.top = `${this.options.root.position.y}px`;
+    this.style.width = `${this.options.root.size.x}px`;
+    this.style.height = `${this.options.root.size.y}px`;
+    this.style.display = "block";
+  }
+
+  private isWaterfall(element: Element): element is PianoWaterfallNew {
+    return element.tagName.toLowerCase() === "piano-waterfall-new";
+  }
+
+  private isPianoOctave(element: Element): element is PianoOctave {
+    return element.tagName.toLowerCase() === "piano-octave";
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "piano-root": PianoRoot;
+    "piano-root-new": PianoRoot;
   }
 }

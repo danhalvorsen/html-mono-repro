@@ -1,26 +1,22 @@
 export class PianoEventName {
   public static readonly TangentHoldStart = "tangent-hold-start";
   public static readonly TangentHoldEnd = "tangent-hold-end";
-  public static readonly TangentClick = "tangent-click";
 }
 
 export interface PianoOctaveEventDetail {
-  readonly index: number;
+  readonly octave: { readonly index: number };
+  readonly octaveIndex: number;
 }
 
-export interface TangentHoldStartDetail {
+export interface TangentHoldStartDetail extends PianoOctaveEventDetail {
   readonly holdId: string;
   readonly note: string;
-  readonly octaveIndex: number;
-  readonly octave: PianoOctaveEventDetail;
   readonly midiNote: number;
 }
 
-export interface TangentHoldEndDetail {
+export interface TangentHoldEndDetail extends PianoOctaveEventDetail {
   readonly holdId: string;
   readonly note: string;
   readonly holdMs: number;
-  readonly octaveIndex: number;
-  readonly octave: PianoOctaveEventDetail;
   readonly midiNote: number;
 }

@@ -10,6 +10,7 @@ export interface IMidiPlayer {
 
 export type MidiPlaybackOptions = {
   readonly noteLengthSeconds?: number;
+  readonly sustainUntilNoteOff?: boolean;
   readonly filterFrequency?: number;
   readonly filterQ?: number;
   readonly sustain?: number;
@@ -57,6 +58,7 @@ export class FilterSettings {
 /* ---------- PLAYER ---------- */
 
 export class WebAudioMidiPlayer implements IMidiPlayer {
+  private readonly activeVoicesByKey = new Map<string, ActiveVoice[]>();
   private readonly context: AudioContext;
   private readonly envelope: EnvelopeADSR;
   private readonly filterEnvelope: EnvelopeADSR;
@@ -93,6 +95,11 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
   }
 
   public play(message: MidiMessage, options?: MidiPlaybackOptions): void {
+    if (message.status === MidiStatus.NoteOff) {
+      this.releaseVoice(message);
+      return;
+    }
+
     if (message.status !== MidiStatus.NoteOn || message.velocity.value() === 0) return;
 
     if (this.context.state === "suspended") {
@@ -175,16 +182,6 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
     filter.frequency.linearRampToValueAtTime(filterPeak, now + Math.max(0.01, filterAttack));
     filter.frequency.linearRampToValueAtTime(filterSustainFrequency, now + filterAttack + filterDecay);
 
-    /* release scheduled */
-    const noteLength = options?.noteLengthSeconds ?? this.noteLengthSeconds;
-    const releaseStart = now + noteLength;
-
-    amp.gain.setValueAtTime(sustainLevel, releaseStart);
-    amp.gain.linearRampToValueAtTime(0, releaseStart + release);
-
-    filter.frequency.setValueAtTime(filterSustainFrequency, releaseStart);
-    filter.frequency.linearRampToValueAtTime(filterBase * 0.58, releaseStart + filterRelease);
-
     /* connect */
     oscA.connect(oscAGain);
     oscB.connect(oscBGain);
@@ -201,20 +198,110 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
     filter.connect(amp);
     amp.connect(this.context.destination);
 
-    const stopAt = releaseStart + Math.max(release, filterRelease);
     oscA.start(now);
     oscB.start(now);
     oscSub.start(now);
 
-    oscA.stop(stopAt);
-    oscB.stop(stopAt);
-    oscSub.stop(stopAt);
+    const key = this.toVoiceKey(message);
+    const voice: ActiveVoice = {
+      key,
+      oscA,
+      oscB,
+      oscSub,
+      amp,
+      filter,
+      filterBase,
+      filterSustainFrequency,
+      releaseSeconds: release,
+      filterReleaseSeconds: filterRelease,
+      released: false,
+    };
+    this.addActiveVoice(voice);
+
+    const sustainUntilNoteOff = options?.sustainUntilNoteOff ?? false;
+    const noteLength = options?.noteLengthSeconds ?? this.noteLengthSeconds;
+    if (!sustainUntilNoteOff && noteLength > 0) {
+      const releaseStart = now + noteLength;
+      this.releaseActiveVoice(voice, releaseStart);
+    }
   }
 
   private static midiToFrequency(note: number): number {
     return 440 * Math.pow(2, (note - 69) / 12);
   }
+
+  private releaseVoice(message: Extract<MidiMessage, { readonly status: MidiStatus.NoteOff }>): void {
+    const key = this.toVoiceKey(message);
+    const voices = this.activeVoicesByKey.get(key);
+
+    if (voices === undefined || voices.length === 0) {
+      return;
+    }
+
+    const voice = voices.shift();
+    if (voice === undefined) {
+      return;
+    }
+
+    this.releaseActiveVoice(voice, this.context.currentTime);
+
+    if (voices.length === 0) {
+      this.activeVoicesByKey.delete(key);
+    }
+  }
+
+  private releaseActiveVoice(voice: ActiveVoice, releaseStart: number): void {
+    if (voice.released) {
+      return;
+    }
+
+    voice.released = true;
+
+    voice.amp.gain.cancelScheduledValues(releaseStart);
+    voice.amp.gain.setValueAtTime(voice.amp.gain.value, releaseStart);
+    voice.amp.gain.linearRampToValueAtTime(0, releaseStart + voice.releaseSeconds);
+
+    voice.filter.frequency.cancelScheduledValues(releaseStart);
+    voice.filter.frequency.setValueAtTime(voice.filterSustainFrequency, releaseStart);
+    voice.filter.frequency.linearRampToValueAtTime(
+      voice.filterBase * 0.58,
+      releaseStart + voice.filterReleaseSeconds
+    );
+
+    const stopAt = releaseStart + Math.max(voice.releaseSeconds, voice.filterReleaseSeconds);
+    voice.oscA.stop(stopAt);
+    voice.oscB.stop(stopAt);
+    voice.oscSub.stop(stopAt);
+  }
+
+  private addActiveVoice(voice: ActiveVoice): void {
+    const existing = this.activeVoicesByKey.get(voice.key);
+    if (existing === undefined) {
+      this.activeVoicesByKey.set(voice.key, [voice]);
+      return;
+    }
+
+    existing.push(voice);
+  }
+
+  private toVoiceKey(message: MidiMessage): string {
+    return `${message.channel.value()}:${message.note.value()}`;
+  }
 }
+
+type ActiveVoice = {
+  readonly key: string;
+  readonly oscA: OscillatorNode;
+  readonly oscB: OscillatorNode;
+  readonly oscSub: OscillatorNode;
+  readonly amp: GainNode;
+  readonly filter: BiquadFilterNode;
+  readonly filterBase: number;
+  readonly filterSustainFrequency: number;
+  readonly releaseSeconds: number;
+  readonly filterReleaseSeconds: number;
+  released: boolean;
+};
 
 /* ---------- PRESET (Van Halen Jump-ish) ---------- */
 
