@@ -1,123 +1,111 @@
-import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
-import litLogo from './assets/lit.svg'
-import viteLogo from '/vite.svg'
+import { LitElement, css, html } from 'lit'
+import { customElement, property, query } from 'lit/decorators.js'
+import * as ABCJS from 'abcjs'
 
-// use Lit's css tagged template for styles
-
-/**
- * An example element.
- *
- * @slot - This element has a slot
- * @csspart button - The button
- */
 @customElement('my-element')
 export class MyElement extends LitElement {
-  /**
-   * Copy for the read the docs hint.
-   */
-  @property()
-  docsHint = 'Click on the Vite and Lit logos to learn more'
+  @property({ type: String })
+  abcNotation = `X:1
+T:Hello Notes Demo
+M:4/4
+L:1/8
+K:C
+CDEF GABc | cBAG FEDC |
+w: Do Re Mi Fa So La Ti Do`
 
-  /**
-   * The number of times the button has been clicked.
-   */
-  @property({ type: Number })
-  count = 0
+  @query('#sheet')
+  private sheetEl!: HTMLDivElement
 
   render() {
     return html`
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src=${viteLogo} class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://lit.dev" target="_blank">
-          <img src=${litLogo} class="logo lit" alt="Lit logo" />
-        </a>
-      </div>
-      <slot></slot>
-      <div class="card">
-        <button @click=${this._onClick} part="button">
-          count is ${this.count}
-        </button>
-      </div>
-      <p class="read-the-docs">${this.docsHint}</p>
+      <main>
+        <h1>Music Note Sheet</h1>
+        <p>Enter ABC notation and render the score.</p>
+        <textarea
+          .value=${this.abcNotation}
+          @input=${this.onInput}
+          spellcheck="false"
+        ></textarea>
+        <button @click=${this.renderSheet}>Render Sheet</button>
+        <div id="sheet" aria-label="Rendered music note sheet"></div>
+      </main>
     `
   }
 
-  private _onClick() {
-    this.count++
+  firstUpdated() {
+    this.renderSheet()
+  }
+
+  private onInput(event: Event) {
+    const target = event.target as HTMLTextAreaElement
+    this.abcNotation = target.value
+  }
+
+  private renderSheet() {
+    if (!this.sheetEl) return
+    this.sheetEl.innerHTML = ''
+    ABCJS.renderAbc(this.sheetEl, this.abcNotation, {
+      responsive: 'resize',
+      add_classes: true,
+      staffwidth: 760,
+    })
   }
 
   static styles = css`
     :host {
-      max-width: 1280px;
+      display: block;
+      width: min(900px, 100%);
       margin: 0 auto;
-      padding: 2rem;
-      text-align: center;
+      padding: 1rem;
+      box-sizing: border-box;
+      color: #111;
     }
 
-    .logo {
-      height: 6em;
-      padding: 1.5em;
-      will-change: filter;
-      transition: filter 300ms;
-    }
-    .logo:hover {
-      filter: drop-shadow(0 0 2em #646cffaa);
-    }
-    .logo.lit:hover {
-      filter: drop-shadow(0 0 2em #325cffaa);
+    main {
+      display: grid;
+      gap: 0.75rem;
     }
 
-    .card {
-      padding: 2em;
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
     }
 
-    .read-the-docs {
-      color: #888;
+    p {
+      margin: 0;
+      color: #444;
     }
 
-    ::slotted(h1) {
-      font-size: 3.2em;
-      line-height: 1.1;
-    }
-
-    a {
-      font-weight: 500;
-      color: #646cff;
-      text-decoration: inherit;
-    }
-    a:hover {
-      color: #535bf2;
+    textarea {
+      width: 100%;
+      min-height: 9rem;
+      font-family: Consolas, 'Courier New', monospace;
+      font-size: 0.95rem;
+      border: 1px solid #bbb;
+      border-radius: 8px;
+      padding: 0.75rem;
+      box-sizing: border-box;
+      resize: vertical;
     }
 
     button {
+      width: fit-content;
+      padding: 0.55rem 1rem;
+      border: none;
       border-radius: 8px;
-      border: 1px solid transparent;
-      padding: 0.6em 1.2em;
-      font-size: 1em;
-      font-weight: 500;
-      font-family: inherit;
-      background-color: #1a1a1a;
+      background: #1f6feb;
+      color: #fff;
+      font-weight: 600;
       cursor: pointer;
-      transition: border-color 0.25s;
-    }
-    button:hover {
-      border-color: #646cff;
-    }
-    button:focus,
-    button:focus-visible {
-      outline: 4px auto -webkit-focus-ring-color;
     }
 
-    @media (prefers-color-scheme: light) {
-      a:hover {
-        color: #747bff;
-      }
-      button {
-        background-color: #f9f9f9;
-      }
+    #sheet {
+      min-height: 140px;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      overflow-x: auto;
     }
   `
 }

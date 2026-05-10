@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { DefaultPianoRootPlaybackService } from "../src/application/DefaultPianoRootPlaybackService";
+import { DefaultPianoRootPlaybackService } from "../src/application/playback/DefaultPianoRootPlaybackService";
 import type { IMidiSongProjector } from "../src/application/IMidiSongProjector";
-import type { IPianoOctavePlayback } from "../src/application/IPianoOctavePlayback";
+import type { IPianoOctavePlayback } from "../src/application/playback/IPianoOctavePlayback";
 import type { IProjectedSongAccordStepMapper } from "../src/application/IProjectedSongAccordStepMapper";
-import type { ITaskScheduler } from "../src/application/ITaskScheduler";
-import { PianoPlaybackTimingPolicy } from "../src/application/PianoPlaybackTimingPolicy";
-import type { ProjectedSongStep } from "../src/application/MidiSongProjector";
+import type { ITaskScheduler } from "../src/application/scheduling/ITaskScheduler";
+import { PianoPlaybackTimingPolicy } from "../src/application/playback/PianoPlaybackTimingPolicy";
+import type { ProjectedSongStep } from "../src/application/projection/MidiSongProjector";
 import type { AccordStep } from "../src/music/Accords";
 
 class ImmediateTaskScheduler implements ITaskScheduler {

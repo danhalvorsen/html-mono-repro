@@ -16,8 +16,7 @@
 
     },
     "dependencies": {
-        "@monorepo/core-specifications": "workspace:*",
-        "@monorepo/music-core-midi-streamer": "workspace:*"
+        "@monorepo/core-specifications": "workspace:*"
     },
     "devDependencies": {}
 }

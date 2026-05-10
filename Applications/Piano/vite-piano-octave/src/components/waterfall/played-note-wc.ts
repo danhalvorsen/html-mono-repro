@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import {
   DefaultPianoRootConfiguration,
   type PlayedNoteConfiguration,
-} from "../PianoRootConfiguration";
+} from "../piano/PianoRootConfiguration";
 
 @customElement("played-note-wc")
 export class PlayedNoteWc extends LitElement {

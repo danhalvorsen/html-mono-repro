@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DefaultMidiNoteMapper } from "../src/application/DefaultMidiNoteMapper";
+import { DefaultMidiNoteMapper } from "../src/application/mapping/DefaultMidiNoteMapper";
 
 describe("DefaultMidiNoteMapper", () => {
   it("keeps the legacy base-note mapping when octave index is not provided", () => {

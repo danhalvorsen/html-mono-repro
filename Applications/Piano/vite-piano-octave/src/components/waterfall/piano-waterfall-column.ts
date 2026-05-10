@@ -4,7 +4,7 @@ import "./played-note-wc";
 import {
   DefaultPianoRootConfiguration,
   type PianoWaterfallColumnConfiguration,
-} from "../PianoRootConfiguration";
+} from "../piano/PianoRootConfiguration";
 import type { PlayedNoteWc } from "./played-note-wc";
 
 @customElement("column-wc")

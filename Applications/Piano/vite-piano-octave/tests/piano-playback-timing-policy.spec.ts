@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { PianoPlaybackTimingPolicy } from "../src/application/PianoPlaybackTimingPolicy";
-import type { ProjectedSongStep } from "../src/application/MidiSongProjector";
+import { PianoPlaybackTimingPolicy } from "../src/application/playback/PianoPlaybackTimingPolicy";
+import type { ProjectedSongStep } from "../src/application/projection/MidiSongProjector";
 
 describe("PianoPlaybackTimingPolicy", () => {
   it("should clamp playback speed and midi signal rate", () => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { DefaultProjectedSongAccordStepMapper } from "../src/application/DefaultProjectedSongAccordStepMapper";
-import type { ProjectedSongStep } from "../src/application/MidiSongProjector";
+import { DefaultProjectedSongAccordStepMapper } from "../src/application/projection/DefaultProjectedSongAccordStepMapper";
+import type { ProjectedSongStep } from "../src/application/projection/MidiSongProjector";
 
 describe("DefaultProjectedSongAccordStepMapper", () => {
   it("should map and sort steps per octave into accord steps", () => {

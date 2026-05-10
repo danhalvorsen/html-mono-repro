@@ -1,8 +1,8 @@
-import { DefaultPianoRootPlaybackService } from "../application/DefaultPianoRootPlaybackService";
-import { DefaultProjectedSongAccordStepMapper } from "../application/DefaultProjectedSongAccordStepMapper";
-import { MidiSongProjector } from "../application/MidiSongProjector";
-import type { IPianoRootPlaybackService } from "../application/IPianoRootPlaybackService";
-import { PianoPlaybackTimingPolicy } from "../application/PianoPlaybackTimingPolicy";
+import { DefaultPianoRootPlaybackService } from "../application/playback/DefaultPianoRootPlaybackService";
+import { DefaultProjectedSongAccordStepMapper } from "../application/projection/DefaultProjectedSongAccordStepMapper";
+import { MidiSongProjector } from "../application/projection/MidiSongProjector";
+import type { IPianoRootPlaybackService } from "../application/playback/IPianoRootPlaybackService";
+import { PianoPlaybackTimingPolicy } from "../application/playback/PianoPlaybackTimingPolicy";
 import { WindowTaskScheduler } from "../infrastructure/WindowTaskScheduler";
 
 export interface IPianoRootCompositionRoot {

@@ -1,9 +1,9 @@
 import { LitElement, html, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import "./components/piano-root";
-import "./components/piano-octave";
-import "./components/tangent-wc";
+import "./components/piano/piano-root";
+import "./components/octave/piano-octave";
+import "./components/tangents/tangent-wc";
 import "./components/waterfall/piano-waterfall-new";
 import "./components/waterfall/piano-waterfall-column";
 import "./components/waterfall/played-note-wc";
@@ -11,11 +11,11 @@ import "./components/waterfall/played-note-wc";
 import {
   DefaultPianoRootConfiguration,
   type PianoRootConfiguration,
-} from "./components/PianoRootConfiguration";
+} from "./components/piano/PianoRootConfiguration";
 import {
   PianoRootConfigurationScaler,
   type Scale2,
-} from "./components/PianoRootConfigurationScaler";
+} from "./components/piano/PianoRootConfigurationScaler";
 
 @customElement("piano-app")
 export class PianoApp extends LitElement {

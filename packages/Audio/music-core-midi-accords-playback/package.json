@@ -1,0 +1,22 @@
+﻿{
+    "name": "@monorepo/music-core-midi-accords-playback",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "exports": {
+        ".": {
+            "import": "./src/index.ts",
+            "types": "./src/index.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsc -b",
+        "test": "vitest run -c vitest.config.ts"
+    },
+    "dependencies": {
+        "@monorepo/music-core-midi": "workspace:*"
+        
+    },
+    "devDependencies": {}
+}

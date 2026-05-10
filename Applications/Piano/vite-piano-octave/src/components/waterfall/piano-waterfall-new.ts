@@ -1,10 +1,10 @@
 import { LitElement, html, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import "./piano-waterfall-column";
-import type { PianoWaterfallConfiguration } from "../PianoRootConfiguration";
+import type { PianoWaterfallConfiguration } from "../piano/PianoRootConfiguration";
 import {
   DefaultPianoRootConfiguration,
-} from "../PianoRootConfiguration";
+} from "../piano/PianoRootConfiguration";
 import type { ColumnWc } from "./piano-waterfall-column";
 
 @customElement("piano-waterfall-new")
