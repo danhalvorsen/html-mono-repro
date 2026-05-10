@@ -4,7 +4,7 @@ import {
   property,
   queryAssignedElements,
 } from "lit/decorators.js";
-import { GameObjectSubject } from "../Game/GameObjectSubject.js";
+import { GameObjectSubject } from "../../game-design-patterns/src/GameObjectSubject";
 import {
   DefaultBaseGameObjectOptions,
   type BaseGameObjectOptions,
@@ -17,7 +17,7 @@ import { EmptyBaseGameObjectShapeTemplate } from "./EmptyBaseGameObjectShapeTemp
 
 @customElement("base-game-object")
 export class BaseGameObject extends GameObjectSubject {
-  public static override styles: CSSResultGroup = [
+  public static styles: CSSResultGroup = [
     GameObjectSubject.styles ?? [],
     BaseGameObjectStyles.styles,
   ];
@@ -37,7 +37,7 @@ export class BaseGameObject extends GameObjectSubject {
   })
   private assignedChildren!: Element[];
 
-  protected override render(): TemplateResult {
+  protected render(): TemplateResult {
     return this.#template.render(
       this.positionX,
       this.positionY,

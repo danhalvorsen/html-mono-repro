@@ -28,6 +28,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "lit": "^3.2.2",
       "@monorepo/core-math": "workspace:*"
       
   },

@@ -1,6 +1,6 @@
 import type {
   IGamePolygonGeneratorOptions,
-} from '../../../GameObjects/GamePolygonGeneratorController.js';
+} from '@monorepo/game-objects';
 
 export interface CaveCurveOptionsPresetResolver {
   resolve(preset: string): IGamePolygonGeneratorOptions;

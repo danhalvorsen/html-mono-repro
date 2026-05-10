@@ -1,6 +1,7 @@
-import type { ISvgTemplate } from '@monorepo/game-assets-shapes';
+
 import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import type { ISvgTemplate } from '@monorepo/game-assets-shapes';
 
 @customElement('game-polygon')
 export class GamePolygon extends LitElement {

@@ -1,14 +1,15 @@
-import { Vector2 } from "@monorepo/core-math";
+
 import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import type { TimeSchdulerObserver } from './TimeSchdulerObserver';
-import { SvgRectangleBuilder } from './Elements/Polygon/SvgPolygonBuilder';
+import { Vector2 } from "@monorepo/core-math";
 import { Matrix, type IMatrix, type Point, type Point2 } from '@monorepo/core-math';
-import { GameObjectAnimationController } from './Animation/GameObjectAnimationController';
-import type { ISceneNode } from '../../../../../packages/core-scene-graph/dist/ISceneNode';
-//import type { ICaveGameObjectReference } from './Screen/Cave/ICaveGameObjectReference';
-import type { PlayerInputController } from './Input';
 import { TypedSubject, type Observer } from '@monorepo/core-design-patterns';
+import { TimeSchdulerObserver } from './TimeSchdulerObserver';
+
+import { type ISceneNode } from '@monorepo/core-scene-graph';
+import { GameObjectAnimationController } from '../../game-motion-animation/src/GameObjectAnimationController';
+import { PlayerInputController } from '../../game-inputs/src/PlayerInputController';
+import { SvgRectangleBuilder } from '../../game-design-svg/src/SvgPolygonBuilder';
 
 export interface IGameObjectSubject {
   onTime(time: number): void;
@@ -98,7 +99,7 @@ export class GameObjectSubject
     this.#animationController = new GameObjectAnimationController({
       host: this,
       indexOffsetRatio: this.indexOffsetRatio,
-      onFrame: ({ point, rotationRadians }) => {
+      onFrame: ({ point, rotationRadians }: { point: Point2; rotationRadians: number }): void => {
         this.positionX = point.x;
         this.positionY = point.y;
         this.#currentRotationRadians = rotationRadians;
@@ -315,7 +316,7 @@ export class GameObjectSubject
   }
 
   #buildSubjectAt(point: Point2, rotationRadians: number): TemplateResult {
-    return new SvgRectangleBuilder()
+    const polygon = new SvgRectangleBuilder()
       .withLength(this.size)
       .withHeigth(this.size)
       .withCenter(point)
@@ -333,6 +334,12 @@ export class GameObjectSubject
         strokeWidth: 2
       })
       .build();
+
+    return html`
+      <svg width=${polygon.width} height=${polygon.height} viewBox="0 0 ${polygon.width} ${polygon.height}">
+        ${polygon.polygon.svg}
+      </svg>
+    `;
   }
 
   #rotatePoint(options: {
@@ -353,10 +360,3 @@ export class GameObjectSubject
     return html`${this.subject}`;
   }
 }
-
-
-
-
-
-
-

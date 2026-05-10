@@ -8,7 +8,7 @@ import {
 } from "@monorepo/game-motion";
 import { css, html, type CSSResultGroup, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { GameObjectSubject } from "../Game/GameObjectSubject.js";
+import { GameObjectSubject } from '@monorepo/game-design-patterns';
 
 const ROCKET_SVG_URL = new URL("../assets/rocket.svg", import.meta.url).href;
 

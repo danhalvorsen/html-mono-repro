@@ -17,7 +17,7 @@ const ViewBox: Bounds = {
 
 @customElement('flow-field-svg')
 export class FlowFieldSvgElement extends LitElement {
-  public static readonly styles = css`
+  public static override readonly styles = css`
     :host {
       display: block;
       width: 800px;
@@ -66,17 +66,17 @@ export class FlowFieldSvgElement extends LitElement {
   readonly #seeds = this.#createSeeds(320);
   #animationFrameId: number | undefined;
 
-  public connectedCallback(): void {
+  public override connectedCallback(): void {
     super.connectedCallback();
     this.#startAnimation();
   }
 
-  public disconnectedCallback(): void {
+  public override disconnectedCallback(): void {
     this.#stopAnimation();
     super.disconnectedCallback();
   }
 
-  protected render(): TemplateResult {
+  protected override render(): TemplateResult {
     const count = Math.min(this.lineCount, this.#seeds.length);
     const time = this.timeSeconds * this.animationSpeed;
 

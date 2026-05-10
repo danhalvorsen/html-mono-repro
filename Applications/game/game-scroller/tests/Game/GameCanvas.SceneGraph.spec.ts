@@ -3,7 +3,7 @@
 import { describe, expect, it } from "vitest";
 import { Matrix } from "@monorepo/core-math";
 import { GameCanvas } from "../../src/Game/GameCanvas.js";
-import { RectangleGameObject } from "../../src/GameObjects/RectangleGameObjects.js";
+import { RectangleGameObject } from "@monorepo/game-objects";
 
 type SceneNodeLike = {
   readonly world: { toFloat32Array(): Float32Array };

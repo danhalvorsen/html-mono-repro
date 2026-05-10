@@ -1,12 +1,13 @@
 import { Vector2 } from "@monorepo/core-math";
 import { type CSSResultGroup } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { BaseGameObject } from "./BaseGameObject.js";
+ 
 import { SvgPolygonTemplate } from "./SvgPolygonTemplate.js";
+import { BaseGameObject } from "./BaseGameObject.js";
 
 @customElement("rectangle-game-object")
 export class RectangleGameObject extends BaseGameObject {
-  public static override styles: CSSResultGroup = BaseGameObject.styles;
+  public static styles: CSSResultGroup = BaseGameObject.styles;
 
   @property({ type: Number })
   public strokeWidth = 2;

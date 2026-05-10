@@ -10,7 +10,7 @@ import {
   property,
   queryAssignedElements,
 } from "lit/decorators.js";
-import { BaseGameObject } from "../GameObjects/BaseGameObject.js";
+import { BaseGameObject } from '@monorepo/game-objects';
 import { ColorMangmentColorSourceFactory } from "./ColorMangmentColorSourceFactory.js";
 import { ColorMangmentEventName } from "./ColorMangmentEventName.js";
 import { ColorMangmentMode, type ColorMangmentModeValue } from "./ColorMangmentMode.js";

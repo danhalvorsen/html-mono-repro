@@ -1,7 +1,6 @@
 import type { Vector2 } from '@monorepo/core-math';
-import type { CaveScene } from '@monorepo/game-feature-cave';
 import { html, type TemplateResult } from 'lit';
-import { BaseGameObjectShapeTemplate } from './BaseGameObjectShapeTemplate.js';
+import type { CaveScene } from '../../cave-temp/game-feature-cave/dist/CaveScene';
 
 export interface CaveBaseGameObjectShapeTemplateOptions {
   readonly scene: CaveScene;
@@ -10,14 +9,12 @@ export interface CaveBaseGameObjectShapeTemplateOptions {
   readonly showCollisionPolygon: boolean;
 }
 
-export class CaveBaseGameObjectShapeTemplate extends BaseGameObjectShapeTemplate {
+export class CaveBaseGameObjectShapeTemplate {
   public constructor(
     private readonly options: CaveBaseGameObjectShapeTemplateOptions,
-  ) {
-    super();
-  }
+  ) {}
 
-  public override render(): TemplateResult {
+  public render(): TemplateResult {
     return html`
       <svg
         width=${this.options.width}

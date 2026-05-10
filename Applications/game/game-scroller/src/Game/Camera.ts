@@ -3,7 +3,7 @@ import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
  
 import type { CameraObserver, ICamera, ICameraFollowTarget, ICameraSize, ICameraView } from './ICamera.js';
-import type { TimeSchdulerObserver } from './index.js';
+import type { TimeSchdulerObserver } from '@monorepo/game-design-patterns';
 
 export interface ICameraOptions {
   readonly viewport: ICameraSize;

@@ -866,11 +866,79 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  Applications/game/game-design-patterns:
+    dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../../../packages/core-design-patterns
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../packages/core-math
+      '@monorepo/core-scene-graph':
+        specifier: workspace:*
+        version: link:../../../packages/core-scene-graph
+      '@monorepo/game-design-svg':
+        specifier: workspace:*
+        version: link:../game-design-svg
+      '@monorepo/game-inputs':
+        specifier: workspace:*
+        version: link:../game-inputs
+      '@monorepo/game-motion-animation':
+        specifier: workspace:*
+        version: link:../game-motion-animation
+      lit:
+        specifier: ^3.2.2
+        version: 3.3.2
+    devDependencies:
+      chai:
+        specifier: ^6.2.2
+        version: 6.2.2
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  Applications/game/game-design-svg:
+    dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../../../packages/core-design-patterns
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../packages/core-math
+      '@monorepo/core-scene-graph':
+        specifier: workspace:*
+        version: link:../../../packages/core-scene-graph
+      '@monorepo/game-assets-shapes':
+        specifier: workspace:*
+        version: link:../cave-temp/game-assets-shapes
+      '@monorepo/game-motion-animation':
+        specifier: workspace:*
+        version: link:../game-motion-animation
+      lit:
+        specifier: ^3.2.2
+        version: 3.3.2
+    devDependencies:
+      chai:
+        specifier: ^6.2.2
+        version: 6.2.2
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   Applications/game/game-feature-backgrounds:
     dependencies:
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../packages/core-math
+      lit:
+        specifier: ^3.2.2
+        version: 3.3.2
     devDependencies:
       rimraf:
         specifier: ^6.0.1
@@ -956,6 +1024,22 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
+  Applications/game/game-motion-animation:
+    dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../packages/core-math
+    devDependencies:
+      chai:
+        specifier: ^6.2.2
+        version: 6.2.2
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   Applications/game/game-object-curve:
     dependencies:
       '@monorepo/core-math':
@@ -974,13 +1058,28 @@ importers:
 
   Applications/game/game-objects:
     dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../../../packages/core-design-patterns
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../packages/core-math
+      '@monorepo/game-assets-shapes':
+        specifier: workspace:*
+        version: link:../cave-temp/game-assets-shapes
+      '@monorepo/game-design-patterns':
+        specifier: workspace:*
+        version: link:../game-design-patterns
+      '@monorepo/game-feature-cave':
+        specifier: workspace:*
+        version: link:../cave-temp/game-feature-cave
+      '@monorepo/game-motion':
+        specifier: workspace:*
+        version: link:../game-motion
+      lit:
+        specifier: ^3.2.2
+        version: 3.3.2
     devDependencies:
-      chai:
-        specifier: ^6.2.2
-        version: 6.2.2
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -1020,15 +1119,27 @@ importers:
       '@monorepo/game-assets-shapes':
         specifier: file:../cave-temp/game-assets-shapes
         version: file:Applications/game/cave-temp/game-assets-shapes
+      '@monorepo/game-design-patterns':
+        specifier: workspace:*
+        version: link:../game-design-patterns
+      '@monorepo/game-design-svg':
+        specifier: workspace:*
+        version: link:../game-design-svg
       '@monorepo/game-feature-backgrounds':
         specifier: workspace:*
         version: link:../game-feature-backgrounds
       '@monorepo/game-feature-cave':
         specifier: workspace:*
         version: link:../cave-temp/game-feature-cave
+      '@monorepo/game-inputs':
+        specifier: workspace:*
+        version: link:../game-inputs
       '@monorepo/game-motion':
         specifier: workspace:*
         version: link:../game-motion
+      '@monorepo/game-objects':
+        specifier: workspace:*
+        version: link:../game-objects
       lit:
         specifier: ^3.3.2
         version: 3.3.2

@@ -98,7 +98,7 @@ export class GameObjectAnimationController implements ReactiveController {
       index: currentIndex,
       samples
     });
-    const point = { x: currentPoint.x, y: currentPoint.y };
+    const point = { x: currentPoint!.x, y: currentPoint!.y };
 
     this.#currentPoint = point;
     this.#currentRotationRadians = rotation;
@@ -142,7 +142,7 @@ export class GameObjectAnimationController implements ReactiveController {
     const nextIndex = Math.min(lastIndex, options.index + 1);
     const previousPoint = options.samples[previousIndex] ?? options.samples[0];
     const nextPoint = options.samples[nextIndex] ?? options.samples[lastIndex];
-    const baseRotation = Math.atan2(nextPoint.y - previousPoint.y, nextPoint.x - previousPoint.x);
+    const baseRotation = Math.atan2(nextPoint!.y - previousPoint!.y, nextPoint!.x - previousPoint!.x);
 
     return this.#direction === 1 ? baseRotation : baseRotation + Math.PI;
   }

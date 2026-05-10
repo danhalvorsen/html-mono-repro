@@ -1,1 +1,1 @@
-export * from '../../../GameObjects/GamePolygonGeneratorController.js';
+export * from '@monorepo/game-objects';

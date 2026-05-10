@@ -1,17 +1,17 @@
 import type { Point2 } from '@monorepo/core-math';
 import type { ReactiveController, ReactiveControllerHost } from 'lit';
-import { CurveOptionsBuilder } from '../Game/Screen/Cave/CurveOptionsBuilder.js';
-import type { IGamePolygonGeneratorOptions, INormalizedGeneratorOptions } from '../Game/Screen/Cave/CurveOptions.js';
+import { CurveOptionsBuilder } from '../../game-scroller/src/Game/Screen/Cave/CurveOptionsBuilder.js';
+import type { IGamePolygonGeneratorOptions, INormalizedGeneratorOptions } from '../../game-scroller/src/Game/Screen/Cave/CurveOptions.js';
 import {
   UpperCurveBandStrategy,
   buildPoints,
   createProjectionContext
-} from '../Game/Screen/Cave/strategies/CurveBandStrategy.js';
-import { LowerCurveLineStrategy } from '../Game/Screen/Cave/strategies/LowerCurveLineStrategy.js';
-import { CaveReferenceCurveStrategy } from '../Game/Screen/Cave/strategies/ReferenceCurveStrategy.js';
-import { SkewNormalVariationStrategy } from '../Game/Screen/Cave/strategies/SkewNormalVariationStrategy.js';
+} from '../../game-scroller/src/Game/Screen/Cave/strategies/CurveBandStrategy.js';
+import { LowerCurveLineStrategy } from '../../game-scroller/src/Game/Screen/Cave/strategies/LowerCurveLineStrategy.js';
+import { CaveReferenceCurveStrategy } from '../../game-scroller/src/Game/Screen/Cave/strategies/ReferenceCurveStrategy.js';
+import { SkewNormalVariationStrategy } from '../../game-scroller/src/Game/Screen/Cave/strategies/SkewNormalVariationStrategy.js';
 
-export { type IGamePolygonGeneratorOptions } from '../Game/Screen/Cave/CurveOptions.js';
+export { type IGamePolygonGeneratorOptions } from '../../game-scroller/src/Game/Screen/Cave/CurveOptions.js';
 
 interface IGeneratorState {
   phase: number;

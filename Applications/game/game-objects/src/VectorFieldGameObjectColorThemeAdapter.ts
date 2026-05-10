@@ -1,4 +1,4 @@
-import type { GameObjectColorTheme, IColorManagedGameObject } from "../ColorManagement/IColorManagedGameObject.js";
+import type { GameObjectColorTheme, IColorManagedGameObject } from "../../game-scroller/src/ColorManagement/IColorManagedGameObject.js";
 import type { VectorFieldGameObjectOptions } from "./VectorFieldGameObjectOptions.js";
 
 export interface IVectorFieldColorThemeTarget extends IColorManagedGameObject {

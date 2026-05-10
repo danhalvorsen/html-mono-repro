@@ -1,10 +1,10 @@
 import { LitElement, css, html, type TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import "../GameObjects/VectorFieldGameObject.js";
+import "@monorepo/game-objects";
 import {
   DefaultVectorFieldGameObjectOptions,
   type VectorFieldGameObjectOptions,
-} from "../GameObjects/VectorFieldGameObjectOptions.js";
+} from "@monorepo/game-objects";
 
 interface RangeControlDefinition {
   readonly label: string;

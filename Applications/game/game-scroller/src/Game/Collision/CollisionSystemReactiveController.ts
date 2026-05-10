@@ -7,7 +7,8 @@ import type {
 import type {
   IGameObjectObservableSubject,
   IGameObjectSubject,
-} from '../GameObjectSubject.js';
+} from '@monorepo/game-design-patterns';
+
 import { CollisionIntersectionControl } from './Objects/Intersection/CollisionIntersectionControl.js';
 import { ObservedGameObjectBinding } from './Objects/Observable/ObservedGameObjectBinding.js';
 

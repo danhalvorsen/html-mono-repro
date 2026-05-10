@@ -1,7 +1,7 @@
 import { LitElement, css, html, type TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import "@monorepo/core-design-composite";
-import "../../GameObjects/VectorFieldGameObject.js";
+import "@monorepo/game-objects";
 import {
   ColorThemePreset,
   type ColorThemePreset as ColorThemePresetValue,

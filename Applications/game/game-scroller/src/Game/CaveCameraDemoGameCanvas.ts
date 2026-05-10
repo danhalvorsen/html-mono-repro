@@ -4,8 +4,8 @@ import { customElement, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { Camera } from './Camera.js';
 import type { ICamera, ICameraFollowTarget } from './ICamera.js';
-import { TimeSchdulerObserver } from './TimeSchdulerObserver.js';
-import '../GameObjects/CaveGameObject.js';
+import { TimeSchdulerObserver } from '@monorepo/game-design-patterns';
+import '@monorepo/game-objects';
 
 const WORLD_WIDTH = 1500;
 const WORLD_HEIGHT = 300;

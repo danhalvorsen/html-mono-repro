@@ -1,0 +1,44 @@
+{
+  "name": "@monorepo/game-design-patterns",
+  "version": "1.0.0",
+  "description": "Example module scaffold.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "module",
+    "typescript",
+    "example"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "lit": "^3.2.2",
+    "@monorepo/core-math": "workspace:*",
+    "@monorepo/core-design-patterns": "workspace:*",
+    "@monorepo/core-scene-graph": "workspace:*",
+    "@monorepo/game-motion-animation": "workspace:*",
+     "@monorepo/game-inputs": "workspace:*",
+     "@monorepo/game-design-svg": "workspace:*"
+  },
+  "devDependencies": {
+    "chai": "^6.2.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}

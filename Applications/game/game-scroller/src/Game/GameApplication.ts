@@ -1,6 +1,6 @@
 import { html, LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
-import { TimeSchdulerObserver } from './TimeSchdulerObserver.js';
+import { TimeSchdulerObserver } from '@monorepo/game-design-patterns';
 import './GameScreen.js';
 
 @customElement('game-application')

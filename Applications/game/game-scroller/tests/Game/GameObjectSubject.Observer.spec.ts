@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { PolygonCollisionSystem } from '@monorepo/core-collision-polygons';
-import { GameObjectSubject } from '../../src/Game/GameObjectSubject.js';
+import { GameObjectSubject } from '@monorepo/game-design-patterns';
 import {
   CollisionSystemReactiveController,
   type CollisionObservedGameObject,

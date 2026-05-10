@@ -1,3 +1,6 @@
+import { css, html, type CSSResultGroup, type TemplateResult } from 'lit';
+import {  property, state } from 'lit/decorators.js';
+ 
 import { Vector2 } from '@monorepo/core-math';
 import {
   Cave,
@@ -9,21 +12,18 @@ import {
   type ProgressiveTriangleStripResult,
   type ReferenceCurveDefinition,
 } from '@monorepo/game-feature-cave';
-import { css, html, type CSSResultGroup, type TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
-import { BaseGameObject } from './BaseGameObject.js';
-import type { BaseGameObjectOptions } from './BaseGameObjectOptions.js';
+
 import { CaveBaseGameObjectShapeTemplate } from './CaveBaseGameObjectShapeTemplate.js';
-import './TriangleStripGameObject.js';
+import { BaseGameObject } from './BaseGameObject.js';
+import type { BaseGameObjectOptions } from "./BaseGameObjectOptions.js";
 
 const DEFAULT_WORLD_WIDTH = 500;
 const MIN_WORLD_WIDTH = 320;
 const WORLD_HEIGHT = 300;
 const UPPER_RANDOM_SEED = 73_421;
 
-@customElement('cave-base-game-object')
 export class CaveGameObject extends BaseGameObject {
-  public static override styles: CSSResultGroup = [
+  public static styles: CSSResultGroup = [
     BaseGameObject.styles ?? [],
     css`
       :host {
@@ -162,12 +162,11 @@ export class CaveGameObject extends BaseGameObject {
 
     this.positionX = DEFAULT_WORLD_WIDTH / 2;
     this.positionY = WORLD_HEIGHT / 2;
-    this.options = this.createBaseGameObjectOptions();
 
     this.rebuildCave();
   }
 
-  public override connectedCallback(): void {
+  public connectedCallback(): void {
     super.connectedCallback();
 
     this.#resizeObserver = new ResizeObserver(() => {
@@ -179,14 +178,14 @@ export class CaveGameObject extends BaseGameObject {
     queueMicrotask(() => this.updateResponsiveWidth());
   }
 
-  public override disconnectedCallback(): void {
+  public disconnectedCallback(): void {
     this.#resizeObserver?.disconnect();
     this.#resizeObserver = null;
 
     super.disconnectedCallback();
   }
 
-  protected override render(): TemplateResult {
+  protected render(): TemplateResult {
     return html`
       <section class="controls" @click=${this.stopEvent}>
         ${this.renderRange({
@@ -667,10 +666,3 @@ declare global {
     'cave-base-game-object': CaveGameObject;
   }
 }
-
-
-
-
-
-
-

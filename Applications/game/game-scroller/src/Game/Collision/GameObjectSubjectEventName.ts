@@ -1,4 +1,4 @@
-import type { GameObjectSubjectEvents } from '../GameObjectSubject.js';
+import type { GameObjectSubjectEvents } from '@monorepo/game-design-patterns';
 
 export const GameObjectSubjectEventName = {
   PositionChanged: 'positionChanged',

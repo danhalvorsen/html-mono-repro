@@ -2,8 +2,8 @@ import { FsmBuilder, FsmEngine, type IInput } from "@monorepo/core-fsm";
 import {
   DefaultVectorFieldGameObjectOptions,
   type VectorFieldGameObjectOptions,
-} from "../../GameObjects/VectorFieldGameObjectOptions.js";
-import { VectorFieldGameObjectColorThemeAdapter } from "../../GameObjects/VectorFieldGameObjectColorThemeAdapter.js";
+} from "@monorepo/game-objects";
+import { VectorFieldGameObjectColorThemeAdapter } from "@monorepo/game-objects";
 import { ColorThemeFactory } from "../../ColorManagement/ColorThemeFactory.js";
 import type { GameObjectColorTheme } from "../../ColorManagement/IColorManagedGameObject.js";
 import {

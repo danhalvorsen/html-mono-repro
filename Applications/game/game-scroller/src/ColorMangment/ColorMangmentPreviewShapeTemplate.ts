@@ -1,5 +1,5 @@
 import { html, type TemplateResult } from "lit";
-import { BaseGameObjectShapeTemplate } from "../GameObjects/BaseGameObjectShapeTemplate.js";
+import { BaseGameObjectShapeTemplate } from '@monorepo/game-objects';
 
 export class ColorMangmentPreviewShapeTemplate extends BaseGameObjectShapeTemplate {
   public override render(): TemplateResult {

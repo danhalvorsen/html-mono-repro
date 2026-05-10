@@ -1,8 +1,9 @@
 import { html, svg, type TemplateResult } from 'lit';
-import { BaseGameObjectShapeTemplate } from './BaseGameObjectShapeTemplate.js';
+ 
 import type { SeedPoint } from './VectorField/SeedPointFactory.js';
 import type { StreamlinePathBuilder } from './VectorField/StreamlinePathBuilder.js';
 import type { VectorFieldGameObjectOptions } from './VectorFieldGameObjectOptions.js';
+import { BaseGameObjectShapeTemplate } from './BaseGameObjectShapeTemplate.js';
 
 export interface VectorFieldGameObjectShapeTemplateOptions {
   readonly gameObjectOptions: VectorFieldGameObjectOptions;

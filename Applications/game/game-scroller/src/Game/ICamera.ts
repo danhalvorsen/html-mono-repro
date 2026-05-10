@@ -1,8 +1,8 @@
 // FILE: src/Game/Camera/ICamera.ts
 
 import type { Point2 } from '@monorepo/core-math';
-import type { IGameObjectSubject } from './GameObjectSubject';
-import type { TimeSchdulerObserver } from './TimeSchdulerObserver';
+import type { IGameObjectSubject } from '@monorepo/game-design-patterns';
+import type { TimeSchdulerObserver } from '@monorepo/game-design-patterns';
  
 export interface ICameraSize {
   readonly width: number;

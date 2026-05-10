@@ -4,13 +4,12 @@ import { Vector2 } from "@monorepo/core-math";
 import { LitElement, css, html, type TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import "../Game/Screen/Cave/CaveGameObject.js";
-import { TimeSchdulerObserver } from "../Game/TimeSchdulerObserver.js";
-import "../GameObjects/RectangleGameObjects.js";
+import "@monorepo/game-objects";
 import {
   RocketGameObjectMotionFactory,
   type RocketGameObjectOptions,
-} from "../GameObjects/RocketGameObject.js";
-import "../GameObjects/RocketGameObject.js";
+} from "@monorepo/game-objects";
+import { TimeSchdulerObserver } from '@monorepo/game-design-patterns';
 
 const ROCKET_DIRECTION = new Vector2(0.94, -0.34);
 

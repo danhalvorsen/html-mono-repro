@@ -5,10 +5,9 @@ import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import type { ICamera, ICameraFollowTarget } from "./ICamera.js";
 import { GameObjectPlacementFactory } from "./GameObjectPlacementFactory.js";
-import type { TimeSchdulerObserver } from "./TimeSchdulerObserver.js";
+import type { TimeSchdulerObserver } from '@monorepo/game-design-patterns';
 import "./Screen/Cave/CaveGameObject.js";
-import { RectangleGameObject } from "../GameObjects/RectangleGameObjects.js";
-import { RocketGameObject } from "../GameObjects/RocketGameObject.js";
+import { RectangleGameObject, RocketGameObject } from "@monorepo/game-objects";
 
 export type GameObjectSlot = "overlay-start" | "overlay-center";
 

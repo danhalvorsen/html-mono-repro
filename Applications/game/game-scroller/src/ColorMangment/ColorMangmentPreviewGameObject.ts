@@ -1,5 +1,5 @@
 import { customElement } from "lit/decorators.js";
-import { BaseGameObject } from "../GameObjects/BaseGameObject.js";
+import { BaseGameObject } from '@monorepo/game-objects';
 import { ColorMangmentPreviewShapeTemplate } from "./ColorMangmentPreviewShapeTemplate.js";
 import type { ColorMangmentScheme } from "./ColorMangmentTypes.js";
 

@@ -19,11 +19,15 @@
     "@monorepo/core-collision-polygons": "workspace:*",
     "@monorepo/game-motion": "workspace:*",
     "@monorepo/game-assets-shapes": "file:../cave-temp/game-assets-shapes",
+    "@monorepo/game-design-svg": "workspace:*",
     "@monorepo/game-feature-cave": "workspace:*",
     "@monorepo/game-feature-backgrounds": "workspace:*",
     "@monorepo/core-fsm": "workspace:*",
     "@monorepo/core-design-composite": "workspace:*",
-    "@monorepo/core-design-composite-fsm": "workspace:*"
+    "@monorepo/core-design-composite-fsm": "workspace:*",
+    "@monorepo/game-inputs": "workspace:*",
+    "@monorepo/game-design-patterns": "workspace:*",
+    "@monorepo/game-objects": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.2",

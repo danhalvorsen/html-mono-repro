@@ -1,4 +1,4 @@
-import type { Point2 } from '../../../../../packages/core-math/dist/interfaces/IPoint';
+import type { Point2 } from "@monorepo/core-math";
 
 
 export interface ICurveCollection {

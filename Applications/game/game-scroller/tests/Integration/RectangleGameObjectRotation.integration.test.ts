@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { describe, expect, it } from 'vitest';
-import { RectangleGameObject } from '../../src/GameObjects/RectangleGameObjects.js';
+import { RectangleGameObject } from '@monorepo/game-objects';
 
 describe('RectangleGameObject integration', () => {
   it('rotates the attached child RectangleGameObject when the parent rotates', async () => {
@@ -32,4 +32,3 @@ describe('RectangleGameObject integration', () => {
     expect(transformStyle).not.toContain('rotate(0rad)');
   });
 });
-

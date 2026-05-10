@@ -7,12 +7,13 @@ import {
   type TemplateResult,
 } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { BaseGameObject } from './BaseGameObject.js';
+ 
 import { TriangleStripGameObjectShapeTemplate } from './TriangleStripGameObjectShapeTemplate.js';
+import { BaseGameObject } from './BaseGameObject.js';
 
 @customElement('triangle-strip-game-object')
 export class TriangleStripGameObject extends BaseGameObject {
-  public static override styles: CSSResultGroup = [
+  public static styles: CSSResultGroup = [
     BaseGameObject.styles ?? [],
     css`
       :host {
@@ -36,7 +37,7 @@ export class TriangleStripGameObject extends BaseGameObject {
   @property({ type: Boolean, reflect: true })
   public visible = true;
 
-  protected override willUpdate(changed: PropertyValues<this>): void {
+  protected willUpdate(changed: PropertyValues<this>): void {
     super.willUpdate(changed);
 
     if (
@@ -48,7 +49,7 @@ export class TriangleStripGameObject extends BaseGameObject {
     }
   }
 
-  protected override render(): TemplateResult {
+  protected render(): TemplateResult {
     if (!this.visible || this.triangleStrip === null) {
       return html``;
     }

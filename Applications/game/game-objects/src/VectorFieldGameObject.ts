@@ -1,6 +1,6 @@
 import { customElement, property } from 'lit/decorators.js';
 import type { PropertyValues } from 'lit';
-import { BaseGameObject } from './BaseGameObject.js';
+ 
 import { CurlNoiseVectorField } from './VectorField/CurlNoiseVectorField.js';
 import { PerlinNoise3 } from './VectorField/PerlinNoise3.js';
 import { SeedPointFactory, type SeedPoint } from './VectorField/SeedPointFactory.js';
@@ -11,6 +11,7 @@ import {
   type VectorFieldGameObjectOptions,
 } from './VectorFieldGameObjectOptions.js';
 import { VectorFieldGameObjectShapeTemplate } from './VectorFieldGameObjectShapeTemplate.js';
+import { BaseGameObject } from './BaseGameObject.js';
 
 interface VectorFieldRuntime {
   readonly noise: INoise3;

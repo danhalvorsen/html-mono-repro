@@ -1,8 +1,7 @@
 import { css, html, LitElement, type TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
-import type { CameraGameObject } from '../GameObjects/CameraGameObject.js';
-import '../GameObjects/CameraGameObject.js';
-import '../GameObjects/CaveGameObject.js';
+import type { CameraGameObject } from '@monorepo/game-objects';
+import '@monorepo/game-objects';
 
 const WORLD_WIDTH = 1500;
 const WORLD_HEIGHT = 300;

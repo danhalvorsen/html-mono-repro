@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BrowserKeyboardCode } from '../../../src/Game/Input/BrowserKeyboardCode.js';
-import { DefaultBrowserKeyboardCodeParser } from '../../../src/Game/Input/BrowserKeyboardCodeParser.js';
-import { DefaultPlayerKeyMap } from '../../../src/Game/Input/DefaultPlayerKeyMap.js';
-import { PlayerInputAxis } from '../../../src/Game/Input/PlayerInputAxis.js';
-
+import {DefaultBrowserKeyboardCodeParser, DefaultPlayerKeyMap, BrowserKeyboardCode, PlayerInputAxis} from '../src/index.js';
 class PlayerInputFixture {
   public readonly parser = new DefaultBrowserKeyboardCodeParser();
   public readonly keyMap = new DefaultPlayerKeyMap();

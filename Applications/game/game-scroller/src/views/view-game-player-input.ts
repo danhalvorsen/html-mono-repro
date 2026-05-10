@@ -13,14 +13,14 @@ import {
   type CollisionTargetPolygons,
   type ICollisionReactiveController,
 } from "../Game/Collision/CollisionSystemReactiveController.js";
-import type { ICollisionMovementConstraintTarget } from "../Game/GameObjectSubject.js";
+import type { ICollisionMovementConstraintTarget } from '@monorepo/game-design-patterns';
 import "../Game/Screen/Cave/CaveGameObject.js";
 import {
   PlayerInputController,
   WasdXPlayerKeyMap,
-} from "../Game/Input/index.js";
-import { TimeSchdulerObserver } from "../Game/TimeSchdulerObserver.js";
-import { PlayerGameObject } from "../GameObjects/PlayerGameObject.js";
+} from '@monorepo/game-inputs';
+import { TimeSchdulerObserver } from '@monorepo/game-design-patterns';
+import { PlayerGameObject } from "@monorepo/game-objects";
 
 interface CaveGeneratedCurvesProvider {
   getGeneratedCurves(): {

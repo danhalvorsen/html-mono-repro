@@ -1,7 +1,7 @@
 import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import "../ColorManagement/ColorManagement.js";
-import "../GameObjects/VectorFieldGameObject.js";
+import "@monorepo/game-objects";
 
 @customElement("view-color-management-demo")
 export class ViewColorManagementDemo extends LitElement {

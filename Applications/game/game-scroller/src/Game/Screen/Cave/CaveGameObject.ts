@@ -22,11 +22,11 @@ import type { ICamera } from "../../ICamera.js";
 import type {
   ITimeObserver,
   TimeSchdulerObserver,
-} from "../../TimeSchdulerObserver.js";
+} from "@monorepo/game-design-patterns";
 import {
   GamePolygonGeneratorController,
   type IGamePolygonGeneratorOptions,
-} from "../../../GameObjects/GamePolygonGeneratorController.js";
+} from "@monorepo/game-objects";
 
 type CaveNoiseMaterialOptions = {
   readonly patternInset: number;
@@ -675,5 +675,3 @@ declare global {
     "cave-game-object": CaveGameObject;
   }
 }
-
-

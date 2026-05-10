@@ -1,7 +1,7 @@
 import type { Vector2 } from '@monorepo/core-math';
 import type { ProgressiveTriangleStripResult } from '@monorepo/game-feature-cave';
 import { html, type TemplateResult } from 'lit';
-import { BaseGameObjectShapeTemplate } from './BaseGameObjectShapeTemplate.js';
+import { BaseGameObjectShapeTemplate } from './BaseGameObjectShapeTemplate';
 
 export interface TriangleStripGameObjectShapeTemplateOptions {
   readonly triangleStrip: ProgressiveTriangleStripResult;
