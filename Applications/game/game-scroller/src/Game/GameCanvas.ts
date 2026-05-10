@@ -1,36 +1,52 @@
-// FILE: src/Game/GameCanvas.ts
+import type { IParametricMotion } from "@monorepo/game-motion";
+import { SceneGraph, SceneNode } from "@monorepo/core-scene-graph";
+import { html, LitElement, type TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { repeat } from "lit/directives/repeat.js";
+import type { ICamera, ICameraFollowTarget } from "./ICamera.js";
+import { GameObjectPlacementFactory } from "./GameObjectPlacementFactory.js";
+import type { TimeSchdulerObserver } from "./TimeSchdulerObserver.js";
+import "./Screen/Cave/CaveGameObject.js";
+import { RectangleGameObject } from "../GameObjects/RectangleGameObjects.js";
+import { RocketGameObject } from "../GameObjects/RocketGameObject.js";
 
-import { html, LitElement, type TemplateResult } from 'lit';
-import { repeat } from 'lit/directives/repeat.js';
-import { customElement, property } from 'lit/decorators.js';
- 
-import type { TimeSchdulerObserver } from './TimeSchdulerObserver.js';
+export type GameObjectSlot = "overlay-start" | "overlay-center";
 
-import './Srceens/Cave/CaveGameObject.js';
-import { RectangleGameObject } from '../GameObjects/RectangleGameObjects.js';
-import type { ICamera, ICameraFollowTarget } from './ICamera.js';
-import { GameObjectPlacementFactory } from './GameObjectPlacementFactory.js';
-import { SceneGraph, SceneNode } from '@monorepo/core-scene-graph'; 
-
-export type GameObjectViewModel = {
+export interface BaseGameObjectViewModel {
   readonly id: string;
-  readonly slot: 'overlay-start' | 'overlay-center';
+  readonly slot: GameObjectSlot;
   readonly fill: string;
   readonly stroke: string;
   readonly size: number;
-  readonly indexOffsetRatio: number;
   readonly followCamera: boolean;
-};
+}
+
+export interface RectangleGameObjectViewModel extends BaseGameObjectViewModel {
+  readonly kind: "rectangle";
+  readonly indexOffsetRatio: number;
+}
+
+export interface RocketGameObjectViewModel extends BaseGameObjectViewModel {
+  readonly kind: "rocket";
+  readonly motion: IParametricMotion;
+}
+
+export type GameObjectViewModel =
+  | RectangleGameObjectViewModel
+  | RocketGameObjectViewModel;
 
 const placementFactory = new GameObjectPlacementFactory();
 
-@customElement('game-canvas')
+@customElement("game-canvas")
 export class GameCanvas extends LitElement {
-  private readonly gameObjects = placementFactory.create();
-  private readonly sceneRoot = new SceneNode('game-canvas-root');
+  private readonly sceneRoot = new SceneNode("game-canvas-root");
   private readonly scene = new SceneGraph(this.sceneRoot);
-  readonly #sceneAttachedObjects = new WeakSet<RectangleGameObject>();
+  readonly #sceneAttachedObjects = new WeakSet<RectangleGameObject | RocketGameObject>();
+
   #isCameraTargetBound = false;
+
+  @property({ attribute: false })
+  public gameObjects: readonly GameObjectViewModel[] = placementFactory.create();
 
   @property({ attribute: false })
   public scheduler?: TimeSchdulerObserver;
@@ -55,25 +71,28 @@ export class GameCanvas extends LitElement {
     this.#attachRenderedObjectsToScene();
     this.scene.update();
 
+    if (changed.has("gameObjects")) {
+      this.#isCameraTargetBound = false;
+    }
+
     if (this.showCameraViewBox) return;
     if (!this.camera) return;
-    if (!changed.has('camera') && this.#isCameraTargetBound) return;
+    if (
+      !changed.has("camera") &&
+      !changed.has("gameObjects") &&
+      this.#isCameraTargetBound
+    ) {
+      return;
+    }
 
-    const target = this.renderRoot.querySelector('rectangle-game-object[data-camera-target="true"]') as ICameraFollowTarget | null;
+    const target = this.renderRoot.querySelector(
+      '[data-camera-target="true"]',
+    ) as ICameraFollowTarget | null;
+
     if (!target) return;
 
     this.camera.setFollowTarget(target);
     this.#isCameraTargetBound = true;
-  }
-
-  #attachRenderedObjectsToScene(): void {
-    const objects = this.renderRoot.querySelectorAll('rectangle-game-object');
-    for (const object of objects) {
-      if (!(object instanceof RectangleGameObject)) continue;
-      if (this.#sceneAttachedObjects.has(object)) continue;
-      this.scene.add(object);
-      this.#sceneAttachedObjects.add(object);
-    }
   }
 
   protected override render(): TemplateResult {
@@ -88,26 +107,68 @@ export class GameCanvas extends LitElement {
       >
         ${repeat(
           this.gameObjects,
-          gameObject => gameObject.id,
-          gameObject => html`
-            <rectangle-game-object
-              slot=${gameObject.slot}
-              data-camera-target=${gameObject.followCamera ? 'true' : 'false'}
-              .scheduler=${this.scheduler}
-              .fill=${gameObject.fill}
-              .stroke=${gameObject.stroke}
-              .size=${gameObject.size}
-              .indexOffsetRatio=${gameObject.indexOffsetRatio}
-            ></rectangle-game-object>
-          `
+          (gameObject) => gameObject.id,
+          (gameObject) => this.#renderGameObject(gameObject),
         )}
       </cave-game-object>
     `;
+  }
+
+  #renderGameObject(gameObject: GameObjectViewModel): TemplateResult {
+    switch (gameObject.kind) {
+      case "rectangle":
+        return html`
+          <rectangle-game-object
+            slot=${gameObject.slot}
+            data-camera-target=${gameObject.followCamera ? "true" : "false"}
+            .scheduler=${this.scheduler}
+            .fill=${gameObject.fill}
+            .stroke=${gameObject.stroke}
+            .size=${gameObject.size}
+            .indexOffsetRatio=${gameObject.indexOffsetRatio}
+          ></rectangle-game-object>
+        `;
+
+      case "rocket":
+        return html`
+          <rocket-game-object
+            slot=${gameObject.slot}
+            data-camera-target=${gameObject.followCamera ? "true" : "false"}
+            .scheduler=${this.scheduler}
+            .motion=${gameObject.motion}
+            .fill=${gameObject.fill}
+            .stroke=${gameObject.stroke}
+            .size=${gameObject.size}
+          ></rocket-game-object>
+        `;
+    }
+  }
+
+  #attachRenderedObjectsToScene(): void {
+    const objects = this.renderRoot.querySelectorAll(
+      "rectangle-game-object, rocket-game-object",
+    );
+
+    for (const object of objects) {
+      if (
+        !(object instanceof RectangleGameObject) &&
+        !(object instanceof RocketGameObject)
+      ) {
+        continue;
+      }
+
+      if (this.#sceneAttachedObjects.has(object)) {
+        continue;
+      }
+
+      this.scene.add(object);
+      this.#sceneAttachedObjects.add(object);
+    }
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'game-canvas': GameCanvas;
+    "game-canvas": GameCanvas;
   }
 }

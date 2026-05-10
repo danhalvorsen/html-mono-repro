@@ -3,7 +3,7 @@ import { BrowserKeyboardEventName, BrowserWindowEventName } from './BrowserInput
 import type { BrowserKeyboardCode } from './BrowserKeyboardCode.js';
 import {
   DefaultBrowserKeyboardCodeParser,
-  type BrowserKeyboardCodeParser
+  type BrowserKeyboardCodeParser,
 } from './BrowserKeyboardCodeParser.js';
 import { DefaultPlayerKeyMap } from './DefaultPlayerKeyMap.js';
 import { PlayerInputAxis } from './PlayerInputAxis.js';
@@ -15,6 +15,8 @@ export class PlayerInputController implements ReactiveController {
   readonly #keyMap: PlayerKeyMap;
   readonly #codeParser: BrowserKeyboardCodeParser;
   readonly #pressedCodes = new Set<BrowserKeyboardCode>();
+
+  #isEnabled = true;
 
   public constructor(
     host: ReactiveControllerHost,
@@ -29,22 +31,48 @@ export class PlayerInputController implements ReactiveController {
     this.#host.addController(this);
   }
 
+  public get isEnabled(): boolean {
+    return this.#isEnabled;
+  }
+
+  public setEnabled(isEnabled: boolean): void {
+    if (this.#isEnabled === isEnabled) {
+      return;
+    }
+
+    this.#isEnabled = isEnabled;
+
+    if (!this.#isEnabled) {
+      this.#pressedCodes.clear();
+    }
+
+    this.#host.requestUpdate();
+  }
+
   public get horizontalAxis(): number {
+    if (!this.#isEnabled) {
+      return 0;
+    }
+
     return new PlayerInputAxis({
       negative: this.#pressedCodes.has(this.#keyMap.moveLeft),
-      positive: this.#pressedCodes.has(this.#keyMap.moveRight)
+      positive: this.#pressedCodes.has(this.#keyMap.moveRight),
     }).value;
   }
 
   public get verticalAxis(): number {
+    if (!this.#isEnabled) {
+      return 0;
+    }
+
     return new PlayerInputAxis({
       negative: this.#pressedCodes.has(this.#keyMap.moveUp),
-      positive: this.#pressedCodes.has(this.#keyMap.moveDown)
+      positive: this.#pressedCodes.has(this.#keyMap.moveDown),
     }).value;
   }
 
   public get isFirePressed(): boolean {
-    return this.#pressedCodes.has(this.#keyMap.fire);
+    return this.#isEnabled && this.#pressedCodes.has(this.#keyMap.fire);
   }
 
   public hostConnected(): void {
@@ -61,19 +89,29 @@ export class PlayerInputController implements ReactiveController {
   }
 
   readonly #onKeyDown = (event: Event): void => {
-    if (!(event instanceof KeyboardEvent)) return;
+    if (!this.#isEnabled) {
+      return;
+    }
+
+    if (!(event instanceof KeyboardEvent)) {
+      return;
+    }
 
     this.#setPressed(event.code, true);
   };
 
   readonly #onKeyUp = (event: Event): void => {
-    if (!(event instanceof KeyboardEvent)) return;
+    if (!(event instanceof KeyboardEvent)) {
+      return;
+    }
 
     this.#setPressed(event.code, false);
   };
 
   readonly #onBlur = (): void => {
-    if (this.#pressedCodes.size === 0) return;
+    if (this.#pressedCodes.size === 0) {
+      return;
+    }
 
     this.#pressedCodes.clear();
     this.#host.requestUpdate();
@@ -82,14 +120,21 @@ export class PlayerInputController implements ReactiveController {
   #setPressed(rawCode: string, pressed: boolean): void {
     const code = this.#codeParser.parse(rawCode);
 
-    if (code === null) return;
-    if (!this.#keyMap.isMapped(code)) return;
+    if (code === null) {
+      return;
+    }
+
+    if (!this.#isMapped(code)) {
+      return;
+    }
 
     const changed = pressed
       ? this.#addPressedCode(code)
       : this.#pressedCodes.delete(code);
 
-    if (!changed) return;
+    if (!changed) {
+      return;
+    }
 
     this.#host.requestUpdate();
   }
@@ -98,5 +143,15 @@ export class PlayerInputController implements ReactiveController {
     const size = this.#pressedCodes.size;
     this.#pressedCodes.add(code);
     return this.#pressedCodes.size !== size;
+  }
+
+  #isMapped(code: BrowserKeyboardCode): boolean {
+    return (
+      code === this.#keyMap.moveUp ||
+      code === this.#keyMap.moveDown ||
+      code === this.#keyMap.moveLeft ||
+      code === this.#keyMap.moveRight ||
+      code === this.#keyMap.fire
+    );
   }
 }

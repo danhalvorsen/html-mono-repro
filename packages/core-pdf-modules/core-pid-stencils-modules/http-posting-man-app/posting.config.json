@@ -1,0 +1,32 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "commands": [
+    {
+      "name": "generate",
+      "shortcuts": ["g"],
+      "path": "./examples/generate.command.json"
+    },
+    {
+      "name": "generate-raster-graphics",
+      "shortcuts": ["raster", "png"],
+      "path": "./examples/generate-raster-graphics.command.json"
+    }
+  ],
+  "queries": [
+    {
+      "name": "status",
+      "shortcuts": ["s"],
+      "path": "./examples/status.query.json"
+    },
+    {
+      "name": "list-svg-files",
+      "shortcuts": ["list", "l"],
+      "path": "./examples/list-svg-files.query.json"
+    },
+    {
+      "name": "api-catalog",
+      "shortcuts": ["api", "catalog", "help", "h"],
+      "path": "./examples/api-catalog.query.json"
+    }
+  ]
+}

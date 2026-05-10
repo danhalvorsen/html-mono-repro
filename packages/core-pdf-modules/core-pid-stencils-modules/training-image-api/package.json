@@ -1,0 +1,35 @@
+{
+  "name": "pid-stencil-training-image-api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch ./src/server.ts",
+    "start": "node ./dist/server.js",
+    "cli": "tsx ./src/cli.ts",
+    "test": "vitest run",
+    "test:api": "vitest run tests/api/*.integration.test.ts",
+    "test:api:catalog": "vitest run tests/api/GetApiCatalog.integration.test.ts",
+    "test:api:list": "vitest run tests/api/ListSvgFiles.integration.test.ts",
+    "test:api:status": "vitest run tests/api/GetGenerationStatus.integration.test.ts",
+    "test:api:generate": "vitest run tests/api/GenerateTrainingImages.integration.test.ts"
+  },
+  "dependencies": {
+    "@monorepo/core-design-patterns-cqrs-no-json": "workspace:*",
+    "express": "5.2.1",
+    "express-bearer-token": "3.0.0",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4",
+    "chai": "^5.1.2",
+    "@types/chai": "^5.0.1",
+    "supertest": "^7.0.0",
+    "@types/supertest": "^6.0.2"
+  }
+}

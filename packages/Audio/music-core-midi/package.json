@@ -16,7 +16,7 @@
 
     },
     "dependencies": {
-        "@monorepo/core-specifications": "workspace:*"    
+        "@monorepo/core-specifications": "workspace:*"
     },
     "devDependencies": {}
 }

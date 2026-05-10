@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50" width="100" height="50" data-root-name="pid.feeders" data-shape-name="Spray Nozzle" data-aspect="variable" data-strokewidth="inherit">
+  <title>Spray Nozzle</title>
+  <metadata>
+    <mxgraph-shape root-name="pid.feeders" name="Spray Nozzle" w="100" h="50" aspect="variable" strokewidth="inherit">
+      <connections>
+        <constraint name="N" perimeter="0" x="0.5" y="0" />
+      </connections>
+    </mxgraph-shape>
+  </metadata>
+  <g data-layer="background">
+    <path d="M 0 50 L 50 0 L 100 50 M 50 0 L 50 50" fill="none" stroke="currentColor" stroke-width="inherit" />
+  </g>
+  <g data-layer="foreground">
+  </g>
+</svg>

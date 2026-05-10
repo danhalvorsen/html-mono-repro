@@ -1,6 +1,4 @@
-// FILE: src/Game/Camera/Camera.ts
-
-import type { Point2 } from '@monorepo/core-math';
+import { Vector2, type Point2 } from "@monorepo/core-math";
 import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement } from 'lit/decorators.js';
  
@@ -89,20 +87,24 @@ export class Camera extends LitElement implements ICamera {
     this.#centerOnFollowTarget();
   }
 
-  public getPosistion(): Point2 {
-    return this.position;
+  public getPosistion(): Vector2 {
+    return new Vector2(this.position.x, this.position.y);
   }
 
-  public getWorldPosistion(): Point2 {
-    return this.position;
+  public setPosistion(position: Point2): void {
+    this.#setPosition(position);
   }
 
-  public getRotation(): Point2 {
-    return { x: 0, y: 0 };
+  public getWorldPosistion(): Vector2 {
+    return new Vector2(this.position.x, this.position.y);
   }
 
-  public getWorldRotation(): Point2 {
-    return { x: 0, y: 0 };
+  public getRotation(): Vector2 {
+    return new Vector2(0, 0 );
+  }
+
+  public getWorldRotation(): Vector2 {
+    return new Vector2(0, 0 );
   }
 
   public override disconnectedCallback(): void {
@@ -133,10 +135,10 @@ export class Camera extends LitElement implements ICamera {
   }
 
   #clampPosition(position: Point2): Point2 {
-    return {
-      x: clamp(position.x, 0, Math.max(0, this.#world.width - this.#viewport.width)),
-      y: clamp(position.y, 0, Math.max(0, this.#world.height - this.#viewport.height))
-    };
+    return new Vector2(
+      clamp(position.x, 0, Math.max(0, this.#world.width - this.#viewport.width)),
+      clamp(position.y, 0, Math.max(0, this.#world.height - this.#viewport.height))
+    );
   }
 
   #notifyObservers(): void {
@@ -162,7 +164,7 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 function copyPoint(point: Point2): Point2 {
-  return { x: point.x, y: point.y };
+  return new Vector2(point.x, point.y );
 }
 
 function copySize(size: ICameraSize): ICameraSize {
@@ -174,3 +176,7 @@ declare global {
     'game-camera': Camera;
   }
 }
+
+
+
+

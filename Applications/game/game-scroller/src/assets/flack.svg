@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="54.0698 163.5764 396.2187 201.212" width="396.219px" height="201.212px">
+  <g transform="matrix(1, 0, 0, 1, 121.14047110068243, -20.09159192920579)">
+    <g transform="matrix(1, 0, 0, 1, -14.773146, 1.181836)">
+      <g transform="matrix(1, 0, 0, 1, -189.097483, 57.320148)">
+        <rect x="136.8" y="140.826" width="252.327" height="20.092" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+        <rect x="353.08" y="134.917" width="98.685" height="35.456" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+      </g>
+    </g>
+    <g>
+      <rect x="183.188" y="235.67" width="145.96" height="149.21" style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);"/>
+      <ellipse style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" cx="261.634" cy="240.102" rx="52.149" ry="56.434"/>
+    </g>
+  </g>
+</svg>

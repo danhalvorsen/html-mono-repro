@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 50" width="300" height="50" data-root-name="pid.feeders" data-shape-name="Proportional Feeder (Metering)" data-aspect="variable" data-strokewidth="inherit">
+  <title>Proportional Feeder (Metering)</title>
+  <metadata>
+    <mxgraph-shape root-name="pid.feeders" name="Proportional Feeder (Metering)" w="300" h="50" aspect="variable" strokewidth="inherit">
+      <connections>
+        <constraint name="NE" perimeter="0" x="1" y="0" />
+        <constraint name="NW" perimeter="0" x="0" y="0" />
+      </connections>
+    </mxgraph-shape>
+  </metadata>
+  <g data-layer="background">
+    <path d="M 80 0 A 40 40 0 1 1 0 0 L 300 0 A 40 40 0 1 1 220 0 Z M 150 1 L 180 50 L 120 50 Z" fill="none" stroke="currentColor" stroke-width="inherit" />
+  </g>
+  <g data-layer="foreground">
+  </g>
+</svg>

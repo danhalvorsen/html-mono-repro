@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
@@ -18,8 +19,7 @@
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["packages/*/src"]
-  ,
+  "include": ["packages/*/src"],
   "exclude": [
     "node_modules",
     "dist",
@@ -27,3 +27,4 @@
     "**/node_modules/**"
   ]
 }
+

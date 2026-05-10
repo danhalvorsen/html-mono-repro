@@ -1,5 +1,5 @@
 {
-  "name": "game-scroller",
+  "name": "@monorepo/game-scroller",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,10 +12,18 @@
   "dependencies": {
     "lit": "^3.3.2",
     "@monorepo/core-math": "workspace:*",
+    "@monorepo/core-math-colors": "workspace:*",
     "@monorepo/core-math-probability": "workspace:*",
     "@monorepo/core-design-patterns": "workspace:*",
-    "@monorepo/game-objects": "workspace:*",
-    "@monorepo/core-scene-graph": "workspace:*"
+    "@monorepo/core-scene-graph": "workspace:*",
+    "@monorepo/core-collision-polygons": "workspace:*",
+    "@monorepo/game-motion": "workspace:*",
+    "@monorepo/game-assets-shapes": "file:../cave-temp/game-assets-shapes",
+    "@monorepo/game-feature-cave": "workspace:*",
+    "@monorepo/game-feature-backgrounds": "workspace:*",
+    "@monorepo/core-fsm": "workspace:*",
+    "@monorepo/core-design-composite": "workspace:*",
+    "@monorepo/core-design-composite-fsm": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~6.0.2",
