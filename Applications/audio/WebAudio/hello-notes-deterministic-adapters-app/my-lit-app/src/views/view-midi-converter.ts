@@ -3,6 +3,9 @@ import { customElement, state } from "lit/decorators.js";
 import { Converter, abcFromEvents$ } from "@monorepo/hello-notes-deterministic-adapters";
 import { from, firstValueFrom } from "rxjs";
 import * as abcjs from "abcjs";
+import { createNoteOn, MidiChannel, MidiNote, MidiVelocity, type MidiMessage } from "@monorepo/music-core-midi";
+import { RealInstrumentPresets, WebAudioMidiPlayer } from "@monorepo/music-core-midi-playback";
+import type { MidiLogicalEvent } from "@monorepo/music-core-midi-accords-playback";
 
 @customElement("view-midi-converter")
 export class ViewMidiConverter extends LitElement {
@@ -15,7 +18,12 @@ export class ViewMidiConverter extends LitElement {
   @state()
   private errorText = "";
 
+  @state()
+  private isPlaying = false;
+
   private readonly converter = new Converter();
+  private midiPlayer: WebAudioMidiPlayer | null = null;
+  private readonly scheduledHandles: number[] = [];
 
   protected render() {
     return html`
@@ -34,6 +42,11 @@ export class ViewMidiConverter extends LitElement {
         ></textarea>
 
         <small>Press Enter to convert. Use Shift+Enter for newline.</small>
+        <div class="actions">
+          <button type="button" @click=${this.onPlayClick} ?disabled=${this.isPlaying}>
+            ${this.isPlaying ? "Playing..." : "Play"}
+          </button>
+        </div>
 
         ${this.errorText ? html`<pre class="error">${this.errorText}</pre>` : html``}
 
@@ -82,6 +95,29 @@ export class ViewMidiConverter extends LitElement {
     }
     event.preventDefault();
     this.renderAbcInput();
+  };
+
+  private onPlayClick = async (): Promise<void> => {
+    const input = this.midiInput.trim();
+    if (input.length === 0) {
+      this.errorText = "Input is empty. Paste MIDI note text first.";
+      return;
+    }
+
+    try {
+      this.errorText = "";
+      const songLike = { get: () => input };
+      const events = this.converter.convert(songLike);
+      const noteOnEvents = events
+        .filter((event): event is Extract<MidiLogicalEvent, { kind: "note-on" }> => event.kind === "note-on")
+        .sort((a, b) => a.timestampMs - b.timestampMs);
+
+      this.playNoteOnEventsAsAccords(noteOnEvents);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.errorText = `Playback failed: ${message}`;
+      this.stopScheduledPlayback();
+    }
   };
 
   private async convertAndRender(): Promise<void> {
@@ -145,6 +181,119 @@ export class ViewMidiConverter extends LitElement {
     }
   }
 
+  public override disconnectedCallback(): void {
+    this.stopScheduledPlayback();
+    super.disconnectedCallback();
+  }
+
+  private playNoteOnEventsAsAccords(events: readonly Extract<MidiLogicalEvent, { kind: "note-on" }>[]): void {
+    if (events.length === 0) {
+      this.errorText = "No playable note-on events found.";
+      return;
+    }
+
+    const player = this.getMidiPlayer();
+    if (player === null) {
+      this.errorText = "Could not initialize MIDI player.";
+      return;
+    }
+
+    this.stopScheduledPlayback();
+    this.isPlaying = true;
+
+    const baseMs = events[0]!.timestampMs;
+    const accordGroups = this.groupByAccordStart(events);
+    let endMs = 0;
+
+    for (const group of accordGroups) {
+      const startOffsetMs = Math.max(0, Math.round(group.timestampMs - baseMs));
+
+      this.scheduledHandles.push(
+        window.setTimeout(() => {
+          for (const event of group.events) {
+            const onMessage = this.createMessage(event.channel, event.noteNumber, event.velocity);
+            const noteLengthSeconds = Math.max(0.01, event.durationMs / 1000);
+            player.play(onMessage, {
+              noteLengthSeconds,
+              sustain: 0.6,
+            });
+          }
+        }, startOffsetMs),
+      );
+
+      for (const event of group.events) {
+        const durationMs = Math.max(1, Math.round(event.durationMs));
+        const noteOffOffsetMs = startOffsetMs + durationMs;
+        endMs = Math.max(endMs, noteOffOffsetMs);
+      }
+    }
+
+    this.scheduledHandles.push(
+      window.setTimeout(() => {
+        this.isPlaying = false;
+        this.scheduledHandles.length = 0;
+      }, endMs + 60),
+    );
+  }
+
+  private groupByAccordStart(
+    events: readonly Extract<MidiLogicalEvent, { kind: "note-on" }>[],
+  ): readonly {
+    readonly timestampMs: number;
+    readonly events: readonly Extract<MidiLogicalEvent, { kind: "note-on" }>[];
+  }[] {
+    const byTimestamp = new Map<number, Extract<MidiLogicalEvent, { kind: "note-on" }>[]>();
+    for (const event of events) {
+      const key = Math.round(event.timestampMs);
+      const existing = byTimestamp.get(key);
+      if (existing === undefined) {
+        byTimestamp.set(key, [event]);
+        continue;
+      }
+      existing.push(event);
+    }
+
+    return Array.from(byTimestamp.entries())
+      .sort((a, b) => a[0] - b[0])
+      .map(([timestampMs, grouped]) => ({
+        timestampMs,
+        events: grouped.sort((a, b) => a.noteNumber - b.noteNumber),
+      }));
+  }
+
+  private stopScheduledPlayback(): void {
+    for (const handle of this.scheduledHandles) {
+      window.clearTimeout(handle);
+    }
+    this.scheduledHandles.length = 0;
+    this.isPlaying = false;
+  }
+
+  private getMidiPlayer(): WebAudioMidiPlayer | null {
+    if (this.midiPlayer !== null) {
+      return this.midiPlayer;
+    }
+
+    try {
+      this.midiPlayer = new WebAudioMidiPlayer({
+        ...RealInstrumentPresets.synthPluck,
+      });
+      return this.midiPlayer;
+    } catch {
+      return null;
+    }
+  }
+
+  private createMessage(
+    channel: number,
+    note: number,
+    velocity: number,
+  ): MidiMessage {
+    const midiChannel = MidiChannel.create(channel);
+    const midiNote = MidiNote.create(note);
+    return createNoteOn(midiChannel, midiNote, MidiVelocity.create(velocity));
+  }
+
   static styles = css`
     :host {
       display: block;
@@ -194,6 +343,25 @@ export class ViewMidiConverter extends LitElement {
       display: block;
       margin-top: 0.5rem;
       color: #4b5563;
+    }
+
+    .actions {
+      margin-top: 0.75rem;
+    }
+
+    button {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 0.45rem 0.9rem;
+      background: #ffffff;
+      color: #111111;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
     }
 
     pre {

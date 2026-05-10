@@ -472,6 +472,9 @@ importers:
       '@monorepo/core-design-patterns-mediator':
         specifier: workspace:*
         version: link:../../../../packages/core-design-patterns-mediator
+      '@monorepo/core-fsm':
+        specifier: workspace:*
+        version: link:../../../../packages/core-fsm
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../../packages/core-math
@@ -506,6 +509,15 @@ importers:
       '@monorepo/hello-notes-deterministic-adapters':
         specifier: workspace:*
         version: link:../../hello-notes-deterministic-adapters
+      '@monorepo/music-core-midi':
+        specifier: workspace:*
+        version: link:../../../../../packages/Audio/music-core-midi
+      '@monorepo/music-core-midi-accords-playback':
+        specifier: workspace:*
+        version: link:../../../../../packages/Audio/music-core-midi-accords-playback
+      '@monorepo/music-core-midi-playback':
+        specifier: workspace:*
+        version: link:../../../../../packages/Audio/music-core-midi-playback
       abcjs:
         specifier: ^6.5.2
         version: 6.5.2

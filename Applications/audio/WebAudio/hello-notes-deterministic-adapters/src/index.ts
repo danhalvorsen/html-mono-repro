@@ -1,5 +1,6 @@
 import { MidiEventEngine, type MidiLogicalEvent, type Song as MidiBinarySong } from "@monorepo/music-core-midi-accords-playback";
 import { from, map, filter, toArray, firstValueFrom, type Observable } from "rxjs";
+export * from "./hand-detection.js";
 
 export class Song {
   public get(): string {

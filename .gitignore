@@ -172,3 +172,5 @@ packages/core-pdf-modules/core-pid-stencils-modules/vite-project/public/**
 packages/core-pdf-modules/core-pid-stencils-modules/http-posting-man-app/code.ps1
 packages/core-pdf-modules/core-pid-stencils-modules/read-xml-create-svg/code.ps1
 packages/core-pdf-modules/core-pid-stencils-modules/training-image-api/code.ps1
+packages/core-pdf-modules/core-pdf-parser-adapter/core-pdf-reader/tests/PID/Images/images/PID.with-image-fragments.pdf
+packages/core-pdf-modules/core-pdf-reader/tests/PID/Images/images/PID.with-image-fragments.pdf

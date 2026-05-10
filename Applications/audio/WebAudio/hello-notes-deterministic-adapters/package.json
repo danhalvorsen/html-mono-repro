@@ -36,7 +36,8 @@
     "@monorepo/music-core-midi-accords-playback": "workspace:*",
     "@monorepo/core-design-patterns": "workspace:*",
     "@monorepo/core-specifications-rules": "workspace:*",
-    "@monorepo/core-design-patterns-mediator": "workspace:*"
+    "@monorepo/core-design-patterns-mediator": "workspace:*",
+    "@monorepo/core-fsm": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
