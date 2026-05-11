@@ -14,9 +14,12 @@
     "start": "node ./dist/main.js",
     "run:sample": "pnpm build && node ./dist/main.js",
     "test": "vitest run --passWithNoTests",
-    "run:ctor-sample": "pnpm build && node ./dist/ctorSample.js"
+    "run:ctor-sample": "pnpm build && node ./dist/ctorSample.js",
+    "run:all-samples": "pnpm build && node ./dist/runAll.js"
   },
   "dependencies": {
+    "inversify": "^6.0.0",
+    "reflect-metadata": "^0.2.0",
     "@monorepo/core-ioc-inversify": "workspace:*",
     "@monorepo/core-ioc-inversify-sample-objects": "workspace:*"
   },
