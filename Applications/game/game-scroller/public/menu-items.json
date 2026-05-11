@@ -45,6 +45,11 @@
     "icon": "\u2699\ufe0f"
   },
   {
+    "id": "hunter",
+    "label": "Hunter",
+    "icon": "\ud83c\udff9"
+  },
+  {
     "id": "game - cave object",
     "label": "Game - Cave Object",
     "icon": "\ud83d\udd73\ufe0f"

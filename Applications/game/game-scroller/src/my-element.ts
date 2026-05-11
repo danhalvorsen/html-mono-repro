@@ -13,6 +13,7 @@ import "./views/view-cave-object.js";
 import "./views/view-diagnostics.js";
 import "./views/view-help.js";
 import "./views/view-settings.js";
+import "./views/view-hunter.js";
 import "./views/vector-field-game-view/index.js";
 import type { MenuViewChangeDetail } from "./menu-wc.js";
 
@@ -28,6 +29,7 @@ const VIEW_IDS = Object.freeze({
   diagnostics: "diagnostics",
   help: "help",
   settings: "settings",
+  hunter: "hunter",
   fsmPilot: "fsm - pilot",
   fsmVectorField: "fsm - vector field",
 } as const);
@@ -50,6 +52,7 @@ const DEFAULT_VIEW_ITEMS: readonly ViewMenuItem[] = Object.freeze([
   { id: VIEW_IDS.diagnostics, label: "Diagnostics", icon: "📈" },
   { id: VIEW_IDS.help, label: "Help", icon: "❓" },
   { id: VIEW_IDS.settings, label: "Settings", icon: "⚙️" },
+  { id: VIEW_IDS.hunter, label: "Hunter", icon: "🏹" },
   { id: VIEW_IDS.fsmPilot, label: "FSM Pilot", icon: "🧪" },
   { id: VIEW_IDS.fsmVectorField, label: "FSM - Vector Field", icon: "🧭" },
 ]);
@@ -205,6 +208,9 @@ export class MyElement extends LitElement {
 
       case VIEW_IDS.settings:
         return html`<view-settings></view-settings>`;
+
+      case VIEW_IDS.hunter:
+        return html`<view-hunter></view-hunter>`;
 
       case VIEW_IDS.fsmPilot:
         return html`<view-fsm-pilot></view-fsm-pilot>`;

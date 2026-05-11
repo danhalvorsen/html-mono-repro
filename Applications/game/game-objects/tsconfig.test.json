@@ -16,5 +16,8 @@
     "src/**/*.ts",
     "tests/**/*.test.ts",
     "tests/**/*.spec.ts"
+  ],
+  "exclude": [
+    "tests/e2e/**"
   ]
 }

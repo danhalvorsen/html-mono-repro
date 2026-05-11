@@ -1,4 +1,5 @@
-import { Polygon, SvgPolygon } from "@monorepo/game-assets-shapes";
+import { Vector2 } from "@monorepo/core-math";
+import { Polygon, SvgPolygon } from "@monorepo/game-design-svg";
 import { LitElement, css, html, type TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import "../Game/index.js";
@@ -25,23 +26,23 @@ export class ViewGamePolygon extends LitElement {
 
   private readonly polygon = new SvgPolygon(
     new Polygon([
-      { x: 30, y: 190 },
-      { x: 120, y: 30 },
-      { x: 230, y: 70 },
-      { x: 300, y: 180 },
-      { x: 210, y: 250 },
-      { x: 90, y: 230 }
+      new Vector2(30, 190),
+      new Vector2(120, 30),
+      new Vector2(230, 70),
+      new Vector2(300, 180),
+      new Vector2(210, 250),
+      new Vector2(90, 230),
     ]),
     { fill: "#3559d9", stroke: "#9ab2ff", strokeWidth: 2 }
   );
 
   private readonly polygon2 = new SvgPolygon(
     new Polygon([
-      { x: 0, y: 0 },
-      { x: 100, y: 0 },
-      { x: 100, y: 100 },
-      { x: 0, y: 100 },
-      { x: 0, y: 0 }
+      new Vector2(0, 0),
+      new Vector2(100, 0),
+      new Vector2(100, 100),
+      new Vector2(0, 100),
+      new Vector2(0, 0),
     ]),
     { fill: "#3559d9", stroke: "#9ab2ff", strokeWidth: 2 }
   );
@@ -65,4 +66,3 @@ declare global {
     "view-game-polygon": ViewGamePolygon;
   }
 }
-

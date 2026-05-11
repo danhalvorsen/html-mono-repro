@@ -17,7 +17,8 @@ import {
   MultiCurveSvgTemplate,
   type ReferenceCurveRenderStyle,
 } from "../../Elements/Polygon/MultiCurveSvgTemplate.js";
-import type { GamePolygon } from "@monorepo/game-assets-shapes";
+import "../../Elements/Polygon/GamePolygon.js";
+import type { ISvgTemplate } from "@monorepo/game-design-svg";
 import type { ICamera } from "../../ICamera.js";
 import type {
   ITimeObserver,
@@ -644,7 +645,7 @@ export class CaveGameObject extends LitElement implements ITimeObserver {
           <game-polygon
             .width=${worldWidth}
             .height=${worldHeight}
-            .polygon=${shape as unknown as GamePolygon["polygon"]}
+            .polygon=${shape as unknown as ISvgTemplate}
           ></game-polygon>
 
           <div class="overlay-layer">

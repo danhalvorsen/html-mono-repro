@@ -10,6 +10,9 @@ export default defineConfig({
       "tests/**/*.test.ts",
       "tests/**/*.spec.ts",
     ],
+    exclude: [
+      "tests/e2e/**",
+    ],
     isolate: false,
     pool: "threads",
     typecheck: {

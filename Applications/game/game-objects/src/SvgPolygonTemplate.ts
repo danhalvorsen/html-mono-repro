@@ -1,5 +1,5 @@
-import { Polygon, SvgPolygon } from "@monorepo/game-assets-shapes";
-import type { Point2 } from "@monorepo/core-math";
+import { Polygon, SvgPolygon } from "../../game-design-svg/src/index.js";
+import { Vector2, type Point2 } from "@monorepo/core-math";
 import { html, type TemplateResult } from "lit";
 import { BaseGameObjectShapeTemplate } from "./BaseGameObjectShapeTemplate.js";
 
@@ -18,7 +18,8 @@ export class SvgPolygonTemplate extends BaseGameObjectShapeTemplate {
   }
 
   public override render(): TemplateResult {
-    const polygon = new SvgPolygon(new Polygon(this.options.points), {
+    const vertices = this.options.points.map((point) => new Vector2(point.x, point.y));
+    const polygon = new SvgPolygon(new Polygon(vertices), {
       fill: this.options.fill,
       stroke: this.options.stroke,
       strokeWidth: this.options.strokeWidth,

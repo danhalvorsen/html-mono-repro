@@ -1,4 +1,5 @@
 import "@monorepo/game-objects";
+import "./Elements/Polygon/GamePolygon.js";
 // FILE: src/Game/index.ts
 
 export * from './GameApplication.js';

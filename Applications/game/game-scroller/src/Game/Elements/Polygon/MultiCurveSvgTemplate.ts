@@ -1,6 +1,6 @@
-import type { Point2 } from '@monorepo/core-math';
+import { Vector2, type Point2 } from '@monorepo/core-math';
 import { type SVGTemplateResult, svg } from 'lit';
-import { type ISvgTemplate, Polygon, SvgOpenPolygon, SvgPolygon } from "@monorepo/game-assets-shapes";
+import { type ISvgTemplate, Polygon, SvgOpenPolygon, SvgPolygon } from "@monorepo/game-design-svg";
 export type ReferenceCurveRenderStyle = 'solid' | 'dashed';
 
 export class MultiCurveSvgTemplate implements ISvgTemplate {
@@ -57,7 +57,7 @@ export class MultiCurveSvgTemplate implements ISvgTemplate {
   }
 
   #toCurve(points: readonly Point2[], stroke: string, strokeDasharray?: string): SvgOpenPolygon {
-    return new SvgOpenPolygon(new Polygon(points), {
+    return new SvgOpenPolygon(new Polygon(points.map((point) => new Vector2(point.x, point.y))), {
       fill: 'none',
       stroke,
       strokeWidth: 2,
@@ -72,11 +72,14 @@ export class MultiCurveSvgTemplate implements ISvgTemplate {
       { x: bounds.maxX, y: 0 },
       { x: bounds.minX, y: 0 }
     ];
-    return new SvgPolygon(new Polygon(polygonPoints), {
+    return new SvgPolygon(
+      new Polygon(polygonPoints.map((point) => new Vector2(point.x, point.y))),
+      {
       fill,
       stroke,
       strokeWidth: 1
-    });
+      },
+    );
   }
 
   #toLowerClosedPolygon(points: readonly Point2[], fill: string, stroke: string): SvgPolygon {
@@ -86,11 +89,14 @@ export class MultiCurveSvgTemplate implements ISvgTemplate {
       { x: bounds.maxX, y: this.#boundsHeight },
       { x: bounds.minX, y: this.#boundsHeight }
     ];
-    return new SvgPolygon(new Polygon(polygonPoints), {
+    return new SvgPolygon(
+      new Polygon(polygonPoints.map((point) => new Vector2(point.x, point.y))),
+      {
       fill,
       stroke,
       strokeWidth: 1
-    });
+      },
+    );
   }
 
   #resolveBounds(points: readonly Point2[]): { minX: number; maxX: number } {
@@ -109,6 +115,4 @@ export class MultiCurveSvgTemplate implements ISvgTemplate {
     return svg``;
   }
 }
-
-
 

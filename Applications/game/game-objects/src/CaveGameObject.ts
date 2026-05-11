@@ -1,5 +1,5 @@
 import { css, html, type CSSResultGroup, type TemplateResult } from 'lit';
-import {  property, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
  
 import { Vector2 } from '@monorepo/core-math';
 import {
@@ -22,6 +22,7 @@ const MIN_WORLD_WIDTH = 320;
 const WORLD_HEIGHT = 300;
 const UPPER_RANDOM_SEED = 73_421;
 
+@customElement('cave-base-game-object')
 export class CaveGameObject extends BaseGameObject {
   public static styles: CSSResultGroup = [
     BaseGameObject.styles ?? [],

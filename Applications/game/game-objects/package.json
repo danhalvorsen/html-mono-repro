@@ -18,7 +18,10 @@
     "clean": "rimraf dist",
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "test:typecheck": "vitest run --typecheck"
+    "test:typecheck": "vitest run --typecheck",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed"
   },
   "keywords": [
     "module",
@@ -32,12 +35,15 @@
     "@monorepo/core-math": "workspace:*",
     "@monorepo/core-design-patterns": "workspace:*",
     "@monorepo/game-design-patterns": "workspace:*",
+    "@monorepo/game-design-svg": "workspace:*",
     "@monorepo/game-feature-cave": "workspace:*",
     "@monorepo/game-motion": "workspace:*",
     "@monorepo/game-assets-shapes": "workspace:*"
   },
   "devDependencies": {
+    "@playwright/test": "^1.54.2",
     "rimraf": "^6.0.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "jsdom": "^26.1.0"
   }
 }
