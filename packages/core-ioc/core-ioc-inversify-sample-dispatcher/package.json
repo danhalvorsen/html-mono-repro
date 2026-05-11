@@ -1,0 +1,31 @@
+{
+  "name": "@monorepo/core-ioc-inversify-sample-dispatcher",
+  "version": "1.0.0",
+  "description": "IoC sample data",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:test": "tsc -p tsconfig.test.json",
+    "clean": "rimraf dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@monorepo/core-ioc-inversify": "workspace:*",
+    "@monorepo/core-ioc-inversify-sample-objects": "workspace:*",
+    "@monorepo/core-design-patterns": "workspace:*",
+    "@monorepo/core-design-patterns-cqrs-no-json": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "rimraf": "^6.0.1"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { Subject } from "rxjs";
 import { FileChangeFilter } from "./FileChangeFilter.js";
-import { FileSystemEvent } from "./DirectoryEvent.js";
+import type { FileSystemEvent } from "./DirectoryEvent.js";
 import { DirectoryPoller } from "./DirectoryPoller.js";
 
 export class DirectoryObservable {

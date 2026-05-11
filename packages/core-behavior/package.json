@@ -13,6 +13,9 @@
   "dependencies": {
     "@monorepo/core-filesystem": "workspace:*"
   },
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js",

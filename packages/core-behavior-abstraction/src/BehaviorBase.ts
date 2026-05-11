@@ -7,15 +7,6 @@ export interface IBehaviorNode {
   apply(target: unknown): void;
 }
 
-export interface IBehaviorNode {
-  readonly id: string;
-  readonly name: string;
-  add(child: IBehaviorNode): void;
-  remove(child: IBehaviorNode): void;
-  getChildren(): IBehaviorNode[];
-  apply(target: unknown): void;
-}
-
 export abstract class BehaviorBase implements IBehaviorNode {
   private readonly children: IBehaviorNode[] = [];
 

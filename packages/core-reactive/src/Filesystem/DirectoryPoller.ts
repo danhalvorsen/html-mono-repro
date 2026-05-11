@@ -1,7 +1,7 @@
-import fs from "fs";
-import path from "path";
-import crypto from "crypto";
-import { FileSystemEvent } from "./DirectoryEvent.js";
+import { createHash } from "node:crypto";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
+import type { FileSystemEvent } from "./DirectoryEvent.js";
 
 export class DirectoryPoller {
   private snapshot = new Map<string, string>();
@@ -18,18 +18,17 @@ export class DirectoryPoller {
   }
 
   private scanDir(dir: string, output: Map<string, string>) {
-    const entries = fs.readdirSync(dir);
+    const entries = readdirSync(dir);
 
     for (const entry of entries) {
-      const full = path.join(dir, entry);
-      const stat = fs.statSync(full);
+      const full = join(dir, entry);
+      const stat = statSync(full);
 
       if (stat.isDirectory()) {
         this.scanDir(full, output);
       } else {
-        const buf = fs.readFileSync(full);
-        const hash = crypto
-          .createHash("sha1")
+        const buf = readFileSync(full);
+        const hash = createHash("sha1")
           .update(buf)
           .digest("hex");
 

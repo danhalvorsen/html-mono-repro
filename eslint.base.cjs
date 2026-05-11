@@ -105,6 +105,35 @@ function createBaseConfig(options = {}) {
         '@typescript-eslint/prefer-readonly': 'warn',
         '@typescript-eslint/no-explicit-any': ['warn', { fixToUnknown: false }],
         '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+        '@typescript-eslint/consistent-type-imports': [
+          'error',
+          {
+            prefer: 'type-imports',
+            fixStyle: 'inline-type-imports',
+          },
+        ],
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          {
+            patterns: [
+              {
+                group: ['@monorepo/*/src/*'],
+                message: 'Do not import another package src folder. Use the package public export.',
+              },
+              {
+                group: [
+                  '../../packages/*',
+                  '../../../packages/*',
+                  '../../../../packages/*',
+                  '../../Applications/*',
+                  '../../../Applications/*',
+                  '../../../../Applications/*',
+                ],
+                message: 'Cross-package imports must use package names, not relative paths.',
+              },
+            ],
+          },
+        ],
         ...importRules,
         ...extraTypeScriptRules,
       },

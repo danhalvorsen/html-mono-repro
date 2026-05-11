@@ -1,11 +1,11 @@
-import type { Point, Point2 } from '@monorepo/core-math';
+import { Vector2, type Point, type Point2 } from '@monorepo/core-math';
+import { Polygon } from '@monorepo/game-primetives';
 import {
-  Polygon,
-  SvgOpenPolygon,
-  SvgPolygon,
   type ISvgTemplate,
-  type SvgShapeStyle,
-} from '@monorepo/game-assets-shapes';
+} from './ISvgTemplate.js';
+import type { SvgShapeStyle } from './SvgShapeStyle.js';
+import { SvgOpenPolygon } from './polygon/SvgOpenPolygon.js';
+import { SvgPolygon } from './polygon/SvgPolygon.js';
 
 export type PointMapper = (point: Readonly<Point>) => Point;
 
@@ -49,14 +49,17 @@ export class SvgPolygonBuilder {
     };
   }
 
-  private mapPoints(points: readonly Point[]): readonly Point[] {
+  private mapPoints(points: readonly Point[]): readonly Vector2[] {
     const mapper = this.options.coordinateMapper;
 
     if (!mapper) {
-      return points.map(point => ({ x: point.x, y: point.y }));
+      return points.map((point) => new Vector2(point.x, point.y));
     }
 
-    return points.map(point => mapper(point));
+    return points.map((point) => {
+      const mapped = mapper(point);
+      return new Vector2(mapped.x, mapped.y);
+    });
   }
 }
 

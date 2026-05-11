@@ -1,0 +1,28 @@
+{
+  "name": "@monorepo/core-ioc-inversify",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "vitest run -c ./vitest.config.ts",
+    "test:watch": "vitest -c ./vitest.config.ts",
+    "test:new": "vitest run -c ./vitest.config.ts tests/new"
+  },
+  "dependencies": {
+    "inversify": "^6.0.0",
+    "reflect-metadata": "^0.2.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./new": {
+      "import": "./dist/new/index.js",
+      "types": "./dist/new/index.d.ts"
+    }
+  },
+  "devDependencies": {}
+}

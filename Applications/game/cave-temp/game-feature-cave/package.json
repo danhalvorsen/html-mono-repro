@@ -31,7 +31,7 @@
     "lit": "^3.0.0",
     
     "@monorepo/core-math": "workspace:*",
-    "@monorepo/game-assets-svg-primitive-shapes": "workspace:*"
+    "@monorepo/game-primetives": "workspace:*"
   },
   "devDependencies": {
     "rimraf": "^6.0.1",

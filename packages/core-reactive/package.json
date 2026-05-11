@@ -23,6 +23,9 @@
   "dependencies": {
     "rxjs": "^7.8.2"
   },
+  "devDependencies": {
+    "@types/node": "^20.19.39"
+  },
   "engines": {
     "node": ">=18"
   }

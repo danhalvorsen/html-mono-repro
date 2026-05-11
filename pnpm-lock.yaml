@@ -698,7 +698,7 @@ importers:
         version: link:../../../packages/core-fsm
       '@monorepo/core-ioc-inversify':
         specifier: workspace:*
-        version: link:../../../packages/core-ioc-inversify
+        version: link:../../../packages/core-ioc/core-ioc-inversify
       lit:
         specifier: ^3.3.1
         version: 3.3.2
@@ -824,24 +824,14 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  Applications/game/cave-temp/game-assets-svg-primitive-shapes:
-    dependencies:
-      '@monorepo/core-math':
-        specifier: workspace:*
-        version: link:../../../../packages/core-math
-    devDependencies:
-      typescript:
-        specifier: ~6.0.2
-        version: 6.0.3
-
   Applications/game/cave-temp/game-feature-cave:
     dependencies:
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../../packages/core-math
-      '@monorepo/game-assets-svg-primitive-shapes':
+      '@monorepo/game-primetives':
         specifier: workspace:*
-        version: link:../game-assets-svg-primitive-shapes
+        version: link:../game-primetives
       lit:
         specifier: ^3.0.0
         version: 3.3.2
@@ -859,6 +849,32 @@ importers:
         specifier: workspace:*
         version: link:../../../../packages/core-math
     devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  Applications/game/cave-temp/game-primetives:
+    dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../../packages/core-math
+    devDependencies:
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+
+  Applications/game/game-command-query:
+    dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../packages/core-math
+    devDependencies:
+      chai:
+        specifier: ^6.2.2
+        version: 6.2.2
       rimraf:
         specifier: ^6.0.1
         version: 6.1.3
@@ -917,6 +933,9 @@ importers:
       '@monorepo/game-motion-animation':
         specifier: workspace:*
         version: link:../game-motion-animation
+      '@monorepo/game-primetives':
+        specifier: workspace:*
+        version: link:../cave-temp/game-primetives
       lit:
         specifier: ^3.2.2
         version: 3.3.2
@@ -1056,37 +1075,6 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  Applications/game/game-objects:
-    dependencies:
-      '@monorepo/core-design-patterns':
-        specifier: workspace:*
-        version: link:../../../packages/core-design-patterns
-      '@monorepo/core-math':
-        specifier: workspace:*
-        version: link:../../../packages/core-math
-      '@monorepo/game-assets-shapes':
-        specifier: workspace:*
-        version: link:../cave-temp/game-assets-shapes
-      '@monorepo/game-design-patterns':
-        specifier: workspace:*
-        version: link:../game-design-patterns
-      '@monorepo/game-feature-cave':
-        specifier: workspace:*
-        version: link:../cave-temp/game-feature-cave
-      '@monorepo/game-motion':
-        specifier: workspace:*
-        version: link:../game-motion
-      lit:
-        specifier: ^3.2.2
-        version: 3.3.2
-    devDependencies:
-      rimraf:
-        specifier: ^6.0.1
-        version: 6.1.3
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   Applications/game/game-scroller:
     dependencies:
       '@monorepo/core-collision-polygons':
@@ -1139,7 +1127,158 @@ importers:
         version: link:../game-motion
       '@monorepo/game-objects':
         specifier: workspace:*
-        version: link:../game-objects
+        version: link:../l-system/game-turtle-svg/game-objects
+      lit:
+        specifier: ^3.3.2
+        version: 3.3.2
+    devDependencies:
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.10
+        version: 8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+
+  Applications/game/l-system/game-coordinate-system-and-mappers:
+    dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../../packages/core-math
+      '@monorepo/game-design-svg':
+        specifier: workspace:*
+        version: link:../../game-design-svg
+    devDependencies:
+      chai:
+        specifier: ^6.2.2
+        version: 6.2.2
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  Applications/game/l-system/game-l-system-abstract:
+    dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../../packages/core-math
+    devDependencies:
+      chai:
+        specifier: ^6.2.2
+        version: 6.2.2
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  Applications/game/l-system/game-l-system-svg:
+    dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../../packages/core-math
+    devDependencies:
+      chai:
+        specifier: ^6.2.2
+        version: 6.2.2
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  Applications/game/l-system/game-turtle-abstract:
+    dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../../../../packages/core-design-patterns
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../../packages/core-math
+      '@monorepo/game-coordinate-system-and-mappers':
+        specifier: workspace:*
+        version: link:../game-coordinate-system-and-mappers
+      '@monorepo/game-design-svg':
+        specifier: workspace:*
+        version: link:../../game-design-svg
+    devDependencies:
+      chai:
+        specifier: ^6.2.2
+        version: 6.2.2
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  Applications/game/l-system/game-turtle-svg:
+    dependencies:
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../../packages/core-math
+      '@monorepo/game-design-svg':
+        specifier: workspace:*
+        version: link:../../game-design-svg
+      '@monorepo/game-turtle-abstract':
+        specifier: workspace:*
+        version: link:../game-turtle-abstract
+    devDependencies:
+      chai:
+        specifier: ^6.2.2
+        version: 6.2.2
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  Applications/game/l-system/game-turtle-svg/game-objects:
+    dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../../../../../packages/core-design-patterns
+      '@monorepo/core-math':
+        specifier: workspace:*
+        version: link:../../../../../packages/core-math
+      '@monorepo/game-assets-shapes':
+        specifier: workspace:*
+        version: link:../../../cave-temp/game-assets-shapes
+      '@monorepo/game-design-patterns':
+        specifier: workspace:*
+        version: link:../../../game-design-patterns
+      '@monorepo/game-feature-cave':
+        specifier: workspace:*
+        version: link:../../../cave-temp/game-feature-cave
+      '@monorepo/game-motion':
+        specifier: workspace:*
+        version: link:../../../game-motion
+      lit:
+        specifier: ^3.2.2
+        version: 3.3.2
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  Applications/game/l-system/turtle.app/my-lit-app:
+    dependencies:
+      '@monorepo/game-design-svg':
+        specifier: workspace:*
+        version: link:../../../game-design-svg
+      '@monorepo/game-turtle-abstract':
+        specifier: workspace:*
+        version: link:../../game-turtle-abstract
+      '@monorepo/game-turtle-svg':
+        specifier: workspace:*
+        version: link:../../game-turtle-svg
       lit:
         specifier: ^3.3.2
         version: 3.3.2
@@ -2776,6 +2915,10 @@ importers:
       '@monorepo/core-filesystem':
         specifier: workspace:*
         version: link:../core-filesystem
+    devDependencies:
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2(@noble/hashes@1.8.0))(lightningcss@1.32.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/core-ai-openapi-ollama:
     dependencies:
@@ -2814,18 +2957,30 @@ importers:
       '@monorepo/core-filesystem':
         specifier: workspace:*
         version: link:../core-filesystem
+    devDependencies:
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2(@noble/hashes@1.8.0))(lightningcss@1.32.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/core-behavior-abstraction:
     dependencies:
       '@monorepo/core-filesystem':
         specifier: workspace:*
         version: link:../core-filesystem
+    devDependencies:
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2(@noble/hashes@1.8.0))(lightningcss@1.32.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/core-code-tools:
     dependencies:
       '@monorepo/core-filesystem':
         specifier: workspace:*
         version: link:../core-filesystem
+    devDependencies:
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@25.6.0)(@vitest/ui@3.2.4)(happy-dom@20.8.9)(jsdom@29.0.2(@noble/hashes@1.8.0))(lightningcss@1.32.0)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/core-collision-modules/core-collision-3d:
     dependencies:
@@ -3767,14 +3922,52 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  packages/core-ioc-inversify:
+  packages/core-ioc/core-ioc-inversify:
     dependencies:
       inversify:
-        specifier: ^6.x
+        specifier: ^6.0.0
         version: 6.2.2(reflect-metadata@0.2.2)
       reflect-metadata:
-        specifier: ^0.2.x
+        specifier: ^0.2.0
         version: 0.2.2
+
+  packages/core-ioc/core-ioc-inversify-sample-dispatcher:
+    dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../../core-design-patterns
+      '@monorepo/core-design-patterns-cqrs-no-json':
+        specifier: workspace:*
+        version: link:../../core-design-patterns-cqrs-no-json
+      '@monorepo/core-ioc-inversify':
+        specifier: workspace:*
+        version: link:../core-ioc-inversify
+      '@monorepo/core-ioc-inversify-sample-objects':
+        specifier: workspace:*
+        version: link:../core-ioc-inversify-sample-objects
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/core-ioc/core-ioc-inversify-sample-objects:
+    dependencies:
+      '@monorepo/core-design-patterns':
+        specifier: workspace:*
+        version: link:../../core-design-patterns
+      '@monorepo/core-design-patterns-cqrs-no-json':
+        specifier: workspace:*
+        version: link:../../core-design-patterns-cqrs-no-json
+    devDependencies:
+      rimraf:
+        specifier: ^6.0.1
+        version: 6.1.3
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   packages/core-layout:
     devDependencies:
@@ -4702,6 +4895,10 @@ importers:
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
+    devDependencies:
+      '@types/node':
+        specifier: ^20.19.39
+        version: 20.19.39
 
   packages/core-rectangle-placement:
     dependencies:

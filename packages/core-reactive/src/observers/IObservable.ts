@@ -1,4 +1,4 @@
-import { IObserver } from "./IObserver.js";
+import type { IObserver } from "./IObserver.js";
 
 export interface IObservable<T> {
   subscribe(observer: IObserver<T>): void;

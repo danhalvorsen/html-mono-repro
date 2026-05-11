@@ -15,6 +15,9 @@
     "@monorepo/core-composition-svg": "workspace:*",
     "@monorepo/core-composition-abstract": "workspace:*"
   },
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js",

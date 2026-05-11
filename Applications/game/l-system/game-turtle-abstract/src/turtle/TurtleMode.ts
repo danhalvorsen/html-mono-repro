@@ -1,0 +1,1 @@
+export type TurtleMode = "2d" | "3d";

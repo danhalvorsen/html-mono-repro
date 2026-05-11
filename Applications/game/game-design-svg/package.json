@@ -33,7 +33,8 @@
     "@monorepo/core-design-patterns": "workspace:*",
     "@monorepo/core-scene-graph": "workspace:*",
     "@monorepo/game-motion-animation": "workspace:*",
-    "@monorepo/game-assets-shapes": "workspace:*"
+    "@monorepo/game-assets-shapes": "workspace:*",
+    "@monorepo/game-primetives": "workspace:*"
   },
   "devDependencies": {
     "chai": "^6.2.2",

@@ -1,4 +1,4 @@
-import { IObserver } from "./IObserver.js";
+import type { IObserver } from "./IObserver.js";
 
 export class ObserverCollection<T> {
   private readonly observers = new Set<IObserver<T>>();
