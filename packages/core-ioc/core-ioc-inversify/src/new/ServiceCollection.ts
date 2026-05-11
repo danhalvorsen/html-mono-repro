@@ -7,10 +7,10 @@ import { DuplicateRegistrationPolicy } from "./DuplicateRegistrationPolicy.js";
 import { IocCollectionFrozenError } from "./errors/IocCollectionFrozenError.js";
 import { IocDuplicateDescriptorError } from "./errors/IocDuplicateDescriptorError.js";
 import { IocInvalidRegistrationError } from "./errors/IocInvalidRegistrationError.js";
-import {
-  type IContainerAdapter,
-  MissingContainerAdapter,
+import type {
+  IContainerAdapter,
 } from "./IContainerAdapter.js";
+import { InversifyContainerAdapter } from "./inversify/InversifyContainerAdapter.js";
 import type { IServiceProvider } from "./IServiceProvider.js";
 import {
   CreateDescriptorFingerprint,
@@ -62,7 +62,7 @@ export class ServiceCollection {
   private nextOrder: number;
 
   public constructor(options: ServiceCollectionOptions = {}) {
-    this.adapter = options.Adapter ?? new MissingContainerAdapter();
+    this.adapter = options.Adapter ?? new InversifyContainerAdapter();
     this.identityGenerator =
       options.IdentityGenerator ?? new XorDescriptorIdentityGenerator();
     this.duplicateRegistrationPolicy =
@@ -382,3 +382,4 @@ export class ServiceCollection {
     }
   }
 }
+

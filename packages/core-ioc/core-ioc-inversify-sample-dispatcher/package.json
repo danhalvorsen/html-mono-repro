@@ -7,20 +7,22 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "clean": "rimraf dist",
     "build": "tsc -p tsconfig.json",
     "build:test": "tsc -p tsconfig.test.json",
-    "clean": "rimraf dist",
-    "test": "vitest run"
+    "dev": "tsc -p tsconfig.json --watch",
+    "start": "node ./dist/main.js",
+    "run:sample": "pnpm build && node ./dist/main.js",
+    "test": "vitest run --passWithNoTests",
+    "run:ctor-sample": "pnpm build && node ./dist/ctorSample.js"
   },
   "dependencies": {
     "@monorepo/core-ioc-inversify": "workspace:*",
-    "@monorepo/core-ioc-inversify-sample-objects": "workspace:*",
-    "@monorepo/core-design-patterns": "workspace:*",
-    "@monorepo/core-design-patterns-cqrs-no-json": "workspace:*"
+    "@monorepo/core-ioc-inversify-sample-objects": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
   },
   "exports": {
     ".": {

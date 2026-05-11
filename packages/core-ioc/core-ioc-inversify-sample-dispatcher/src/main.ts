@@ -1,40 +1,43 @@
 import {
+  ServiceCollection,
+} from "@monorepo/core-ioc-inversify/new";
+
+import {
   BlaQuery,
-  type BlaQueryError,
-  type BlaQueryMessage,
-  type BlaQueryResult,
+  BlaQueryHandler,
+  BlaQueryHandlerContract,
   FooCommand,
-  type FooCommandError,
-  type FooCommandMessage,
-  type FooCommandResult,
+  FooCommandHandler,
+  FooCommandHandlerContract,
 } from "@monorepo/core-ioc-inversify-sample-objects";
-import type {
-  Result,
-} from "@monorepo/core-design-patterns";
-import { CreateSampleIocCqrsServiceProvider } from "./CreateSampleIocCqrsServiceProvider.js";
 
-export type SampleDispatchResult = Readonly<{
-  readonly foo: Result<FooCommandResult, FooCommandError>;
-  readonly bla: Result<BlaQueryResult, BlaQueryError>;
-}>;
+class Program {
+  public async Main(): Promise<void> {
+    const services = new ServiceCollection();
 
-export async function RunSample(): Promise<SampleDispatchResult> {
-  const ioc = CreateSampleIocCqrsServiceProvider();
+    services.AddTransient(
+      FooCommandHandlerContract,
+      FooCommandHandler,
+    );
 
-  const foo = await ioc.DispatchCommand<
-    FooCommandMessage,
-    FooCommandResult,
-    FooCommandError
-  >(new FooCommand(41));
+    services.AddTransient(
+      BlaQueryHandlerContract,
+      BlaQueryHandler,
+    );
 
-  const bla = await ioc.DispatchQuery<
-    BlaQueryMessage,
-    BlaQueryResult,
-    BlaQueryError
-  >(new BlaQuery("bla"));
+    const provider = services.BuildServiceProvider();
 
-  return Object.freeze({
-    foo,
-    bla,
-  });
+    const fooHandler = provider.GetRequiredService(FooCommandHandlerContract);
+    const blaHandler = provider.GetRequiredService(BlaQueryHandlerContract);
+
+    const foo = await fooHandler.Handle(new FooCommand(41));
+    const bla = await blaHandler.Handle(new BlaQuery("bla"));
+
+    console.log({
+      foo,
+      bla,
+    });
+  }
 }
+
+await new Program().Main();
