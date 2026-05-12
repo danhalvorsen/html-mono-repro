@@ -1,45 +1,63 @@
-// FILE: src/AudioPlayerElement.ts
+import { LitElement, html } from "lit";
+import { customElement } from "lit/decorators.js";
 
-import { LitElement, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { FilterBuilder } from "./Filters/FilterBuilder";
 
-import { AudioGraphBuilder } from './AudioGraphBuilder';
-import { FilterBuilder } from './FilterBuilder';
-import { OscillatorBuilder } from './OscillatorBuilder';
+import { VoiceBuilder } from "./Voice/VoiceBuilder";
+import type { IVoice } from "./Voice/IVoice.ts";
 
-@customElement('audio-player')
+@customElement("audio-player")
 export class AudioPlayerElement extends LitElement {
   readonly #context = new AudioContext();
 
+  #voice: IVoice | null = null;
+  #frequencyHz = 440;
+
   protected render(): unknown {
     return html`
-      <button @click=${this.#play}>Play</button>
+      <button @click=${this.#play}>Play voice</button>
     `;
   }
 
   async #play(): Promise<void> {
     await this.#context.resume();
 
-    const oscillator = new OscillatorBuilder(this.#context)
-      .type('sawtooth')
-      .frequency(440)
-      .build();
+    this.#voice?.dispose();
 
     const filter = new FilterBuilder(this.#context)
-      .type('lowpass')
+      .type("lowpass")
       .frequency(800)
       .q(4)
       .build();
 
-    const graph = new AudioGraphBuilder(this.#context)
-      .source(oscillator)
+    const voice = new VoiceBuilder(this.#context)
+      .noteNumber(69)
+      .velocity(0.25)
+      .oscillatorType("sawtooth")
+      .frequencyStrategy({
+        toFrequencyHz: () => this.#frequencyHz,
+      })
       .add(filter)
-      .connectToDestination();
+      .build();
 
-    graph.start();
+    this.#voice = voice;
+    voice.start();
 
     window.setTimeout(() => {
-      graph.stop();
+      voice.dispose();
+
+      if (this.#voice === voice) {
+        this.#voice = null;
+      }
     }, 1000);
+  }
+
+  public setFrequencyHz(value: number): void {
+    if (!Number.isFinite(value) || value <= 0) {
+      throw new Error("Frequency must be greater than 0.");
+    }
+
+    this.#frequencyHz = value;
+    this.#voice?.setFrequencyHz(value);
   }
 }

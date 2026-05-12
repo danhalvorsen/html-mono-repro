@@ -1,4 +1,4 @@
-import type { IAudioInput } from './IAudioInput';
-import type { IAudioOutput } from './IAudioOutput';
+import type { IAudioInput } from "./Inputs/IAudioInput";
+import type { IAudioOutput } from "./Inputs/IAudioOutput";
 
 export interface IAudioUnit extends IAudioInput, IAudioOutput {}
