@@ -265,20 +265,7 @@ export class RocketLauncherGameObject extends RectangleGameObject {
       current.startedAt < oldest.startedAt ? current : oldest,
     );
   }
-
-  private getRocketId(rocket: Rocket): number {
-    const existing = this.#rocketIds.get(rocket);
-    if (existing !== undefined) {
-      return existing;
-    }
-
-    const assigned = this.#nextRocketId;
-    this.#rocketIds.set(rocket, assigned);
-    this.#nextRocketId += 1;
-    return assigned;
-  }
-
-  private syncRocketPresentation(): void {
+private syncRocketPresentation(): void {
     const width =
       Number.isFinite(this.options.width) && this.options.width > 0
         ? this.options.width

@@ -32,7 +32,8 @@ export class ViewMotion extends LitElement {
     }
 
     linear-animation,
-    circular-animation {
+    circular-animation,
+    projectile-animation {
       position: absolute;
       inset: 0;
       display: block;
@@ -46,6 +47,10 @@ export class ViewMotion extends LitElement {
     circular-animation {
       z-index: 2;
     }
+
+    projectile-animation {
+      z-index: 3;
+    }
   `;
 
   private readonly baseObjectShape = new SvgCircleTemplate({
@@ -57,62 +62,59 @@ export class ViewMotion extends LitElement {
     strokeWidth: 2,
   });
 
+  private readonly baseObjectShape2 = new SvgCircleTemplate({
+    width: 6,
+    height: 6,
+    radius: 10,
+    fill: "#A2c55e",
+    stroke: "#14532d",
+    strokeWidth: 2,
+  });
+
   protected override render(): TemplateResult {
-    return html`
-      <section class="panel">
-        <h2>Motion</h2>
-        <p>Main scene:</p>
-      </section>
+    return html`<section>
+  <h4>Single Particle</h4>
+  <scheduler-wc>
+    <projectile-animation
+      slot="animation"
+      .startX=${40}
+      .startY=${220}
+      .v0=${120}
+      .angle=${55}
+      .g=${9.81}
+    >
+      <particle-game-object
+        .lifetimeMin=${9000}
+        .lifetimeMax=${12000}
+        .shapeTemplate=${this.baseObjectShape2}
+      ></particle-game-object>
+    </projectile-animation>
+  </scheduler-wc>
+</section>
 
-      <section class="panel">
-        <h2>Motion</h2>
-        <scheduler-wc>
-          <linear-animation
-            slot="animation"
-            .startX=${40}
-            .startY=${40}
-            .endX=${320}
-            .endY=${190}
-            .initialVelocity=${80}
-            .acceleration=${100}
-          >
-            <base-game-object
-              .shapeTemplate=${this.baseObjectShape}
-            ></base-game-object>
-          </linear-animation>
-
-          <circular-animation
-            slot="animation"
-            .centerX=${160}
-            .centerY=${110}
-            .radius=${70}
-            .frequencyHz=${0.5}
-          >
-            <base-game-object
-              .shapeTemplate=${this.baseObjectShape}
-            ></base-game-object>
-          </circular-animation>
-
-         <circular-animation
-  slot="animation"
-  .centerX=${160}
-  .centerY=${110}
-  .radius=${70}
-  .frequencyHz=${0.5}
->
-  <particle-game-object
-    .shapeTemplate=${new SvgCircleTemplate({
-      width: 16,
-      height: 16,
-      radius: 6,
-      fill: "#f43f5e",
-      stroke: "#881337",
-      strokeWidth: 1
-    })}
-  ></particle-game-object>
-</circular-animation>
-        </scheduler-wc>
-      </section>
+<section>
+  <h4>Emitter Particle</h4>
+  <scheduler-wc>
+    <particle-game-object-emitter
+      slot="animation"
+      .startX=${500}
+      .startY=${900}
+      .worldHeight=${1000}
+      .v0=${100}
+      .speedVariance=${300}
+      .angle=${86}
+      .directionVarianceDegrees=${15}
+      .g=${9.81}
+      .particleCount=${1500}
+      .lifetimeMin=${1000}
+      .lifetimeMax=${5000}
+      .emitterHeadSize=${22}
+      .emitterHeadFill=${"#f59e0b"}
+      .emitterHeadStroke=${"#FF1827"}
+      .shapeTemplate=${this.baseObjectShape}
+    ></particle-game-object-emitter>
+  </scheduler-wc>
+</section>
     `;
   }
 }

@@ -899,9 +899,6 @@ importers:
       '@monorepo/game-inputs':
         specifier: workspace:*
         version: link:../game-inputs
-      '@monorepo/game-motion-animation':
-        specifier: workspace:*
-        version: link:../game-motion-animation
       lit:
         specifier: ^3.2.2
         version: 3.3.2
@@ -1048,9 +1045,6 @@ importers:
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../packages/core-math
-      '@monorepo/game-objects':
-        specifier: workspace:*
-        version: link:../game-objects
     devDependencies:
       chai:
         specifier: ^6.2.2
@@ -1101,6 +1095,9 @@ importers:
       '@monorepo/game-motion':
         specifier: workspace:*
         version: link:../game-motion
+      '@monorepo/game-motion-animation':
+        specifier: workspace:*
+        version: link:../game-motion-animation
       lit:
         specifier: ^3.2.2
         version: 3.3.2

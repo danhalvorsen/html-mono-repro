@@ -38,7 +38,8 @@
     "@monorepo/game-design-svg": "workspace:*",
     "@monorepo/game-feature-cave": "workspace:*",
     "@monorepo/game-motion": "workspace:*",
-    "@monorepo/game-assets-shapes": "workspace:*"
+    "@monorepo/game-assets-shapes": "workspace:*",
+    "@monorepo/game-motion-animation": "workspace:*"  
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",
