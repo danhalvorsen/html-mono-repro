@@ -1,257 +1,262 @@
 import { Vector2 } from "@monorepo/core-math";
-import { Rocket } from "./Rocket.js";
+import { css, html, type CSSResultGroup, type TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { BaseGameObjectSlots } from "../BaseGameObjectSlots.js";
+import { RectangleGameObject } from "../RectangleGameObjects.js";
 import {
   assertFiniteGreaterThan,
   assertFiniteGreaterThanOrEqual,
-  copyVector,
-  distanceBetween,
-  subtractVector,
-} from "./PhysicalObject.js";
+  Rocket,
+} from "./Rocket.js";
 
-export interface RocketPositionProvider {
+export interface MouseGameObject {
   getPosistion(): Vector2;
+  isDetected?(): boolean;
+  detected?: boolean;
 }
 
-export interface RocketFactory {
-  create(): Rocket;
-}
+export type RocketPositionProvider = MouseGameObject;
 
-export interface RocketLauncherGameObjectOptions {
-  readonly position: Vector2;
-  readonly mouseGameObject?: RocketPositionProvider | null;
-  readonly detectionRadius: number;
-  readonly maxRockets: number;
-  readonly cooldownSeconds?: number;
-  readonly initialSpeed: number;
-  readonly accelerationMagnitude: number;
-  readonly lifetimeSeconds: number;
-  readonly idleFill?: string;
-  readonly idleStroke?: string;
-  readonly detectedFill?: string;
-  readonly detectedStroke?: string;
-  readonly onRocketLaunched?: (rocket: Rocket) => void;
-  readonly onDetectionChanged?: (isDetected: boolean) => void;
-  readonly onColorChanged?: (fill: string, stroke: string) => void;
-}
+@customElement("rocket-launcher-game-object")
+export class RocketLauncherGameObject extends RectangleGameObject {
+  public static override styles: CSSResultGroup = [
+    RectangleGameObject.styles ?? [],
+    css`
+      :host {
+        display: block;
+        position: relative;
+        pointer-events: none;
+      }
+    `,
+  ];
 
-export class DefaultRocketFactory implements RocketFactory {
-  public create(): Rocket {
-    return new Rocket();
-  }
-}
-
-export class RocketLauncherGameObject {
-  readonly #rocketFactory: RocketFactory;
   readonly #rockets: Rocket[] = [];
-
-  #position: Vector2;
-  #mouseGameObject: RocketPositionProvider | null;
-  #lastUpdateTimeSeconds: number | null = null;
-  #lastLaunchTimeSeconds: number | null = null;
+  readonly #rocketIds = new WeakMap<Rocket, number>();
+  #nextRocketId = 1;
+  #lastUpdateTimeMs: number | null = null;
+  #nextAllowedLaunchTimeMs = 0;
+  #lastObservedMousePosition: Vector2 | null = null;
+  #mouseMovedSinceLastLaunch = true;
   #mouseDetectedInsideRadius = false;
+  #originalFill: string | null = null;
+  #originalStroke: string | null = null;
+  #lastAimDirection = new Vector2(0, -1);
 
-  public readonly detectionRadius: number;
-  public readonly maxRockets: number;
-  public readonly cooldownSeconds: number;
-  public readonly initialSpeed: number;
-  public readonly accelerationMagnitude: number;
-  public readonly lifetimeSeconds: number;
+  @property({ attribute: false })
+  public mouseGameObject: MouseGameObject | null = null;
 
-  public readonly idleFill: string;
-  public readonly idleStroke: string;
-  public readonly detectedFill: string;
-  public readonly detectedStroke: string;
+  @property({ type: Number })
+  public detectionRadius = 140;
 
-  public fill: string;
-  public stroke: string;
+  @property({ type: Number })
+  public launchIntervalMs = 1000;
 
-  public readonly onRocketLaunched: ((rocket: Rocket) => void) | null;
-  public readonly onDetectionChanged: ((isDetected: boolean) => void) | null;
-  public readonly onColorChanged: ((fill: string, stroke: string) => void) | null;
+  @property({ type: Number })
+  public maxRockets = 1000;
 
-  public constructor(
-    options: RocketLauncherGameObjectOptions,
-    rocketFactory: RocketFactory = new DefaultRocketFactory(),
-  ) {
-    validateOptions(options);
+  @property({ type: Number })
+  public initialSpeed = 180;
 
-    this.#position = copyVector(options.position);
-    this.#mouseGameObject = options.mouseGameObject ?? null;
-    this.#rocketFactory = rocketFactory;
+  @property({ type: Number })
+  public accelerationMagnitude = 80;
 
-    this.detectionRadius = options.detectionRadius;
-    this.maxRockets = options.maxRockets;
-    this.cooldownSeconds = options.cooldownSeconds ?? 0.5;
-    this.initialSpeed = options.initialSpeed;
-    this.accelerationMagnitude = options.accelerationMagnitude;
-    this.lifetimeSeconds = options.lifetimeSeconds;
+  @property({ type: Number })
+  public lifetimeSeconds = 3;
 
-    this.idleFill = options.idleFill ?? "#60a5fa";
-    this.idleStroke = options.idleStroke ?? "#1d4ed8";
+  @property({ type: String })
+  public detectedFill = "#ef4444";
 
-    // Red when MouseGameObject is detected inside detection radius.
-    this.detectedFill = options.detectedFill ?? "#ef4444";
-    this.detectedStroke = options.detectedStroke ?? "#991b1b";
+  @property({ type: String })
+  public detectedStroke = "#991b1b";
 
-    this.fill = this.idleFill;
-    this.stroke = this.idleStroke;
+  @property({ type: Number })
+  public rocketLength = 18;
 
-    this.onRocketLaunched = options.onRocketLaunched ?? null;
-    this.onDetectionChanged = options.onDetectionChanged ?? null;
-    this.onColorChanged = options.onColorChanged ?? null;
+  @property({ type: Number })
+  public rocketWidth = 7;
+
+  public constructor() {
+    super();
+    this.size = 36;
+    this.fill = "#10b981";
+    this.stroke = "#064e3b";
   }
 
   public get rockets(): readonly Rocket[] {
     return this.#rockets;
   }
 
-  public getPosistion(): Vector2 {
-    return copyVector(this.#position);
-  }
-
-  public setPosistion(position: Vector2): void {
-    this.#position = copyVector(position);
-  }
-
-  public setMouseGameObject(mouseGameObject: RocketPositionProvider | null): void {
-    this.#mouseGameObject = mouseGameObject;
-  }
-
   public isMouseDetectedInsideRadius(): boolean {
     return this.#mouseDetectedInsideRadius;
   }
 
-  public onTime(timeMs: number): void {
-    this.update(timeMs / 1000);
+  public override onTime(timeMs: number): void {
+    this.updateSimulation(timeMs);
   }
 
-  public update(currentTimeSeconds: number): Rocket | null {
-    assertFiniteGreaterThanOrEqual(currentTimeSeconds, "currentTimeSeconds", 0);
+  public updateSimulation(currentTimeMs: number): Rocket | null {
+    validateLauncherState(this);
+    assertFiniteGreaterThanOrEqual(currentTimeMs, "currentTimeMs", 0);
 
-    const deltaTimeSeconds = this.resolveDeltaTime(currentTimeSeconds);
+    const deltaSeconds = this.resolveDeltaSeconds(currentTimeMs);
+    for (const rocket of this.#rockets) {
+      rocket.advance(deltaSeconds);
+    }
+    this.updateMouseMovementFlag();
 
-    // Existing rockets always continue.
-    this.updateRockets(deltaTimeSeconds);
+    const detectedInsideRadius = this.resolveMouseDetectedInsideRadius();
+    this.setMouseDetectedInsideRadius(detectedInsideRadius);
 
-    const detected = this.resolveMouseDetectedInsideRadius();
-    this.setMouseDetectedInsideRadius(detected);
-
-    if (!detected) {
-      return null;
+    let launched: Rocket | null = null;
+    if (
+      detectedInsideRadius &&
+      this.canLaunchAt(currentTimeMs) &&
+      this.#mouseMovedSinceLastLaunch
+    ) {
+      launched = this.launchRocket(currentTimeMs);
     }
 
-    if (!this.cooldownElapsed(currentTimeSeconds)) {
-      return null;
-    }
+    this.syncRocketPresentation();
 
-    // Launches another rocket every cooldown interval.
-    // Does not wait for previous rockets to expire.
-    return this.launch(currentTimeSeconds);
+    // Always update the launcher/rocket view even when detection is false.
+    this.requestUpdate();
+    return launched;
   }
 
-  private resolveDeltaTime(currentTimeSeconds: number): number {
-    const previous = this.#lastUpdateTimeSeconds;
-    this.#lastUpdateTimeSeconds = currentTimeSeconds;
+  private resolveDeltaSeconds(currentTimeMs: number): number {
+    const previous = this.#lastUpdateTimeMs;
+    this.#lastUpdateTimeMs = currentTimeMs;
 
     if (previous === null) {
       return 0;
     }
 
-    if (currentTimeSeconds < previous) {
-      throw new RangeError("currentTimeSeconds must be monotonic.");
+    if (currentTimeMs < previous) {
+      throw new RangeError("currentTimeMs must be monotonic.");
     }
 
-    return currentTimeSeconds - previous;
-  }
-
-  private updateRockets(deltaTimeSeconds: number): void {
-    for (const rocket of this.#rockets) {
-      rocket.update(deltaTimeSeconds);
-    }
+    return (currentTimeMs - previous) / 1000;
   }
 
   private resolveMouseDetectedInsideRadius(): boolean {
-    const mousePosition = this.#mouseGameObject?.getPosistion();
-
-    if (mousePosition === undefined) {
+    const mouse = this.mouseGameObject;
+    if (mouse === null || !this.isMouseDetected(mouse)) {
       return false;
     }
 
-    return distanceBetween(this.#position, mousePosition) <= this.detectionRadius;
+    return distanceBetween(this.getPosistion(), mouse.getPosistion()) <= this.detectionRadius;
   }
 
-  private setMouseDetectedInsideRadius(detected: boolean): void {
-    if (this.#mouseDetectedInsideRadius === detected) {
+  private isMouseDetected(mouse: MouseGameObject): boolean {
+    if (typeof mouse.isDetected === "function") {
+      return mouse.isDetected();
+    }
+
+    if (typeof mouse.detected === "boolean") {
+      return mouse.detected;
+    }
+
+    return true;
+  }
+
+  private setMouseDetectedInsideRadius(detectedInsideRadius: boolean): void {
+    if (this.#originalFill === null) {
+      this.#originalFill = this.fill;
+    }
+
+    if (this.#originalStroke === null) {
+      this.#originalStroke = this.stroke;
+    }
+
+    if (this.#mouseDetectedInsideRadius === detectedInsideRadius) {
       return;
     }
 
-    this.#mouseDetectedInsideRadius = detected;
+    this.#mouseDetectedInsideRadius = detectedInsideRadius;
 
-    this.fill = detected ? this.detectedFill : this.idleFill;
-    this.stroke = detected ? this.detectedStroke : this.idleStroke;
-
-    this.onDetectionChanged?.(detected);
-    this.onColorChanged?.(this.fill, this.stroke);
-  }
-
-  private cooldownElapsed(currentTimeSeconds: number): boolean {
-    if (this.#lastLaunchTimeSeconds === null) {
-      return true;
+    if (detectedInsideRadius) {
+      this.fill = this.detectedFill;
+      this.stroke = this.detectedStroke;
+      return;
     }
 
-    return currentTimeSeconds - this.#lastLaunchTimeSeconds >= this.cooldownSeconds;
+    this.fill = this.#originalFill ?? this.fill;
+    this.stroke = this.#originalStroke ?? this.stroke;
   }
 
-  private launch(currentTimeSeconds: number): Rocket | null {
-    const mousePosition = this.#mouseGameObject?.getPosistion();
+  private canLaunchAt(currentTimeMs: number): boolean {
+    return currentTimeMs >= this.#nextAllowedLaunchTimeMs;
+  }
 
+  private launchRocket(currentTimeMs: number): Rocket | null {
+    const mousePosition = this.mouseGameObject?.getPosistion();
     if (mousePosition === undefined) {
       return null;
     }
 
-    const launchPosition = this.getPosistion();
-    const direction = subtractVector(mousePosition, launchPosition);
+    const launcherPosition = this.getPosistion();
+    const directionToMouse = subtractVector(mousePosition, launcherPosition);
+    const direction = isZeroVector(directionToMouse)
+      ? this.#lastAimDirection
+      : directionToMouse;
 
-    if (direction.x === 0 && direction.y === 0) {
-      return null;
+    if (!isZeroVector(directionToMouse)) {
+      this.#lastAimDirection = directionToMouse;
     }
 
     const rocket = this.resolveRocket();
-
+    // Rockets are slotted children of the launcher, so they render in launcher-local coordinates.
+    // Local origin (0,0) corresponds to the launcher center after parent transform is applied.
+    const localStartPosition = new Vector2(0, 0);
     rocket.start({
-      startPosition: launchPosition,
+      startPosition: localStartPosition,
       direction,
       initialSpeed: this.initialSpeed,
       accelerationMagnitude: this.accelerationMagnitude,
       lifetimeSeconds: this.lifetimeSeconds,
-      startedAt: currentTimeSeconds,
+      startedAt: currentTimeMs / 1000,
     });
 
-    this.#lastLaunchTimeSeconds = currentTimeSeconds;
-    this.onRocketLaunched?.(rocket);
-
+    this.#nextAllowedLaunchTimeMs = currentTimeMs + this.launchIntervalMs;
+    this.#mouseMovedSinceLastLaunch = false;
     return rocket;
   }
 
-  private resolveRocket(): Rocket {
-    const inactiveRocket = this.#rockets.find((rocket) => !rocket.isActive());
-
-    if (inactiveRocket !== undefined) {
-      return inactiveRocket;
+  private updateMouseMovementFlag(): void {
+    const mousePosition = this.mouseGameObject?.getPosistion();
+    if (mousePosition === undefined) {
+      return;
     }
 
-    if (this.#rockets.length < this.maxRockets) {
-      const rocket = this.#rocketFactory.create();
-      this.#rockets.push(rocket);
-      return rocket;
+    const last = this.#lastObservedMousePosition;
+    if (last === null) {
+      this.#lastObservedMousePosition = new Vector2(mousePosition.x, mousePosition.y);
+      return;
     }
 
-    return this.getOldestActiveRocket();
+    if (mousePosition.x !== last.x || mousePosition.y !== last.y) {
+      this.#mouseMovedSinceLastLaunch = true;
+      this.#lastObservedMousePosition = new Vector2(mousePosition.x, mousePosition.y);
+    }
   }
 
-  private getOldestActiveRocket(): Rocket {
-    const first = this.#rockets[0];
+  private resolveRocket(): Rocket {
+    if (this.#rockets.length < this.maxRockets) {
+      const created = new Rocket();
+      this.#rocketIds.set(created, this.#nextRocketId);
+      this.#nextRocketId += 1;
+      created.slot = BaseGameObjectSlots.Children;
+      this.appendChild(created);
+      this.#rockets.push(created);
+      return created;
+    }
 
+    const inactive = this.#rockets.find((rocket) => !rocket.isActive());
+    if (inactive !== undefined) {
+      return inactive;
+    }
+
+    const first = this.#rockets[0];
     if (first === undefined) {
       throw new Error("rocket pool is empty.");
     }
@@ -260,21 +265,85 @@ export class RocketLauncherGameObject {
       current.startedAt < oldest.startedAt ? current : oldest,
     );
   }
+
+  private getRocketId(rocket: Rocket): number {
+    const existing = this.#rocketIds.get(rocket);
+    if (existing !== undefined) {
+      return existing;
+    }
+
+    const assigned = this.#nextRocketId;
+    this.#rocketIds.set(rocket, assigned);
+    this.#nextRocketId += 1;
+    return assigned;
+  }
+
+  private syncRocketPresentation(): void {
+    const width =
+      Number.isFinite(this.options.width) && this.options.width > 0
+        ? this.options.width
+        : Math.max(1, this.clientWidth);
+    const height =
+      Number.isFinite(this.options.height) && this.options.height > 0
+        ? this.options.height
+        : Math.max(1, this.clientHeight);
+
+    for (const rocket of this.#rockets) {
+      if (rocket.slot !== BaseGameObjectSlots.Children) {
+        rocket.slot = BaseGameObjectSlots.Children;
+      }
+
+      if (rocket.parentElement !== this) {
+        this.appendChild(rocket);
+      }
+
+      rocket.options = {
+        width,
+        height,
+        rotationRadians: 0,
+      };
+      rocket.hidden = !rocket.isVisible();
+    }
+  }
+
+  protected override render(): TemplateResult {
+    return html`${super.render()}`;
+  }
 }
 
-function validateOptions(options: RocketLauncherGameObjectOptions): void {
-  assertFiniteGreaterThan(options.detectionRadius, "detectionRadius", 0);
-  assertFiniteGreaterThan(options.maxRockets, "maxRockets", 0);
-  assertFiniteGreaterThanOrEqual(options.cooldownSeconds ?? 0.5, "cooldownSeconds", 0);
-  assertFiniteGreaterThanOrEqual(options.initialSpeed, "initialSpeed", 0);
+function validateLauncherState(launcher: RocketLauncherGameObject): void {
+  assertFiniteGreaterThan(launcher.detectionRadius, "detectionRadius", 0);
+  assertFiniteGreaterThan(launcher.launchIntervalMs, "launchIntervalMs", 0);
+  assertFiniteGreaterThan(launcher.maxRockets, "maxRockets", 0);
+  assertFiniteGreaterThan(launcher.lifetimeSeconds, "lifetimeSeconds", 0);
+  assertFiniteGreaterThanOrEqual(launcher.initialSpeed, "initialSpeed", 0);
   assertFiniteGreaterThanOrEqual(
-    options.accelerationMagnitude,
+    launcher.accelerationMagnitude,
     "accelerationMagnitude",
     0,
   );
-  assertFiniteGreaterThan(options.lifetimeSeconds, "lifetimeSeconds", 0);
 
-  if (!Number.isInteger(options.maxRockets)) {
+  if (!Number.isInteger(launcher.maxRockets)) {
     throw new RangeError("maxRockets must be an integer.");
+  }
+}
+
+function isZeroVector(vector: Vector2): boolean {
+  return vector.x === 0 && vector.y === 0;
+}
+
+function subtractVector(left: Vector2, right: Vector2): Vector2 {
+  return new Vector2(left.x - right.x, left.y - right.y);
+}
+
+function distanceBetween(left: Vector2, right: Vector2): number {
+  const dx = left.x - right.x;
+  const dy = left.y - right.y;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "rocket-launcher-game-object": RocketLauncherGameObject;
   }
 }

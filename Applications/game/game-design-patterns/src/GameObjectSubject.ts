@@ -7,7 +7,7 @@ import { TypedSubject, type Observer } from '@monorepo/core-design-patterns';
 import { TimeSchdulerObserver } from './TimeSchdulerObserver';
 
 import { type ISceneNode } from '@monorepo/core-scene-graph';
-import { GameObjectAnimationController } from '../../game-motion-animation/src/GameObjectAnimationController';
+import { GameObjectAnimationController } from './GameObjectAnimationController';
 import { PlayerInputController } from '../../game-inputs/src/PlayerInputController';
 import { SvgRectangleBuilder } from '../../game-design-svg/src/SvgPolygonBuilder';
 

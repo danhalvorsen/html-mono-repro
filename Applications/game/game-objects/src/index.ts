@@ -13,11 +13,16 @@ export { EmptyBaseGameObjectShapeTemplate } from "./EmptyBaseGameObjectShapeTemp
 export * from './GamePolygonGeneratorController';
 export * from './PlayerGameObject';
 export { PlayerGameObject } from "./PlayerGameObject.js";
+export { ParticleGameObject } from "./ParticleGameObject.js";
 export { RectangleGameObject } from "./RectangleGameObjects.js";
 export * from './RocketGameObject';
 export * from './SceneRoot';
 export { SvgPolygonTemplate } from "./SvgPolygonTemplate.js";
 export type { SvgPolygonTemplateOptions } from "./SvgPolygonTemplate.js";
+export { SvgCircleTemplate } from "./SvgCircleTemplate.js";
+export type { SvgCircleTemplateOptions } from "./SvgCircleTemplate.js";
+export { SvgEllipseTemplate } from "./SvgEllipseTemplate.js";
+export type { SvgEllipseTemplateOptions } from "./SvgEllipseTemplate.js";
  
  export { TriangleStripGameObject } from './TriangleStripGameObject.js';
 export { TriangleStripGameObjectShapeTemplate } from './TriangleStripGameObjectShapeTemplate.js';
@@ -28,14 +33,13 @@ export {
 } from "./VectorFieldGameObjectOptions.js";
 
 
-export * from './Trackers/index.js';
 
+
+
+
+
+export { Rocket } from "./Trackers/Rocket.js";
 export { MousePointerGameObject } from "./Trackers/MousePointerGameObject.js";
-
-export { ScannerGameObject } from "./Trackers/ScannerGameObject.js";
-
-export { createMouseTrackingScanner } from "./Trackers/createMouseTrackingScanner.js";
-
-export type { ScannerTarget } from "./Trackers/ScannerGameObject.js";
-
-export type { CreateMouseTrackingScannerOptions } from "./Trackers/createMouseTrackingScanner.js";
+export { RocketLauncherGameObject } from "./Trackers/RocketLauncherGameObject.js";
+export type { PhysicalObjectState, RocketStartCommand, Vector2Like } from "./Trackers/Rocket.js";
+export type { MouseGameObject, RocketPositionProvider } from "./Trackers/RocketLauncherGameObject.js";

@@ -32,7 +32,6 @@
     "@monorepo/core-math": "workspace:*",
     "@monorepo/core-design-patterns": "workspace:*",
     "@monorepo/core-scene-graph": "workspace:*",
-    "@monorepo/game-motion-animation": "workspace:*",
      "@monorepo/game-inputs": "workspace:*",
      "@monorepo/game-design-svg": "workspace:*"
   },

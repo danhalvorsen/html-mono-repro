@@ -1,21 +1,22 @@
 import { LitElement, css, html, type TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import "./menu-wc.js";
 import "./menu-item.js";
-import "./views/view-game.js";
-import "./views/view-game-polygon.js";
-import "./views/view-game-player-input.js";
-import "./views/view-rocket-demo.js";
-import "./views/view-vector-field-game-object-demo.js";
-import "./views/view-color-mangment-demo.js";
+import "./menu-wc.js";
+import type { MenuViewChangeDetail } from "./menu-wc.js";
+import "./views/vector-field-game-view/index.js";
 import "./views/view-cave-camera-demo.js";
 import "./views/view-cave-object.js";
+import "./views/view-color-mangment-demo.js";
 import "./views/view-diagnostics.js";
+import "./views/view-game-player-input.js";
+import "./views/view-game-polygon.js";
+import "./views/view-game.js";
 import "./views/view-help.js";
-import "./views/view-settings.js";
 import "./views/view-hunter.js";
-import "./views/vector-field-game-view/index.js";
-import type { MenuViewChangeDetail } from "./menu-wc.js";
+import "./views/view-motion.js";
+import "./views/view-rocket-demo.js";
+import "./views/view-settings.js";
+import "./views/view-vector-field-game-object-demo.js";
 
 const VIEW_IDS = Object.freeze({
   game: "game",
@@ -28,6 +29,7 @@ const VIEW_IDS = Object.freeze({
   caveObject: "game - cave object",
   diagnostics: "diagnostics",
   help: "help",
+  motion: "motion",
   settings: "settings",
   hunter: "hunter",
   fsmPilot: "fsm - pilot",
@@ -51,6 +53,7 @@ const DEFAULT_VIEW_ITEMS: readonly ViewMenuItem[] = Object.freeze([
   { id: VIEW_IDS.caveObject, label: "Game - Cave Object", icon: "🕳️" },
   { id: VIEW_IDS.diagnostics, label: "Diagnostics", icon: "📈" },
   { id: VIEW_IDS.help, label: "Help", icon: "❓" },
+  { id: VIEW_IDS.motion, label: "Motion", icon: "🎞️" },
   { id: VIEW_IDS.settings, label: "Settings", icon: "⚙️" },
   { id: VIEW_IDS.hunter, label: "Hunter", icon: "🏹" },
   { id: VIEW_IDS.fsmPilot, label: "FSM Pilot", icon: "🧪" },
@@ -134,7 +137,9 @@ export class MyElement extends LitElement {
 
   private async loadMenuItemsFromJson(): Promise<void> {
     try {
-      const response = await fetch(MyElement.MENU_ITEMS_URL);
+      const response = await fetch(MyElement.MENU_ITEMS_URL, {
+        cache: "no-store",
+      });
 
       if (!response.ok) {
         return;
@@ -205,6 +210,9 @@ export class MyElement extends LitElement {
 
       case VIEW_IDS.help:
         return html`<view-help></view-help>`;
+
+      case VIEW_IDS.motion:
+        return html`<view-motion></view-motion>`;
 
       case VIEW_IDS.settings:
         return html`<view-settings></view-settings>`;

@@ -24,10 +24,6 @@ Existing rockets must continue their animation until their lifetime expires. The
 
 # Contracts
 
-## `PhysicalObject`
-
-`PhysicalObject` is the base abstraction responsible for position calculation.
-
 It owns:
 
 ```ts
@@ -61,9 +57,7 @@ t = elapsedLifetimeSeconds
 ---
 
 ## `Rocket`
-
-`Rocket` extends `PhysicalObject`.
-
+ 
 A rocket is reusable. It must never be destroyed as part of normal lifetime expiry.
 
 ### State
@@ -560,6 +554,8 @@ inactive rocket
   ?? oldest active rocket
 ```
 
-The RocketLauncherGameObject should change color when the MouseGameObject is detected and within the detection radius, and revert to its original color when the MouseGameObject is not detected or outside the detection radius.                           
+The RocketLauncherGameObject should change color when the Mouse GameObject is detected and within the detection radius, and revert to its original color when the Mouse GameObject is not detected or outside the detection radius.
 
-The Rocket Launcher should have a cooldown period between launches, during which it cannot launch new rockets. It should shot a rocket every 0.5 seconds when the mouse is detected and within the detection radius.
+The Rocket Launcher should have a cooldown period between launches on 0.5sec, during which it cannot launch new rockets. It should shoot a rocket every 0.5 seconds when the mouse is detected and within the detection radius.
+
+There must be more than 1 rocket in the pool, so that we can test reuse of active rockets when the pool is full. Preferably at least 10 rockets in the pool, so that we can test reuse of the oldest active rocket when the pool is full.   

@@ -9,6 +9,10 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./pure-animation": {
+      "import": "./src/PureAnimation/index.ts",
+      "types": "./src/PureAnimation/index.ts"
     }
   },
   "files": [
@@ -29,7 +33,6 @@
   "license": "MIT",
   "dependencies": {
       "@monorepo/core-math": "workspace:*"
-      
   },
   "devDependencies": {
     "chai": "^6.2.2",

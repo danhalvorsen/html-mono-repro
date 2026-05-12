@@ -4,10 +4,8 @@ import { Vector2 } from "@monorepo/core-math";
 import { TimeSchdulerObserver } from "@monorepo/game-design-patterns";
 import {
   MousePointerGameObject,
-  createMouseTrackingScanner,
-  type ScannerGameObject,
+  RocketLauncherGameObject,
 } from "@monorepo/game-objects";
-import "@monorepo/game-objects";
 
 @customElement("mouse-pointer-game-object")
 class MousePointerViewGameObject extends MousePointerGameObject {}
@@ -93,7 +91,7 @@ export class ViewHunter extends LitElement {
   private readonly scheduler = new TimeSchdulerObserver();
   private resizeObserver: ResizeObserver | null = null;
   private mousePointer: MousePointerViewGameObject | null = null;
-  private scannerObject: ScannerGameObject | null = null;
+  private scannerObject: RocketLauncherGameObject | null = null;
 
   @state()
   private surfaceWidth = 800;
@@ -204,13 +202,15 @@ export class ViewHunter extends LitElement {
 
     this.scannerObject?.remove();
 
-    this.scannerObject = createMouseTrackingScanner({
-      mousePointer,
-      triggerDistance: this.triggerDistance,
-      particleLifeTimeSeconds: this.particleLifeTimeSeconds,
-      particleStartVelocity: new Vector2(this.particleVelX, this.particleVelY),
-      particleAccelerationScale: this.particleAccelerationScale,
-    });
+    this.scannerObject = new RocketLauncherGameObject();
+    this.scannerObject.mouseGameObject = mousePointer;
+    this.scannerObject.detectionRadius = this.triggerDistance;
+    this.scannerObject.lifetimeSeconds = this.particleLifeTimeSeconds;
+    this.scannerObject.initialSpeed = Math.hypot(this.particleVelX, this.particleVelY);
+    this.scannerObject.accelerationMagnitude = Math.max(
+      0,
+      this.particleAccelerationScale * 80,
+    );
 
     this.scannerObject.classList.add("scanner-game-object");
     this.scannerObject.scheduler = this.scheduler;

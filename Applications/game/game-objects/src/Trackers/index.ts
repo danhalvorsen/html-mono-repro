@@ -1,6 +1,9 @@
+export { Rocket } from "./Rocket.js";
 export { MousePointerGameObject } from "./MousePointerGameObject.js";
-export { ScannerGameObject } from "./ScannerGameObject.js";
-export { createMouseTrackingScanner } from "./createMouseTrackingScanner.js";
+export { RocketLauncherGameObject } from "./RocketLauncherGameObject.js";
 
-export type { ScannerTarget } from "./ScannerGameObject.js";
-export type { CreateMouseTrackingScannerOptions } from "./createMouseTrackingScanner.js";
+export type { PhysicalObjectState, RocketStartCommand, Vector2Like } from "./Rocket.js";
+export type {
+  MouseGameObject,
+  RocketPositionProvider,
+} from "./RocketLauncherGameObject.js";

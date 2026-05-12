@@ -1048,6 +1048,9 @@ importers:
       '@monorepo/core-math':
         specifier: workspace:*
         version: link:../../../packages/core-math
+      '@monorepo/game-objects':
+        specifier: workspace:*
+        version: link:../game-objects
     devDependencies:
       chai:
         specifier: ^6.2.2
@@ -1165,6 +1168,9 @@ importers:
       '@monorepo/game-motion':
         specifier: workspace:*
         version: link:../game-motion
+      '@monorepo/game-motion-animation':
+        specifier: workspace:*
+        version: link:../game-motion-animation
       '@monorepo/game-objects':
         specifier: workspace:*
         version: link:../game-objects

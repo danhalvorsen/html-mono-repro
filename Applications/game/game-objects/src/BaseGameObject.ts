@@ -77,3 +77,4 @@ declare global {
     "base-game-object": BaseGameObject;
   }
 }
+BaseGameObject

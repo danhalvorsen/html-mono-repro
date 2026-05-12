@@ -40,6 +40,11 @@
     "icon": "\u2753"
   },
   {
+    "id": "motion",
+    "label": "Motion",
+    "icon": "\ud83c\udf9e\ufe0f"
+  },
+  {
     "id": "settings",
     "label": "Settings",
     "icon": "\u2699\ufe0f"

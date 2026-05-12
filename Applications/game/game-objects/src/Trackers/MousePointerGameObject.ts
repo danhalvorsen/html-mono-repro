@@ -6,7 +6,6 @@ export class MousePointerGameObject extends RectangleGameObject {
 
   public constructor() {
     super();
-
     this.size = 30;
     this.fill = "#f97316";
     this.stroke = "#7c2d12";

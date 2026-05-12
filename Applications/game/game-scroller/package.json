@@ -30,7 +30,9 @@
     "@monorepo/core-design-composite-fsm": "workspace:*",
     "@monorepo/game-inputs": "workspace:*",
     "@monorepo/game-design-patterns": "workspace:*",
-    "@monorepo/game-objects": "workspace:*"
+    "@monorepo/game-objects": "workspace:*",
+    "@monorepo/game-motion-animation": "workspace:*"  
+    
   },
   "devDependencies": {
     "@playwright/test": "^1.54.2",

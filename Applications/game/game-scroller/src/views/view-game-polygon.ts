@@ -66,3 +66,4 @@ declare global {
     "view-game-polygon": ViewGamePolygon;
   }
 }
+LitElement
