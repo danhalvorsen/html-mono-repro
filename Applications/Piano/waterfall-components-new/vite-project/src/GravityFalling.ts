@@ -61,9 +61,9 @@ export class GravityFalling extends LitElement {
   private readonly inset: number = 4;
 
   private position: Vector2 = new Vector2(10, 10);
+  private direction: Vector2 = new Vector2(0, 1);
   private velocity: Vector2 = new Vector2(0, 0);
   private acceleration: Vector2 = new Vector2(0, 320);
-  private direction: Vector2 = new Vector2(0, 1);
   private isStarted: boolean = false;
   private isCompleted: boolean = false;
 
@@ -95,14 +95,9 @@ export class GravityFalling extends LitElement {
 
     this.position = this.calculateNextPosition(safeDeltaSeconds);
     this.velocity = this.calculateNextVelocity(safeDeltaSeconds);
-    this.direction = this.calculateDirection(this.velocity);
+    this.direction = this.calculateDirection(this.velocity, this.direction);
 
-    if (this.hasReachedBottom()) {
-      this.position = new Vector2(
-        this.position.x,
-        this.container.bottom - this.size.y,
-      );
-
+    if (this.hasReachedEndEdge()) {
       this.isCompleted = true;
     }
 
@@ -137,19 +132,40 @@ export class GravityFalling extends LitElement {
     this.direction = this.movementPlan.direction;
     this.velocity = this.movementPlan.createInitialVelocity();
     this.acceleration = this.movementPlan.createAcceleration();
-    this.position = this.createStartPosition();
+    this.position = this.createStartPosition(this.direction);
     this.isStarted = true;
     this.isCompleted = false;
   }
 
-  private createStartPosition(): Vector2 {
+  private createStartPosition(direction: Vector2): Vector2 {
     return new Vector2(
-      this.container.left +
-        this.inset +
-        1 *
-          Math.max(0, this.container.size.x - this.size.x - this.inset * 2),
-      this.container.top + this.inset,
+      this.getStartX(direction),
+      this.getStartY(direction),
     );
+  }
+
+  private getStartX(direction: Vector2): number {
+    if (direction.x > 0) {
+      return this.container.left + this.inset;
+    }
+
+    if (direction.x < 0) {
+      return this.container.right - this.size.x - this.inset;
+    }
+
+    return this.container.left + this.container.size.x / 2 - this.size.x / 2;
+  }
+
+  private getStartY(direction: Vector2): number {
+    if (direction.y > 0) {
+      return this.container.top + this.inset;
+    }
+
+    if (direction.y < 0) {
+      return this.container.bottom - this.size.y - this.inset;
+    }
+
+    return this.container.top + this.container.size.y / 2 - this.size.y / 2;
   }
 
   private calculateNextPosition(deltaSeconds: number): Vector2 {
@@ -170,18 +186,37 @@ export class GravityFalling extends LitElement {
     );
   }
 
-  private calculateDirection(velocity: Vector2): Vector2 {
+  private calculateDirection(
+    velocity: Vector2,
+    fallbackDirection: Vector2,
+  ): Vector2 {
     const length = Math.hypot(velocity.x, velocity.y);
 
     if (length === 0) {
-      return this.movementPlan.direction;
+      return fallbackDirection;
     }
 
     return new Vector2(velocity.x / length, velocity.y / length);
   }
 
-  private hasReachedBottom(): boolean {
-    return this.position.y + this.size.y >= this.container.bottom;
+  private hasReachedEndEdge(): boolean {
+    if (this.direction.x > 0 && this.position.x + this.size.x >= this.container.right) {
+      return true;
+    }
+
+    if (this.direction.x < 0 && this.position.x <= this.container.left) {
+      return true;
+    }
+
+    if (this.direction.y > 0 && this.position.y + this.size.y >= this.container.bottom) {
+      return true;
+    }
+
+    if (this.direction.y < 0 && this.position.y <= this.container.top) {
+      return true;
+    }
+
+    return false;
   }
 }
 

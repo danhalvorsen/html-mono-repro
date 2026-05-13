@@ -19,9 +19,9 @@ export class MovingObject extends LitElement {
   private readonly size: Vector2 = new Vector2(20, 50);
 
   private position: Vector2 = new Vector2(18, 18);
+  private direction: Vector2 = this.normalizeVector(new Vector2(1, 1));
   private velocity: Vector2 = new Vector2(180, 140);
   private acceleration: Vector2 = new Vector2(0, 0);
-  private direction: Vector2 = new Vector2(1, 1);
 
   public override connectedCallback(): void {
     super.connectedCallback();
@@ -35,6 +35,7 @@ export class MovingObject extends LitElement {
   public updateMovement(deltaSeconds: number): void {
     const safeDeltaSeconds = Math.max(0, deltaSeconds);
 
+    this.direction = this.calculateDirection(this.velocity, this.direction);
     this.position = this.calculateNextPosition(safeDeltaSeconds);
     this.velocity = this.calculateNextVelocity(safeDeltaSeconds);
 
@@ -46,14 +47,14 @@ export class MovingObject extends LitElement {
     this.position = collision.correctedPosition;
 
     if (collision.hitHorizontalEdge) {
+      this.direction = new Vector2(-this.direction.x, this.direction.y);
       this.velocity = new Vector2(-this.velocity.x, this.velocity.y);
     }
 
     if (collision.hitVerticalEdge) {
+      this.direction = new Vector2(this.direction.x, -this.direction.y);
       this.velocity = new Vector2(this.velocity.x, -this.velocity.y);
     }
-
-    this.direction = this.calculateDirection(this.velocity);
 
     this.requestUpdate();
   }
@@ -100,14 +101,27 @@ export class MovingObject extends LitElement {
     );
   }
 
-  private calculateDirection(velocity: Vector2): Vector2 {
+  private calculateDirection(
+    velocity: Vector2,
+    fallbackDirection: Vector2,
+  ): Vector2 {
     const length = Math.hypot(velocity.x, velocity.y);
 
     if (length === 0) {
-      return new Vector2(0, 0);
+      return fallbackDirection;
     }
 
     return new Vector2(velocity.x / length, velocity.y / length);
+  }
+
+  private normalizeVector(vector: Vector2): Vector2 {
+    const length = Math.hypot(vector.x, vector.y);
+
+    if (length === 0) {
+      return new Vector2(1, 0);
+    }
+
+    return new Vector2(vector.x / length, vector.y / length);
   }
 }
 
@@ -116,3 +130,4 @@ declare global {
     "moving-object": MovingObject;
   }
 }
+

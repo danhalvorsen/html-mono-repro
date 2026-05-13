@@ -1,31 +1,43 @@
 import { Vector2 } from "@monorepo/core-math";
 import { html, LitElement, type TemplateResult } from "lit";
-import { customElement } from "lit/decorators.js";
+import {
+  customElement,
+  query,
+  queryAssignedElements,
+} from "lit/decorators.js";
 
 import { CollisionDetection } from "./CollisionDetection.ts";
 import { CollisionObject } from "./CollisionObject.ts";
+import { Column, ColumnFactory } from "./Column.ts";
+import { Constants } from "./constants.ts";
 import {
   DirectionalMovementPlan,
   GravityFalling,
 } from "./GravityFalling.ts";
 import { MovingObject } from "./MovingObject.ts";
 
-@customElement("waterfall-component")
+export const WaterfallElementTagName = "waterfall-component";
+
+@customElement(WaterfallElementTagName)
 export class Waterfall extends LitElement {
+  private static readonly GravityFallingTagName = "gravity-falling";
+
   private readonly collisionDetection: CollisionDetection =
     new CollisionDetection();
 
   private readonly staticRectangle: CollisionObject = new CollisionObject(
-    new Vector2(10, 10),
-    new Vector2(200, 500),
+    Constants.position,
+    new Vector2(Constants.width, Constants.height),
   );
 
-  private readonly gravityMovementPlan: DirectionalMovementPlan =
-    new DirectionalMovementPlan(
-      new Vector2(0, 1),
-      0,
-      320,
-    );
+  private readonly columns: readonly Column[] =
+    new ColumnFactory().createColumns();
+
+  @query("moving-object")
+  private readonly movingObjectElement!: MovingObject | null;
+
+  @queryAssignedElements({ flatten: true })
+  private readonly assignedElements!: readonly Element[];
 
   private frameId: number | null = null;
   private lastTimeMs: number | null = null;
@@ -35,8 +47,8 @@ export class Waterfall extends LitElement {
 
     this.style.position = "relative";
     this.style.display = "block";
-    this.style.width = `${this.staticRectangle.right + 20}px`;
-    this.style.height = `${this.staticRectangle.bottom + 20}px`;
+    this.style.width = `${this.svgWidth}px`;
+    this.style.height = `${this.svgHeight}px`;
 
     this.lastTimeMs = null;
     this.frameId = requestAnimationFrame(this.onAnimationFrame);
@@ -51,24 +63,25 @@ export class Waterfall extends LitElement {
     super.disconnectedCallback();
   }
 
-  public addGravityFalling(): void {
-    const falling = document.createElement("gravity-falling") as GravityFalling;
+  public addDirectionalMovementPlan(
+    movementPlan: DirectionalMovementPlan,
+  ): void {
+    const falling = document.createElement(
+      Waterfall.GravityFallingTagName,
+    ) as GravityFalling;
 
     falling.container = this.staticRectangle;
-    falling.movementPlan = this.gravityMovementPlan;
+    falling.movementPlan = movementPlan;
 
     this.appendChild(falling);
   }
 
   protected override render(): TemplateResult {
-    const svgWidth = this.staticRectangle.right + 20;
-    const svgHeight = this.staticRectangle.bottom + 20;
-
     return html`
       <svg
-        width=${svgWidth}
-        height=${svgHeight}
-        viewBox="0 0 ${svgWidth} ${svgHeight}"
+        width=${this.svgWidth}
+        height=${this.svgHeight}
+        viewBox="0 0 ${this.svgWidth} ${this.svgHeight}"
         xmlns="http://www.w3.org/2000/svg"
       >
         <rect
@@ -78,8 +91,10 @@ export class Waterfall extends LitElement {
           height=${this.staticRectangle.size.y}
           fill="yellow"
           stroke="red"
-          stroke-width="4"
+          stroke-width=${Constants.mainBorderWidth}
         ></rect>
+
+        ${this.columns.map((column) => column.render())}
       </svg>
 
       <moving-object
@@ -91,13 +106,21 @@ export class Waterfall extends LitElement {
     `;
   }
 
+  private get svgWidth(): number {
+    return Constants.position.x + Constants.width + Constants.mainBorderWidth;
+  }
+
+  private get svgHeight(): number {
+    return Constants.position.y + Constants.height + Constants.mainBorderWidth;
+  }
+
   private readonly onAnimationFrame = (timeMs: number): void => {
     const deltaSeconds =
       this.lastTimeMs === null ? 0 : (timeMs - this.lastTimeMs) / 1000;
 
     this.lastTimeMs = timeMs;
 
-    this.getMovingObject()?.updateMovement(deltaSeconds);
+    this.movingObjectElement?.updateMovement(deltaSeconds);
     this.updateGravityFallingObjects(deltaSeconds);
 
     this.frameId = requestAnimationFrame(this.onAnimationFrame);
@@ -113,19 +136,10 @@ export class Waterfall extends LitElement {
     }
   }
 
-  private getMovingObject(): MovingObject | null {
-    const element = this.renderRoot.querySelector("moving-object");
-
-    if (element instanceof MovingObject) {
-      return element;
-    }
-
-    return null;
-  }
-
   private getGravityFallingObjects(): readonly GravityFalling[] {
-    return Array.from(this.querySelectorAll("gravity-falling")).filter(
-      (element): element is GravityFalling => element instanceof GravityFalling,
+    return this.assignedElements.filter(
+      (element): element is GravityFalling =>
+        element instanceof GravityFalling,
     );
   }
 }

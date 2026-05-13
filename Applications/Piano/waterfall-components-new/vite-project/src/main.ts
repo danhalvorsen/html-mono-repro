@@ -1,22 +1,51 @@
-import { Waterfall } from "./music-waterfall.ts";
+import { HoldDurationMovementPlanFactory } from "./HoldDurationMovementPlanFactory.ts";
+import { TimedButtonElement, TimedButtonElementTagName } from "./TimedButtonElement.ts";
+import { TimedButtonWaterfallBinder } from "./TimedButtonWaterfallBinder.ts";
+import { Waterfall, WaterfallElementTagName } from "./music-waterfall.ts";
 
-function connectAddButton(): void {
-  const button = document.querySelector<HTMLButtonElement>("#add");
-  const waterfall = document.querySelector<Waterfall>("waterfall-component");
+/**
+ * Purposefully queries for a required element and throws an error if it is not found or of the wrong type.                                 
+ * @param tagName The tag name of the element to query.
+ * @param elementType The constructor of the expected element type.
+ * @returns The queried element if found and of the correct type.
+ */
+function queryRequiredElement<TElement extends Element>(
+  tagName: string,
+  elementType: { new (): TElement },
+): TElement {
+  const element = document.querySelector(tagName);
 
-  if (button === null || waterfall === null) {
-    return;
+  if (!(element instanceof elementType)) {
+    throw new Error(`Required element was not found: ${tagName}`);
   }
 
-  button.addEventListener("click", () => {
-    waterfall.addGravityFalling();
-  });
+  return element;
+}
+/**
+ * Composes the main application by querying required elements and binding them together.
+ */
+function composeApplication(): void {
+  const timedButton = queryRequiredElement(
+    TimedButtonElementTagName,
+    TimedButtonElement,
+  );
+
+  const waterfall = queryRequiredElement(
+    WaterfallElementTagName,
+    Waterfall,
+  );
+
+  new TimedButtonWaterfallBinder(
+    timedButton,
+    waterfall,
+    new HoldDurationMovementPlanFactory(),
+  ).bind();
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", connectAddButton, {
+  document.addEventListener("DOMContentLoaded", composeApplication, {
     once: true,
   });
 } else {
-  connectAddButton();
+  composeApplication();
 }
