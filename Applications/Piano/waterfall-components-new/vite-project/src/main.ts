@@ -1,14 +1,10 @@
-import { HoldDurationMovementPlanFactory } from "./HoldDurationMovementPlanFactory.ts";
-import { TimedButtonElement, TimedButtonElementTagName } from "./TimedButtonElement.ts";
-import { TimedButtonWaterfallBinder } from "./TimedButtonWaterfallBinder.ts";
-import { Waterfall, WaterfallElementTagName } from "./music-waterfall.ts";
+import {
+  TimedButtonElement,
+  TimedButtonElementTagName,
+} from "./component/TimedButtonElement.js";
+import { TimedButtonWaterfallBinder } from "./component/TimedButtonWaterfallBinder.js";
+import { Waterfall, WaterfallElementTagName } from "./component/Waterfall.js";
 
-/**
- * Purposefully queries for a required element and throws an error if it is not found or of the wrong type.                                 
- * @param tagName The tag name of the element to query.
- * @param elementType The constructor of the expected element type.
- * @returns The queried element if found and of the correct type.
- */
 function queryRequiredElement<TElement extends Element>(
   tagName: string,
   elementType: { new (): TElement },
@@ -21,9 +17,7 @@ function queryRequiredElement<TElement extends Element>(
 
   return element;
 }
-/**
- * Composes the main application by querying required elements and binding them together.
- */
+
 function composeApplication(): void {
   const timedButton = queryRequiredElement(
     TimedButtonElementTagName,
@@ -35,11 +29,7 @@ function composeApplication(): void {
     Waterfall,
   );
 
-  new TimedButtonWaterfallBinder(
-    timedButton,
-    waterfall,
-    new HoldDurationMovementPlanFactory(),
-  ).bind();
+  new TimedButtonWaterfallBinder(timedButton, waterfall).bind();
 }
 
 if (document.readyState === "loading") {

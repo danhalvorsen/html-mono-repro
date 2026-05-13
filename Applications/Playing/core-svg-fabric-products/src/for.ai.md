@@ -1,1 +1,0 @@
-3,17: # specification.for.ai.md
