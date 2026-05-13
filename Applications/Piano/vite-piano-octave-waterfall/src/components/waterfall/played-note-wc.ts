@@ -14,6 +14,34 @@ export class PlayedNoteWc extends LitElement {
       throw new Error("Missing default played-note configuration.");
     })();
 
+  public startFall(columnHeightPx: number): void {
+    const safeColumnHeight = Math.max(0, columnHeightPx);
+    const distancePx = Math.max(0, safeColumnHeight - this.options.size.y);
+    this.style.top = "0px";
+
+    // Newton free-fall model (no drag): s = 0.5 * g * t^2
+    // In free fall, acceleration is mass-independent, so m is not used.
+    const gravityPxPerSecondSquared = Math.max(120, this.options.speedPxPerSecond * 6);
+    const startedAtMs = performance.now();
+
+    const tick = (): void => {
+      const elapsedSeconds = Math.max(0, (performance.now() - startedAtMs) / 1000);
+      const traveledPx = 0.5 * gravityPxPerSecondSquared * elapsedSeconds * elapsedSeconds;
+      const clampedPx = Math.min(distancePx, traveledPx);
+
+      this.style.top = `${clampedPx}px`;
+
+      if (clampedPx >= distancePx) {
+        this.remove();
+        return;
+      }
+
+      requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  }
+
   protected override updated(): void {
     this.applyHostLayout();
   }

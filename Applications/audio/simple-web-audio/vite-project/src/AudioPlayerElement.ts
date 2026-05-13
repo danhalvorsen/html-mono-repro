@@ -3,8 +3,8 @@ import { customElement } from "lit/decorators.js";
 
 import { FilterBuilder } from "./Filters/FilterBuilder";
 
-import { VoiceBuilder } from "./Voice/VoiceBuilder";
 import type { IVoice } from "./Voice/IVoice.ts";
+import { VoiceBuilder } from "./Voice/VoiceBuilder";
 
 @customElement("audio-player")
 export class AudioPlayerElement extends LitElement {

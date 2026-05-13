@@ -4,18 +4,102 @@
     <meta charset="utf-8" />
     <title>Piano Octave</title>
     <script type="module" src="/src/main.ts"></script>
-    
+
     <style>
       body {
         margin: 0;
+        min-height: 100vh;
         padding: 16px;
         font-family: system-ui, sans-serif;
-        background: #111827;
+        background:
+          radial-gradient(circle at top, #1f2937, #111827 40%),
+          #111827;
+        color: #e5e7eb;
+      }
+
+      main {
+        width: min(920px, 100%);
+        margin: 0 auto;
+        display: grid;
+        gap: 16px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+
+      .controls {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #031022;
+        background: linear-gradient(120deg, #7dd3fc, #38bdf8);
+        cursor: pointer;
+      }
+
+      .stage {
+        position: relative;
+        height: 340px;
+        border-radius: 14px;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        background: linear-gradient(to bottom, rgba(30, 41, 59, 0.8), rgba(2, 6, 23, 0.85));
+        overflow: hidden;
+      }
+
+      piano-waterfall-new {
+        left: 0;
+        top: 0;
+      }
+
+      played-note-wc {
+        animation: note-fall 2200ms linear forwards;
+        transform: translateY(-120%);
+      }
+
+      @keyframes note-fall {
+        from {
+          transform: translateY(-120%);
+          opacity: 0.95;
+        }
+
+        to {
+          transform: translateY(120%);
+          opacity: 0.2;
+        }
       }
     </style>
   </head>
 
   <body>
-  <piano-app></piano-app>
+    <main>
+      <h1>Waterfall Column Demo</h1>
+
+      <div class="controls">
+        <button id="spawn-note" type="button">Drop Falling Note</button>
+      </div>
+
+      <section class="stage">
+        <piano-waterfall-new id="waterfall">
+          <column-wc slot="column-0">
+            <played-note-wc></played-note-wc>
+            <played-note-wc></played-note-wc>
+            <played-note-wc></played-note-wc>
+            <played-note-wc></played-note-wc>
+            <played-note-wc></played-note-wc>
+          </column-wc>
+        </piano-waterfall-new>
+      </section>
+    </main>
+
   </body>
 </html>

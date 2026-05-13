@@ -9,11 +9,10 @@ import {
 } from "./UI/Slider/SliderElement";
 
 const slider = document.querySelector<SliderElement>("range-slider");
-const player = document.querySelector<AudioPlayerElement>("audio-player");
-
-class AudioPlayerElement extends HTMLElement {
-  public setFrequencyHz(_value: number): void {}
-}
+type AudioPlayerControl = HTMLElement & {
+  setFrequencyHz(value: number): void;
+};
+const player = document.querySelector<AudioPlayerControl>("audio-player");
 
 if (slider !== null) {
   slider.addEventListener(SliderEventName.Changed, (event: Event) => {

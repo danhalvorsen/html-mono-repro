@@ -1,30 +1,30 @@
-import { html, LitElement, type TemplateResult } from "lit";
-import { customElement, property, queryAssignedElements } from "lit/decorators.js";
 import {
-  createNoteOff,
-  createNoteOn,
-  MidiChannel,
-  MidiNote,
-  MidiVelocity,
+    createNoteOff,
+    createNoteOn,
+    MidiChannel,
+    MidiNote,
+    MidiVelocity,
 } from "@monorepo/music-core-midi";
 import {
-  RealInstrumentPresets,
-  WebAudioMidiPlayer,
+    RealInstrumentPresets,
+    WebAudioMidiPlayer,
 } from "@monorepo/music-core-midi-playback";
+import { html, LitElement, type TemplateResult } from "lit";
+import { customElement, property, queryAssignedElements } from "lit/decorators.js";
 
-import {
-  PianoNoteEventName,
-  TangentInputEventName,
-  type PianoRootTangentEventDetail,
-  type PianoRootTangentEventKind,
-  type TangentInputEventDetail,
-} from "./PianoRootEventContracts";
-import {
-  DefaultPianoRootConfiguration,
-  type PianoRootConfiguration,
-} from "./PianoRootConfiguration";
 import type { PianoOctave } from "../octave/piano-octave";
 import type { PianoWaterfallNew } from "../waterfall/piano-waterfall-new";
+import {
+    DefaultPianoRootConfiguration,
+    type PianoRootConfiguration,
+} from "./PianoRootConfiguration";
+import {
+    PianoNoteEventName,
+    TangentInputEventName,
+    type PianoRootTangentEventDetail,
+    type PianoRootTangentEventKind,
+    type TangentInputEventDetail,
+} from "./PianoRootEventContracts";
 @customElement("piano-root-new")
 export class PianoRoot extends LitElement {
   private static readonly MIDI_TRANSPOSE_SEMITONES = 48;
@@ -105,11 +105,9 @@ export class PianoRoot extends LitElement {
   private sendNoteOn(event: Event): void {
     const detail = this.readTangentInputDetail(event);
     const midiNote = detail?.tangent.midiNote;
+    const noteName = detail?.tangent.note ?? "unknown";
 
-    console.log("PianoRootNew:sendNoteOn", {
-      midiNote,
-      note: detail?.tangent.note,
-    });
+    console.log(`PianoRootNew:sendNoteOn note=${noteName} midiNote=${String(midiNote)}`);
 
     if (midiNote === null || midiNote === undefined) {
       return;
@@ -135,11 +133,9 @@ export class PianoRoot extends LitElement {
   private sendNoteOff(event: Event): void {
     const detail = this.readTangentInputDetail(event);
     const midiNote = detail?.tangent.midiNote;
+    const noteName = detail?.tangent.note ?? "unknown";
 
-    console.log("PianoRootNew:sendNoteOff", {
-      midiNote,
-      note: detail?.tangent.note,
-    });
+    console.log(`PianoRootNew:sendNoteOff note=${noteName} midiNote=${String(midiNote)}`);
 
     if (midiNote === null || midiNote === undefined) {
       return;

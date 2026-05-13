@@ -1,11 +1,20 @@
+import type { MidiParsedNoteEvent } from "@monorepo/music-core-midi";
 import { LitElement, html, type TemplateResult } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
+import {
+  PianoNoteEventName,
+  type PianoRootTangentEventDetail,
+} from "./components/piano/PianoRootEventContracts";
+import {
+  mapMidiNoteToColumn,
+  mapTangentNoteToColumn,
+} from "./components/waterfall/midi-column-mapper";
 
-import "./components/piano/piano-root";
 import "./components/octave/piano-octave";
+import "./components/piano/piano-root";
 import "./components/tangents/tangent-wc";
-import "./components/waterfall/piano-waterfall-new";
 import "./components/waterfall/piano-waterfall-column";
+import "./components/waterfall/piano-waterfall-new";
 import "./components/waterfall/played-note-wc";
 
 import {
@@ -26,6 +35,25 @@ export class PianoApp extends LitElement {
 
   @property({ attribute: false })
   public scale: Scale2 = { x: 1, y: 1 };
+
+  @query("piano-waterfall-new")
+  private readonly waterfallElement?: HTMLElement & {
+    handleParsedNoteEvent(event: MidiParsedNoteEvent): void;
+  };
+
+  public override connectedCallback(): void {
+    super.connectedCallback();
+
+    this.addEventListener(PianoNoteEventName.NoteOn, this.onPianoNoteOn as EventListener);
+    this.addEventListener(PianoNoteEventName.NoteOff, this.onPianoNoteOff as EventListener);
+  }
+
+  public override disconnectedCallback(): void {
+    this.removeEventListener(PianoNoteEventName.NoteOn, this.onPianoNoteOn as EventListener);
+    this.removeEventListener(PianoNoteEventName.NoteOff, this.onPianoNoteOff as EventListener);
+
+    super.disconnectedCallback();
+  }
 
   protected override render(): TemplateResult {
     const options = this.scaler.scale(this.sourceOptions, this.scale);
@@ -49,6 +77,46 @@ export class PianoApp extends LitElement {
         )}
       </piano-root-new>
     `;
+  }
+
+  private readonly onPianoNoteOn = (event: Event): void => {
+    this.forwardPianoEventAsParsedNote(event, "noteon");
+  };
+
+  private readonly onPianoNoteOff = (event: Event): void => {
+    this.forwardPianoEventAsParsedNote(event, "noteoff");
+  };
+
+  private forwardPianoEventAsParsedNote(
+    event: Event,
+    type: "noteon" | "noteoff",
+  ): void {
+    const detail = (event as CustomEvent<PianoRootTangentEventDetail>).detail;
+    const midiNote = detail?.tangent?.midiNote;
+    const note = detail?.tangent?.note;
+
+    if (typeof midiNote !== "number") {
+      return;
+    }
+
+    const velocity = type === "noteon" ? 100 : 0;
+    const status = type === "noteon" ? 0x90 : 0x80;
+    const mappedByName = typeof note === "string" ? mapTangentNoteToColumn(note) : null;
+    const pitchClass = mappedByName ?? mapMidiNoteToColumn(midiNote);
+    const parsed: MidiParsedNoteEvent = {
+      type,
+      status,
+      data: [status, midiNote, velocity],
+      timestamp: performance.now(),
+      channel: 0,
+      midiNote,
+      velocity,
+      pitchClass,
+      octave: Math.floor(midiNote / 12) - 1,
+      columnIndex: pitchClass,
+    };
+
+    this.waterfallElement?.handleParsedNoteEvent(parsed);
   }
 }
 

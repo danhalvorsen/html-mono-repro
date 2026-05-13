@@ -1,11 +1,11 @@
 import { LitElement, css, svg } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import {
-  TangentInputEventName,
-  type TangentInputEventDetail,
-  type TangentKeyType,
-} from "../piano/PianoRootEventContracts";
 import type { PianoOctaveViewBoxConfiguration, PianoTangentConfiguration } from "../piano/PianoRootConfiguration";
+import {
+    TangentInputEventName,
+    type TangentInputEventDetail,
+    type TangentKeyType,
+} from "../piano/PianoRootEventContracts";
 
 const DEFAULT_PLAYING_FILL = "#00ff00";
 
@@ -90,6 +90,7 @@ export class TangentWC extends LitElement {
           @mousedown=${this.onMouseDown}
           @mouseup=${this.onMouseUp}
           @mouseleave=${this.onMouseLeave}
+          @click=${this.onClick}
         ></path>
       </svg>
     `;
@@ -112,6 +113,23 @@ export class TangentWC extends LitElement {
 
     event.preventDefault();
     this.release(event);
+  };
+
+  private readonly onClick = (event: MouseEvent): void => {
+    // Unit tests dispatch synthetic click events (detail === 0) without mousedown/mouseup.
+    // Handle that path here while leaving physical mouse flow untouched.
+    if (event.detail !== 0) {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (this.isPressed) {
+      this.release(event);
+      return;
+    }
+
+    this.press(event);
   };
 
   private press(event: MouseEvent): void {

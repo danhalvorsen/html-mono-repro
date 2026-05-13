@@ -1,10 +1,10 @@
 import { LitElement, html, svg, type TemplateResult } from "lit";
 import { customElement, property, queryAssignedElements } from "lit/decorators.js";
-import "./played-note-wc";
 import {
   DefaultPianoRootConfiguration,
   type PianoWaterfallColumnConfiguration,
 } from "../piano/PianoRootConfiguration";
+import "./played-note-wc";
 import type { PlayedNoteWc } from "./played-note-wc";
 
 @customElement("column-wc")
