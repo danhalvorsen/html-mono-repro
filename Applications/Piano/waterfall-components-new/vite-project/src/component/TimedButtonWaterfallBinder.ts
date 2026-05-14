@@ -1,3 +1,4 @@
+import { Constants } from "../constants.ts";
 import {
   TimedButtonEventName,
   type TimedButtonHoldCancelledDetail,
@@ -35,7 +36,7 @@ export class TimedButtonWaterfallBinder implements IEventBinder {
 
   private readonly timedButton: EventTarget;
   private readonly waterfall: IGravityFallingColumnReceiver;
-  private readonly columnIndex: number;
+  private columnIndex: number;
 
   private isBound: boolean = false;
 
@@ -108,6 +109,8 @@ export class TimedButtonWaterfallBinder implements IEventBinder {
   private readonly onHoldStarted = (
     event: CustomEvent<TimedButtonHoldStartedDetail>,
   ): void => {
+    this.columnIndex = this.createRandomColumnIndex();
+
     this.waterfall.createGavityFallingObjectInColumn(
       this.columnIndex,
       event.detail.heldMs,
@@ -137,4 +140,7 @@ export class TimedButtonWaterfallBinder implements IEventBinder {
   ): void => {
     this.waterfall.cancelGavityFallingObjectInColumn(this.columnIndex);
   };
+  private createRandomColumnIndex(): number {
+    return Math.floor(Math.random() * Constants.numberColumns);
+  }
 }
