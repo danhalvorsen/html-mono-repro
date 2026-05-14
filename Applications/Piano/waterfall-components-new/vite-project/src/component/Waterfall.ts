@@ -8,8 +8,9 @@ import {
 import { CollisionDetection } from "../collision/CollisionDetection.ts";
 import { CollisionObject } from "../collision/CollisionObject.ts";
 import { Constants } from "../constants.ts";
-import type { GravityFallingMovementStrategy } from "../moveable/GravityFallingMovementStrategy.ts";
+import { GravityFallingMovementStrategy } from "../moveable/GravityFallingMovementStrategy.ts";
 import {
+  Column,
   ColumnElementTagName,
   ColumnFactory,
   ColumnSlotName,
@@ -22,6 +23,10 @@ export const WaterfallElementTagName = "waterfall-component";
 @customElement(WaterfallElementTagName)
 export class Waterfall extends LitElement {
   private static readonly GravityFallingTagName = "gravity-falling";
+  private static readonly GravityFallingInsetPixels: number = 4;
+  private static readonly MinimumGravityFallingHeightPixels: number = 16;
+  private static readonly MaximumGravityFallingHeightPixels: number = 180;
+  private static readonly GravityFallingHeightPixelsPerMillisecond: number = 0.08;
 
   private readonly collisionDetection: CollisionDetection =
     new CollisionDetection();
@@ -32,6 +37,9 @@ export class Waterfall extends LitElement {
     Constants.position,
     new Vector2(Constants.width, Constants.height),
   );
+
+  private readonly activeGravityFallingByColumnIndex: Map<number, GravityFalling> =
+    new Map<number, GravityFalling>();
 
   @query("moving-object")
   private readonly movingObjectElement!: MovingObject | null;
@@ -62,20 +70,61 @@ export class Waterfall extends LitElement {
       this.frameId = null;
     }
 
+    this.activeGravityFallingByColumnIndex.clear();
+
     super.disconnectedCallback();
   }
 
-  public addMovementStrategy(
-    strategy: GravityFallingMovementStrategy,
+  public createGavityFallingObjectInColumn(
+    columnIndex: number,
+    heldMs: number = 0,
   ): void {
-    const falling = document.createElement(
-      Waterfall.GravityFallingTagName,
-    ) as GravityFalling;
+    const activeFalling = this.tryGetActiveGravityFalling(columnIndex);
 
-    falling.container = this.staticRectangle;
-    falling.strategy = strategy;
+    if (activeFalling !== null) {
+      this.updateGavityFallingObjectHeightInColumn(columnIndex, heldMs);
+      return;
+    }
 
+    const falling = this.createGravityFallingObject(columnIndex, heldMs);
+
+    this.activeGravityFallingByColumnIndex.set(columnIndex, falling);
     this.appendChild(falling);
+  }
+
+  public updateGavityFallingObjectHeightInColumn(
+    columnIndex: number,
+    heldMs: number,
+  ): void {
+    const falling = this.tryGetActiveGravityFalling(columnIndex);
+
+    if (falling === null) {
+      return;
+    }
+
+    const column = this.getColumn(columnIndex);
+
+    this.updateGravityFallingSize(falling, column, heldMs);
+  }
+
+  public completeGavityFallingObjectInColumn(
+    columnIndex: number,
+    heldMs: number,
+  ): void {
+    this.updateGavityFallingObjectHeightInColumn(columnIndex, heldMs);
+
+    // Release the object. It can now fall on the next animation frame.
+    this.activeGravityFallingByColumnIndex.delete(columnIndex);
+  }
+
+  public cancelGavityFallingObjectInColumn(columnIndex: number): void {
+    const falling = this.tryGetActiveGravityFalling(columnIndex);
+
+    if (falling !== null) {
+      falling.remove();
+    }
+
+    this.activeGravityFallingByColumnIndex.delete(columnIndex);
   }
 
   protected override render(): TemplateResult {
@@ -106,6 +155,158 @@ export class Waterfall extends LitElement {
 
       <slot></slot>
     `;
+  }
+
+  private createGravityFallingObject(
+    columnIndex: number,
+    heldMs: number,
+  ): GravityFalling {
+    const column = this.getColumn(columnIndex);
+    const columnContainer = new CollisionObject(column.position, column.size);
+    const strategy = new GravityFallingMovementStrategy();
+
+    strategy.container = columnContainer;
+    strategy.inset = Waterfall.GravityFallingInsetPixels;
+    strategy.size = this.createGravityFallingSize(column, heldMs);
+
+    const falling = document.createElement(
+      Waterfall.GravityFallingTagName,
+    ) as GravityFalling;
+
+    falling.container = columnContainer;
+    falling.strategy = strategy;
+
+    return falling;
+  }
+
+  private updateGravityFallingSize(
+    falling: GravityFalling,
+    column: Column,
+    heldMs: number,
+  ): void {
+    falling.strategy.size = this.createGravityFallingSize(column, heldMs);
+    falling.requestUpdate();
+  }
+
+  private createGravityFallingSize(
+    column: Column,
+    heldMs: number,
+  ): Vector2 {
+    return new Vector2(
+      this.calculateGravityFallingWidth(column),
+      this.calculateGravityFallingHeight(column, heldMs),
+    );
+  }
+
+  private calculateGravityFallingWidth(column: Column): number {
+    const insetWidth = Waterfall.GravityFallingInsetPixels * 2;
+
+    return Math.max(1, column.size.x - insetWidth);
+  }
+
+  private calculateGravityFallingHeight(
+    column: Column,
+    heldMs: number,
+  ): number {
+    const safeHeldMs = Number.isFinite(heldMs) ? Math.max(0, heldMs) : 0;
+    const requestedHeight =
+      safeHeldMs * Waterfall.GravityFallingHeightPixelsPerMillisecond;
+
+    const availableHeight = Math.max(
+      1,
+      column.size.y - Waterfall.GravityFallingInsetPixels * 2,
+    );
+
+    const maximumHeight = Math.max(
+      1,
+      Math.min(
+        Waterfall.MaximumGravityFallingHeightPixels,
+        availableHeight,
+      ),
+    );
+
+    const minimumHeight = Math.min(
+      Waterfall.MinimumGravityFallingHeightPixels,
+      maximumHeight,
+    );
+
+    return Math.min(
+      maximumHeight,
+      Math.max(minimumHeight, requestedHeight),
+    );
+  }
+
+  private tryGetActiveGravityFalling(
+    columnIndex: number,
+  ): GravityFalling | null {
+    const falling = this.activeGravityFallingByColumnIndex.get(columnIndex);
+
+    if (falling === undefined) {
+      return null;
+    }
+
+    if (!falling.isConnected) {
+      this.activeGravityFallingByColumnIndex.delete(columnIndex);
+      return null;
+    }
+
+    return falling;
+  }
+
+  private isPressedGravityFalling(falling: GravityFalling): boolean {
+    for (const pressedFalling of this.activeGravityFallingByColumnIndex.values()) {
+      if (pressedFalling === falling) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private removeActiveGravityFallingReference(falling: GravityFalling): void {
+    for (const [
+      columnIndex,
+      activeFalling,
+    ] of this.activeGravityFallingByColumnIndex) {
+      if (activeFalling === falling) {
+        this.activeGravityFallingByColumnIndex.delete(columnIndex);
+      }
+    }
+  }
+
+  private getColumn(columnIndex: number): Column {
+    this.ensureDefaultColumns();
+    this.assertValidColumnIndex(columnIndex);
+
+    const column = this.getColumns().find(
+      (candidate) => candidate.index === columnIndex,
+    );
+
+    if (column === undefined) {
+      throw new RangeError(`Waterfall column was not found: ${columnIndex}.`);
+    }
+
+    return column;
+  }
+
+  private getColumns(): readonly Column[] {
+    return Array.from(this.querySelectorAll(ColumnElementTagName)).filter(
+      (element): element is Column => element instanceof Column,
+    );
+  }
+
+  private assertValidColumnIndex(columnIndex: number): void {
+    if (!Number.isInteger(columnIndex)) {
+      throw new RangeError(`Column index must be an integer: ${columnIndex}.`);
+    }
+
+    if (columnIndex < 0 || columnIndex >= Constants.numberColumns) {
+      throw new RangeError(
+        `Column index must be between 0 and ${
+          Constants.numberColumns - 1
+        }: ${columnIndex}.`,
+      );
+    }
   }
 
   private ensureDefaultColumns(): void {
@@ -140,9 +341,14 @@ export class Waterfall extends LitElement {
 
   private updateGravityFallingObjects(deltaSeconds: number): void {
     for (const falling of this.getGravityFallingObjects()) {
+      if (this.isPressedGravityFalling(falling)) {
+        continue;
+      }
+
       falling.updateMovement(deltaSeconds);
 
       if (falling.completed) {
+        this.removeActiveGravityFallingReference(falling);
         falling.remove();
       }
     }
