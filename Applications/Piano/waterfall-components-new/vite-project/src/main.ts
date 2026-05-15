@@ -1,8 +1,13 @@
+import { Constants } from "./constants.ts";
 import {
   TimedButtonElement,
   TimedButtonElementTagName,
+  TimedButtonEventName,
+  type TimedButtonHoldCancelledDetail,
+  type TimedButtonHoldChangedDetail,
+  type TimedButtonHoldCompletedDetail,
+  type TimedButtonHoldStartedDetail,
 } from "./component/TimedButtonElement.js";
-import { TimedButtonWaterfallBinder } from "./component/TimedButtonWaterfallBinder.js";
 import { Waterfall, WaterfallElementTagName } from "./component/Waterfall.js";
 
 function queryRequiredElement<TElement extends Element>(
@@ -18,6 +23,10 @@ function queryRequiredElement<TElement extends Element>(
   return element;
 }
 
+function createRandomColumnIndex(): number {
+  return Math.floor(Math.random() * Constants.numberColumns);
+}
+
 function composeApplication(): void {
   const timedButton = queryRequiredElement(
     TimedButtonElementTagName,
@@ -29,7 +38,64 @@ function composeApplication(): void {
     Waterfall,
   );
 
-  new TimedButtonWaterfallBinder(timedButton, waterfall).bind();
+  let activeColumnIndex: number | null = null;
+
+  timedButton.addEventListener(
+    TimedButtonEventName.HoldStarted,
+    ((event: CustomEvent<TimedButtonHoldStartedDetail>): void => {
+      activeColumnIndex = createRandomColumnIndex();
+
+      waterfall.createGavityFallingObjectInColumn(
+        activeColumnIndex,
+        event.detail.heldMs,
+      );
+    }) as EventListener,
+  );
+
+  timedButton.addEventListener(
+    TimedButtonEventName.HoldChanged,
+    ((event: CustomEvent<TimedButtonHoldChangedDetail>): void => {
+      if (activeColumnIndex === null) {
+        return;
+      }
+
+      waterfall.updateGavityFallingObjectHeightInColumn(
+        activeColumnIndex,
+        event.detail.heldMs,
+      );
+    }) as EventListener,
+  );
+
+  timedButton.addEventListener(
+    TimedButtonEventName.HoldCompleted,
+    ((event: CustomEvent<TimedButtonHoldCompletedDetail>): void => {
+      if (activeColumnIndex === null) {
+        return;
+      }
+
+      const columnIndex = activeColumnIndex;
+      activeColumnIndex = null;
+
+      waterfall.completeGavityFallingObjectInColumn(
+        columnIndex,
+        event.detail.heldMs,
+      );
+    }) as EventListener,
+  );
+
+  timedButton.addEventListener(
+    TimedButtonEventName.HoldCancelled,
+    ((_event: CustomEvent<TimedButtonHoldCancelledDetail>): void => {
+      if (activeColumnIndex === null) {
+        return;
+      }
+
+      const columnIndex = activeColumnIndex;
+      activeColumnIndex = null;
+
+      waterfall.cancelGavityFallingObjectInColumn(columnIndex);
+    }) as EventListener,
+  );
 }
 
 if (document.readyState === "loading") {

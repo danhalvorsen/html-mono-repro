@@ -12,9 +12,9 @@ import { GravityFallingMovementStrategy } from "../moveable/GravityFallingMoveme
 import {
   Column,
   ColumnElementTagName,
-  ColumnFactory,
   ColumnSlotName,
 } from "./Column.ts";
+import { WaterfallColumHandling } from "./WaterfallColumHandling.ts";
 import { GravityFalling } from "./GravityFalling.ts";
 import { MovingObject } from "./MovingObject.ts";
 
@@ -31,7 +31,6 @@ export class Waterfall extends LitElement {
   private readonly collisionDetection: CollisionDetection =
     new CollisionDetection();
 
-  private readonly columnFactory: ColumnFactory = new ColumnFactory();
 
   private readonly staticRectangle: CollisionObject = new CollisionObject(
     Constants.position,
@@ -40,6 +39,9 @@ export class Waterfall extends LitElement {
 
   private readonly activeGravityFallingByColumnIndex: Map<number, GravityFalling> =
     new Map<number, GravityFalling>();
+  private readonly columnHandling: WaterfallColumHandling =
+    new WaterfallColumHandling(this);
+
 
   @query("moving-object")
   private readonly movingObjectElement!: MovingObject | null;
@@ -58,6 +60,7 @@ export class Waterfall extends LitElement {
     this.style.width = `${this.svgWidth}px`;
     this.style.height = `${this.svgHeight}px`;
 
+    this.columnHandling.ensureDefaultColumns();
     this.ensureDefaultColumns();
 
     this.lastTimeMs = null;
@@ -314,9 +317,28 @@ export class Waterfall extends LitElement {
       return;
     }
 
-    for (const column of this.columnFactory.createColumns()) {
-      this.appendChild(column);
+    for (let index = 0; index < Constants.numberColumns; index += 1) {
+      this.appendChild(this.createDefaultColumn(index));
     }
+  }
+
+  private createDefaultColumn(index: number): Column {
+    const column = document.createElement(ColumnElementTagName) as Column;
+
+    column.slot = ColumnSlotName;
+    column.index = index;
+    column.position = this.createDefaultColumnPosition(index);
+    column.size = new Vector2(Constants.columnWidth, Constants.columnHeight);
+
+    return column;
+  }
+
+  private createDefaultColumnPosition(index: number): Vector2 {
+    return new Vector2(
+      Constants.position.x +
+        index * (Constants.columnWidth + Constants.columnBorderWidth),
+      Constants.position.y + Constants.mainBorderWidth / 2,
+    );
   }
 
   private get svgWidth(): number {
@@ -371,3 +393,9 @@ declare global {
     "waterfall-component": Waterfall;
   }
 }
+
+
+
+
+
+

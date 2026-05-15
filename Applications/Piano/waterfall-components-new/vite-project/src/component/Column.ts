@@ -61,36 +61,11 @@ export class Column extends LitElement {
   }
 }
 
-export class ColumnFactory {
-  public createColumns(): readonly Column[] {
-    return Array.from(
-      { length: Constants.numberColumns },
-      (_, index) => this.createColumn(index),
-    );
-  }
-
-  private createColumn(index: number): Column {
-    const column = document.createElement(ColumnElementTagName) as Column;
-
-    column.slot = ColumnSlotName;
-    column.index = index;
-    column.position = this.createColumnPosition(index);
-    column.size = new Vector2(Constants.columnWidth, Constants.columnHeight);
-
-    return column;
-  }
-
-  private createColumnPosition(index: number): Vector2 {
-    return new Vector2(
-      Constants.position.x +
-        index * (Constants.columnWidth + Constants.columnBorderWidth),
-      Constants.position.y + Constants.mainBorderWidth / 2,
-    );
-  }
-}
 
 declare global {
   interface HTMLElementTagNameMap {
     "waterfall-column": Column;
   }
 }
+
+
