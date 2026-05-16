@@ -190,6 +190,9 @@ importers:
       '@monorepo/music-core-midi-playback':
         specifier: workspace:*
         version: link:../../../../packages/Audio/music-core-midi-playback
+      '@monorepo/music-core-midi-streamer':
+        specifier: workspace:*
+        version: link:../../../../packages/Audio/music-core-midi-streamer
       lit:
         specifier: ^3.3.2
         version: 3.3.2
@@ -1650,6 +1653,9 @@ importers:
       '@monorepo/core-specifications':
         specifier: workspace:*
         version: link:../../core-specifications
+      '@monorepo/music-core-midi-streamer':
+        specifier: workspace:*
+        version: link:../music-core-midi-streamer
 
   packages/Audio/music-core-midi-accords-playback:
     dependencies:

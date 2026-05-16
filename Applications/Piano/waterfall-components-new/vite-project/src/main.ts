@@ -1,14 +1,18 @@
-import { Constants } from "./constants.ts";
+import { NoteSymbol } from "@monorepo/music-core-midi";
 import {
   TimedButtonElement,
   TimedButtonElementTagName,
   TimedButtonEventName,
-  type TimedButtonHoldCancelledDetail,
-  type TimedButtonHoldChangedDetail,
   type TimedButtonHoldCompletedDetail,
-  type TimedButtonHoldStartedDetail,
 } from "./component/TimedButtonElement.js";
 import { Waterfall, WaterfallElementTagName } from "./component/Waterfall.js";
+import { MidiMapper } from "./mapper/midiMapper.js";
+
+const NotesToAdd: Array<NoteSymbol> = [
+  NoteSymbol.C,
+  NoteSymbol.E,
+  NoteSymbol.G,
+];
 
 function queryRequiredElement<TElement extends Element>(
   tagName: string,
@@ -23,10 +27,6 @@ function queryRequiredElement<TElement extends Element>(
   return element;
 }
 
-function createRandomColumnIndex(): number {
-  return Math.floor(Math.random() * Constants.numberColumns);
-}
-
 function composeApplication(): void {
   const timedButton = queryRequiredElement(
     TimedButtonElementTagName,
@@ -38,62 +38,12 @@ function composeApplication(): void {
     Waterfall,
   );
 
-  let activeColumnIndex: number | null = null;
-
-  timedButton.addEventListener(
-    TimedButtonEventName.HoldStarted,
-    ((event: CustomEvent<TimedButtonHoldStartedDetail>): void => {
-      activeColumnIndex = createRandomColumnIndex();
-
-      waterfall.createGavityFallingObjectInColumn(
-        activeColumnIndex,
-        event.detail.heldMs,
-      );
-    }) as EventListener,
-  );
-
-  timedButton.addEventListener(
-    TimedButtonEventName.HoldChanged,
-    ((event: CustomEvent<TimedButtonHoldChangedDetail>): void => {
-      if (activeColumnIndex === null) {
-        return;
-      }
-
-      waterfall.updateGavityFallingObjectHeightInColumn(
-        activeColumnIndex,
-        event.detail.heldMs,
-      );
-    }) as EventListener,
-  );
+  const midiMapper = new MidiMapper(waterfall);
 
   timedButton.addEventListener(
     TimedButtonEventName.HoldCompleted,
     ((event: CustomEvent<TimedButtonHoldCompletedDetail>): void => {
-      if (activeColumnIndex === null) {
-        return;
-      }
-
-      const columnIndex = activeColumnIndex;
-      activeColumnIndex = null;
-
-      waterfall.completeGavityFallingObjectInColumn(
-        columnIndex,
-        event.detail.heldMs,
-      );
-    }) as EventListener,
-  );
-
-  timedButton.addEventListener(
-    TimedButtonEventName.HoldCancelled,
-    ((_event: CustomEvent<TimedButtonHoldCancelledDetail>): void => {
-      if (activeColumnIndex === null) {
-        return;
-      }
-
-      const columnIndex = activeColumnIndex;
-      activeColumnIndex = null;
-
-      waterfall.cancelGavityFallingObjectInColumn(columnIndex);
+      midiMapper.play(NotesToAdd, event.detail.heldMs);
     }) as EventListener,
   );
 }

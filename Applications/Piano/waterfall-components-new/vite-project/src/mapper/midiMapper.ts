@@ -1,4 +1,4 @@
-import { MidiStringParser, NoteSymbol } from "@monorepo/music-core-midi";
+import { MidiStringParser, type NoteSymbol } from "@monorepo/music-core-midi";
 import type { Waterfall } from "../component/Waterfall.ts";
 
 export class MidiMapper {
@@ -10,17 +10,18 @@ export class MidiMapper {
     this.parser = new MidiStringParser();
   }
 
-  public play(notes: Array<NoteSymbol>): void {
+  public play(notes: Array<NoteSymbol>, heldMs: number = 0): void {
     for (const note of notes) {
       const step = this.parser.parse(`${note}4`)[0];
 
-      if (step?.message === null || step === undefined) {
+      if (step === undefined || step.message === null) {
         continue;
       }
 
-      this.waterfall.createGavityFallingObjectInColumn(
-        step.message.note.value() % 12,
-      );
+      const columnIndex = step.message.note.value() % 12;
+
+      this.waterfall.createGavityFallingObjectInColumn(columnIndex, heldMs);
+      this.waterfall.completeGavityFallingObjectInColumn(columnIndex, heldMs);
     }
   }
 }
