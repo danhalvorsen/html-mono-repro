@@ -2,6 +2,9 @@ import {
   TimedButtonElement,
   TimedButtonElementTagName,
   TimedButtonEventName,
+  type TimedButtonHoldChangedDetail,
+  type TimedButtonHoldStartedDetail,
+  type TimedButtonHoldCancelledDetail,
   type TimedButtonHoldCompletedDetail,
 } from "./component/TimedButtonElement.js";
 import { Waterfall, WaterfallElementTagName } from "./component/Waterfall.js";
@@ -50,18 +53,44 @@ function composeApplication(): void {
   const accordHeader = createAccordHeader(waterfall);
   const accordBuilder = new AccordBuilder();
   const midiMapper = new MidiMapper(waterfall);
+  let activeAccord: Accord | null = null;
+
+  timedButton.addEventListener(
+    TimedButtonEventName.HoldStarted,
+    ((_event: CustomEvent<TimedButtonHoldStartedDetail>): void => {
+      const accord = accordBuilder.createRandom();
+      activeAccord = accord;
+      accordHeader.textContent = formatAccordName(accord);
+      midiMapper.start(accord.notes);
+    }) as EventListener,
+  );
+
+  timedButton.addEventListener(
+    TimedButtonEventName.HoldChanged,
+    ((event: CustomEvent<TimedButtonHoldChangedDetail>): void => {
+      midiMapper.update(event.detail.heldMs);
+    }) as EventListener,
+  );
 
   timedButton.addEventListener(
     TimedButtonEventName.HoldCompleted,
     ((event: CustomEvent<TimedButtonHoldCompletedDetail>): void => {
-      const accord = accordBuilder.createRandom();
+      if (activeAccord === null) {
+        return;
+      }
+      midiMapper.stop(false, event.detail.heldMs);
+      activeAccord = null;
+    }) as EventListener,
+  );
 
-      accordHeader.textContent = formatAccordName(accord);
-
-      midiMapper.play(
-        accord.notes,
-        event.detail.heldMs,
-      );
+  timedButton.addEventListener(
+    TimedButtonEventName.HoldCancelled,
+    ((event: CustomEvent<TimedButtonHoldCancelledDetail>): void => {
+      if (activeAccord === null) {
+        return;
+      }
+      midiMapper.stop(true, event.detail.heldMs);
+      activeAccord = null;
     }) as EventListener,
   );
 }

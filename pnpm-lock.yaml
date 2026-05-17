@@ -187,6 +187,9 @@ importers:
       '@monorepo/music-core-midi':
         specifier: workspace:*
         version: link:../../../../packages/Audio/music-core-midi
+      '@monorepo/music-core-midi-accords-playback':
+        specifier: workspace:*
+        version: link:../../../../packages/Audio/music-core-midi-accords-playback
       '@monorepo/music-core-midi-playback':
         specifier: workspace:*
         version: link:../../../../packages/Audio/music-core-midi-playback
