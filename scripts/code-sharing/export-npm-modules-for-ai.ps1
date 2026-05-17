@@ -24,7 +24,7 @@ param(
     [string[]]$SourceFolderNames = @("src"),
 
     [Parameter(Mandatory = $false)]
-    [string[]]$TestFolderNames = @("test", "tests"),
+    [string[]]$TestFolderNames = @("test", "tests", "__tests__"),
 
     [Parameter(Mandatory = $false)]
     [string[]]$ConfigFileNames = @(
@@ -56,7 +56,8 @@ param(
         ".sass",
         ".md",
         ".yml",
-        ".yaml"
+        ".yaml",
+        ".ps1"
     ),
 
     [Parameter(Mandatory = $false)]
@@ -88,15 +89,36 @@ function Test-IsExcludedPath {
         [string[]]$ExcludedNames
     )
 
+    $excluded = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::OrdinalIgnoreCase
+    )
+
+    foreach ($name in $ExcludedNames) {
+        [void]$excluded.Add($name)
+    }
+
     $parts = $Path -split '[\\/]' | Where-Object { $_ -ne "" }
 
     foreach ($part in $parts) {
-        if ($ExcludedNames -contains $part) {
+        if ($excluded.Contains($part)) {
             return $true
         }
     }
 
     return $false
+}
+
+function Read-FileTextOrEmpty {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$FilePath
+    )
+
+    if (-not (Test-Path -LiteralPath $FilePath -PathType Leaf)) {
+        return ""
+    }
+
+    return [System.IO.File]::ReadAllText($FilePath)
 }
 
 function Get-PackageName {
@@ -105,18 +127,28 @@ function Get-PackageName {
         [string]$PackageJsonPath
     )
 
+    $fallbackName = [System.IO.Path]::GetFileName(
+        (Split-Path -Parent $PackageJsonPath)
+    )
+
     try {
-        $json = Get-Content -LiteralPath $PackageJsonPath -Raw | ConvertFrom-Json
+        $jsonText = Read-FileTextOrEmpty -FilePath $PackageJsonPath
+
+        if ([string]::IsNullOrWhiteSpace($jsonText)) {
+            return $fallbackName
+        }
+
+        $json = $jsonText | ConvertFrom-Json
 
         if ($null -ne $json.name -and -not [string]::IsNullOrWhiteSpace([string]$json.name)) {
             return [string]$json.name
         }
+
+        return $fallbackName
     }
     catch {
-        return [System.IO.Path]::GetFileName((Split-Path -Parent $PackageJsonPath))
+        return $fallbackName
     }
-
-    return [System.IO.Path]::GetFileName((Split-Path -Parent $PackageJsonPath))
 }
 
 function Get-RelativePath {
@@ -128,8 +160,14 @@ function Get-RelativePath {
         [string]$TargetPath
     )
 
-    $baseUri = [System.Uri]::new((Resolve-Path -LiteralPath $BasePath).Path.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar)
-    $targetUri = [System.Uri]::new((Resolve-Path -LiteralPath $TargetPath).Path)
+    $baseResolved = (Resolve-Path -LiteralPath $BasePath).Path
+    $targetResolved = (Resolve-Path -LiteralPath $TargetPath).Path
+
+    $baseUri = [System.Uri]::new(
+        $baseResolved.TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
+    )
+
+    $targetUri = [System.Uri]::new($targetResolved)
 
     return [System.Uri]::UnescapeDataString(
         $baseUri.MakeRelativeUri($targetUri).ToString()
@@ -176,7 +214,7 @@ function Get-FilesFromFolder {
         return @()
     }
 
-    return Get-ChildItem -LiteralPath $FolderPath -Recurse -File |
+    return Get-ChildItem -LiteralPath $FolderPath -Recurse -File -ErrorAction Stop |
         Where-Object {
             -not (Test-IsExcludedPath -Path $_.FullName -ExcludedNames $ExcludedDirectoryNames) -and
             ($AllowedExtensions -contains $_.Extension.ToLowerInvariant())
@@ -192,7 +230,7 @@ function Get-ConfigFiles {
         [string[]]$ConfigFileNames
     )
 
-    $files = New-Object System.Collections.Generic.List[System.IO.FileInfo]
+    $files = [System.Collections.Generic.List[System.IO.FileInfo]]::new()
 
     foreach ($fileName in $ConfigFileNames) {
         $path = Join-Path $ModulePath $fileName
@@ -232,10 +270,10 @@ function Get-ModuleFiles {
         [string[]]$ExcludedDirectoryNames
     )
 
-    $files = New-Object System.Collections.Generic.List[System.IO.FileInfo]
+    $files = [System.Collections.Generic.List[System.IO.FileInfo]]::new()
 
     if ($ShouldIncludeConfigs) {
-        foreach ($file in (Get-ConfigFiles -ModulePath $ModulePath -ConfigFileNames $ConfigFileNames)) {
+        foreach ($file in Get-ConfigFiles -ModulePath $ModulePath -ConfigFileNames $ConfigFileNames) {
             $files.Add($file)
         }
     }
@@ -243,7 +281,7 @@ function Get-ModuleFiles {
     foreach ($folderName in $SourceFolderNames) {
         $folderPath = Join-Path $ModulePath $folderName
 
-        foreach ($file in (Get-FilesFromFolder -FolderPath $folderPath -AllowedExtensions $AllowedExtensions -ExcludedDirectoryNames $ExcludedDirectoryNames)) {
+        foreach ($file in Get-FilesFromFolder -FolderPath $folderPath -AllowedExtensions $AllowedExtensions -ExcludedDirectoryNames $ExcludedDirectoryNames) {
             $files.Add($file)
         }
     }
@@ -252,7 +290,7 @@ function Get-ModuleFiles {
         foreach ($folderName in $TestFolderNames) {
             $folderPath = Join-Path $ModulePath $folderName
 
-            foreach ($file in (Get-FilesFromFolder -FolderPath $folderPath -AllowedExtensions $AllowedExtensions -ExcludedDirectoryNames $ExcludedDirectoryNames)) {
+            foreach ($file in Get-FilesFromFolder -FolderPath $folderPath -AllowedExtensions $AllowedExtensions -ExcludedDirectoryNames $ExcludedDirectoryNames) {
                 $files.Add($file)
             }
         }
@@ -270,7 +308,7 @@ function Get-NpmModules {
         [string[]]$ExcludedDirectoryNames
     )
 
-    return Get-ChildItem -LiteralPath $Root -Recurse -File -Filter "package.json" |
+    return Get-ChildItem -LiteralPath $Root -Recurse -File -Filter "package.json" -ErrorAction Stop |
         Where-Object {
             -not (Test-IsExcludedPath -Path $_.FullName -ExcludedNames $ExcludedDirectoryNames)
         } |
@@ -309,12 +347,16 @@ function Add-ModuleToOutput {
     foreach ($file in $Files) {
         $relativePath = Get-RelativePath -BasePath $ModulePath -TargetPath $file.FullName
         $header = Get-CommentHeader -RelativePath $relativePath
-        $content = Get-Content -LiteralPath $file.FullName -Raw
+        $content = Read-FileTextOrEmpty -FilePath $file.FullName
 
         [void]$Builder.AppendLine("================================================================================")
         [void]$Builder.AppendLine($header)
         [void]$Builder.AppendLine()
-        [void]$Builder.AppendLine($content.TrimEnd())
+
+        if (-not [string]::IsNullOrEmpty($content)) {
+            [void]$Builder.AppendLine($content.TrimEnd())
+        }
+
         [void]$Builder.AppendLine()
     }
 }
@@ -339,6 +381,7 @@ $builder = [System.Text.StringBuilder]::new()
 [void]$builder.AppendLine("// INCLUDE_CONFIGS: $($IncludeConfigs.IsPresent)")
 
 $modules = @(Get-NpmModules -Root $resolvedRoot -ExcludedDirectoryNames $ExcludedDirectoryNames)
+
 $exportedModuleCount = 0
 $exportedFileCount = 0
 
