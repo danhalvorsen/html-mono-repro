@@ -1,9 +1,9 @@
 import { MidiParseError } from "../errors/midi-parse-error.js";
-import type { MidiFileHeader } from "../types/midi-header.types.js";
+import type { MidiFileHeader } from "@monorepo/music-core-midi/accords-types";
 import {
   MidiStatus,
   MidiChannelCommand,
-} from "../types/midi-constants.js";
+} from "@monorepo/music-core-midi/accords-types";
 import type { ParsedTrackEvent, ParsedChannelEvent } from "../utils/internal-types.js";
 import { MidiByteReader } from "./midi-byte-reader.js";
 import { MidiMessageDataLength } from "./message-data-length.js";

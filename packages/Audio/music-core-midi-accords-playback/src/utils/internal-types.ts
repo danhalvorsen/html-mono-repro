@@ -1,4 +1,4 @@
-import type { MidiChannelCommand } from "../types/midi-constants.js";
+import type { MidiChannelCommand } from "@monorepo/music-core-midi/accords-types";
 
 export type ParsedTrackEvent =
   | ParsedMetaEvent
@@ -47,13 +47,13 @@ export type TempoPoint = {
 
 export type OpenNote = {
   readonly event: Omit<
-    import("../types/midi-event.types.js").MidiNoteOnLogicalEvent,
+    import("@monorepo/music-core-midi/accords-types").MidiNoteOnLogicalEvent,
     "durationMs"
   >;
 };
 
 export type MutableNoteOn = Omit<
-  import("../types/midi-event.types.js").MidiNoteOnLogicalEvent,
+  import("@monorepo/music-core-midi/accords-types").MidiNoteOnLogicalEvent,
   "durationMs"
 > & {
   durationMs?: number;

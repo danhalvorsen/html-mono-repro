@@ -1,51 +1,86 @@
-import type { NoteSymbol } from "@monorepo/music-core-midi";
-import { MidiEventEngine } from "../../../../../../packages/Audio/music-core-midi-accords-playback/dist/midi-event-engine.js";
+import {
+  MidiChannel,
+  MidiNote,
+  MidiVelocity,
+  createNoteOff,
+  createNoteOn,
+  type NoteSymbol,
+} from "@monorepo/music-core-midi";
+import type { MIDI1NoteEvent } from "@monorepo/music-core-midi";
+import { Midi1HighLevelPlayback } from "@monorepo/music-core-midi-accords-playback";
+import {
+  EnvelopeADSR,
+  FilterSettings,
+  FilterType,
+  WebAudioMidiPlayer,
+} from "@monorepo/music-core-midi-playback";
 import type { Waterfall } from "../component/Waterfall.ts";
 
-type MidiBinarySong = {
-  get(): string;
-};
-
 export class MidiMapper {
+  private static readonly GravityFallingHeightPixelsPerMillisecond: number = 0.08;
+  private static readonly GravityFallingMaximumHeightPixels: number = 180;
+  private static readonly MaxAudibleHoldMs: number =
+    MidiMapper.GravityFallingMaximumHeightPixels /
+    MidiMapper.GravityFallingHeightPixelsPerMillisecond;
+
   private readonly waterfall: Waterfall;
-  private readonly engine: MidiEventEngine;
-  private readonly audio: WebAudioNotePlayer;
+  private readonly player: WebAudioMidiPlayer;
+  private readonly midi: Midi1HighLevelPlayback;
+
   private activeColumns: number[] = [];
   private activeNoteNumbers: number[] = [];
+  private isChordAudible: boolean = false;
+  private monitorFrameId: number | null = null;
+  private pulseIntervalId: number | null = null;
 
   public constructor(waterfall: Waterfall) {
     this.waterfall = waterfall;
-    this.engine = new MidiEventEngine();
-    this.audio = new WebAudioNotePlayer();
+    this.player = new WebAudioMidiPlayer({
+      envelope: EnvelopeADSR.create(0.02, 0.14, 0.72, 0.04),
+      filterEnvelope: EnvelopeADSR.create(0.01, 0.2, 0.58, 0.28),
+      filter: FilterSettings.create(FilterType.LowPass, 1400, 1.1),
+      noteLengthSeconds: 0,
+    });
+
+    this.midi = new Midi1HighLevelPlayback();
+    this.midi.onNoteOn("waterfall", (event: MIDI1NoteEvent) => {
+      this.player.play(
+        createNoteOn(
+          MidiChannel.create(event.channel),
+          MidiNote.create(event.noteNumber),
+          MidiVelocity.create(event.velocity),
+        ),
+        { noteLengthSeconds: 0.14 },
+      );
+    });
+    this.midi.onNoteOff("waterfall", (event: MIDI1NoteEvent) => {
+      this.player.play(
+        createNoteOff(
+          MidiChannel.create(event.channel),
+          MidiNote.create(event.noteNumber),
+          MidiVelocity.create(event.velocity),
+        ),
+      );
+    });
   }
 
   public start(notes: Array<NoteSymbol>): void {
     this.stop(true);
 
-    const notation = notes
-      .map((note) => `${note}4-h500-v92-ch1`)
-      .join(" ");
-    const song = new NotationBinarySong(notation);
-    const events = this.engine.play(song);
-    const chordNotes: number[] = [];
+    const noteNumbers = notes.map(noteSymbolToMidi4);
     const columns: number[] = [];
 
-    for (const event of events) {
-      if (event.kind !== "note-on") {
-        continue;
-      }
-
-      const columnIndex = event.noteNumber % 12;
+    for (const noteNumber of noteNumbers) {
+      const columnIndex = noteNumber % 12;
       this.waterfall.createGavityFallingObjectInColumn(columnIndex, 0);
-      chordNotes.push(event.noteNumber);
       columns.push(columnIndex);
     }
 
-    if (chordNotes.length > 0) {
-      this.activeColumns = columns;
-      this.activeNoteNumbers = chordNotes;
-      this.audio.startChord(chordNotes);
-    }
+    this.activeColumns = columns;
+    this.activeNoteNumbers = noteNumbers;
+    this.isChordAudible = this.activeNoteNumbers.length > 0;
+    this.startPulsePlayback();
+    this.startAudioLifecycleMonitor();
   }
 
   public update(heldMs: number): void {
@@ -53,12 +88,21 @@ export class MidiMapper {
     for (const columnIndex of this.activeColumns) {
       this.waterfall.updateGavityFallingObjectHeightInColumn(columnIndex, hold);
     }
+
+    if (
+      this.isChordAudible &&
+      hold >= MidiMapper.MaxAudibleHoldMs
+    ) {
+      this.stopMidiChord();
+    }
   }
 
   public stop(cancel: boolean, heldMs: number = 0): void {
-    const hold = Math.max(0, Math.round(heldMs));
-    this.audio.stopChord(this.activeNoteNumbers);
+    this.stopAudioLifecycleMonitor();
+    this.stopPulsePlayback();
+    this.stopMidiChord();
 
+    const hold = Math.max(0, Math.round(heldMs));
     for (const columnIndex of this.activeColumns) {
       if (cancel) {
         this.waterfall.cancelGavityFallingObjectInColumn(columnIndex);
@@ -70,216 +114,103 @@ export class MidiMapper {
     this.activeColumns = [];
     this.activeNoteNumbers = [];
   }
-}
 
-class WebAudioNotePlayer {
-  private context: AudioContext | null = null;
-  private masterGain: GainNode | null = null;
+  private startPulsePlayback(): void {
+    this.stopPulsePlayback();
 
-  private readonly activeByNoteNumber: Map<number, {
-    readonly oscillator: OscillatorNode;
-    readonly noteGain: GainNode;
-  }> = new Map();
+    const playPulse = (): void => {
+      if (!this.isChordAudible) {
+        return;
+      }
 
-  public startChord(noteNumbers: readonly number[]): void {
-    const context = this.ensureContext();
-    if (context === null) {
+      for (const noteNumber of this.activeNoteNumbers) {
+        this.midi.sendNoteOn("waterfall", 1, noteNumber, 108);
+      }
+    };
+
+    playPulse();
+    this.pulseIntervalId = window.setInterval(playPulse, 110);
+  }
+
+  private stopPulsePlayback(): void {
+    if (this.pulseIntervalId === null) {
       return;
     }
 
-    if (context.state === "suspended") {
-      void context.resume();
-    }
+    window.clearInterval(this.pulseIntervalId);
+    this.pulseIntervalId = null;
+  }
 
-    const gain = this.masterGain;
-    if (gain === null) {
+  private stopMidiChord(): void {
+    if (!this.isChordAudible) {
       return;
     }
 
-    const now = context.currentTime;
-
-    for (const noteNumber of noteNumbers) {
-      if (this.activeByNoteNumber.has(noteNumber)) {
-        continue;
-      }
-
-      const oscillator = context.createOscillator();
-      const noteGain = context.createGain();
-
-      oscillator.type = "triangle";
-      oscillator.frequency.value = midiToFrequency(noteNumber);
-
-      noteGain.gain.setValueAtTime(0.0001, now);
-      noteGain.gain.exponentialRampToValueAtTime(0.2, now + 0.04);
-
-      oscillator.connect(noteGain);
-      noteGain.connect(gain);
-
-      oscillator.start(now);
-      this.activeByNoteNumber.set(noteNumber, { oscillator, noteGain });
+    for (const noteNumber of this.activeNoteNumbers) {
+      this.midi.sendNoteOff("waterfall", 1, noteNumber, 0);
     }
+
+    this.isChordAudible = false;
   }
 
-  public stopChord(noteNumbers: readonly number[]): void {
-    const context = this.context;
-    if (context === null) {
+  private startAudioLifecycleMonitor(): void {
+    this.stopAudioLifecycleMonitor();
+    this.monitorFrameId = requestAnimationFrame(this.onMonitorFrame);
+  }
+
+  private stopAudioLifecycleMonitor(): void {
+    if (this.monitorFrameId === null) {
       return;
     }
 
-    const now = context.currentTime;
-    for (const noteNumber of noteNumbers) {
-      const active = this.activeByNoteNumber.get(noteNumber);
-      if (active === undefined) {
-        continue;
-      }
-
-      active.noteGain.gain.cancelScheduledValues(now);
-      active.noteGain.gain.setValueAtTime(
-        Math.max(0.0001, active.noteGain.gain.value),
-        now,
-      );
-      active.noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
-      active.oscillator.stop(now + 0.5);
-      this.activeByNoteNumber.delete(noteNumber);
-    }
+    cancelAnimationFrame(this.monitorFrameId);
+    this.monitorFrameId = null;
   }
 
-  private ensureContext(): AudioContext | null {
-    if (typeof window === "undefined") {
-      return null;
+  private readonly onMonitorFrame = (): void => {
+    if (this.activeColumns.length === 0) {
+      this.monitorFrameId = null;
+      return;
     }
 
-    if (this.context !== null && this.masterGain !== null) {
-      return this.context;
+    const hasVisibleFallingObjects = this.waterfall.querySelector("gravity-falling") !== null;
+
+    if (!hasVisibleFallingObjects && this.isChordAudible) {
+      this.stopPulsePlayback();
+      this.stopMidiChord();
+      this.monitorFrameId = null;
+      return;
     }
 
-    const context = new AudioContext();
-    const masterGain = context.createGain();
-    masterGain.gain.value = 0.25;
-    masterGain.connect(context.destination);
-
-    this.context = context;
-    this.masterGain = masterGain;
-    return context;
-  }
+    this.monitorFrameId = requestAnimationFrame(this.onMonitorFrame);
+  };
 }
 
-class NotationBinarySong implements MidiBinarySong {
-  private readonly notation: string;
+function noteSymbolToMidi4(note: NoteSymbol): number {
+  const semitoneBySymbol: Record<NoteSymbol, number> = {
+    C: 0,
+    "B#": 0,
+    "C#": 1,
+    Db: 1,
+    D: 2,
+    "D#": 3,
+    Eb: 3,
+    E: 4,
+    Fb: 4,
+    "E#": 5,
+    F: 5,
+    "F#": 6,
+    Gb: 6,
+    G: 7,
+    "G#": 8,
+    Ab: 8,
+    A: 9,
+    "A#": 10,
+    Bb: 10,
+    B: 11,
+    Cb: 11,
+  };
 
-  public constructor(notation: string) {
-    this.notation = notation;
-  }
-
-  public get(): string {
-    return notationToMidiBinarySong(this.notation);
-  }
-}
-
-type ParsedNote = {
-  readonly noteNumber: number;
-  readonly durationMs: number;
-  readonly velocity: number;
-  readonly channel: number;
-};
-
-function notationToMidiBinarySong(notation: string): string {
-  const notes = parseNotation(notation);
-  const ticksPerQuarterNote = 480;
-  const ticksPerMs = ticksPerQuarterNote / 500;
-  const trackBytes: number[] = [];
-
-  trackBytes.push(0x00, 0xff, 0x51, 0x03, 0x07, 0xa1, 0x20);
-  for (const note of notes) {
-    const holdTicks = Math.max(0, Math.round(note.durationMs * ticksPerMs));
-    trackBytes.push(0x00, 0x90 | note.channel, note.noteNumber, note.velocity);
-    trackBytes.push(...encodeVarLen(holdTicks), 0x80 | note.channel, note.noteNumber, 0);
-  }
-  trackBytes.push(0x00, 0xff, 0x2f, 0x00);
-
-  const headerChunk = [
-    ...ascii("MThd"),
-    0x00, 0x00, 0x00, 0x06,
-    0x00, 0x00,
-    0x00, 0x01,
-    (ticksPerQuarterNote >> 8) & 0xff, ticksPerQuarterNote & 0xff,
-  ];
-
-  const trackLength = trackBytes.length;
-  const trackChunk = [
-    ...ascii("MTrk"),
-    (trackLength >> 24) & 0xff,
-    (trackLength >> 16) & 0xff,
-    (trackLength >> 8) & 0xff,
-    trackLength & 0xff,
-    ...trackBytes,
-  ];
-
-  const bytes = new Uint8Array([...headerChunk, ...trackChunk]);
-  return Array.from(bytes, (value) => String.fromCharCode(value)).join("");
-}
-
-function parseNotation(input: string): readonly ParsedNote[] {
-  return input
-    .split(/\s+/)
-    .filter((token) => token.length > 0)
-    .map((token) => {
-      const match = /^([A-G])([#b]?)(\d+)-h(\d+)-v(\d+)-ch(\d+)$/.exec(token);
-      if (match === null) {
-        throw new Error(`Invalid note token: ${token}`);
-      }
-
-      const [, letter, accidental, octaveText, durationText, velocityText, channelText] = match;
-      const octave = Number.parseInt(octaveText, 10);
-      const durationMs = Number.parseInt(durationText, 10);
-      const velocity = Number.parseInt(velocityText, 10);
-      const channelOneBased = Number.parseInt(channelText, 10);
-      const channel = Math.max(0, Math.min(15, channelOneBased - 1));
-
-      return {
-        noteNumber: noteNameToMidi(letter, accidental, octave),
-        durationMs,
-        velocity: Math.max(0, Math.min(127, velocity)),
-        channel,
-      };
-    });
-}
-
-function noteNameToMidi(letter: string, accidental: string, octave: number): number {
-  const baseByLetter: Record<string, number> = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
-  const base = baseByLetter[letter];
-  if (base === undefined) {
-    throw new Error(`Unsupported note letter: ${letter}`);
-  }
-  const accidentalOffset = accidental === "#" ? 1 : accidental === "b" ? -1 : 0;
-  return (octave + 1) * 12 + base + accidentalOffset;
-}
-
-function encodeVarLen(value: number): number[] {
-  let buffer = value & 0x7f;
-  const output: number[] = [];
-
-  while ((value >>= 7) > 0) {
-    buffer <<= 8;
-    buffer |= (value & 0x7f) | 0x80;
-  }
-
-  while (true) {
-    output.push(buffer & 0xff);
-    if ((buffer & 0x80) !== 0) {
-      buffer >>= 8;
-      continue;
-    }
-    break;
-  }
-
-  return output;
-}
-
-function ascii(value: string): number[] {
-  return Array.from(value, (char) => char.charCodeAt(0) & 0xff);
-}
-
-function midiToFrequency(noteNumber: number): number {
-  return 440 * 2 ** ((noteNumber - 69) / 12);
+  const semitone = semitoneBySymbol[note];
+  return (4 + 1) * 12 + semitone;
 }

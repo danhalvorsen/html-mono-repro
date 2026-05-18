@@ -1,5 +1,9 @@
 import type { ISequencerPlaybackFrame } from "./ISequencerPlaybackFrame.js";
 import type { ISequencerTrackPlaybackProjection } from "./ISequencerTrackPlaybackProjection.js";
+import type {
+  ISequencerPlaybackNoteEvent,
+  ISequencerVoiceParameters,
+} from "./ISequencerPlaybackStep.js";
 
 export interface ISequencerMidiStreamBuilderDependencies {
   readonly initialBpm?: number;
@@ -26,12 +30,23 @@ export class SequencerMidiStreamBuilder {
   private static readonly DefaultStepCount = 16;
   private static readonly DefaultVelocity = 112;
   private static readonly DefaultMidiChannel = 1;
+  private static readonly DefaultVoiceByTrackId = Object.freeze([
+    Object.freeze({ noteLengthSeconds: 0.028, sustain: 0, filterFrequency: 1350, filterQ: 0.7 }),
+    Object.freeze({ noteLengthSeconds: 0.034, sustain: 0, filterFrequency: 1800, filterQ: 0.8 }),
+    Object.freeze({ noteLengthSeconds: 0.018, sustain: 0, filterFrequency: 4200, filterQ: 0.9 }),
+    Object.freeze({ noteLengthSeconds: 0.02, sustain: 0, filterFrequency: 5200, filterQ: 0.8 }),
+    Object.freeze({ noteLengthSeconds: 0.024, sustain: 0, filterFrequency: 2500, filterQ: 1.1 }),
+    Object.freeze({ noteLengthSeconds: 0.03, sustain: 0, filterFrequency: 1600, filterQ: 1.2 }),
+    Object.freeze({ noteLengthSeconds: 0.022, sustain: 0, filterFrequency: 2800, filterQ: 1.4 }),
+    Object.freeze({ noteLengthSeconds: 0.016, sustain: 0, filterFrequency: 6000, filterQ: 0.6 }),
+  ] as const);
 
   private readonly noteNumbersByTrackId: readonly number[];
   private readonly beatsPerBar: number;
   private readonly defaultStepCount: number;
   private readonly velocity: number;
   private readonly midiChannel: number;
+  private readonly voiceByTrackId: readonly ISequencerVoiceParameters[];
   private bpmValue: number;
 
   public constructor(
@@ -58,6 +73,7 @@ export class SequencerMidiStreamBuilder {
       dependencies.midiChannel,
       SequencerMidiStreamBuilder.DefaultMidiChannel,
     );
+    this.voiceByTrackId = SequencerMidiStreamBuilder.DefaultVoiceByTrackId;
     this.bpmValue = SequencerMidiStreamBuilder.normalizePositiveInteger(
       dependencies.initialBpm,
       SequencerMidiStreamBuilder.DefaultBpm,
@@ -106,16 +122,24 @@ export class SequencerMidiStreamBuilder {
     const holdMs = this.resolveHoldMs(stepCount);
 
     const steps = Array.from({ length: stepCount }, (_, stepIndex) => {
-      const notes = projections
+      const noteEvents = projections
         .filter(
           (track) => track.selected && track.stepStates[stepIndex] === true,
         )
-        .map((track) => this.resolveNote(track.trackId));
+        .map((track) =>
+          Object.freeze({
+            trackId: track.trackId,
+            note: this.resolveNote(track.trackId),
+            voice: this.resolveVoice(track.trackId),
+          } satisfies ISequencerPlaybackNoteEvent),
+        );
+      const notes = noteEvents.map((event) => event.note);
 
       return Object.freeze({
         stepIndex,
         holdMs,
         notes: Object.freeze(notes),
+        noteEvents: Object.freeze(noteEvents),
       });
     });
 
@@ -157,6 +181,15 @@ export class SequencerMidiStreamBuilder {
     const beatMs = 60000 / this.bpmValue;
     const stepMs = (beatMs * this.beatsPerBar) / stepCount;
     return Math.max(30, Math.round(stepMs));
+  }
+
+  private resolveVoice(trackId: number): ISequencerVoiceParameters {
+    const normalizedIndex = Math.abs(Math.floor(trackId));
+    return (
+      this.voiceByTrackId[normalizedIndex % this.voiceByTrackId.length] ??
+      this.voiceByTrackId[0] ??
+      Object.freeze({ sustain: 0 })
+    );
   }
 
   private static normalizePositiveInteger(

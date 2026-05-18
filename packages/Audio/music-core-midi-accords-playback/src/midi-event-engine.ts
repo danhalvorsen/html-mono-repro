@@ -1,7 +1,7 @@
 export { MidiEventEngine } from "./engine/midi-event-engine.js";
 export { MidiParseError } from "./errors/midi-parse-error.js";
 
-export type { Song, IMidiEventEngine } from "./types/midi-interfaces.js";
+export type { Song, IMidiEventEngine } from "@monorepo/music-core-midi/accords-types";
 export type {
   MidiLogicalEvent,
   MidiBaseLogicalEvent,
@@ -11,9 +11,9 @@ export type {
   MidiChannelLogicalEvent,
   MidiNoteOnLogicalEvent,
   MidiNoteOffLogicalEvent,
-} from "./types/midi-event.types.js";
-export type { MidiFileHeader, MidiDivision } from "./types/midi-header.types.js";
-export type { MidiTimeSignature, MidiKeySignature } from "./types/midi-signature.types.js";
+} from "@monorepo/music-core-midi/accords-types";
+export type { MidiFileHeader, MidiDivision } from "@monorepo/music-core-midi/accords-types";
+export type { MidiTimeSignature, MidiKeySignature } from "@monorepo/music-core-midi/accords-types";
 
 export {
   MidiLogicalEventKind,
@@ -22,4 +22,4 @@ export {
   MidiStatus,
   MidiChannelCommand,
   DefaultTempoMicrosecondsPerQuarterNote,
-} from "./types/midi-constants.js";
+} from "@monorepo/music-core-midi/accords-types";

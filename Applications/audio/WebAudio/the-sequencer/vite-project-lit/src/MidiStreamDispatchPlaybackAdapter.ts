@@ -20,6 +20,13 @@ import type {
   ISequencerPlaybackFrameProvider,
 } from "../../modules/core-sequencer/src/index.ts";
 
+interface IRuntimeSequencerSoundEngine extends IMidiPlayer {
+  getCurrentTimeSeconds(): number;
+  allNotesOff(channel?: number): void;
+  allSoundOff(channel?: number): void;
+  panic(): void;
+}
+
 interface IMidiStreamDispatchPlaybackAdapterDependencies {
   readonly player: IMidiPlayer;
   readonly streamProvider?: ISequencerMidiStreamProvider;
@@ -28,6 +35,8 @@ interface IMidiStreamDispatchPlaybackAdapterDependencies {
 
 export class MidiStreamDispatchPlaybackAdapter implements IMidiStreamPlaybackPort {
   private static readonly defaultVelocity = 112;
+  private static readonly lookAheadSeconds = 0.015;
+  private static readonly percussiveNoteLengthSeconds = 0.028;
   private readonly parser = new MidiStringParser();
   private readonly player: IMidiPlayer;
   private readonly streamProvider?: ISequencerMidiStreamProvider;
@@ -55,6 +64,11 @@ export class MidiStreamDispatchPlaybackAdapter implements IMidiStreamPlaybackPor
 
   public async stop(): Promise<void> {
     this.activeRunId += 1;
+    if (this.isSequencerSoundEngine(this.player)) {
+      this.player.allNotesOff();
+      this.player.allSoundOff();
+      this.player.panic();
+    }
     this.onStepChanged?.(-1);
   }
 
@@ -74,16 +88,46 @@ export class MidiStreamDispatchPlaybackAdapter implements IMidiStreamPlaybackPor
           }
 
           this.onStepChanged?.(step.stepIndex);
-          if (step.notes.length > 0) {
+          if (step.noteEvents.length > 0) {
+            for (const noteEvent of step.noteEvents) {
+              const noteMessage = this.tryCreateNoteMessage(noteEvent.note);
+              if (noteMessage === undefined) {
+                continue;
+              }
+
+              const playbackOptions = {
+                noteLengthSeconds: Math.min(
+                  noteEvent.voice.noteLengthSeconds ??
+                    MidiStreamDispatchPlaybackAdapter.percussiveNoteLengthSeconds,
+                  Math.max(0.01, step.holdMs / 1000),
+                ),
+                sustain: noteEvent.voice.sustain ?? 0,
+                ...(noteEvent.voice.filterFrequency !== undefined
+                  ? { filterFrequency: noteEvent.voice.filterFrequency }
+                  : {}),
+                ...(noteEvent.voice.filterQ !== undefined
+                  ? { filterQ: noteEvent.voice.filterQ }
+                  : {}),
+                ...this.getScheduledStartOptions(),
+              } as MidiPlaybackOptions;
+              this.player.play(noteMessage, playbackOptions);
+            }
+          } else if (step.notes.length > 0) {
             for (const noteNumber of step.notes) {
               const noteMessage = this.tryCreateNoteMessage(noteNumber);
               if (noteMessage === undefined) {
                 continue;
               }
 
-              this.player.play(noteMessage, {
-                noteLengthSeconds: Math.max(0.03, step.holdMs / 1000),
-              });
+              const playbackOptions = {
+                noteLengthSeconds: Math.min(
+                  MidiStreamDispatchPlaybackAdapter.percussiveNoteLengthSeconds,
+                  Math.max(0.01, step.holdMs / 1000),
+                ),
+                sustain: 0,
+                ...this.getScheduledStartOptions(),
+              } as MidiPlaybackOptions;
+              this.player.play(noteMessage, playbackOptions);
             }
           }
 
@@ -107,7 +151,11 @@ export class MidiStreamDispatchPlaybackAdapter implements IMidiStreamPlaybackPor
         }
 
         if (step.message !== null) {
-          this.player.play(step.message, this.toPlaybackOptions(step));
+          const playbackOptions = {
+            ...this.toPlaybackOptions(step),
+            ...this.getScheduledStartOptions(),
+          } as MidiPlaybackOptions;
+          this.player.play(step.message, playbackOptions);
         }
 
         await MidiStreamDispatchPlaybackAdapter.wait(step.holdMs);
@@ -140,10 +188,32 @@ export class MidiStreamDispatchPlaybackAdapter implements IMidiStreamPlaybackPor
     };
   }
 
+  private getScheduledStartOptions(): Record<string, number> | Record<string, never> {
+    if (!this.isSequencerSoundEngine(this.player)) {
+      return {};
+    }
+
+    return {
+      startAtSeconds:
+        this.player.getCurrentTimeSeconds() +
+        MidiStreamDispatchPlaybackAdapter.lookAheadSeconds,
+    };
+  }
+
   private isPlaybackFrameProvider(
     provider: ISequencerMidiStreamProvider | undefined,
   ): provider is ISequencerMidiStreamProvider & ISequencerPlaybackFrameProvider {
     return provider !== undefined && "getPlaybackFrame" in provider;
+  }
+
+  private isSequencerSoundEngine(player: IMidiPlayer): player is IRuntimeSequencerSoundEngine {
+    const candidate = player as Partial<IRuntimeSequencerSoundEngine>;
+    return (
+      typeof candidate.getCurrentTimeSeconds === "function" &&
+      typeof candidate.allNotesOff === "function" &&
+      typeof candidate.allSoundOff === "function" &&
+      typeof candidate.panic === "function"
+    );
   }
 
   private tryCreateNoteMessage(noteNumber: number): MidiMessage | undefined {

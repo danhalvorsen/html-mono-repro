@@ -1,6 +1,6 @@
 import { MidiParseError } from "../errors/midi-parse-error.js";
-import type { MidiFileHeader } from "../types/midi-header.types.js";
-import { DefaultTempoMicrosecondsPerQuarterNote } from "../types/midi-constants.js";
+import type { MidiFileHeader } from "@monorepo/music-core-midi/accords-types";
+import { DefaultTempoMicrosecondsPerQuarterNote } from "@monorepo/music-core-midi/accords-types";
 import type { ParsedTrackEvent, ParsedMetaEvent, TempoPoint } from "../utils/internal-types.js";
 
 export class TempoMap {

@@ -8,6 +8,10 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./accords-types": {
+      "import": "./dist/accords-types.js",
+      "types": "./dist/accords-types.d.ts"
     }
   },
   "scripts": {
@@ -15,8 +19,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@monorepo/core-specifications": "workspace:*",
-    "@monorepo/music-core-midi-streamer": "workspace:*"
+    "@monorepo/core-specifications": "workspace:*"
   },
   "devDependencies": {}
 }

@@ -11,10 +11,18 @@ export interface IMidiPlayer {
 export type MidiPlaybackOptions = {
   readonly noteLengthSeconds?: number;
   readonly sustainUntilNoteOff?: boolean;
+  readonly startAtSeconds?: number;
   readonly filterFrequency?: number;
   readonly filterQ?: number;
   readonly sustain?: number;
 };
+
+export interface ISequencerSoundEngine extends IMidiPlayer {
+  getCurrentTimeSeconds(): number;
+  allNotesOff(channel?: number): void;
+  allSoundOff(channel?: number): void;
+  panic(): void;
+}
 
 /* ---------- VALUE OBJECTS (SYNTH PARAMS) ---------- */
 
@@ -57,7 +65,10 @@ export class FilterSettings {
 
 /* ---------- PLAYER ---------- */
 
-export class WebAudioMidiPlayer implements IMidiPlayer {
+export class WebAudioMidiPlayer implements ISequencerSoundEngine {
+  private static readonly minimumAttackSeconds = 0.003;
+  private static readonly minimumReleaseSeconds = 0.02;
+  private static readonly minimumGain = 0.0001;
   private readonly activeVoicesByKey = new Map<string, ActiveVoice[]>();
   private readonly context: AudioContext;
   private readonly envelope: EnvelopeADSR;
@@ -65,6 +76,7 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
   private readonly filter: FilterSettings;
   private readonly noteLengthSeconds: number;
   private readonly detuneCents: number;
+  private readonly oscBLevel: number;
   private readonly filterEnvAmount: number;
   private readonly velocityToFilter: number;
   private readonly subLevel: number;
@@ -77,6 +89,7 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
     filterEnvelope?: EnvelopeADSR;
     noteLengthSeconds?: number;
     detuneCents?: number;
+    oscBLevel?: number;
     filterEnvAmount?: number;
     velocityToFilter?: number;
     subLevel?: number;
@@ -88,6 +101,7 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
     this.filter = args.filter;
     this.noteLengthSeconds = args.noteLengthSeconds ?? 0.26;
     this.detuneCents = args.detuneCents ?? 8;
+    this.oscBLevel = args.oscBLevel ?? 0.58;
     this.filterEnvAmount = args.filterEnvAmount ?? 1.45;
     this.velocityToFilter = args.velocityToFilter ?? 0.45;
     this.subLevel = args.subLevel ?? 0.16;
@@ -96,7 +110,7 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
 
   public play(message: MidiMessage, options?: MidiPlaybackOptions): void {
     if (message.status === MidiStatus.NoteOff) {
-      this.releaseVoice(message);
+      this.releaseVoice(message, options?.startAtSeconds);
       return;
     }
 
@@ -141,7 +155,7 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
     oscSub.detune.value = -2;
 
     oscAGain.gain.value = 0.58;
-    oscBGain.gain.value = 0.58;
+    oscBGain.gain.value = this.oscBLevel;
     oscSubGain.gain.value = this.subLevel;
 
     panA.pan.value = -this.panSpread;
@@ -156,7 +170,7 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
     filter.Q.value = effectiveFilterQ;
 
     /* amp envelope (ADSR) */
-    const now = this.context.currentTime;
+    const now = Math.max(this.context.currentTime, options?.startAtSeconds ?? this.context.currentTime);
     const { attack, decay, sustain, release } = this.envelope;
     const {
       attack: filterAttack,
@@ -165,13 +179,22 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
       release: filterRelease,
     } = this.filterEnvelope;
 
-    const peak = (velocity / 127) * 0.9;
+    const peak = Math.max(WebAudioMidiPlayer.minimumGain, (velocity / 127) * 0.9);
     const sustainFactor = options?.sustain ?? sustain;
-    const sustainLevel = peak * Math.max(0, Math.min(1, sustainFactor));
+    const sustainLevel = Math.max(
+      WebAudioMidiPlayer.minimumGain,
+      peak * Math.max(0, Math.min(1, sustainFactor)),
+    );
+    const safeAttack = Math.max(attack, WebAudioMidiPlayer.minimumAttackSeconds);
+    const safeRelease = Math.max(release, WebAudioMidiPlayer.minimumReleaseSeconds);
+    const safeFilterRelease = Math.max(
+      filterRelease,
+      WebAudioMidiPlayer.minimumReleaseSeconds,
+    );
 
-    amp.gain.setValueAtTime(0, now);
-    amp.gain.linearRampToValueAtTime(peak, now + attack);
-    amp.gain.linearRampToValueAtTime(sustainLevel, now + attack + decay);
+    amp.gain.setValueAtTime(WebAudioMidiPlayer.minimumGain, now);
+    amp.gain.linearRampToValueAtTime(peak, now + safeAttack);
+    amp.gain.linearRampToValueAtTime(sustainLevel, now + safeAttack + decay);
 
     /* filter envelope: bright attack then settle */
     const filterBase = effectiveFilterFrequency;
@@ -212,8 +235,10 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
       filter,
       filterBase,
       filterSustainFrequency,
-      releaseSeconds: release,
-      filterReleaseSeconds: filterRelease,
+      releaseSeconds: safeRelease,
+      filterReleaseSeconds: safeFilterRelease,
+      releasedAtSeconds: null,
+      cleanedUp: false,
       released: false,
     };
     this.addActiveVoice(voice);
@@ -226,11 +251,30 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
     }
   }
 
+  public getCurrentTimeSeconds(): number {
+    return this.context.currentTime;
+  }
+
+  public allNotesOff(channel?: number): void {
+    this.releaseVoices(channel);
+  }
+
+  public allSoundOff(channel?: number): void {
+    this.releaseVoices(channel);
+  }
+
+  public panic(): void {
+    this.releaseVoices(undefined, true);
+  }
+
   private static midiToFrequency(note: number): number {
     return 440 * Math.pow(2, (note - 69) / 12);
   }
 
-  private releaseVoice(message: Extract<MidiMessage, { readonly status: MidiStatus.NoteOff }>): void {
+  private releaseVoice(
+    message: Extract<MidiMessage, { readonly status: MidiStatus.NoteOff }>,
+    releaseAtSeconds?: number,
+  ): void {
     const key = this.toVoiceKey(message);
     const voices = this.activeVoicesByKey.get(key);
 
@@ -243,7 +287,10 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
       return;
     }
 
-    this.releaseActiveVoice(voice, this.context.currentTime);
+    this.releaseActiveVoice(
+      voice,
+      Math.max(this.context.currentTime, releaseAtSeconds ?? this.context.currentTime),
+    );
 
     if (voices.length === 0) {
       this.activeVoicesByKey.delete(key);
@@ -258,8 +305,15 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
     voice.released = true;
 
     voice.amp.gain.cancelScheduledValues(releaseStart);
-    voice.amp.gain.setValueAtTime(voice.amp.gain.value, releaseStart);
-    voice.amp.gain.linearRampToValueAtTime(0, releaseStart + voice.releaseSeconds);
+    const releaseFrom = Math.max(
+      WebAudioMidiPlayer.minimumGain,
+      voice.amp.gain.value || WebAudioMidiPlayer.minimumGain,
+    );
+    voice.amp.gain.setValueAtTime(releaseFrom, releaseStart);
+    voice.amp.gain.linearRampToValueAtTime(
+      WebAudioMidiPlayer.minimumGain,
+      releaseStart + voice.releaseSeconds,
+    );
 
     voice.filter.frequency.cancelScheduledValues(releaseStart);
     voice.filter.frequency.setValueAtTime(voice.filterSustainFrequency, releaseStart);
@@ -269,6 +323,25 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
     );
 
     const stopAt = releaseStart + Math.max(voice.releaseSeconds, voice.filterReleaseSeconds);
+    voice.releasedAtSeconds = stopAt;
+
+    const cleanupVoice = (): void => {
+      if (voice.cleanedUp) {
+        return;
+      }
+
+      voice.cleanedUp = true;
+      voice.oscA.disconnect();
+      voice.oscB.disconnect();
+      voice.oscSub.disconnect();
+      voice.amp.disconnect();
+      voice.filter.disconnect();
+    };
+
+    voice.oscA.onended = cleanupVoice;
+    voice.oscB.onended = cleanupVoice;
+    voice.oscSub.onended = cleanupVoice;
+
     voice.oscA.stop(stopAt);
     voice.oscB.stop(stopAt);
     voice.oscSub.stop(stopAt);
@@ -287,6 +360,36 @@ export class WebAudioMidiPlayer implements IMidiPlayer {
   private toVoiceKey(message: MidiMessage): string {
     return `${message.channel.value()}:${message.note.value()}`;
   }
+
+  private releaseVoices(channel?: number, immediate = false): void {
+    const now = this.context.currentTime;
+    const prefix = channel === undefined ? null : `${channel}:`;
+
+    for (const [key, voices] of this.activeVoicesByKey) {
+      if (prefix !== null && !key.startsWith(prefix)) {
+        continue;
+      }
+
+      for (const voice of voices) {
+        if (voice.released) {
+          continue;
+        }
+
+        this.releaseActiveVoice(voice, now);
+        if (immediate) {
+          try {
+            voice.oscA.stop(now);
+            voice.oscB.stop(now);
+            voice.oscSub.stop(now);
+          } catch {
+            // Already stopped or stopping; safe to ignore in panic path.
+          }
+        }
+      }
+
+      this.activeVoicesByKey.delete(key);
+    }
+  }
 }
 
 type ActiveVoice = {
@@ -300,6 +403,8 @@ type ActiveVoice = {
   readonly filterSustainFrequency: number;
   readonly releaseSeconds: number;
   readonly filterReleaseSeconds: number;
+  releasedAtSeconds: number | null;
+  cleanedUp: boolean;
   released: boolean;
 };
 
@@ -362,4 +467,18 @@ export const RealInstrumentPresets = {
     subLevel: 0.04,
     panSpread: 0.06,
   },
+  drumVoice: {
+    envelope: EnvelopeADSR.create(0.004, 0.09, 0.02, 0.08),
+    filter: FilterSettings.create(FilterType.LowPass, 1400, 0.75),
+    filterEnvelope: EnvelopeADSR.create(0.003, 0.06, 0.22, 0.08),
+    noteLengthSeconds: 0.1,
+    detuneCents: 0,
+    oscBLevel: 0,
+    filterEnvAmount: 1.35,
+    velocityToFilter: 0.1,
+    subLevel: 0,
+    panSpread: 0,
+  },
 } as const;
+
+export const DrumVoicePreset = RealInstrumentPresets.drumVoice;

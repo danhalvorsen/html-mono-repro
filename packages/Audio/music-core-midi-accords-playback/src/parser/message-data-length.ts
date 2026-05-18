@@ -1,5 +1,5 @@
 import { MidiParseError } from "../errors/midi-parse-error.js";
-import { MidiChannelCommand } from "../types/midi-constants.js";
+import { MidiChannelCommand } from "@monorepo/music-core-midi/accords-types";
 
 export class MidiMessageDataLength {
   public static channel(status: number): number {

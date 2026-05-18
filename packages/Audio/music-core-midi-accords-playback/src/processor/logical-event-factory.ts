@@ -4,13 +4,13 @@ import {
   MidiChannelMessageKind,
   MidiMetaEventKind,
   MidiChannelCommand,
-} from "../types/midi-constants.js";
+} from "@monorepo/music-core-midi/accords-types";
 import type {
   MidiLogicalEvent,
   MidiMetaLogicalEvent,
   MidiChannelLogicalEvent,
-} from "../types/midi-event.types.js";
-import type { MidiTimeSignature, MidiKeySignature } from "../types/midi-signature.types.js";
+} from "@monorepo/music-core-midi/accords-types";
+import type { MidiTimeSignature, MidiKeySignature } from "@monorepo/music-core-midi/accords-types";
 import type { ParsedTrackEvent, ParsedChannelEvent, ParsedMetaEvent, MutableNoteOn, OpenNote } from "../utils/internal-types.js";
 import { MidiTextDecoder } from "../utils/text-decoder.js";
 import { NoteKey } from "../utils/note-key.js";

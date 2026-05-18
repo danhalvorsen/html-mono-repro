@@ -1,29 +1,8 @@
-/* ===================== core-midi (using ISpecification) ===================== */
-
+/* ===================== core-midi ===================== */
 import {
-  Specification,
-  type ISpecification,
-} from "@monorepo/core-specifications";
-
-/* ---------- SPECIFICATIONS ---------- */
-
-class ChannelInRange extends Specification<number> {
-  public isSatisfiedBy(v: number): boolean {
-    return v >= 1 && v <= 16;
-  }
-}
-
-class NoteInRange extends Specification<number> {
-  public isSatisfiedBy(v: number): boolean {
-    return v >= 0 && v <= 127;
-  }
-}
-
-class VelocityInRange extends Specification<number> {
-  public isSatisfiedBy(v: number): boolean {
-    return v >= 0 && v <= 127;
-  }
-}
+  assertMidi1Channel,
+  assertMidi1Value7Bit,
+} from "./midi1.js";
 
 /* ---------- VALUE OBJECTS ---------- */
 
@@ -33,11 +12,10 @@ export const enum MidiStatus {
 }
 
 export class MidiChannel {
-  private static readonly spec: ISpecification<number> = new ChannelInRange();
   private constructor(private readonly v: number) {}
 
   public static create(ch1to16: number): MidiChannel {
-    if (!this.spec.isSatisfiedBy(ch1to16)) throw new Error("Channel 1..16");
+    assertMidi1Channel(ch1to16);
     return new MidiChannel(ch1to16 - 1);
   }
 
@@ -45,11 +23,10 @@ export class MidiChannel {
 }
 
 export class MidiNote {
-  private static readonly spec: ISpecification<number> = new NoteInRange();
   private constructor(private readonly v: number) {}
 
   public static create(note0to127: number): MidiNote {
-    if (!this.spec.isSatisfiedBy(note0to127)) throw new Error("Note 0..127");
+    assertMidi1Value7Bit(note0to127);
     return new MidiNote(note0to127);
   }
 
@@ -57,11 +34,10 @@ export class MidiNote {
 }
 
 export class MidiVelocity {
-  private static readonly spec: ISpecification<number> = new VelocityInRange();
   private constructor(private readonly v: number) {}
 
   public static create(v0to127: number): MidiVelocity {
-    if (!this.spec.isSatisfiedBy(v0to127)) throw new Error("Velocity 0..127");
+    assertMidi1Value7Bit(v0to127);
     return new MidiVelocity(v0to127);
   }
 

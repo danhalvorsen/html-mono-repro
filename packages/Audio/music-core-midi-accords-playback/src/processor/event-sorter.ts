@@ -1,5 +1,5 @@
-import { MidiChannelCommand } from "../types/midi-constants.js";
-import type { MidiLogicalEvent } from "../types/midi-event.types.js";
+import { MidiChannelCommand } from "@monorepo/music-core-midi/accords-types";
+import type { MidiLogicalEvent } from "@monorepo/music-core-midi/accords-types";
 import type { ParsedTrackEvent } from "../utils/internal-types.js";
 
 export class StableEventSorter {

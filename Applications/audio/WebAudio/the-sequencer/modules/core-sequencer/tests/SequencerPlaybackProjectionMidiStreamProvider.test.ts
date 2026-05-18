@@ -58,10 +58,20 @@ describe("SequencerPlaybackProjectionMidiStreamProvider", () => {
     });
 
     expect(provider.getPlaybackFrame().steps).toEqual([
-      { stepIndex: 0, holdMs: 500, notes: [36] },
-      { stepIndex: 1, holdMs: 500, notes: [38] },
-      { stepIndex: 2, holdMs: 500, notes: [] },
-      { stepIndex: 3, holdMs: 500, notes: [] },
+      {
+        stepIndex: 0,
+        holdMs: 500,
+        notes: [36],
+        noteEvents: [{ trackId: 0, note: 36, voice: { noteLengthSeconds: 0.028, sustain: 0, filterFrequency: 1350, filterQ: 0.7 } }],
+      },
+      {
+        stepIndex: 1,
+        holdMs: 500,
+        notes: [38],
+        noteEvents: [{ trackId: 1, note: 38, voice: { noteLengthSeconds: 0.034, sustain: 0, filterFrequency: 1800, filterQ: 0.8 } }],
+      },
+      { stepIndex: 2, holdMs: 500, notes: [], noteEvents: [] },
+      { stepIndex: 3, holdMs: 500, notes: [], noteEvents: [] },
     ]);
   });
 

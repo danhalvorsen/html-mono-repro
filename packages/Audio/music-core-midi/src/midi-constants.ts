@@ -1,4 +1,4 @@
-export const enum MidiLogicalEventKind {
+export enum MidiLogicalEventKind {
   Meta = "meta",
   SysEx = "sysex",
   NoteOn = "note-on",
@@ -7,7 +7,7 @@ export const enum MidiLogicalEventKind {
   System = "system",
 }
 
-export const enum MidiChannelMessageKind {
+export enum MidiChannelMessageKind {
   NoteOff = "note-off",
   NoteOn = "note-on",
   PolyphonicKeyPressure = "polyphonic-key-pressure",
@@ -17,7 +17,7 @@ export const enum MidiChannelMessageKind {
   PitchBend = "pitch-bend",
 }
 
-export const enum MidiMetaEventKind {
+export enum MidiMetaEventKind {
   SetTempo = "set-tempo",
   TimeSignature = "time-signature",
   KeySignature = "key-signature",
@@ -26,13 +26,13 @@ export const enum MidiMetaEventKind {
   Unknown = "unknown",
 }
 
-export const enum MidiStatus {
+export enum MidiStatus {
   Meta = 0xff,
   SysExStart = 0xf0,
   SysExEscape = 0xf7,
 }
 
-export const enum MidiChannelCommand {
+export enum MidiChannelCommand {
   NoteOff = 0x80,
   NoteOn = 0x90,
   PolyphonicKeyPressure = 0xa0,

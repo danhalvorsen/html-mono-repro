@@ -1,5 +1,5 @@
-import type { IMidiEventEngine, Song } from "../types/midi-interfaces.js";
-import type { MidiLogicalEvent } from "../types/midi-event.types.js";
+import type { IMidiEventEngine, Song } from "@monorepo/music-core-midi/accords-types";
+import type { MidiLogicalEvent } from "@monorepo/music-core-midi/accords-types";
 import { MidiBinaryString } from "../parser/binary-string.js";
 import { StandardMidiFileParser } from "../parser/midi-file-parser.js";
 import { TempoMap } from "../processor/tempo-map.js";
