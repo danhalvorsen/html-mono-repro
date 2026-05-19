@@ -13,28 +13,6 @@ function fsImportPath(targetPath: string): string {
   return `/@fs/${normalizePath(targetPath)}`;
 }
 
-function injectThreeApplicationImports(): string {
-  return [
-    `import { ResizeController } from "${fsImportPath(path.resolve(frameworkDistRoot, "ResizeController.js"))}";`,
-    `import { OrbitCameraController } from "${fsImportPath(path.resolve(frameworkDistRoot, "camera/OrbitCameraController.js"))}";`,
-    `import { ThreeCamera } from "${fsImportPath(path.resolve(frameworkDistRoot, "camera/ThreeCamera.js"))}";`,
-    `import { ThreeHost } from "${fsImportPath(path.resolve(frameworkDistRoot, "host/ThreeHost.js"))}";`,
-    `import { MaterialFactory } from "${fsImportPath(path.resolve(frameworkDistRoot, "Materials/MaterialFactory.js"))}";`,
-    `import { RenderLoop } from "${fsImportPath(path.resolve(frameworkDistRoot, "renderer/RenderLoop.js"))}";`,
-    `import { ThreeRenderer } from "${fsImportPath(path.resolve(frameworkDistRoot, "renderer/ThreeRenderer.js"))}";`,
-    `import { SceneRenderer } from "./scene/SceneRenderer.ts";`,
-    `import { SceneClock } from "./scene/SceneClock.ts";`,
-    `import { SceneMenu } from "./scene/SceneMenu.ts";`,
-    `import { ThreeScene } from "./scene/ThreeScene.ts";`,
-    `import { BuildingPreviewScene } from "./scene/BuildingPreviewScene.ts";`,
-    `import { FooBuilderPlaygroundScene } from "./scene/playgrounds/FooBuilder.Playground.Scene.ts";`,
-    `import { WindowBuilderPlaygroundScene } from "./scene/playgrounds/WindowBuilder.Playground.Scene.ts";`,
-    `import { TinyPrimitiveCompositionScene } from "./scene/playgrounds/compositions/simple/TinyPrimitiveCompositionScene.ts";`,
-    `import { PlacementScene } from "./scene/playgrounds/Placement/Placement.Platground.Scene.ts";`,
-    "",
-  ].join("\n");
-}
-
 export default defineConfig({
   plugins: [
     {
@@ -52,6 +30,15 @@ export default defineConfig({
           return path.resolve(frameworkDistRoot, "Materials/MaterialToken.js");
         }
 
+        if (source.startsWith("@monorepo/core-threejs-app-framework/src/")) {
+          const relativeFrameworkPath = source.replace(
+            "@monorepo/core-threejs-app-framework/src/",
+            "",
+          );
+
+          return path.resolve(frameworkDistRoot, relativeFrameworkPath);
+        }
+
         if (/^(?:\.\.\/)+core-threejs-app-framework\/src\//.test(source)) {
           const relativeFrameworkPath = source.replace(
             /^(?:\.\.\/)+core-threejs-app-framework\/src\//,
@@ -64,20 +51,6 @@ export default defineConfig({
         return null;
       },
     },
-    {
-      name: "inject-three-application-imports",
-      enforce: "pre",
-      transform(code, id) {
-        if (normalizePath(id) !== normalizePath(threeApplicationPath)) {
-          return null;
-        }
-
-        return {
-          code: `${injectThreeApplicationImports()}${code}`,
-          map: null,
-        };
-      },
-    },
   ],
   resolve: {
     alias: [
@@ -87,6 +60,10 @@ export default defineConfig({
       },
       {
         find: /^(?:\.\.\/)+core-threejs-app-framework\/src\//,
+        replacement: `${frameworkDistRoot}/`,
+      },
+      {
+        find: "@monorepo/core-threejs-app-framework/src/",
         replacement: `${frameworkDistRoot}/`,
       },
     ],

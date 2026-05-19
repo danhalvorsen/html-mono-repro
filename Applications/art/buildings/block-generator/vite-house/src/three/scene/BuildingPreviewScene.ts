@@ -3,18 +3,18 @@
 // ====================================================================================
 
 import * as THREE from "three";
-import { MaterialFactory } from "../../../core-threejs-app-framework/src/Materials/MaterialFactory.js";
-import { MaterialToken } from "../../../core-threejs-app-framework/src/Materials/MaterialToken.js";
+import { MaterialFactory } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialFactory.js";
+import { MaterialToken } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialToken.js";
 import { SmallSkyScraper } from "../Builders/ISmallSkyScraperBuilder.js";
 import { SmallSkyScraperBuilder } from "../Builders/SmallSkyScraperBuilder.js";
 import type { IThreeScene } from "./IThreeScene.js";
-import { SceneObjectBase } from "./common/SceneObjectBase.js";
+import { SceneObjectBase } from "./common/SceneObjectBase.ts";
 
 export class BuildingPreviewScene extends SceneObjectBase {
   private readonly materialFactory: MaterialFactory;
 
-  public constructor(scene: IThreeScene) {
-    super(scene, "building-preview-root");
+  public constructor(scene: IThreeScene, viewId = "building-preview") {
+    super(scene, "building-preview-root", viewId);
     this.materialFactory = new MaterialFactory();
     this.initialize();
   }

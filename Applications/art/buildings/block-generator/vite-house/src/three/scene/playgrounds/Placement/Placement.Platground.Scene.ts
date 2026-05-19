@@ -11,11 +11,11 @@ import {
   type IRectangleKind,
 } from "@monorepo/core-rectangle-placement";
 
-import type { IThreeScene } from "../../IThreeScene.js";
-import { PlaygroundSceneBase } from "../../common/PlaygroundSceneBase.js";
-import type { IMaterialFactory } from "../../../../../core-threejs-app-framework/src/Materials/IMaterialFactory.js";
-import { PlacementPlaygroundInitializationStrategy } from "./strategies/PlacementPlaygroundInitializationStrategy.js";
-import { PlacementPlaygroundDrawingStrategy } from "./strategies/PlacementPlaygroundDrawingStrategy.js";
+import type { IThreeScene } from "../../IThreeScene.ts";
+import { PlaygroundSceneBase } from "../../common/PlaygroundSceneBase.ts";
+import type { IMaterialFactory } from "@monorepo/core-threejs-app-framework/src/Materials/IMaterialFactory.js";
+import { PlacementPlaygroundInitializationStrategy } from "./strategies/PlacementPlaygroundInitializationStrategy.ts";
+import { PlacementPlaygroundDrawingStrategy } from "./strategies/PlacementPlaygroundDrawingStrategy.ts";
  
 export const WALL_WIDTH = 8;
 export const WALL_HEIGHT = 4;
@@ -65,8 +65,9 @@ export class PlacementScene extends PlaygroundSceneBase {
   public constructor(
     scene: IThreeScene,
     materialFactory: IMaterialFactory,
+    viewId = "placement",
   ) {
-    super(scene, "placement-playground-root", materialFactory);
+    super(scene, "placement-playground-root", materialFactory, viewId);
   }
 
   protected createContent(): void {

@@ -28,7 +28,7 @@ export class OrbitCameraController implements IInteractiveCameraController {
   }
 
   public connect(): void {
-    this.controls.connect();
+    (this.controls as unknown as { connect: (element: HTMLElement) => void }).connect(this.domElement);
   }
 
   public disconnect(): void {

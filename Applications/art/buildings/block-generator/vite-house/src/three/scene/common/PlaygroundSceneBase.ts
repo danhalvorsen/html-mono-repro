@@ -8,9 +8,9 @@
 
 import * as THREE from "three";
 import type { IThreeScene } from "../IThreeScene.js";
-import { SceneObjectBase } from "./SceneObjectBase.js";
-import type { IMaterialFactory } from "../../../../core-threejs-app-framework/src/Materials/IMaterialFactory.js";
-import { MaterialToken } from "../../../../core-threejs-app-framework/src/Materials/MaterialToken.js";
+import { SceneObjectBase } from "./SceneObjectBase.ts";
+import type { IMaterialFactory } from "@monorepo/core-threejs-app-framework/src/Materials/IMaterialFactory.js";
+import { MaterialToken } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialToken.js";
 
 export abstract class PlaygroundSceneBase extends SceneObjectBase {
   protected readonly materialFactory: IMaterialFactory;
@@ -19,8 +19,9 @@ export abstract class PlaygroundSceneBase extends SceneObjectBase {
     scene: IThreeScene,
     rootName: string,
     materialFactory: IMaterialFactory,
+    viewId: string = rootName,
   ) {
-    super(scene, rootName);
+    super(scene, rootName, viewId);
     this.materialFactory = materialFactory;
     this.initialize();
   }

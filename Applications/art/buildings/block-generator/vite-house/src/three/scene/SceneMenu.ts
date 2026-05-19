@@ -3,7 +3,7 @@
 // REPLACE THE WHOLE FILE
 // ====================================================================================
 
-import type { IUpdatable } from "../../../core-threejs-app-framework/src/IUpdatable.js";
+import type { IUpdatable } from "@monorepo/core-threejs-app-framework/src/IUpdatable.js";
 
 type DisposableUpdatable = IUpdatable & {
   dispose?: () => void;
@@ -13,16 +13,19 @@ type SceneFactory = () => DisposableUpdatable;
 
 type SceneRegistration = Readonly<{
   name: string;
+  viewId: string;
   factory: SceneFactory;
 }>;
 
 export class SceneMenu {
   private readonly scenes: SceneRegistration[] = [];
   private active: DisposableUpdatable | null = null;
+  private activeViewId: string | null = null;
   private onKeyDownBound: ((event: KeyboardEvent) => void) | null = null;
+  private onViewChanged: ((viewId: string) => void) | null = null;
 
-  public register(name: string, factory: SceneFactory): void {
-    this.scenes.push({ name, factory });
+  public register(name: string, viewId: string, factory: SceneFactory): void {
+    this.scenes.push({ name, viewId, factory });
   }
 
   public mount(container: HTMLElement): void {
@@ -87,10 +90,30 @@ export class SceneMenu {
 
     this.active?.dispose?.();
     this.active = registration.factory();
+    this.activeViewId = registration.viewId;
+    this.onViewChanged?.(registration.viewId);
   }
 
   public getActive(): DisposableUpdatable | null {
     return this.active;
+  }
+
+  public getActiveViewId(): string | null {
+    return this.activeViewId;
+  }
+
+  public activateByViewId(viewId: string): boolean {
+    const index = this.scenes.findIndex((scene) => scene.viewId === viewId);
+    if (index < 0) {
+      return false;
+    }
+
+    this.activate(index);
+    return true;
+  }
+
+  public setOnViewChanged(callback: ((viewId: string) => void) | null): void {
+    this.onViewChanged = callback;
   }
 
   private tryParseIndex(key: string): number | null {

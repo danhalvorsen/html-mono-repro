@@ -6,7 +6,7 @@
 // import * as THREE from "three";
 
 // import type { IThreeScene } from "../IThreeScene.js";
-// import { PlaygroundSceneBase } from "../common/PlaygroundSceneBase.js";
+// import { PlaygroundSceneBase } from "../common/PlaygroundSceneBase.ts";
 
 // import type { IMaterialFactory } from "../../../Materials/IMaterialFactory.js";
 // import { MaterialToken } from "../../../Materials/MaterialToken.js";

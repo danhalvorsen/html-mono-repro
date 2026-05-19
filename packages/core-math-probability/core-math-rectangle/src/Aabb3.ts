@@ -1,5 +1,5 @@
 import { Vector3Gpu, EPSILON } from "@monorepo/core-math-gpu";
-import { Box3 } from "./code.js";
+import { Box3 } from "./Box3.js";
 
 // ============================================================================
 // AABB3

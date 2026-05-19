@@ -2,11 +2,11 @@ import * as THREE from "three";
 import {
   type IPrimitiveNode,
 } from "@monorepo/core-design-pattern-composite-tree-threejs";
-import type { IMaterialFactory } from "../../../../../../core-threejs-app-framework/src/Materials/IMaterialFactory.js";
-import { MaterialToken } from "../../../../../../core-threejs-app-framework/src/Materials/MaterialToken.js";
+import type { IMaterialFactory } from "@monorepo/core-threejs-app-framework/src/Materials/IMaterialFactory.js";
+import { MaterialToken } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialToken.js";
 import { Box } from "../../../../Builders/Box/box.js";
 import { PrimitiveNodeFactory } from "../../../../PrimitiveNodeFactory.js";
-import { PlaygroundSceneBase } from "../../../common/PlaygroundSceneBase.js";
+import { PlaygroundSceneBase } from "../../../common/PlaygroundSceneBase.ts";
 import type { IThreeScene } from "../../../IThreeScene.js";
 
 export class TinyPrimitiveCompositionScene extends PlaygroundSceneBase {
@@ -15,8 +15,9 @@ export class TinyPrimitiveCompositionScene extends PlaygroundSceneBase {
   public constructor(
     scene: IThreeScene,
     materialFactory: IMaterialFactory,
+    viewId = "tiny-primitive-composition",
   ) {
-    super(scene, "tiny-root", materialFactory);
+    super(scene, "tiny-root", materialFactory, viewId);
   }
 
   private get primitiveNodeFactory(): PrimitiveNodeFactory {

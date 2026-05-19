@@ -1,5 +1,5 @@
 import { Matrix4Gpu, Vector3Gpu } from "@monorepo/core-math-gpu";
-import { Box3 } from "./code.js";
+import { Box3 } from "./Box3.js";
 
 // ============================================================================
 // OBB3

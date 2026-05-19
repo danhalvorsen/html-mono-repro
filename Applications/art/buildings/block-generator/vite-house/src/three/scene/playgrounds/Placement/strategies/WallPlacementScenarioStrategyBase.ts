@@ -1,7 +1,7 @@
 import { Vector2Gpu } from "@monorepo/core-math-gpu";
 import type { IBoxModule } from "@monorepo/core-math-rectangle";
 import type { IPlacementZone } from "@monorepo/core-rectangle-placement";
-import { WINDOW_KIND, type IRegionalPlacementCandidate, type IWallPlacementScenario, type IWallPlacementScenarioStrategy } from "../Placement.Platground.Scene.js";
+import { WINDOW_KIND, type IRegionalPlacementCandidate, type IWallPlacementScenario, type IWallPlacementScenarioStrategy } from "../Placement.Platground.Scene.ts";
 
 export abstract class WallPlacementScenarioStrategyBase
   implements IWallPlacementScenarioStrategy {

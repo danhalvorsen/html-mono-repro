@@ -1,10 +1,10 @@
 import type { IBox2, IBoxModule } from "@monorepo/core-math-rectangle";
 import type { IPlacementZone, IOccupiedPlacement } from "@monorepo/core-rectangle-placement";
-import { Window, WindowBuilder } from "../../../../Builders/IWindowBuilder.js";
-import type { IMaterialFactory } from "../../../../../../core-threejs-app-framework/src/Materials/IMaterialFactory.js";
-import { MaterialToken } from "../../../../../../core-threejs-app-framework/src/Materials/MaterialToken.js";
-import { type IPlacementSceneDrawingStrategy, type IWallPlacementInitialization, REGION_GUIDE_COLOR, type IRegionalPlacementCandidate, REJECTED_GUIDE_COLOR, WINDOW_Z_OFFSET, WALL_WIDTH, WALL_HEIGHT, WALL_DEPTH } from "../Placement.Platground.Scene.js";
-import { WindowRegionPlacementValidator } from "../spesifications/WindowRegionPlacementValidator.js";
+import { Window, WindowBuilder } from "../../../../Builders/IWindowBuilder.ts";
+import type { IMaterialFactory } from "@monorepo/core-threejs-app-framework/src/Materials/IMaterialFactory.js";
+import { MaterialToken } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialToken.js";
+import { type IPlacementSceneDrawingStrategy, type IWallPlacementInitialization, REGION_GUIDE_COLOR, type IRegionalPlacementCandidate, REJECTED_GUIDE_COLOR, WINDOW_Z_OFFSET, WALL_WIDTH, WALL_HEIGHT, WALL_DEPTH } from "../Placement.Platground.Scene.ts";
+import { WindowRegionPlacementValidator } from "../spesifications/WindowRegionPlacementValidator.ts";
  
 import * as THREE from "three";
 export class PlacementPlaygroundDrawingStrategy

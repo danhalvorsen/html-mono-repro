@@ -1,7 +1,7 @@
 import type { IBoxModule } from "@monorepo/core-math-rectangle";
 import type { IPlacementZone } from "@monorepo/core-rectangle-placement";
-import type { IRegionalPlacementCandidate, IWallPlacementScenario } from "../Placement.Platground.Scene.js";
-import { WallPlacementScenarioStrategyBase } from "./WallPlacementScenarioStrategyBase.js";
+import type { IRegionalPlacementCandidate, IWallPlacementScenario } from "../Placement.Platground.Scene.ts";
+import { WallPlacementScenarioStrategyBase } from "./WallPlacementScenarioStrategyBase.ts";
 
 export class GridWindowsScenarioStrategy extends WallPlacementScenarioStrategyBase {
   public constructor(boxModule: IBoxModule) {

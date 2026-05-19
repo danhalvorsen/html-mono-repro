@@ -24,6 +24,7 @@
     "@monorepo/game-assets-shapes": "file:../cave-temp/game-assets-shapes",
     "@monorepo/game-design-svg": "workspace:*",
     "@monorepo/game-feature-cave": "workspace:*",
+    "@monorepo/game-polygon-boolean-api": "workspace:*",
     "@monorepo/game-feature-backgrounds": "workspace:*",
     "@monorepo/core-fsm": "workspace:*",
     "@monorepo/core-design-composite": "workspace:*",

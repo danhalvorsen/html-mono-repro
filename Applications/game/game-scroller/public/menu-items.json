@@ -73,5 +73,10 @@
     "id": "fsm - vector field",
     "label": "FSM - Vector Field",
     "icon": "\ud83e\udded"
+  },
+  {
+    "id": "game - svg rectangle draw",
+    "label": "Game - SVG Rectangle Draw",
+    "icon": "\u25ad"
   }
 ]

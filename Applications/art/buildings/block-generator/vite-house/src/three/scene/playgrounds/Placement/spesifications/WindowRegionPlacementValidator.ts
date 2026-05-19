@@ -8,11 +8,11 @@ import {
   type IPlacementZone,
   type IPlaceholder,
 } from "@monorepo/core-rectangle-placement";
-import type { IRegionalPlacementCandidate } from "../Placement.Platground.Scene.js";
-import { ContainedInZonePlacementSpecification } from "./ContainedInZonePlacementSpecification.js";
-import { SpacingToOccupiedPlacementSpecification } from "./SpacingToOccupiedPlacementSpecification.js";
-import { InsideHostPlacementSpecification } from "./InsideHostPlacementSpecification.js";
-import { AllowedKindsPlacementSpecification } from "./AllowedKindsPlacementSpecification.js";
+import type { IRegionalPlacementCandidate } from "../Placement.Platground.Scene.ts";
+import { ContainedInZonePlacementSpecification } from "./ContainedInZonePlacementSpecification.ts";
+import { SpacingToOccupiedPlacementSpecification } from "./SpacingToOccupiedPlacementSpecification.ts";
+import { InsideHostPlacementSpecification } from "./InsideHostPlacementSpecification.ts";
+import { AllowedKindsPlacementSpecification } from "./AllowedKindsPlacementSpecification.ts";
 
 export class WindowRegionPlacementValidator {
   private readonly regionsById: ReadonlyMap<string, IPlacementZone>;

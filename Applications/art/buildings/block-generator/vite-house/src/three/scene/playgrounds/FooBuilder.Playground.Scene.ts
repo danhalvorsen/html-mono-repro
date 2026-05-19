@@ -1,16 +1,17 @@
 import * as THREE from "three";
 import { Foo, FooBuilder } from "../../Builders/FooBuilder.js";
 import type { IThreeScene } from "../IThreeScene.js";
-import { PlaygroundSceneBase } from "../common/PlaygroundSceneBase.js";
-import type { IMaterialFactory } from "../../../../core-threejs-app-framework/src/Materials/IMaterialFactory.js";
-import { MaterialToken } from "../../../../core-threejs-app-framework/src/Materials/MaterialToken.js";
+import { PlaygroundSceneBase } from "../common/PlaygroundSceneBase.ts";
+import type { IMaterialFactory } from "@monorepo/core-threejs-app-framework/src/Materials/IMaterialFactory.js";
+import { MaterialToken } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialToken.js";
 
 export class FooBuilderPlaygroundScene extends PlaygroundSceneBase {
 	public constructor(
 		scene: IThreeScene,
 		materialFactory: IMaterialFactory,
+		viewId = "foo-builder",
 	) {
-		super(scene, "foo-builder-playground-root", materialFactory);
+		super(scene, "foo-builder-playground-root", materialFactory, viewId);
 	}
 
 	protected createContent(): void {

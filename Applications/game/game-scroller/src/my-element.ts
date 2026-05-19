@@ -16,6 +16,7 @@ import "./views/view-hunter.js";
 import "./views/view-motion.js";
 import "./views/view-rocket-demo.js";
 import "./views/view-settings.js";
+import "./views/view-svg-rectangle-draw.js";
 import "./views/view-vector-field-game-object-demo.js";
 
 const VIEW_IDS = Object.freeze({
@@ -34,6 +35,7 @@ const VIEW_IDS = Object.freeze({
   hunter: "hunter",
   fsmPilot: "fsm - pilot",
   fsmVectorField: "fsm - vector field",
+  svgRectangleDraw: "game - svg rectangle draw",
 } as const);
 
 type ViewMenuItem = {
@@ -58,6 +60,7 @@ const DEFAULT_VIEW_ITEMS: readonly ViewMenuItem[] = Object.freeze([
   { id: VIEW_IDS.hunter, label: "Hunter", icon: "🏹" },
   { id: VIEW_IDS.fsmPilot, label: "FSM Pilot", icon: "🧪" },
   { id: VIEW_IDS.fsmVectorField, label: "FSM - Vector Field", icon: "🧭" },
+  { id: VIEW_IDS.svgRectangleDraw, label: "Game - SVG Rectangle Draw", icon: "▭" },
 ]);
 
 @customElement("my-element")
@@ -225,6 +228,9 @@ export class MyElement extends LitElement {
 
       case VIEW_IDS.fsmVectorField:
         return html`<view-vector-field-game-object-demo-fsm></view-vector-field-game-object-demo-fsm>`;
+
+      case VIEW_IDS.svgRectangleDraw:
+        return html`<view-svg-rectangle-draw></view-svg-rectangle-draw>`;
 
       default:
         return html`<view-game></view-game>`;

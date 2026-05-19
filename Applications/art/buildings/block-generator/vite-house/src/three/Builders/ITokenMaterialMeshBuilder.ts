@@ -3,7 +3,7 @@
 // ====================================================================================
 
 import * as THREE from "three";
-import type { MaterialToken } from "../../../core-threejs-app-framework/src/Materials/MaterialToken";
+import type { MaterialToken } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialToken.js";
 import type { IMeshBuilder } from "./IMeshBuilder";
 
 export interface ITokenMaterialMeshBuilder

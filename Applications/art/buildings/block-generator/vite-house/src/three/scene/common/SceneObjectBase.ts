@@ -5,19 +5,22 @@
 
 import * as THREE from "three";
 import type { IThreeScene } from "../IThreeScene.js";
-import type { IUpdatable } from "../../../../core-threejs-app-framework/src/IUpdatable.js";
+import type { IUpdatable } from "@monorepo/core-threejs-app-framework/src/IUpdatable.js";
 
 export abstract class SceneObjectBase implements IUpdatable {
   protected readonly root: THREE.Group;
   private readonly scene: IThreeScene;
+  private readonly viewIdValue: string;
   private readonly sceneOwnedObjects = new Set<THREE.Object3D>();
   private disposed = false;
 
   protected constructor(
     scene: IThreeScene,
     rootName: string,
+    viewId: string = rootName,
   ) {
     this.scene = scene;
+    this.viewIdValue = viewId;
     this.root = new THREE.Group();
     this.root.name = rootName;
 
@@ -47,6 +50,10 @@ export abstract class SceneObjectBase implements IUpdatable {
 
     this.sceneOwnedObjects.clear();
     this.disposed = true;
+  }
+
+  public viewId(): string {
+    return this.viewIdValue;
   }
 
   protected addToRoot(...objects: readonly THREE.Object3D[]): void {

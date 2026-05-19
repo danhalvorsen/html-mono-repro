@@ -1,9 +1,9 @@
 import { Vector2Gpu } from "@monorepo/core-math-gpu";
 import type { IBox2, IBoxModule } from "@monorepo/core-math-rectangle";
-import { CenteredWindowsScenarioStrategy } from "./CenteredWindowsScenarioStrategy.js";
-import { GridWindowsScenarioStrategy } from "./GridWindowsScenarioStrategy.js";
-import { LinearWindowsScenarioStrategy } from "./LinearWindowsScenarioStrategy.js";
-import { SIDE_WALL_INWARD_ROTATION_RADIANS, WALL_HEIGHT, WALL_WIDTH, type IPlacementSceneInitializationStrategy, type IWallConnectionPoint, type IWallPlacementInitialization, type IWallPlacementScenarioStrategy } from "../Placement.Platground.Scene.js";
+import { CenteredWindowsScenarioStrategy } from "./CenteredWindowsScenarioStrategy.ts";
+import { GridWindowsScenarioStrategy } from "./GridWindowsScenarioStrategy.ts";
+import { LinearWindowsScenarioStrategy } from "./LinearWindowsScenarioStrategy.ts";
+import { SIDE_WALL_INWARD_ROTATION_RADIANS, WALL_HEIGHT, WALL_WIDTH, type IPlacementSceneInitializationStrategy, type IWallConnectionPoint, type IWallPlacementInitialization, type IWallPlacementScenarioStrategy } from "../Placement.Platground.Scene.ts";
 
 export class PlacementPlaygroundInitializationStrategy
   implements IPlacementSceneInitializationStrategy {

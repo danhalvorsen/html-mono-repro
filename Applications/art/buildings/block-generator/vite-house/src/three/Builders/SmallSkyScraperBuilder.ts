@@ -3,14 +3,14 @@
 // ====================================================================================
 
 import * as THREE from "three";
-import type { IMaterialFactory } from "../../../core-threejs-app-framework/src/Materials/IMaterialFactory";
+import type { IMaterialFactory } from "@monorepo/core-threejs-app-framework/src/Materials/IMaterialFactory.js";
 
 import { MeshBuilder } from "./MeshBuilder";
 import type {
   ISmallSkyScraper,
   ISmallSkyScraperBuilder,
 } from "./ISmallSkyScraperBuilder";
-import { IndexedGeometryBuilder } from "../../../core-threejs-app-framework/src/geometry/IndexedGeometryBuilder";
+import { IndexedGeometryBuilder } from "@monorepo/core-threejs-app-framework/src/geometry/IndexedGeometryBuilder.js";
 
 export class SmallSkyScraperBuilder implements ISmallSkyScraperBuilder {
   public constructor(

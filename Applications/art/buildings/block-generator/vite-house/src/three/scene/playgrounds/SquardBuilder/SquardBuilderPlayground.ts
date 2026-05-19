@@ -1,4 +1,4 @@
-import { PlaygroundSceneBase } from "../../common/PlaygroundSceneBase.js";
+import { PlaygroundSceneBase } from "../../common/PlaygroundSceneBase.ts";
 
 export class SquardBuilderPlayground extends PlaygroundSceneBase {
 

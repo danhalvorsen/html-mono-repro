@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import   { MaterialToken } from "@monorepo/core-threejs-app-framework"
+import { MaterialToken } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialToken.js";
 
 export interface ISmallSkyScraperBuilder {
   build(configuration: ISmallSkyScraper): THREE.Group;

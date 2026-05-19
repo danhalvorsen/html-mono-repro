@@ -1,6 +1,6 @@
-import type { IThreeCamera } from "../../../core-threejs-app-framework/src/camera/IThreeCamera.js";
-import type { IFrameRenderer } from "../../../core-threejs-app-framework/src/renderer/IFrameRenderer.js";
-import type { IThreeRenderer } from "../../../core-threejs-app-framework/src/renderer/IThreeRenderer.js";
+import type { IThreeCamera } from "@monorepo/core-threejs-app-framework/src/camera/IThreeCamera.js";
+import type { IFrameRenderer } from "@monorepo/core-threejs-app-framework/src/renderer/IFrameRenderer.js";
+import type { IThreeRenderer } from "@monorepo/core-threejs-app-framework/src/renderer/IThreeRenderer.js";
 import type { IThreeScene } from "./IThreeScene.js";
 
 export class SceneRenderer implements IFrameRenderer {

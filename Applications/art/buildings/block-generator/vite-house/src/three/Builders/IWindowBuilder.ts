@@ -1,8 +1,8 @@
 
 import * as THREE from "three";
 
-import type { IMaterialFactory } from "../../../core-threejs-app-framework/src/Materials/IMaterialFactory.js";
-import type { MaterialToken } from "../../../core-threejs-app-framework/src/Materials/MaterialToken.js";
+import type { IMaterialFactory } from "@monorepo/core-threejs-app-framework/src/Materials/IMaterialFactory.js";
+import type { MaterialToken } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialToken.js";
 import { type Rectangle2 } from '@monorepo/core-math';
 
 export interface IWindowBuilder {

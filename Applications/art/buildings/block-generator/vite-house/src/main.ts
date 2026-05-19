@@ -1,6 +1,6 @@
 
 import "./style.css";
-import { ThreeApplication } from "../core-threejs-app-framework/src/application/ThreeApplication.js";
+import { ThreeApplication } from "./three/ThreeApplication.ts";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 if (app === null) {
