@@ -9,8 +9,6 @@ import {
   type IRectangleKind,
 } from "@monorepo/core-rectangle-placement";
 import type { IMaterialFactory } from "@monorepo/core-threejs-app-framework/src/Materials/IMaterialFactory.js";
-import { MaterialToken } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialToken.js";
-import { Window, WindowBuilder } from "../../../Builders/IWindowBuilder.js";
 import { WindowRegionPlacementValidator } from "../Placement/spesifications/WindowRegionPlacementValidator.ts";
 
 const WINDOW_KIND: IRectangleKind = { value: "window" };

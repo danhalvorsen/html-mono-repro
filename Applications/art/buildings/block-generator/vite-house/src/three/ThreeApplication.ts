@@ -7,6 +7,7 @@ import { BuildingPreviewWithPlacementPlaygroundScene } from "./scene/playgrounds
 import { TinyPrimitiveCompositionScene } from "./scene/playgrounds/compositions/simple/TinyPrimitiveCompositionScene.ts";
 import { ControlledBoxGridPlaygroundScene } from "./scene/playgrounds/ControlledBoxGrid";
 import { FooBuilderPlaygroundScene } from "./scene/playgrounds/FooBuilder.Playground.Scene";
+import { HousesCollectionPlaygroundScene } from "./scene/playgrounds/HousesCollectionPlaygroundScene";
 import { PlacementScene } from "./scene/playgrounds/Placement/Placement.Platground.Scene";
 import { WindowBuilderPlaygroundScene } from "./scene/playgrounds/WindowBuilder.Playground.Scene";
 import { MaterialFactory } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialFactory.js";
@@ -88,6 +89,11 @@ export class ThreeApplication implements IThreeApplication {
       "FooBuilderPlaygroundScene",
       "foo-builder",
       () => new FooBuilderPlaygroundScene(scene, materialFactory, "foo-builder"),
+    );
+    this.menu.register(
+      "HousesCollectionPlaygroundScene",
+      "houses-collection",
+      () => new HousesCollectionPlaygroundScene(scene, materialFactory, "houses-collection"),
     );
 
     this.menu.register(
