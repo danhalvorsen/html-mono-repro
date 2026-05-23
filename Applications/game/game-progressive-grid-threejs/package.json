@@ -1,0 +1,29 @@
+{
+  "name": "@monorepo/game-progressive-grid-threejs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "check": "pnpm build && pnpm test"
+  },
+  "dependencies": {
+    "@monorepo/game-progressive-grid": "workspace:*"
+  },
+  "peerDependencies": {
+    "three": ">=0.160.0 <1"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "latest",
+    "three": "latest",
+    "typescript": "latest",
+    "vitest": "latest"
+  }
+}

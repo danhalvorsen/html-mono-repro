@@ -22,7 +22,10 @@
     "@monorepo/core-math-gpu": "workspace:*",
     "@monorepo/core-math-probability": "workspace:*",
     "@monorepo/core-design-pattern-composite-tree-threejs": "workspace:*",
-    "@monorepo/core-design-patterns-cqrs": "workspace:*"
+    "@monorepo/core-design-patterns-cqrs": "workspace:*",
+    "@monorepo/game-progressive-grid": "workspace:*",
+    "@monorepo/game-progressive-grid-threejs": "workspace:*",
+    "@monorepo/game-progressive-grid-heightmap-threejs": "workspace:*"
   },
   "devDependencies": {
     "typescript": "~5.9.3",

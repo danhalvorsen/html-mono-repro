@@ -1,0 +1,21 @@
+{
+  "name": "@monorepo/game-progressive-grid-heightmap-threejs",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@monorepo/game-progressive-grid": "workspace:*",
+    "@monorepo/game-progressive-grid-threejs": "workspace:*",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  }
+}

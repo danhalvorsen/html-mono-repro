@@ -95,7 +95,7 @@ export class SkyScraperWithPlacementFactory {
   public create(): THREE.Group {
     const width = this.randomRange(3.6, 8.4);
     const depth = this.randomRange(3.2, 7.6);
-    const levels = this.randomInt(10, 28);
+    const levels = this.randomInt(10, 60);
     const levelHeight = this.randomRange(1.0, 1.5);
     const bodyHeight = levels * levelHeight;
     const palette = this.pickPalette();

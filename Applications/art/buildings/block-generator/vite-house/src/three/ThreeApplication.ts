@@ -2,14 +2,6 @@
 // FILE: src/three/core/ThreeApplication.ts
 // ====================================================================================
 
-import { BuildingPreviewScene } from "./scene/BuildingPreviewScene";
-import { BuildingPreviewWithPlacementPlaygroundScene } from "./scene/playgrounds/building-preview-with-placement/BuildingPreviewWithPlacementPlaygroundScene";
-import { TinyPrimitiveCompositionScene } from "./scene/playgrounds/compositions/simple/TinyPrimitiveCompositionScene.ts";
-import { ControlledBoxGridPlaygroundScene } from "./scene/playgrounds/ControlledBoxGrid";
-import { FooBuilderPlaygroundScene } from "./scene/playgrounds/FooBuilder.Playground.Scene";
-import { HousesCollectionPlaygroundScene } from "./scene/playgrounds/HousesCollectionPlaygroundScene";
-import { PlacementScene } from "./scene/playgrounds/Placement/Placement.Platground.Scene";
-import { WindowBuilderPlaygroundScene } from "./scene/playgrounds/WindowBuilder.Playground.Scene";
 import { MaterialFactory } from "@monorepo/core-threejs-app-framework/src/Materials/MaterialFactory.js";
 import { OrbitCameraController } from "@monorepo/core-threejs-app-framework/src/camera/OrbitCameraController.js";
 import { ThreeCamera } from "@monorepo/core-threejs-app-framework/src/camera/ThreeCamera.js";
@@ -19,6 +11,7 @@ import { ThreeRenderer } from "@monorepo/core-threejs-app-framework/src/renderer
 import { ResizeController } from "@monorepo/core-threejs-app-framework/src/ResizeController.js";
 import { SceneClock } from "./scene/SceneClock";
 import { SceneMenu } from "./scene/SceneMenu";
+import { playgroundPlugins } from "./scene/playgrounds/playgroundPlugins.ts";
 import { SceneRenderer } from "./scene/SceneRenderer";
 import { ThreeScene } from "./scene/ThreeScene";
 
@@ -64,58 +57,11 @@ export class ThreeApplication implements IThreeApplication {
 
     this.menu = new SceneMenu();
 
-    this.menu.register(
-      "BuildingPreviewScene",
-      "building-preview",
-      () => new BuildingPreviewScene(scene, "building-preview"),
-    );
-    this.menu.register(
-      "BuildingPreviewWithPlacementPlaygroundScene",
-      "building-preview-with-placement",
-      () => new BuildingPreviewWithPlacementPlaygroundScene(
-        scene,
-        materialFactory,
-        "building-preview-with-placement",
-      ),
-    );
-
-    this.menu.register(
-      "WindowBuilderPlaygroundScene",
-      "window-builder",
-      () => new WindowBuilderPlaygroundScene(scene, materialFactory, "window-builder"),
-    );
-
-    this.menu.register(
-      "FooBuilderPlaygroundScene",
-      "foo-builder",
-      () => new FooBuilderPlaygroundScene(scene, materialFactory, "foo-builder"),
-    );
-    this.menu.register(
-      "HousesCollectionPlaygroundScene",
-      "houses-collection",
-      () => new HousesCollectionPlaygroundScene(scene, materialFactory, "houses-collection"),
-    );
-
-    this.menu.register(
-      "ControlledBoxGridPlaygroundScene",
-      "controlled-box-grid",
-      () => new ControlledBoxGridPlaygroundScene(scene, materialFactory, undefined, "controlled-box-grid"),
-    );
-
-    this.menu.register(
-      "TinyPrimitiveCompositionScene",
-      "tiny-primitive-composition",
-      () => new TinyPrimitiveCompositionScene(scene, materialFactory, "tiny-primitive-composition"),
-    );
-
-    this.menu.register(
-      "Placement.Playground.Scene",
-      "placement",
-      () => new PlacementScene(scene, materialFactory, "placement"));
-
-      // this.menu.register(
-      // "TreeTrunkPlaygroundScene",
-      // () => new TreeTrunkPlaygroundScene(scene, materialFactory));
+    for (const plugin of playgroundPlugins) {
+      this.menu.register(plugin.label, plugin.id, () =>
+        plugin.create({ scene, materialFactory }),
+      );
+    }
 
     this.menu.mount(container);
     this.menu.setOnViewChanged((viewId: string) => {

@@ -45,7 +45,7 @@ export class BuildingPreviewWithPlacementPlaygroundScene extends PlaygroundScene
     const group = new THREE.Group();
     group.name = "skyscraper-ground-planning";
 
-    const gridWidth = 120;
+    const gridWidth = 160;
     const gridDepth = 120;
     const columns = 10;
     const rows = 10;
