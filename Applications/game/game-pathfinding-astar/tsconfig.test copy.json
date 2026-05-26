@@ -1,0 +1,26 @@
+// tsconfig.test.json
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": [
+        "src/*"
+      ]
+    },
+
+    "types": [
+      "vitest",
+      "node"
+    ],
+
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
+  },
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.test.ts",
+    "tests/**/*.spec.ts"
+  ]
+}

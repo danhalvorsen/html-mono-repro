@@ -1,0 +1,51 @@
+{
+  "name": "@monorepo/game-pathfinding-astar",
+  "version": "1.0.0",
+  "description": "Turtle graphics implementation using SVG",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./stepper": {
+      "import": "./dist/stepper.js",
+      "types": "./dist/stepper.d.ts"
+    },
+    "./persistence": {
+      "import": "./dist/persistence.js",
+      "types": "./dist/persistence.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck",
+    "test:gherkin": "node --import tsx ./node_modules/@cucumber/cucumber/bin/cucumber.js --config cucumber.cjs",
+    "test:all": "npm run test && npm run test:gherkin",
+    "benchmark": "node -e \"console.log('benchmark placeholder')\""
+  },
+  "keywords": [
+    "module",
+    "typescript",
+    "example"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@monorepo/core-math": "workspace:*"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0",
+    "chai": "^6.2.2",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

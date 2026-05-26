@@ -1,0 +1,39 @@
+{
+  "name": "@monorepo/game-pathfinding-astar-visualizing",
+  "version": "1.0.0",
+  "description": "A* pathfinding visualizer using Lit",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:typecheck": "vitest run --typecheck"
+  },
+  "keywords": [
+    "module",
+    "typescript",
+    "example"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+      "@monorepo/core-math": "workspace:*",
+       "lit": "^3.0.0"
+  },
+  "devDependencies": {
+   
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  }
+}

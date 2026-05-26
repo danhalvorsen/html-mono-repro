@@ -1,0 +1,14 @@
+:root {
+  background: #0d1220;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100svh;
+}
