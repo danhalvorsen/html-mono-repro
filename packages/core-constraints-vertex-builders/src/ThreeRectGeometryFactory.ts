@@ -1,4 +1,6 @@
+ 
 import * as THREE from "three";
+
 import type { IPoint3, IRectGeometryService } from "./IRectGeometryService.js";
 import type { IRectState } from "./IRectState.js";
 import { RectGeometryService } from "./RectGeometryService.js";

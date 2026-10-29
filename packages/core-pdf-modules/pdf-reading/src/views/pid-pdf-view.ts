@@ -996,10 +996,6 @@ export class PdfPidView extends LitElement {
         case "all-layers":
           return true;
 
-        case "clusters":
-        case "find-by-text":
-          return false;
-
         case "dbscan-1":
         case "dbscan-2":
         case "dbscan-3":

@@ -16,6 +16,7 @@
         "clearCache": "pnpm -C .. vitest --clearCache"
     },
     "dependencies": {
+        "@monorepo/core-composition-svg-turtle": "workspace:*",
         "@monorepo/core-math": "workspace:*"
     },
     "devDependencies": {

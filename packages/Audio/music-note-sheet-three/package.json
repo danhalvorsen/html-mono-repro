@@ -1,20 +1,23 @@
-﻿{
-    "name": "@monorepo/music-note-sheet-three",
-    "version": "1.0.0",
-    "type": "module",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        }
-    },
-    "scripts": {
-        "build": "tsc -b ."
-    },
-    "dependencies": {
-        "three": "^0.160.0",
-        "@monorepo/music-note-sheet-abstract": "workspace:*"
+{
+  "name": "@monorepo/music-note-sheet-three",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
+  },
+  "scripts": {
+    "build": "tsc -b ."
+  },
+  "dependencies": {
+    "three": "^0.160.0",
+    "@monorepo/music-note-sheet-abstract": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/three": "^0.160.0"
+  }
 }

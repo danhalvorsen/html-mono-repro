@@ -1,9 +1,6 @@
-export interface IThreeHost {
-  getContainer(): HTMLElement;
-  getViewportWidth(): number;
-  getViewportHeight(): number;
-  attachCanvas(canvas: HTMLCanvasElement): void;
-}
+import type { IThreeHost } from "./IThreeHost.js";
+
+export type { IThreeHost };
 
 export class ThreeHost implements IThreeHost {
     public constructor(private readonly container: HTMLElement) { }

@@ -6,7 +6,7 @@ import {
 import { DbscanPdfFragmentClusterer } from "@monorepo/core-pdf-dbscan";
 import { PdfWriter } from "@monorepo/core-pdf-writer";
 import { PdfFragmentWriter } from "@monorepo/core-pdf-parser-adapter";
-import { FragmentKinds, type IPdfFragment } from "@monorepo/core-pdf-domain";
+import { FragmentKinds, type IPdfFragment, type IPdfTextFragment } from "@monorepo/core-pdf-domain";
 import "@monorepo/core-pdf-presenter";
 
 type Box = {
@@ -140,7 +140,9 @@ const renderOverlayPdf = async (): Promise<void> => {
 
   setStatus("Running DBSCAN and writing PDF...");
 
-  const textLikeFragments = sourceFragments.filter((fragment) => fragment.kind === FragmentKinds.Text);
+  const textLikeFragments = sourceFragments.filter(
+    (fragment): fragment is IPdfTextFragment => fragment.kind === FragmentKinds.Text,
+  );
   const result = clusterer.cluster(textLikeFragments, epsilon, minPoints);
 
   const rectangleFragments = createClusterRectangleFragments(
@@ -153,7 +155,7 @@ const renderOverlayPdf = async (): Promise<void> => {
   const outputBinary = await writer.write(sourceBinary, rectangleFragments);
 
   disposeCurrentUrl();
-  currentRenderedUrl = URL.createObjectURL(new Blob([outputBinary], { type: "application/pdf" }));
+  currentRenderedUrl = URL.createObjectURL(new Blob([new Uint8Array(outputBinary)], { type: "application/pdf" }));
 
   presenter.src = currentRenderedUrl;
   downloadLink.href = currentRenderedUrl;

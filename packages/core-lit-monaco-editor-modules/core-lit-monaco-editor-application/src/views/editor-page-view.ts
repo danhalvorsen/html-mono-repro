@@ -592,7 +592,7 @@ export class MonacoEditorPageView extends LitElement {
     };
 
     if (typeof root.querySelectorAll === "function") {
-      const presenters = [...root.querySelectorAll(".build-result-presenter")] as IMonacoBuildProductPresenter[];
+      const presenters = [...root.querySelectorAll(".build-result-presenter")] as unknown as IMonacoBuildProductPresenter[];
       if (presenters.length > 0) {
         return presenters;
       }

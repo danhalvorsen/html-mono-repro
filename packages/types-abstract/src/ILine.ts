@@ -1,4 +1,5 @@
-import { Vector3 } from "three";
+ 
+import { Vector3 } from "@monorepo/core-math";
 import { IShape } from "./IShape.js";
 
 export interface ILine extends IShape {

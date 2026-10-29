@@ -1,5 +1,4 @@
-// packages/Audio/music-core-synthesizer/modules/music-core-synthesizer-web-audio/src/index.ts
-
+ 
 import type {
   Hertz,
   IDistortionDefinition,

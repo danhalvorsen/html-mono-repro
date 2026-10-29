@@ -1,4 +1,3 @@
-﻿
 {
   "name": "@monorepo/core-shapes-threejs",
   "version": "1.0.0",
@@ -12,13 +11,14 @@
     "test": "vitest run"
   },
   "dependencies": {
-      "three": "0.183.2",
-      "@monorepo/core-new-shapes-abstract": "workspace:*",
-      "@monorepo/core-reactive-abstract": "workspace:*"
+    "three": "0.183.2",
+    "@monorepo/core-new-shapes-abstract": "workspace:*",
+    "@monorepo/core-reactive-abstract": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "rimraf": "^6.0.1"
+    "@types/three": "^0.183.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
   },
   "exports": {
     ".": {

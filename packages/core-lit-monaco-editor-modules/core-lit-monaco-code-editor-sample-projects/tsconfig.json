@@ -12,6 +12,8 @@
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },

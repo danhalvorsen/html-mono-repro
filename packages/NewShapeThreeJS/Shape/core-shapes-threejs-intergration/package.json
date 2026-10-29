@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "@monorepo/core-shapes-threejs-intergration",
   "version": "1.0.0",
   "private": true,
@@ -16,8 +16,9 @@
     "@monorepo/core-shapes-threejs": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "rimraf": "^6.0.1"
+    "@types/three": "^0.183.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
   },
   "exports": {
     ".": {

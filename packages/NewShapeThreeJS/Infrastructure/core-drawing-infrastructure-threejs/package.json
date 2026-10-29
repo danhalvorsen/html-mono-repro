@@ -1,4 +1,3 @@
-﻿
 {
   "name": "@monorepo/core-drawing-infrastructure-threejs",
   "version": "1.0.0",
@@ -13,14 +12,15 @@
   },
   "dependencies": {
     "@monorepo/core-math": "workspace:*",
-    "@monorepo/core-new-shapes-abstract": "workspace:*",  
-    "@monorepo/core-shapes-threejs": "workspace:*",     
+    "@monorepo/core-new-shapes-abstract": "workspace:*",
+    "@monorepo/core-shapes-threejs": "workspace:*",
     "@monorepo/core-drawing-infrastructure-abstract": "workspace:*",
     "three": "0.183.2"
   },
   "devDependencies": {
-    "typescript": "^5.9.3",
-    "rimraf": "^6.0.1"
+    "@types/three": "^0.183.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
   },
   "exports": {
     ".": {

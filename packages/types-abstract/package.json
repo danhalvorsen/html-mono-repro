@@ -16,6 +16,7 @@
     "test": "pnpm --workspace-root vitest run --config packages/types-abstract/vitest.config.ts"
   },
   "dependencies": {
-    "@monorepo/core-math": "workspace:*"
+    "@monorepo/core-math": "workspace:*",
+     "three": "^0.160.0"
   }
 }

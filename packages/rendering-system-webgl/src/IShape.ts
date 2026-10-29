@@ -1,6 +1,6 @@
-import { Matrix, Vector3 } from 'core-math/dist';
+import { Vector3, Matrix } from '@monorepo/core-math';
+import { ILocation } from "./ILocation";
 import { IDimensions } from './dimensions';
-import { ILocation } from './location';
 
 
 export interface IShape {

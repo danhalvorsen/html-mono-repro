@@ -1,5 +1,5 @@
 import { LitElement, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 import type { IVoiceDefinition } from "@monorepo/music-core-synthesizer-voice-contracts";
 
@@ -13,8 +13,16 @@ export interface IVoiceDefinitionChangedDetail {
 
 @customElement("voice-control")
 export class VoiceControlComponent extends LitElement {
-  @property({ attribute: false })
-  public definition: IVoiceDefinition | null = null;
+  public static override properties = {
+    definition: { attribute: false },
+  };
+
+  declare public definition: IVoiceDefinition | null;
+
+  public constructor() {
+    super();
+    this.definition = null;
+  }
 
   public static override readonly styles = css`
     :host {

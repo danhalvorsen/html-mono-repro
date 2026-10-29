@@ -20,18 +20,17 @@
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "baseUrl": ".",
     "paths": {
       "@my-graphics/*": [
-        "Libraries/*/src",
-        "Libraries/*/dist",
-        "Libraries/core-reactive-multiplatform-modules/*/src",
-        "Libraries/core-reactive-multiplatform-modules/*/dist"
+        "./Libraries/*/src",
+        "./Libraries/*/dist",
+        "./Libraries/core-reactive-multiplatform-modules/*/src",
+        "./Libraries/core-reactive-multiplatform-modules/*/dist"
       ],
       "@monorepo/*": [
-        "packages/*/src",
-        "packages/*/dist",
-        "packages/core-consistent/src"
+        "./packages/*/src",
+        "./packages/*/dist",
+        "./packages/core-consistent/src"
       ]
     }
   },

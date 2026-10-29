@@ -1,7 +1,6 @@
-
 import { Vector3, Matrix} from '@monorepo/core-math';
 import { IDimensions } from './dimensions.js';
-import { ILocation } from './location.js';
+import { ILocation } from "./ILocation.js";
 import { IShape } from './IShape.js';
  
 export class Shape implements IShape {

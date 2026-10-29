@@ -35,7 +35,9 @@
     "@monorepo/music-ui-components": "workspace:*"
   },
   "devDependencies": {
+    "@storybook/web-components-vite": "^10.6.5",
     "rimraf": "^6.0.1",
+    "storybook": "^10.6.5",
     "typescript": "^5.9.3"
   }
 }

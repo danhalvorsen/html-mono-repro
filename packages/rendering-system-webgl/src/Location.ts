@@ -1,13 +1,6 @@
 import { Vector3 } from "@monorepo/core-math";
+import { ILocation } from "./ILocation";
 
-export interface ILocation {
-  x: number;
-  y: number;
-  z: number;
-  getPosition(): Vector3;
-  setPosition(pos: Vector3): void;
-}
- 
 export class Location implements ILocation {
   private position: Vector3;
 

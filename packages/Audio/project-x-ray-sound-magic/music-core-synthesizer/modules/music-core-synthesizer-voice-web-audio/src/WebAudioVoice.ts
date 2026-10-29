@@ -10,9 +10,9 @@ import type {
   IWebAudioOscillatorGraph,
   IWebAudioOscillatorGraphFactory,
 } from "@monorepo/music-core-synthesizer-oscillators-web-audio";
-import type { IVoiceDefinitionValidator } from "@monorepo/music-core-synthesizer-voice";
 import type {
   IVoiceDefinition,
+  IVoiceDefinitionValidator,
   IVoiceGateOffRequest,
   IVoiceGateOnRequest,
 } from "@monorepo/music-core-synthesizer-voice-contracts";
@@ -41,7 +41,7 @@ export interface IWebAudioVoiceFactory {
 }
 
 interface IWebAudioVoiceLayer {
-  readonly oscillatorGraph: IWebAudioOscillatorGraph;
+  readonly oscillatorGraphs: readonly IWebAudioOscillatorGraph[];
   readonly envelopeGraph: IWebAudioEnvelopeGainGraph;
   readonly layerGainNode: GainNode;
   readonly envelope: EnvelopeDefinition;
@@ -68,15 +68,19 @@ export class WebAudioVoiceFactory implements IWebAudioVoiceFactory {
     const layers = request.definition.layers
       .filter((layer) => layer.enabled)
       .map((layer): IWebAudioVoiceLayer => {
-        const oscillatorGraph = this.oscillatorGraphFactory.create(layer.oscillator);
+        const oscillatorGraphs = layer.oscillators.map((oscillator) =>
+          this.oscillatorGraphFactory.create(oscillator),
+        );
         const envelopeGraph = this.envelopeGraphFactory.create(layer.envelope);
         const layerGainNode = this.context.createGain();
 
         layerGainNode.gain.setValueAtTime(layer.gain, this.context.currentTime);
 
-        oscillatorGraph.connect(
-          envelopeGraph.inputNode as unknown as IOscillatorWebAudioConnectable,
-        );
+        for (const oscillatorGraph of oscillatorGraphs) {
+          oscillatorGraph.connect(
+            envelopeGraph.inputNode as unknown as IOscillatorWebAudioConnectable,
+          );
+        }
 
         envelopeGraph.connect(
           layerGainNode as unknown as IEnvelopeWebAudioConnectable,
@@ -85,7 +89,7 @@ export class WebAudioVoiceFactory implements IWebAudioVoiceFactory {
         layerGainNode.connect(outputGainNode);
 
         return {
-          oscillatorGraph,
+          oscillatorGraphs,
           envelopeGraph,
           layerGainNode,
           envelope: layer.envelope,
@@ -121,11 +125,13 @@ class WebAudioVoice implements IWebAudioVoice {
         velocity: request.velocity,
       });
 
-      layer.oscillatorGraph.noteOn({
-        timeSeconds: request.timeSeconds,
-        frequencyHz: request.frequencyHz,
-        velocity: 1,
-      });
+      for (const oscillatorGraph of layer.oscillatorGraphs) {
+        oscillatorGraph.noteOn({
+          timeSeconds: request.timeSeconds,
+          frequencyHz: request.frequencyHz,
+          velocity: 1,
+        });
+      }
     }
 
     this.isGateOpen = true;
@@ -148,9 +154,11 @@ class WebAudioVoice implements IWebAudioVoice {
       const stopTimeSeconds =
         request.timeSeconds + EnvelopeReleaseSeconds.resolve(layer.envelope) + 0.02;
 
-      layer.oscillatorGraph.noteOff({
-        timeSeconds: stopTimeSeconds,
-      });
+      for (const oscillatorGraph of layer.oscillatorGraphs) {
+        oscillatorGraph.noteOff({
+          timeSeconds: stopTimeSeconds,
+        });
+      }
 
       latestStopTimeSeconds = Math.max(latestStopTimeSeconds, stopTimeSeconds);
     }
@@ -168,7 +176,9 @@ class WebAudioVoice implements IWebAudioVoice {
     this.isDisposed = true;
 
     for (const layer of this.layers) {
-      layer.oscillatorGraph.disconnect();
+      for (const oscillatorGraph of layer.oscillatorGraphs) {
+        oscillatorGraph.disconnect();
+      }
       layer.envelopeGraph.disconnect();
       layer.layerGainNode.disconnect();
     }

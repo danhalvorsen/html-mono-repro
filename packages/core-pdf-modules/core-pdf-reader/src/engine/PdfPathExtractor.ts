@@ -123,8 +123,8 @@ export class PdfPathExtractor {
   }
 
   private buildSegments(
-    pathOps: ReadonlyArray<number>,
-    pathArgs: ReadonlyArray<number>,
+    pathOps: ArrayLike<number>,
+    pathArgs: ArrayLike<number>,
     matrix: Matrix,
   ): IPdfPathSegment[] {
     const segments: IPdfPathSegment[] = [];
@@ -353,7 +353,7 @@ export class PdfPathExtractor {
     };
   }
 
-  private readPoint(values: ReadonlyArray<number>, index: number): Point | null {
+  private readPoint(values: ArrayLike<number>, index: number): Point | null {
     if (index + 1 >= values.length) {
       return null;
     }
@@ -376,9 +376,9 @@ export class PdfPathExtractor {
     return mapping;
   }
 
-  private asNumberSequence(value: unknown): ReadonlyArray<number> | null {
+  private asNumberSequence(value: unknown): ArrayLike<number> | null {
     if (Array.isArray(value)) {
-      return value as ReadonlyArray<number>;
+      return value as number[];
     }
 
     if (

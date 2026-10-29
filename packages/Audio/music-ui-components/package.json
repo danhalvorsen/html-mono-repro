@@ -18,5 +18,8 @@
         "@monorepo/core-composition-abstract": "workspace:*",
         "@monorepo/core-style-system": "workspace:*"
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "@storybook/web-components-vite": "^10.6.5",
+        "storybook": "^10.6.5"
+    }
 }

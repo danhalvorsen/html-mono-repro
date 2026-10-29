@@ -479,7 +479,7 @@ export class TsMorphImportRewriter implements IImportRewriter {
       movesBySourceFile.set(key, list);
     }
 
-    for (const sourceFile of project.getSourceFiles().filter(file => !file.isDeclarationFile())) {
+    for (const sourceFile of project.getSourceFiles().filter((file): boolean => !file.isDeclarationFile())) {
       for (const importDeclaration of [...sourceFile.getImportDeclarations()]) {
         const importedSourceFilePath = this.tryResolveImportedSourceFilePath(
           sourceFile.getFilePath(),
